@@ -4,8 +4,7 @@
 export const PAGES = [
   '/',
   '/privacy',
-  // '/about',
-  // '/contact',
+  '/imprint',
 ] as const;
 
 // a11y (and any visual check) runs in both themes; the toggle is driven by

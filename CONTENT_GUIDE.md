@@ -7,7 +7,7 @@
   enforced by the tone test (tests/tone.spec.ts). Build after POSITIONING.md,
   before any page copy — per the new-website pipeline.
 -->
-# [Site name] — content guide
+# Webcroft — content guide
 
 ## Positioning (owned by website-positioning — read, do not restate)
 
@@ -16,25 +16,25 @@ in **POSITIONING.md** (worked out first, via `website-positioning`). Read them f
 there; do not duplicate them here. This guide covers voice, EEAT, and the
 page-level content that hangs off that positioning.
 
-- **Top 3 jobs-to-be-done (for copy):** [1] · [2] · [3]
-- **Primary action we want:** [book a call / sign up / download / contact]
+- **Top 3 jobs-to-be-done (for copy):** understand what Webcroft is in one screen · get from zero to a first site (quickstart) · judge credibility (origin story + proof links)
+- **Primary action we want:** visit the GitHub repo (star / clone).
 
 ## Tone of voice
 
-Write like [persona, e.g. "a senior practitioner talking to a smart peer"]:
-[3–5 adjectives]. Proof over claims. Active voice. Speak to the reader as "you".
+Write like a craftsperson showing you around their workshop: warm, concrete,
+understated, a little wry. Proof over claims. Active voice. Speak to the reader as "you".
 
 **Hard rules (enforced by the tone test — run after every copy change):**
 - **No em dashes (—).** Use a comma, period, or colon.
 - **No contractions.** Long form: "cannot", "it is", "you are", "we are".
 - **No buzzwords:** supercharge, world-class, leverage, unlock, seamless, robust,
-  cutting-edge, empower, holistic, revolutionary, synergy, next-level. [trim/add]
+  cutting-edge, empower, holistic, revolutionary, synergy, next-level.
 - Genuine quoted customer/human voice is exempt: wrap in `<blockquote>`, `<q>`,
   or add `data-tov-exempt`.
 
 **Do / don't examples**
-- Do: "[on-brand sentence]"
-- Don't: "[off-brand sentence and why]"
+- Do: "A croft is a small farm, worked and owned by the family that lives on it."
+- Don't: "Webcroft empowers you to unlock seamless websites" (three banned buzzwords, zero facts).
 
 ## EEAT signals (build in from the start)
 
@@ -51,8 +51,9 @@ Trust. Ship these, not just claims:
 
 | Page | URL | Purpose | Primary keyword | Target `<title>` (≤60) | Status |
 |---|---|---|---|---|---|
-| Home | `/` | [why it exists] | [kw] | [title] | [ ] |
-| [About] | `/about` | … | … | … | [ ] |
+| Home | `/` | project home: story, quickstart, catalogue | website skills for AI assistants | Webcroft: open-source website skills for AI assistants | [x] |
+| Privacy | `/privacy` | GDPR | — | Privacy Policy | [x] |
+| Imprint | `/imprint` | § 5 DDG legal disclosure | — | Imprint | [x] |
 
 ## Per-page-type copy template
 

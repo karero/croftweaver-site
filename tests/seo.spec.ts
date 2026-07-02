@@ -57,7 +57,7 @@ const DEFAULT_OG_CARD = '/images/og/default.jpg';
 //   - '/'        home: the default card IS the home card.
 //   - '/privacy' legal/utility — nobody shares it with a custom preview.
 // (A noindex 404 isn't here: it's excluded from PAGES entirely, so the guard never runs on it.)
-const OWN_CARD_EXEMPT = new Set<string>(['/', '/privacy']);
+const OWN_CARD_EXEMPT = new Set<string>(['/', '/privacy', '/imprint']);
 
 for (const path of PAGES) {
   test(`seo — head contract on ${path}`, async ({ page }) => {

@@ -32,13 +32,13 @@ type Clause = string | string[]; // string = required phrase · string[] = any-o
 type TermRule = { term: string; body?: Clause[] };
 type SurfaceRule = { title?: Clause[]; desc?: Clause[]; h1?: Clause[]; body?: Clause[] };
 export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
-  // '/': { term: '...', body: ['...'] },
+  '/': { term: 'website skills', body: ['website skills for AI coding assistants'] },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
 // 404). Excluded from the coverage flag below so it only nags about real content/offer
 // pages. Add to this set for a genuinely term-free page; don't delete the flag.
-const POSITIONING_EXEMPT = new Set<string>(['/privacy']);
+const POSITIONING_EXEMPT = new Set<string>(['/privacy', '/imprint']);
 
 const norm = (r: TermRule | SurfaceRule): Required<SurfaceRule> =>
   'term' in r

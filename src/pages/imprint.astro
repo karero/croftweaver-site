@@ -1,0 +1,40 @@
+---
+// Imprint (Impressum) — required under German law (§ 5 DDG) for a site operated
+// from Germany. OWNER TODO before launch: fill the [BRACKET] address slots and
+// confirm the contact address; a postal address is legally required.
+import Base from '../layouts/Base.astro';
+import EmailLink from '../components/EmailLink.astro';
+---
+<Base
+  title="Imprint"
+  description="Legal disclosure (Impressum) for webcroft.dev under German law: site operator, contact details, and responsibility for content.">
+  <section class="wrap">
+    <h1>Imprint</h1>
+    <p>Legal disclosure under § 5 DDG (German Digital Services Act).</p>
+
+    <h2>Site operator</h2>
+    <p>
+      Daniel Melter<br />
+      [STREET AND NUMBER]<br />
+      [POSTCODE] Munich, Germany
+    </p>
+    <p>Contact: <EmailLink address="hello@webcroft.dev" subject="Webcroft" /></p>
+
+    <h2>Responsible for content</h2>
+    <p>Daniel Melter (address as above).</p>
+
+    <h2>About this site</h2>
+    <p>
+      webcroft.dev is the project page of Webcroft, an open-source suite of
+      website skills for AI coding assistants. The source code is published at
+      <a href="https://github.com/karero/webcroft">github.com/karero/webcroft</a>.
+    </p>
+
+    <h2>Liability for links</h2>
+    <p>
+      This site links to external websites over whose content we have no
+      control. The respective provider is responsible for the content of linked
+      pages; at the time of linking, no legal violations were evident.
+    </p>
+  </section>
+</Base>

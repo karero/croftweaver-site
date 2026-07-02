@@ -13,8 +13,8 @@ export const SITE = {
   tagline: 'Your own plot of the web.',
   // 120–160 chars: default meta description + Organization/WebPage schema text.
   description:
-    'Open-source skills that turn an AI coding assistant into a careful website ' +
-    'builder: fast, accessible, SEO-ready Astro sites you fully own.',
+    'Webcroft is a suite of open-source website skills for AI coding assistants. ' +
+    'It builds fast, accessible, SEO-ready Astro sites in a repo you fully own.',
 } as const;
 
 export const COMPANY = {

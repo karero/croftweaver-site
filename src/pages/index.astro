@@ -1,19 +1,177 @@
 ---
-// Minimal home page so the test harness is green the moment you copy the overlay.
-// Replace the copy with the real positioning from CONTENT_GUIDE.md; keep one <h1>,
-// the description 120–160 chars, and the copy within the tone rules.
+// Home page. Positioning spine (tests/positioning.spec.ts): the term
+// "website skills" is threaded through <title> (config titleHome), the meta
+// description (config description) and the intro sentence under the H1; the
+// body carries the market category "website skills for AI coding assistants".
+// Tone rules apply to all copy: no em dashes, no contractions, no buzzwords.
 import Base from '../layouts/Base.astro';
-import EmailLink from '../components/EmailLink.astro';
 import { SITE } from '../config';
+
+const REPO = 'https://github.com/karero/webcroft';
+
+// Different schema type than the Builder Lab page on purpose (it owns FAQPage):
+// this page describes the open-source project itself.
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: 'Webcroft',
+  description: SITE.description,
+  codeRepository: REPO,
+  runtimePlatform: 'Astro',
+  about: 'Open-source website skills for AI coding assistants',
+  author: { '@type': 'Person', name: 'Daniel Melter' },
+};
 ---
-<Base title={SITE.name}>
-  <section class="wrap">
-    <h1>{SITE.name}</h1>
-    <p>
-      This starter page exists so the accessibility, SEO, navigation, image, tone
-      and email checks pass from the first commit. Replace it with your real home
-      page, then build the rest of the site test first.
+<Base title={SITE.name} schemas={[softwareSchema]}>
+  <section class="wrap hero">
+    <h1>Your own plot of the web.</h1>
+    <p class="lead">
+      Webcroft is a suite of open-source website skills for AI coding assistants.
+      It turns Claude Code, Codex or Antigravity into a careful website builder
+      that ships a fast, accessible, SEO-ready Astro site in a repo you fully own.
     </p>
-    <p>Contact: <EmailLink address="hello@example.com" subject="Hello" /></p>
+    <div class="cta">
+      <a class="btn primary" href={REPO}>Get Webcroft on GitHub</a>
+      <a class="btn" href="#quickstart">Quickstart</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="croft">
+    <h2>Croft, not craft</h2>
+    <p>
+      A croft is a small farm in the Scottish Highlands, worked and owned by the
+      family that lives on it. Not an estate, and not a rented stall in someone
+      else's mall: a modest piece of ground that feeds the people who tend it.
+    </p>
+    <p>
+      That is the deal Webcroft offers for the web. Hosted site builders rent you
+      a shop window and charge every month for the key. A croft you own: the code
+      in your repository, the domain in your name, the content in plain Markdown.
+    </p>
+    <p class="aside">
+      Yes, the name sits one vowel away from webcraft. We tested 121 candidate
+      names against live search results, and nearly every pronounceable word near
+      website building already belongs to a product. The croft was still free,
+      and it says exactly what we mean: the craft of building, on ground you own.
+    </p>
+  </section>
+
+  <section class="wrap" id="how">
+    <h2>How it works</h2>
+    <p>
+      You bring a short brief. The skills walk your assistant through the same
+      pipeline a careful studio would use:
+    </p>
+    <ol class="steps">
+      <li><strong>Positioning before copy.</strong> What the site claims, for whom, and in which market category. Written down first, enforced later.</li>
+      <li><strong>Content and tone guide.</strong> Voice rules and page inventory before any page is written.</li>
+      <li><strong>Architecture and pages.</strong> Clean URLs, internal links, no orphaned pages.</li>
+      <li><strong>SEO, structured data and GEO.</strong> Metadata within limits, schema.org JSON-LD, and an llms.txt so AI answer engines read the site correctly.</li>
+      <li><strong>Design tokens.</strong> Light and dark themes from one token file, checked for contrast.</li>
+      <li><strong>The test gate.</strong> Accessibility, SEO consistency, navigation, tone, links and image hygiene run on every page, in both themes, on every commit.</li>
+    </ol>
+    <p>
+      The gate is the point. Done means the tests are green, not that a file was
+      written.
+    </p>
+  </section>
+
+  <section class="wrap" id="quickstart">
+    <h2>Quickstart</h2>
+    <ol class="steps">
+      <li>Clone the repo and run the installer:</li>
+    </ol>
+    <pre><code>git clone {REPO}.git
+cd webcroft && ./scripts/install.sh</code></pre>
+    <ol class="steps" start="2">
+      <li>Open your assistant in a fresh folder.</li>
+      <li>Say: <em>Build me a new website for [your project]</em>. The interview and the pipeline take it from there.</li>
+    </ol>
+    <p>
+      Install guides per assistant (Claude Code, Codex, Antigravity) live in the
+      <a href={`${REPO}#readme`}>repo README</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="skills">
+    <h2>What is in the box</h2>
+    <p>
+      A catalogue of skills that covers the whole life of a site, and every
+      generated repo carries its own copy, so a handoff needs nothing global.
+    </p>
+    <div class="grid">
+      <div class="card">
+        <h3>Build</h3>
+        <p>new-website orchestrator, positioning, content guide, design system, SEO and GEO, testimonials.</p>
+      </div>
+      <div class="card">
+        <h3>Verify</h3>
+        <p>Per-page QA gate, two-pass site review, SEO audit, outgoing and internal link audits.</p>
+      </div>
+      <div class="card">
+        <h3>Deepen</h3>
+        <p>AI answer-engine optimization, schema markup, site architecture, social share cards.</p>
+      </div>
+      <div class="card">
+        <h3>Launch and grow</h3>
+        <p>Search Console setup and insights, permission allowlists, optional CMS and multilingual setup.</p>
+      </div>
+    </div>
+    <p>The full, current catalogue lives in the <a href={REPO}>repository</a>.</p>
+  </section>
+
+  <section class="wrap" id="not">
+    <h2>What Webcroft is not</h2>
+    <ul class="steps">
+      <li><strong>Not a hosted builder.</strong> Nothing runs on our servers. There is no account and no subscription; the toolkit is code in your hands.</li>
+      <li><strong>Not an app platform.</strong> Webcroft is static-first on purpose. For accounts, checkout or a database, an app builder serves you better. A contact form or one live widget is fine: the output supports a single serverless function when a site truly needs one.</li>
+      <li><strong>Not a template pack.</strong> The skills reason about your positioning, tone and structure. Two Webcroft sites should not look or read alike.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="proof">
+    <h2>Where it came from</h2>
+    <p>
+      Webcroft grew out of the Builder Lab at GenAI Wednesday, Munich's
+      generative AI community. The Lab keeps the receipts: a real Lighthouse
+      scorecard for a site built with these skills, review scores from four
+      independent AI assistants, and links to re-run every check yourself.
+    </p>
+    <p>
+      <a href="https://genai-wednesday.de/builder-lab">Visit the Builder Lab</a>
+      or browse <a href="https://genai-wednesday.de/">genai-wednesday.de</a>,
+      which is built with Webcroft end to end.
+    </p>
   </section>
 </Base>
+
+<style>
+  .hero { padding-top: 4rem; }
+  .hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; margin-bottom: 1rem; }
+  .lead { font-size: 1.15rem; line-height: 1.7; max-width: 46rem; color: var(--muted); }
+  .cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+  .btn {
+    display: inline-block; padding: 0.7rem 1.3rem; border-radius: var(--radius);
+    border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+    background: var(--surface); box-shadow: var(--shadow); font-weight: 600;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  section.wrap { padding: 2.5rem 1rem; max-width: var(--maxw); margin: 0 auto; }
+  h2 { margin-bottom: 0.8rem; }
+  section p { max-width: 46rem; line-height: 1.7; }
+  .aside { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); }
+  .steps { max-width: 46rem; line-height: 1.8; padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+  pre {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem;
+  }
+  code { font-size: 0.95rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1.2rem 1.4rem; box-shadow: var(--shadow);
+  }
+  .card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); line-height: 1.6; }
+</style>

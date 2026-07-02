@@ -141,8 +141,11 @@ const ogLocale = langRegion && langRegion.length === 2
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <main id="main"><slot /></main>
-    <!-- Every page links the privacy policy (GDPR: reachable from anywhere). -->
+    <!-- Every page links the legal pages (GDPR: reachable from anywhere). -->
     <footer class="site-footer">
+      <span>Built with Webcroft</span>
+      <a href="https://github.com/karero/webcroft">GitHub</a>
+      <a href="/imprint">Imprint</a>
       <a href="/privacy">Privacy Policy</a>
     </footer>
   </body>

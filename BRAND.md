@@ -5,19 +5,17 @@
   block in the stylesheet — src/styles/global.css (in the kit:
   templates/astro/src/styles/global.css); keep this file and that block in sync.
 -->
-# [Site name] — brand & style guide
+# Webcroft — brand & style guide
 
 ## Brand in one line
 
-[Positioning + the visual feel in one sentence: palette mood, one accent,
-whitespace, shape language. No clichéd stock photography.]
+A croft on the web: calm, earthy, self-assured. Moss-green accent on generous
+whitespace, soft cards, no stock photography, typography does the work.
 
 ## Logo
 
-- File: `[path]` ([dimensions]).
-- Clearspace: keep free space ≥ [30%] of the logo height around it.
-- Minimum size: [24]px tall (favicon excepted).
-- On dark backgrounds: [usage].
+- No logo yet: the wordmark "Webcroft" in the heading font is the mark for now.
+- When one exists: transparent PNG + light variant for dark/OG use (see OG rules).
 
 ## Colour palette
 
@@ -27,40 +25,39 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 ### Brand (fixed, theme-independent)
 | Token | Hex | Use |
 |---|---|---|
-| Primary | `#[…]` | buttons, brand surfaces |
-| Accent | `#[…]` | links, highlights (must pass AA on bg) |
+| Primary | `#2e6e4e` | buttons, brand surfaces (croft moss green) |
+| Accent | `#2e6e4e` light / `#8fd4ab` dark | links, highlights (AA on both bg) |
 
 ### Light theme
 | Token | Hex |
 |---|---|
-| Heading | `#[…]` |
-| Body (ink) | `#[…]` |
-| Muted | `#[…]` |
-| Hairline | `#[…]` |
-| Background | `#[…]` |
-| Surface (cards) | `#[…]` |
+| Heading | `#16162a` |
+| Body (ink) | `#16162a` |
+| Muted | `#5a5a72` |
+| Hairline | `#e3e7f2` |
+| Background | `#ffffff` |
+| Surface (cards) | `#ffffff` |
 
 ### Dark theme
 | Token | Hex |
 |---|---|
-| Heading | `#[…]` |
-| Body | `#[…]` |
-| Muted | `#[…]` |
-| Hairline | `#[…]` |
-| Background | `#[…]` |
-| Surface | `#[…]` |
+| Heading | `#e7e9fb` |
+| Body | `#dce0f5` |
+| Muted | `#a6abce` |
+| Hairline | `#272c4d` |
+| Background | `#0a0b1e` |
+| Surface | `#161836` |
 
 ## Typography
 
-- Family: [system stack or self-hosted woff2 + fallback]. Self-host fonts
-  (`font-display: swap`); preload the two used above the fold.
-- Headings: weight [700–800], tracking [≈ −0.02em].
+- Family: system stack (see `--font` in global.css); no webfonts to load.
+- Headings: weight 700, default tracking.
 - Body: weight 400, line-height ≈ 1.6.
 
 ## Shape & spacing
 
-- Corner radius: [12]px. Soft shadow: `[0 8px 24px rgba(...,0.06)]`.
-- Max content width: [72rem].
+- Corner radius: 12px (`--radius`). Soft shadow: `--shadow` token.
+- Max content width: 72rem (`--maxw`).
 
 ## Mobile & graphics rules (the website-design-system skill)
 
@@ -78,11 +75,11 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 
 This drives `scripts/generate_og_cards.py` (run `npm run og`). Fill its BRAND block
 from the tokens below so `public/images/og/default.jpg` + the per-page cards stay on-brand:
-1. Canvas 1200×630, [background / gradient].
-2. Logo [position, size].
-3. Wordmark [text, position, size, colour].
-4. Headline [text, position, size, colour].
-5. Footer URL [text, position].
+1. Canvas 1200×630, deep-green to near-black gradient (24,54,40 → 10,11,30).
+2. No logo emblem yet (LOGO = None).
+3. Wordmark "Webcroft", top-left, white.
+4. Headline per page; default card: "Your own plot of the web."
+5. Footer URL "webcroft.dev", muted.
 
 Per-page variants: change only the headline; keep everything else identical.
 
@@ -106,7 +103,7 @@ Per-page variants: change only the headline; keep everything else identical.
 
 ## Imagery style (do / don't)
 
-- **Do:** [palette, motifs, real people if used, breathing room; legible in both
-  themes].
-- **Don't:** [rainbow palettes, busy gradients, AI "robot/brain" clichés,
-  low-contrast text on images].
+- **Do:** moss green + neutrals, hand-drawn or typographic motifs, breathing room;
+  legible in both themes.
+- **Don't:** rainbow palettes, busy gradients, AI robot/brain clichés, Tomb Raider
+  references (the croft is Scottish farmland, not a game), low-contrast text on images.

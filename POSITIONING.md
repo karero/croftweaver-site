@@ -1,90 +1,73 @@
 <!--
   POSITIONING.md — per-site positioning, worked out FIRST (before SEO, before any
-  page copy). Copy into the project root and fill every [BRACKET]. Single source of
-  truth for WHAT you offer, FOR WHOM, and the MARKET CATEGORY it sits in. Everything
-  downstream reads this: CONTENT_GUIDE.md (voice/EEAT), every page title/description/
-  H1, and the schema description. Built on April Dunford's framework (Obviously
-  Awesome). Enforced by tests/positioning.spec.ts (the positioning spine).
-  Owned by the website-positioning skill — do not restate positioning in CONTENT_GUIDE.md.
+  page copy). Single source of truth for WHAT we offer, FOR WHOM, and the MARKET
+  CATEGORY. Built on April Dunford's framework. Enforced by tests/positioning.spec.ts.
 -->
-# [Site name] — positioning
+# Webcroft — positioning
 
 ## 1. Competitive alternatives
 
-What would the customer use if this offer did not exist? Include the status quo,
-not just direct rivals (a spreadsheet, an in-house team, a generalist agency, doing
-nothing).
-
-- [alternative 1] · [alternative 2] · [alternative 3]
+- Hosted no-code builders (Wix, Squarespace, Framer AI): rented platform, monthly fee, lock-in.
+- AI app builders (Lovable, Bolt, Claudable): great for interactive apps, heavier than a content site needs.
+- A web agency: quality, but slow and expensive for a small site.
+- Hand-building an Astro site with an AI assistant and no guardrails: fast start, silent quality gaps (a11y, SEO, links, tone).
 
 ## 2. Unique attributes
 
-What do you have that those alternatives do not? Capabilities, assets, model —
-facts, not adjectives.
-
-- [attribute 1] · [attribute 2] · [attribute 3]
+- A suite of skills for AI coding assistants (Claude Code, Codex, Antigravity), not a hosted product.
+- Every generated site ships with its own test gate: accessibility, SEO consistency, internal links, tone, AI readability (llms.txt).
+- Output is a static-first Astro repo the user fully owns: code, domain, content.
+- The skills travel inside the generated repo, so the site is handoff-ready.
 
 ## 3. Value + proof
 
-The benefit each attribute makes possible that the customer actually cares about,
-with proof (a metric, a mechanism, a reference).
-
 | Unique attribute | Value it enables | Proof |
 |---|---|---|
-| [attribute] | [value the customer cares about] | [metric / mechanism / reference] |
+| Skill suite, not SaaS | No platform rent, no lock-in; works in the assistant you already use | Public repo; runs in three assistants |
+| Built-in test gate | Quality is verified, not claimed | genai-wednesday.de scores: Lighthouse 98/100/100/100 (linked, re-runnable) |
+| Static-first Astro output | Fast, secure, cheap to host | Cloudflare Pages free tier; no server to patch |
+| Skills travel with the repo | A third party can take over the site | Self-contained handoff set in every scaffold |
 
 ## 4. Target customer
 
-Who cares *a lot* about that value? The best-fit segment, described by traits you
-can identify — not "everyone".
-
-- **Best-fit customer:** [who they are]
-- **Why they care most:** [the trigger / pain that makes the value matter]
-- **Where they are:** [market / geography / channel]
+- **Best-fit customer:** founders, community organizers and small teams who want a credible website they fully own, plus the developers and AI tinkerers who build for them.
+- **Why they care most:** platform rent and lock-in feel wrong for something as simple as a content site; agency overhead is out of budget.
+- **Where they are:** global, English-speaking, GitHub-native; discovery via the repo, word of mouth and the GenAI Wednesday Builder Lab.
 
 ## 5. Market category
 
-The context you place the offer in so the value is obvious. The category frames
-expectations — pick the one where your unique value wins.
-
-- **Market category:** [category]
-  ← becomes the home page's `body: ['[category]']` entry in tests/positioning.spec.ts
+- **Market category:** website skills for AI coding assistants
 
 ## Positioning statement (one paragraph)
 
-> For [target customer] who [need / trigger], [site/brand] is a [market category]
-> that [unique value], unlike [competitive alternative], because [unique attribute
-> / proof].
+> For founders, communities and small teams who want a credible website they fully
+> own, Webcroft is a suite of open-source website skills for AI coding assistants
+> that ships fast, accessible, SEO-ready Astro sites with quality gates built in,
+> unlike hosted builders and AI app platforms, because the output is a static-first
+> repo with its own test suite and no platform in the loop.
 
-- **Core positioning term:** [the short, plain phrase threaded through the home
-  `<title>`, `<meta description>` and `<h1>` — keep it the SAME across all three]
-- **One-line boilerplate (≤ 12 words):** […]
-- **~50-word boilerplate:** [reusable on About / footer / schema description]
+- **Core positioning term:** website skills
+- **One-line boilerplate (≤ 12 words):** Your own plot of the web.
+- **~50-word boilerplate:** Webcroft is a suite of open-source website skills for AI coding assistants. It turns Claude Code, Codex or Antigravity into a careful website builder: fast, accessible, SEO-ready Astro sites with quality gates built in, in a repo you fully own. A croft is a small farm its occupier works and owns.
 
 ## The positioning spine (per-page terms → tests/positioning.spec.ts)
 
-One positioning term per page. Each page must carry its term in its `<title>`,
-`<meta description>` and its `<h1>` or the intro sentence right under it. The home page
-additionally carries its market category (and core positioning phrase) in the body.
-Mirror this table into the `POSITIONING` map in `tests/positioning.spec.ts` — the home
-row's market category becomes a `body: [...]` entry (start empty; add a row the moment a
-page's term is set). The spec **warns (without failing)** about any `PAGES` route with no
-entry that isn't in `POSITIONING_EXEMPT` (legal/utility pages), so an un-positioned content
-page is surfaced as a lost opportunity rather than slipping by.
-
 | Page | URL | Positioning term | Market category (home only) |
 |---|---|---|---|
-| Home | `/` | [core positioning term] | [market category] |
-| [Service / offer] | `/[url]` | [service-line positioning term] | — |
+| Home | `/` | website skills | website skills for AI coding assistants |
+| Privacy | `/privacy` | exempt (legal) | — |
+| Imprint | `/imprint` | exempt (legal) | — |
 
-Use ONE term per page and repeat it across the three surfaces. Do not pad with
-synonyms, and do not chase keyword density — say the thing once, where it belongs.
+## Differentiation contract (vs genai-wednesday.de/builder-lab)
+
+The Builder Lab page is the community showcase: proof scorecards, AI score table,
+FAQPage schema. webcroft.dev is the project home: origin story, quickstart, skills
+catalogue, SoftwareSourceCode schema. No copy is shared between the two pages; each
+links to the other (Lab → project home, home → Lab for proof).
 
 ## Hand-off to the rest of the pipeline
 
-- **Voice + EEAT + page copy:** `website-content-guide` reads this file; it owns
-  tone of voice and EEAT, NOT positioning.
+- **Voice + EEAT + page copy:** `website-content-guide` (owns tone, not positioning).
 - **Keyword / SERP research:** `seo-audit` — positioning leads, keywords follow.
 - **AI / answer-engine phrasing (GEO):** `ai-seo`.
-- **Schema `description` + head metadata:** `website-seo-geo` (use the 50-word
-  boilerplate verbatim so the spine stays consistent).
+- **Schema description + head metadata:** `website-seo-geo` (50-word boilerplate verbatim).

@@ -8,6 +8,7 @@
 ## Key pages
 - [Home](https://webcroft.dev/): what Webcroft is, the croft origin story, quickstart, skills catalogue.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
+- [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 
 ## Facts
 - Open source: https://github.com/karero/webcroft (MIT-style licensing — see the repo)

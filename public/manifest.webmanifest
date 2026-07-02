@@ -1,11 +1,11 @@
 {
-  "name": "Example",
-  "short_name": "Example",
-  "description": "One-line description.",
+  "name": "Webcroft",
+  "short_name": "Webcroft",
+  "description": "Your own plot of the web. Open-source website skills for AI coding assistants.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#2e6e4e",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },

@@ -5,8 +5,8 @@
    runs the full light+dark matrix. astro.config inlines this into <head>. */
 
 :root {
-  --brand: #000000;
-  --accent: #2b50e0;            /* links/highlights — must pass AA on --bg */
+  --brand: #2e6e4e;             /* croft moss green (matches SITE.themeColor) */
+  --accent: #2e6e4e;            /* links/highlights — must pass AA on --bg */
   --heading: #16162a;
   --ink: #16162a;             /* body text */
   --muted: #5a5a72;          /* secondary text — keep ≥ 4.5:1 on --bg */
@@ -22,8 +22,8 @@
 }
 
 :root[data-theme="dark"] {
-  --accent: #8aa0ff;          /* lighter on dark — keeps links ≥ AA on --bg */
-  --link: #9fb0ff;
+  --accent: #8fd4ab;          /* lighter croft green — keeps links ≥ AA on --bg */
+  --link: #a3e0bc;
   --heading: #e7e9fb;
   --ink: #dce0f5;
   --muted: #a6abce;
@@ -35,8 +35,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --accent: #8aa0ff;
-    --link: #9fb0ff;
+    --accent: #8fd4ab;
+    --link: #a3e0bc;
     --heading: #e7e9fb;
     --ink: #dce0f5;
     --muted: #a6abce;
