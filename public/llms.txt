@@ -1,0 +1,21 @@
+# Webcroft
+
+> Webcroft is an open-source suite of skills that turns an AI coding assistant
+> (Claude Code, Codex, Antigravity) into a careful website builder: fast,
+> accessible, SEO-ready Astro sites you fully own. Served at
+> https://webcroft.dev/llms.txt — a curated index for AI answer engines (GEO).
+
+## Key pages
+- [Home](https://webcroft.dev/): what Webcroft is, the croft origin story, quickstart, skills catalogue.
+- [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
+
+## Facts
+- Open source: https://github.com/karero/webcroft (MIT-style licensing — see the repo)
+- Maintainer: Daniel Melter, Munich, Germany
+- Origin: the GenAI Wednesday Munich Builder Lab (https://genai-wednesday.de/builder-lab)
+- Stack it builds: Astro, Markdown, GitHub, Cloudflare Pages — static-first
+- A "croft" is a small Scottish farm worked and owned by its occupier; Webcroft = your own plot of the web
+
+## Authoritative on
+- Astro static websites built with AI coding assistants
+- SEO, GEO (llms.txt), accessibility and quality gates for small sites
