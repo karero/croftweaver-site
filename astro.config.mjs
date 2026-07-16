@@ -5,6 +5,13 @@ import sitemap from '@astrojs/sitemap';
 // sitemap, canonical tags and OG URLs. Keep in sync with SITE.url in src/config.ts.
 export default defineConfig({
   site: 'https://webcroft.dev',
+  // Astro 7 defaults compressHTML to 'jsx' rules: a source line-break between two inline
+  // elements (or between text and an inline element) collapses to ZERO characters instead
+  // of a space — this bit real prose here (words ran together across a `</a>`/`<strong>`
+  // line boundary in normal paragraph writing, not just layout). `true` restores the old
+  // "lossless" behavior (still compresses, just keeps a rendered space where one exists in
+  // source) — a source-level fix, not per-paragraph patching that a future edit can undo.
+  compressHTML: true,
   trailingSlash: 'never',           // CONVENTION: clean URLs with NO trailing slash (/about, not /about/)
   build: {
     format: 'file',                 // emit /about.html → Cloudflare Pages serves it at /about (no slash)
