@@ -24,4 +24,9 @@ export default defineConfig({
     // — and remove it from tests/_helpers.ts PAGES (seo.spec.ts compares the two).
     sitemap({ changefreq: 'monthly', priority: 0.7 }),
   ],
+  // reuseExistingServer:false in playwright.config.ts only helps if a taken port fails
+  // loudly. Vite's preview defaults to sliding to the next free port instead, which
+  // would leave Playwright waiting on the wrong one until it times out. strictPort
+  // makes the preview itself refuse to start on collision.
+  vite: { preview: { strictPort: true } },
 });
