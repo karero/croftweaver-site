@@ -94,14 +94,15 @@ applies there; instead of steps 2 to 4, only this:
   change there before merging. Until then (a site deployed by token and `wrangler
   pages deploy`, see `PUBLISHING.md`) there is no pull-request preview: check locally
   with `npm run dev`.
-- **What a merge means** depends on the publish model of this site. Both blocks
-  assume the git integration above; on a token-deployed site a merge publishes
-  nothing until someone runs the deploy command from `PUBLISHING.md`.
+- **What a merge means** depends on the publish model of this site (two-stage here).
+  The block below assumes the git integration above; on a token-deployed site a
+  merge publishes nothing until someone runs the deploy command from `PUBLISHING.md`.
 
   **Two-stage (main = preview, production = live).** A merge into `main` rebuilds
   the preview (`main.<project>.pages.dev`, once Cloudflare is connected) within a
-  few minutes. Nothing reaches https://webcroft.dev until someone runs `npm run ship`, which publishes `main` to `production` and verifies the
-  live site serves the new build. Who may run it is set in §5. The assistant never
+  few minutes. Nothing reaches https://webcroft.dev until someone runs `npm run ship`,
+  which publishes `main` to `production` and verifies the live site serves the new
+  build. Who may run it is set in §5. The assistant never
   runs `npm run ship` unasked, and always says whether an address is the preview or
   the live site (see `PUBLISHING.md`).
 
