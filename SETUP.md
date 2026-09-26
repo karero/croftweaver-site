@@ -62,11 +62,17 @@ npx playwright install chromium        # per machine, once
 > the tools with the macOS/Linux commands above (including `pip3 install Pillow`) inside the
 > WSL2 shell, not the PowerShell ones.
 
-> **Node ≥22.12 required** (Astro 6) — the LTS installs above satisfy it; the repo's
-> `.nvmrc` pins 22 for local + Cloudflare Pages. On **npm ≥11.16**, `npm install` no
-> longer auto-runs native install scripts: if it warns "packages have install scripts
-> not yet covered", approve the two Astro needs or the build fails —
-> `npm approve-scripts esbuild && npm approve-scripts sharp`.
+> **Node ≥22.12 required** (Astro's own floor) — the LTS installs above satisfy it; the repo's
+> `.nvmrc` pins 22 for local + Cloudflare Pages. On **npm ≥11.16**, `npm install` warns
+> "packages have install scripts not yet covered" for scripts it hasn't been told to trust
+> — per npm's own docs this is currently advisory only (the scripts still run; a future
+> npm release will start blocking them), but approve the one Astro needs now to silence the
+> warning and be ready ahead of that: `npm approve-scripts esbuild`. (sharp used to need
+> this too; since sharp 0.35 it ships prebuilt binaries with no install script, so there is
+> nothing to approve.)
+> Approvals are pinned to the exact version reviewed (npm's own default, by design) — a future
+> `astro` bump that pulls a different esbuild version will re-surface this same warning;
+> just re-run the same command.
 
 ### What each tool does
 | Tool | Function |
@@ -107,6 +113,17 @@ The template `.gitignore` excludes `node_modules/`, `dist/`, `.astro/`, Playwrig
 `.env*` secrets, `.wrangler/`, and OS/editor cruft. **Never commit a `.env` or any token** —
 Cloudflare/analytics secrets live in the Cloudflare dashboard's env vars, not the repo.
 
+When you create the GitHub repo (`gh repo create … --private`), also turn on auto-delete of
+merged PR head branches — the assistant always works through pull requests (`AGENTS.md`
+§2), so this keeps stale branches from piling up from day one (GitHub never deletes a
+PR's *base* branch, so long-lived staging/production branches are safe). Pair it with
+fetch-time pruning so the deleted branches also disappear from local `origin/…` references
+(prune only cleans tracking refs, never local branches):
+```bash
+gh repo edit --delete-branch-on-merge
+git config --global fetch.prune true   # once per machine; use --local to scope per repo
+```
+
 ### Pre-push quality gate (auto-wired by `npm install`)
 
 The `prepare` script in `package.json` points `core.hooksPath` at `scripts/hooks`, so the
@@ -115,6 +132,16 @@ local enforcement of "fails → does not ship" (Cloudflare deploys independently
 is what makes that true on a direct-push workflow). It needs `npx playwright install chromium`
 (above). Relax for one push with `git push --no-verify`; disable with
 `git config --unset core.hooksPath`. See `website-qa` §1c — offer this choice, don't impose it.
+
+The hook also contains a commented-out **PR-only-main guard** (the `website-team-setup`
+skill enables it when a team forms and the plan offers no server-side ruleset): enable it when several people
+or parallel AI agents share the checkout and new commits should reach `main` only via reviewed
+PRs (server-side branch protection needs a paid plan on private repos). It's a **local,
+advisory convention, not an enforced one** — `ALLOW_MAIN_PUSH=1`, `git push --no-verify`, unsetting
+`core.hooksPath`, or pushing from a different clone all bypass it — so it only helps when
+everyone sharing the checkout has it enabled and respects it; it rejects direct pushes to
+`main` (`ALLOW_MAIN_PUSH=1` overrides) from a checkout that has it on, while ship flows
+pushing `main:production` and GitHub PR merges are unaffected either way.
 
 ---
 
@@ -126,8 +153,9 @@ commands (npm/astro/playwright/git read+commit, image tools) run without a promp
 mkdir -p .claude && cp "$SKILLS_ROOT/new-website/templates/claude/settings.json" .claude/settings.json
 ```
 > **Codex / Antigravity:** skip this — `.claude/settings.json` is Claude Code-specific. On
-> Codex, put durable project instructions in `AGENTS.md` and control command approval via
-> Codex's own rules/config. Antigravity uses its own sandbox/approval model.
+> Codex, durable project instructions live in `AGENTS.md` (the scaffold ships one; `CLAUDE.md`
+> imports it) and command approval in Codex's own rules/config. Antigravity uses its own
+> sandbox/approval model.
 It deliberately does **not** auto-allow destructive/irreversible commands (`rm -rf`,
 `git push --force`, `git reset --hard`, `wrangler … delete`, `gh repo delete`) — those still
 ask. `git push` and `gh repo create` *are* allowed (own private repos, smooth workflow);
