@@ -45,6 +45,9 @@ cosmetics; red → green → commit.
   listing any unreachable page. Deliberately-unlinked pages opt out via `ORPHAN_EXEMPT`.
   Offline. The judgment-side report (inbound count, thin pages, where to add links) is
   the `internal-link-audit` skill.
+- `middleware.spec.ts` — `functions/_middleware.ts`, which `astro preview` never runs,
+  called directly: previews noindexed, the live domain untouched, and the project alias
+  `<project>.pages.dev` 301ing to the live domain only once `CANONICAL_URL` is set. Offline.
 - `images.spec.ts` — every `<img>` has `alt` + `width`/`height` + an explicit
   `loading` (`lazy`, or `eager` for the LCP image); raster sources are WebP/AVIF
   in src, srcset and `<picture>` (the `website-design-system` rules).
@@ -57,7 +60,8 @@ cosmetics; red → green → commit.
   in the body. Hermetic string containment, not a density check (the `website-positioning`
   spine). Empty map = green from commit 1. Also **warns (without failing)** when a `PAGES`
   route has no entry and isn't in `POSITIONING_EXEMPT` — an un-positioned content page is a
-  lost opportunity, surfaced rather than silent.
+  lost opportunity, surfaced rather than silent. This is a mechanical string check, not a
+  judgment read — for "does the offer actually read clearly", see `website-positioning-check`.
 - `email.spec.ts` — no plaintext (harvestable) email address in the served HTML
   (addresses go through `<EmailLink>`, which obfuscates; the `website-design-system` rule).
 - `links.spec.ts` — offline outgoing-link guard: no `STALE_DOMAINS` (domains you've

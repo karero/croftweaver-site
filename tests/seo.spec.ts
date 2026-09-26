@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
-import { SITE } from '../src/config';
+import { SITE, ogLocaleFor } from '../src/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -53,9 +53,10 @@ const DEFAULT_OG_CARD = '/images/og/default.jpg';
 // else MUST have a dedicated /images/og/<slug>.jpg card — a CONTENT page silently sharing
 // the generic default is the failure this guards. Opt-OUT model: as you add content pages
 // (uncomment them in _helpers PAGES), do NOT list them here, and the guard makes sure each
-// gets its own card. The starter ships only '/' + '/privacy', so it stays green from commit 1.
-//   - '/'        home: the default card IS the home card.
-//   - '/privacy' legal/utility — nobody shares it with a custom preview.
+// gets its own card. The starter ships only '/', '/privacy' + '/impressum', so it stays green from commit 1.
+//   - '/'          home: the default card IS the home card.
+//   - '/privacy'   legal/utility — nobody shares it with a custom preview.
+//   - '/impressum' legal/utility — same reasoning as /privacy.
 // (A noindex 404 isn't here: it's excluded from PAGES entirely, so the guard never runs on it.)
 const OWN_CARD_EXEMPT = new Set<string>(['/', '/privacy', '/imprint']);
 
@@ -71,6 +72,18 @@ for (const path of PAGES) {
     expect(title.length, `<title> "${title}" is ${title.length} chars > ${TITLE_MAX}`).toBeLessThanOrEqual(TITLE_MAX);
     expect(description.length, `meta description ${description.length} chars < ${DESC_MIN} (wastes SERP space — the website-seo-geo floor)`).toBeGreaterThanOrEqual(DESC_MIN);
     expect(description.length, `meta description ${description.length} chars > ${DESC_MAX}`).toBeLessThanOrEqual(DESC_MAX);
+
+    // og:locale contract: when config.ogLocaleFor derives a value for the
+    // page's lang (mapped base, or any regioned tag), the tag must be present
+    // and correct — a German page silently shipping og:locale en_US (or none)
+    // is invisible drift otherwise. Languages with no derivation legitimately
+    // omit the tag (no assertion). Same function as Base.astro's emission, so
+    // the two cannot drift.
+    const htmlLang = (await page.locator('html').getAttribute('lang')) ?? '';
+    const expectedOgLocale = ogLocaleFor(htmlLang);
+    if (expectedOgLocale) {
+      expect(await meta(page, 'meta[property="og:locale"]'), `og:locale must match <html lang="${htmlLang}">`).toBe(expectedOgLocale);
+    }
 
     expect(await meta(page, 'meta[property="og:title"]'), 'og:title must equal <title>').toBe(title);
     expect(await meta(page, 'meta[name="twitter:title"]'), 'twitter:title must equal <title>').toBe(title);
@@ -116,7 +129,11 @@ for (const path of PAGES) {
     expect(await meta(page, 'meta[property="og:url"]'), 'og:url must equal canonical').toBe(canonical);
     // canonical is always the PRODUCTION URL (Astro.site), even when previewing on
     // localhost — compare to SITE.url, not the runtime origin.
-    expect(canonical, 'canonical must be the absolute production URL for this path').toBe(`${SITE.url}${path}`);
+    // decodeURI both sides: a non-ASCII route (/über-uns) percent-encodes in the
+    // browser-read canonical but not in PAGES — comparing raw strings produces a
+    // look-identical failure. (ASCII slugs stay the house rule — site-architecture,
+    // website-seo-geo — this just makes the failure mode honest, not the rule.)
+    expect(decodeURI(canonical ?? ''), 'canonical must be the absolute production URL for this path').toBe(decodeURI(`${SITE.url}${path}`));
 
     await expect(page.locator('h1'), 'each page must have exactly one <h1>').toHaveCount(1);
 
@@ -158,7 +175,7 @@ test('sitemap matches PAGES (drift alarm)', async ({ request, baseURL }) => {
     expect(res.status(), `child sitemap ${child} should fetch (otherwise the comparison below lies)`).toBe(200);
     const xml = await res.text();
     for (const m of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
-      const p = new URL(m[1]).pathname;
+      const p = decodeURI(new URL(m[1]).pathname); // non-ASCII routes: compare decoded (see canonical note)
       built.push(p === '/' ? '/' : p.replace(/\/$/, ''));
     }
   }
@@ -166,6 +183,69 @@ test('sitemap matches PAGES (drift alarm)', async ({ request, baseURL }) => {
     built.sort(),
     'sitemap pages ≠ PAGES — add the new route to tests/_helpers.ts PAGES (or remove the stale entry)',
   ).toEqual([...PAGES].sort());
+});
+
+// Twin-page hreflang reciprocity (the LIGHT i18n path — Base.astro's `alternates`
+// prop; the heavy locale-prefix path gets the fuller tests/i18n.spec.ts from the
+// astro-i18n-setup skill instead). Opt-in: pages without `alternates` emit no
+// hreflang and are skipped, so this is a no-op until a page opts in. Three rules:
+//   • self — the cluster must contain an entry equal to the page's own canonical
+//   • no dead targets — a same-site alternate must be a PAGES route (the sitemap
+//     drift alarm guarantees PAGES is complete, so "same-site but not in PAGES"
+//     is always a typo'd href, not a skip)
+//   • reciprocity — the target page must link back to this page's canonical
+//     (one-sided clusters are IGNORED by Google and shipped silently — the
+//     exact live bug this check exists to prevent)
+test('twin-page hreflang alternates are self-consistent and reciprocal', async ({ page }) => {
+  type Alt = { hreflang: string; href: string };
+  const seen = new Map<string, { alts: Alt[]; canonical: string | null }>();
+  for (const path of PAGES) {
+    await page.goto(path);
+    const alts: Alt[] = await page.$$eval('link[rel="alternate"][hreflang]', (els) =>
+      els.map((e) => ({ hreflang: e.getAttribute('hreflang') || '', href: e.getAttribute('href') || '' })),
+    );
+    if (!alts.length) continue; // page doesn't use the twin-pages pattern
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+    seen.set(path, { alts, canonical });
+  }
+  if (!seen.size) return; // no page on this site opts in
+
+  // encodeURI: DOM hrefs come back percent-encoded for non-ASCII routes (see
+  // the canonical note above) — key the lookup the same way.
+  const urlToPath = new Map(PAGES.map((p) => [encodeURI(p === '/' ? `${SITE.url}/` : `${SITE.url}${p}`), p]));
+  for (const [path, { alts, canonical }] of seen) {
+    expect(
+      alts.some((a) => a.href === canonical),
+      `${path}: alternates must include a self-referencing entry equal to the canonical (${canonical})`,
+    ).toBe(true);
+    // One entry per hreflang code — duplicates send crawlers conflicting signals.
+    const codes = alts.map((a) => a.hreflang);
+    expect(codes.length, `${path}: duplicate hreflang codes in the cluster (${codes.join(', ')})`).toBe(new Set(codes).size);
+    // x-default must exist and repeat one of the cluster's locale entries — a
+    // missing/typo'd x-default otherwise ships unvalidated (reciprocity skips it).
+    const xd = alts.find((a) => a.hreflang === 'x-default');
+    expect(xd, `${path}: cluster has no x-default entry (pass one in alternates)`).toBeDefined();
+    expect(
+      alts.some((a) => a.hreflang !== 'x-default' && a.href === xd?.href),
+      `${path}: x-default (${xd?.href}) must equal one of the cluster's locale entries`,
+    ).toBe(true);
+    for (const a of alts) {
+      if (a.hreflang === 'x-default') continue; // validated above; reciprocity covers its target transitively
+      if (!a.href.startsWith(SITE.url)) continue; // external target: out of scope
+      const target = urlToPath.get(a.href);
+      expect(
+        target,
+        `${path}: alternate "${a.hreflang}" → ${a.href} is same-site but not a PAGES route — typo'd href?`,
+      ).toBeDefined();
+      const targetAlts = seen.get(target!)?.alts ?? [];
+      expect(
+        targetAlts.some((b) => b.href === canonical),
+        `${path}: alternate "${a.hreflang}" → ${a.href} does not link back — ` +
+          `${target} declares no alternate pointing at ${canonical} (non-reciprocal hreflang; ` +
+          `add the full cluster to BOTH twins' <Base alternates={…}>)`,
+      ).toBe(true);
+    }
+  }
 });
 
 // Indexability guard: the site is useless if a future edit silently closes it to
