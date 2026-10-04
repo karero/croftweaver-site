@@ -57,11 +57,12 @@ the body copy true:
 - **"GEO"** is explained once per page where it appears (how AI assistants read and
   cite a site).
 - **"EEAT"** is explained once per page where it appears (experience, expertise,
-  authoritativeness, trust: what Google's quality raters look for). It is not a score,
+  authoritativeness, trustworthiness: what Google's quality raters look for). It is not a score,
   and Google says it is not a ranking factor by itself. Say which signals are built in
   and which a test checks (structured data present and parsing; links inside the site
-  written from the root; not page-relative links, outside links or profiles); never
-  promise an effect on rankings.
+  written from the root or with the full address; a link relative to the page only
+  where it points to a section; not outside links or profiles); never promise an effect
+  on rankings.
 
 ## EEAT signals (build in from the start)
 
@@ -91,33 +92,34 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [x] page; the PDF follows with the deck refresh |
 | Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Webcroft and its alternatives | [x] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
-| Positioning | `/positioning` | how Webcroft works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [ ] spec below |
+| Positioning | `/positioning` | how Webcroft works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [x] spec below |
 | Privacy | `/privacy` | GDPR | — | Privacy Policy | [x] |
 | Imprint | `/imprint` | § 5 DDG legal disclosure | — | Imprint | [x] |
 | 404 | (not a route in `PAGES`) | not found | — | — | [ ] |
 
-### Planned page: `/positioning` (spec, 2026-10-04)
+### Page `/positioning` (spec, 2026-10-04; built the same day)
 
-**Why this page.** Tested positioning is what the comparable kits do not have
-(`POSITIONING.md`, alternatives). `/checks` explains the positioning check; no page
-explains how the positioning is worked out before any copy, and no page credits the two
-methods the skills build on. The page is about how Webcroft does it. It is not a summary
+**Why this page (as things stood before it was built).** Tested positioning is what
+the comparable kits do not have (`POSITIONING.md`, alternatives). `/checks` explained
+the positioning check; no page explained how the positioning is worked out before any
+copy, and no page credited the two methods the skills build on. The page is about how Webcroft does it. It is not a summary
 of anyone's book.
 
 **Reader.** The owner who is about to be asked for "competitive alternatives" and has
 never worked through positioning; and the decision-maker who wonders why the build
 starts with questions and not with a design.
 
-**Term and metadata (drafts, fixed when the page is built).**
+**Term and metadata (as built on 2026-10-04).**
 
 - Positioning term: `positioning`. Not "website positioning": a search on 2026-10-04
   showed that phrase means search ranking, so it would file the page under the wrong
   topic.
 - Title: "Positioning first: what your site says" (38 characters, 49 rendered).
-- H1, three candidates for the owner: "Decide what your site says. Then build it." ·
-  "Say what you offer before you write a word." · "Know what your site says first."
-- Description: 140 to 160 characters, carrying the term (`AGENTS.md`; the test allows
-  120 to 160).
+- H1 on the page: "Decide what your site says. Then build it." The owner has not
+  chosen yet; the other candidates are "Say what you offer before you write a word."
+  and "Know what your site says first."
+- Description: 152 characters, carrying the term (`AGENTS.md` wants 140 to 160; the
+  test allows 120 to 160).
 
 **Sections, in this order.**
 
@@ -129,7 +131,7 @@ starts with questions and not with a design.
 | 4 | What you get | `POSITIONING.md` in your repo: the five parts, a one-paragraph statement, a 50-word description, one term per page. Worked example: this site's own file, linked, and this site's page-and-term table | this repo's `POSITIONING.md`, `tests/positioning.spec.ts` |
 | 5 | How the test keeps it true | what the positioning suite checks (term in the title, the description, and the H1 or the first paragraph; on the home page also the category in the body), one failure message, when it runs | `tests/positioning.spec.ts`, `/checks` |
 | 6 | Limits | the test proves the term is present and consistent, not that the positioning is good; it is no keyword-density check; the judgment stays with the owner; the optional skill `website-positioning-check` gives a look from outside | honesty rules above |
-| 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data is present and parses; links inside the site resolve when they are written from the site root or with the full address) and which a test does not check: links written relative to a page, and whether a profile or another outside link still works. An outside link that appears as a link on a page is looked at by the link audit; a profile that appears only in the structured data is checked by hand. The facts themselves come from the owner. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
+| 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data is present and parses; links inside the site resolve when they are written from the site root or with the full address; a link written relative to a page is checked only where it points to a section, by the anchors suite) and which a test does not check: other links written relative to a page, and whether a profile or another outside link still works. An outside link that appears as a link on a page is looked at by the link audit; a profile that appears only in the structured data is checked by hand. The facts themselves come from the owner. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
 | 8 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site does not use it. "Inspired by Donald Miller's StoryBrand framework, in Webcroft's own words." | toolkit skill `website-story` |
 | 9 | Sources | the books, with links (below), and the no-endorsement sentence | owner, 2026-10-04 |
 | 10 | Next step | quickstart, GitHub | page template |
@@ -168,8 +170,8 @@ is a trademark of its owner."
 
 **Where it is linked from.** `/skills` (the `website-positioning` entry and the
 credits), `/checks` (the positioning suite), the home page (the group "It says what you
-mean"). The same pull request adds the credit for both methods to `/skills`, which names
-neither today.
+mean"). The same pull request adds the credit for both methods to `/skills`, which named
+neither before.
 
 **Scenarios it has to pass.**
 

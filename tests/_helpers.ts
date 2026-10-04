@@ -7,6 +7,7 @@ export const PAGES = [
   '/proof',
   '/skills',
   '/start',
+  '/positioning',
   '/why',
   '/compare',
   '/roadmap',

@@ -81,7 +81,7 @@ requests.
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/webcroft-site#10, merged 2026-10-04 (`bea52e7`), page only |
 | 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/webcroft-site#9, merged 2026-10-04 (`fe7a5dc`) |
-| 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | spec written (`CONTENT_GUIDE.md`); page not built | — |
+| 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | spec merged; page built, in review | spec: karero/webcroft-site#14, merged 2026-10-04 (`268fbe4`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | draft, reviewed; to be merged right after the rename in step 7, with release v0.30 cut straight after | karero/website-builder#147 (draft) |
 | 7 | GitHub rename `website-builder` → `webcroft`, release v0.30 (site links assume it) | owner | open, waits for 0a | — |
 | 8 | Launch: mail for `hello@webcroft.dev`, DNS to Cloudflare, Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
