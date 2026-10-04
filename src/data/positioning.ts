@@ -22,7 +22,10 @@ const source = ts.createSourceFile('positioning.spec.ts', spec, ts.ScriptTarget.
 // Brackets and type notes around a value change nothing about the value.
 const unwrap = (node: ts.Expression): ts.Expression => {
   let n = node;
-  while (ts.isParenthesizedExpression(n) || ts.isAsExpression(n) || ts.isSatisfiesExpression(n)) n = n.expression;
+  while (
+    ts.isParenthesizedExpression(n) || ts.isAsExpression(n) || ts.isSatisfiesExpression(n) ||
+    ts.isNonNullExpression(n) || ts.isTypeAssertionExpression(n)
+  ) n = n.expression;
   return n;
 };
 const declared = (name: string): ts.Expression => {
