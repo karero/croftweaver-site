@@ -45,6 +45,8 @@ const label = (iso: string) =>
 const sum = (slice: Day[]) => ({
   from: label(slice[0]!.date),
   to: label(slice.at(-1)!.date),
+  fromIso: slice[0]!.date,
+  toIso: slice.at(-1)!.date,
   clicks: slice.reduce((n, d) => n + d.clicks, 0),
   impressions: slice.reduce((n, d) => n + d.impressions, 0),
 });
@@ -120,6 +122,13 @@ const overall = (mode: Mode) => {
   return { named: t.named, answers: t.answers };
 };
 
+// /proof and /why both say the relaunch falls inside the first block. The blocks are
+// counted back from the last day in the file, so a new export can shift them.
+const RELAUNCHED = '2026-03-27';
+if (!(blocks[0]!.fromIso <= RELAUNCHED && RELAUNCHED <= blocks[0]!.toIso)) {
+  throw new Error(`The first 28-day block (${blocks[0]!.fromIso} to ${blocks[0]!.toIso}) no longer contains the relaunch on ${RELAUNCHED}. Change the first day of the search export, or reword /proof and /why.`);
+}
+
 const POSITIONS_PERIOD = { from: '2 September 2026', to: '29 September 2026' };
 if (POSITIONS_PERIOD.from !== blocks.at(-1)!.from || POSITIONS_PERIOD.to !== blocks.at(-1)!.to) {
   throw new Error('The search positions on /proof were pulled for another period than the latest 28-day block. Pull them again for the new block and update POSITIONS_PERIOD and the positions.');
@@ -129,7 +138,7 @@ export const SITE_PROOF = {
   site: 'genai-wednesday.de',
   url: 'https://genai-wednesday.de/',
   lab: 'https://genai-wednesday.de/builder-lab',
-  relaunched: { iso: '2026-03-27', label: '27 March 2026' },
+  relaunched: { iso: RELAUNCHED, label: label(RELAUNCHED) },
   // Stamp in the site's repository (.claude/skills/SUITE-VERSION).
   toolkit: { commit: '41cc760', copied: { iso: '2026-07-09', label: '9 July 2026' } },
   search: {

@@ -17,15 +17,15 @@ const { blocks, peak, latest } = p.search;
 const first = blocks[0]!;
 
 const reasons = [
-  { title: 'Built in from the first build', text: 'Search basics, trust signals and readability for AI assistants are part of every page by default. Tests check them before each push and on each pull request.' },
-  { title: 'Improved after launch', text: 'Real search data replaces guesswork about keywords. It points to two or three edits a week that are worth making.' },
+  { title: 'Built in from the first build', text: 'Search basics, trust signals and readability for AI assistants are part of every page by default. Tests check what a machine can check, such as metadata, internal links and structure, before each push and on each pull request.' },
+  { title: 'Improved after launch', text: 'Real search data replaces guesswork about keywords. When there is enough of it, it helps pick two or three edits a week to look into.' },
   { title: 'Owned, with no platform fee', text: 'A static site in your repository, on your domain. Webcroft is MIT-licensed and charges nothing.' },
 ];
 const builtIn = [
-  { title: 'Search basics', text: 'Titles and descriptions within set limits, structured data that says what each page is, a sitemap, links that all resolve.' },
-  { title: 'Trust signals', text: 'Search engines look for experience, expertise, authority and trust. Webcroft builds the structure that carries yours: named authors, profiles that resolve, legal pages, sources. It cannot earn the reputation for you.' },
-  { title: 'AI answers', text: 'People ask an assistant and read its answer. Assistants quote sources, so pages are written to be quotable, and every site ships a file that maps it for them.' },
-  { title: 'Shared links', text: 'Every page gets its own share card at the size messengers accept. A page without one fails a test.' },
+  { title: 'Search basics', text: 'Titles and descriptions within set limits, structured data that says what each page is, a sitemap, internal links that resolve.' },
+  { title: 'Trust signals', text: 'Webcroft builds the structure that carries your experience, expertise, authority and trust: named authors, profile links, legal pages, sources. It cannot earn the reputation for you.' },
+  { title: 'AI answers', text: 'Pages are structured so that an AI assistant can read and quote them, and every site ships a file that maps it for assistants.' },
+  { title: 'Shared links', text: 'Every content page gets its own share card at the size messengers accept, and a content page without one fails a test. The home page and the legal pages share a default card.' },
 ];
 const steps = [
   { title: 'Brief', text: 'A few questions about your audience, your offer and your tone.' },
@@ -51,6 +51,25 @@ const steps = [
     </div>
   </section>
 
+  <section class="wrap" id="evidence">
+    <h2>The evidence so far</h2>
+    <p>
+      One site, measured: <a href={p.url}>{p.site}</a>, relaunched on
+      <time datetime={p.relaunched.iso}>{p.relaunched.label}</time>.
+    </p>
+    <ul class="steps">
+      <li><strong>Speed and search basics.</strong> PageSpeed Insights on a simulated phone, {PROOF_MEASURED.label}: {speed.performance}, {speed.accessibility}, {speed.bestPractices} and {speed.seo} out of 100 for performance, accessibility, best practices and SEO.</li>
+      <li><strong>Clicks from Google.</strong> From {first.clicks} in the 28 days that include the relaunch ({first.from} to {first.to}) to a best 28 days of {peak.clicks} ({peak.from} to {peak.to}), and {latest.clicks} in the latest 28 days ({latest.from} to {latest.to}).</li>
+      <li><strong>AI assistants.</strong> On {p.ai.date.label}, {p.ai.withSearch.named} of {p.ai.withSearch.answers} answers given with web search named the site, and {p.ai.withoutSearch.named} of {p.ai.withoutSearch.answers} given from memory.</li>
+    </ul>
+    <p class="aside">
+      It is one site, and it belongs to the maintainer of Webcroft. Clicks have
+      fallen from their best, and the cause is not established.
+      <a href="/proof">The proof page</a> has the sources, the daily numbers and
+      what the figures do not show.
+    </p>
+  </section>
+
   <section class="wrap" id="recommendation">
     <h2>The recommendation, in three reasons</h2>
     <p>
@@ -66,19 +85,18 @@ const steps = [
   <section class="wrap" id="problem">
     <h2>The difference is what the tool is for</h2>
     <p>
-      A design tool hands you the controls. Knowing what to do, doing it on every
-      page, and keeping it done stays your job. The work is right on the day
-      someone does it, and nothing checks the next page.
+      A tool can hand you every control and still leave the work to you: knowing
+      what to do, doing it on every page, keeping it done. When a check depends on
+      someone remembering it, a new page can miss it.
     </p>
     <p>
-      A tool built for being found does that work by default and tests it. The
-      result is meant to hold on the hundredth page, two years later.
+      A tool built for being found does that work by default and tests what can be
+      tested. The result is meant to hold on the hundredth page, two years later.
     </p>
     <p class="aside">
-      None of this is a case against design. Search decides whether people arrive;
-      design decides whether they stay. Both matter, in that order. If you use a
-      website builder and like it, keep it, and ask what the site earns you in
-      search.
+      None of this is a case against design. Being found helps people arrive;
+      design helps them stay. Both matter. If you use a website builder and like
+      it, keep it, and ask what the site earns you in search.
     </p>
   </section>
 
@@ -100,13 +118,14 @@ const steps = [
       at edits:
     </p>
     <ul class="steps">
-      <li><strong>Searches at position 8 to 20.</strong> Just below the first page, and the cheapest gains on a site.</li>
-      <li><strong>Pages seen but not clicked.</strong> Often a title or a description, and quick to change.</li>
+      <li><strong>Searches with an average position around 8 to 20.</strong> Candidates to look at first.</li>
+      <li><strong>Pages seen but rarely clicked.</strong> The skill checks the real results page before it suggests a new title or description.</li>
       <li><strong>Whether AI assistants name you.</strong> An optional weekly check, run with your own API keys.</li>
     </ul>
     <p>
-      Each run is recorded, so you can see what moved. It can run weekly on a
-      schedule that you switch on. Every edit goes back through the same tests.
+      Runs of the tracker are recorded, so you can see what moved. On a Mac, an
+      optional weekly schedule runs it for you. Every edit goes back through the
+      same tests.
     </p>
   </section>
 
@@ -114,29 +133,10 @@ const steps = [
     <h2>What you own</h2>
     <ul class="steps">
       <li><strong>Plain files.</strong> The site is built once and served as static pages. There is no database to wait for or to keep alive.</li>
-      <li><strong>No system to maintain.</strong> Content is text files in your repository: no login, no plugins to update. If someone needs an editing screen, an optional editor adds one and the content stays in the repository.</li>
+      <li><strong>No content system to run.</strong> Content is text files in your repository; the default setup has no login and no plugins. If someone needs an editing screen, an optional editor adds one. It runs on your own computer by default, and the content stays in the repository.</li>
       <li><strong>Room for a second language.</strong> It can be added later without moving the addresses you already have.</li>
       <li><strong>No fee to Webcroft.</strong> The licence is MIT. Your domain, your hosting and your AI assistant can still cost money.</li>
     </ul>
-  </section>
-
-  <section class="wrap" id="evidence">
-    <h2>The evidence so far</h2>
-    <p>
-      One site, measured: <a href={p.url}>{p.site}</a>, relaunched on
-      <time datetime={p.relaunched.iso}>{p.relaunched.label}</time>.
-    </p>
-    <ul class="steps">
-      <li><strong>Speed and search basics.</strong> PageSpeed Insights on a simulated phone, {PROOF_MEASURED.label}: {speed.performance}, {speed.accessibility}, {speed.bestPractices} and {speed.seo} out of 100 for performance, accessibility, best practices and SEO.</li>
-      <li><strong>Clicks from Google.</strong> From {first.clicks} in the 28 days around the relaunch to a best 28 days of {peak.clicks} ({peak.from} to {peak.to}), and {latest.clicks} in the latest 28 days ({latest.from} to {latest.to}).</li>
-      <li><strong>AI assistants.</strong> On {p.ai.date.label}, {p.ai.withSearch.named} of {p.ai.withSearch.answers} answers given with web search named the site, and {p.ai.withoutSearch.named} of {p.ai.withoutSearch.answers} given from memory.</li>
-    </ul>
-    <p class="aside">
-      It is one site, and it belongs to the maintainer of Webcroft. Clicks have
-      fallen from their best, and the cause is not established.
-      <a href="/proof">The proof page</a> has the sources, the daily numbers and
-      what the figures do not show.
-    </p>
   </section>
 
   <section class="wrap" id="steps">
