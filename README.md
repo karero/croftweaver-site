@@ -70,7 +70,7 @@ requests.
 | # | Step | Who | State | Evidence |
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
-| 0a | Name and trademark check for "Webcroft" | owner | open | — |
+| 0a | Name and trademark check for "Webcroft" | owner | identical name: no hit in TMview, USPTO, the UK register and EUIPO (owner's own searches, 2026-10-04); similar marks such as "webcraft" not yet searched | — |
 | 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on the home page (step 4). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/webcroft-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/webcroft-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/webcroft-site#4, merged 2026-10-04 (`0d38a11`) |
@@ -79,7 +79,7 @@ requests.
 | 4 | Header and navigation; home page rewrite | PR | done | karero/webcroft-site#5, merged 2026-10-04 (`f7e7eb1`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/webcroft-site#6 (`40c6031`), karero/webcroft-site#7 (`646bcd1`), karero/webcroft-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
-| 5b | Page `/why` with the PDF | PR | page in review; the PDF waits for the deck refresh (5a) | karero/webcroft-site#10 (page only) |
+| 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/webcroft-site#10, merged 2026-10-04 (`bea52e7`), page only |
 | 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/webcroft-site#9, merged 2026-10-04 (`fe7a5dc`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | open | — |
 | 7 | GitHub rename `website-builder` → `webcroft`, release v0.30 (site links assume it) | owner | open, waits for 0a | — |
