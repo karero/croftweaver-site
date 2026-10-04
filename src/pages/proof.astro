@@ -1,0 +1,184 @@
+---
+// /proof — one site built with Webcroft, with everything that can be measured
+// about it. Positioning term (tests/positioning.spec.ts): "built with Webcroft".
+// Owner decision 2026-10-04: genai-wednesday.de is the one site shown here.
+// Honesty rules (CONTENT_GUIDE.md): every figure is dated and names its tool; the
+// search table is computed from the published file (src/data/proof.ts).
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
+
+const p = SITE_PROOF;
+const speed = PROOF.find((entry) => entry.site === p.site)!;
+const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
+const { latest, peak, blocks } = p.search;
+---
+<Base
+  title="Built with Webcroft: one site, measured"
+  description="Built with Webcroft: genai-wednesday.de, with its PageSpeed scores, its Google clicks since the relaunch, and a check of which AI assistants name it."
+  image="/images/og/proof.jpg"
+>
+  <section class="wrap hero">
+    <h1>Built with Webcroft: one site, measured</h1>
+    <p class="lead">
+      <a href={p.url}>{p.site}</a> is the site Webcroft grew out of. This page shows
+      what can be measured about it: speed, clicks from Google since its relaunch,
+      and whether AI assistants name it. Every figure has a date. Where you can
+      re-run a test, there is a link.
+    </p>
+    <p class="aside">
+      It is one site, and it belongs to the maintainer of Webcroft. Read it as a
+      worked example, not as a promise for yours.
+    </p>
+  </section>
+
+  <section class="wrap" id="site">
+    <h2>The site</h2>
+    <p>
+      {p.site} is the home of GenAI Wednesday, a generative AI community in Munich:
+      events, an archive of talks and a set of resource pages. It was relaunched on
+      <time datetime={p.relaunched.iso}>{p.relaunched.label}</time> with these
+      skills. The copy of the skills and tests in its repository is stamped with
+      toolkit commit <code>{p.toolkit.commit}</code>, taken on
+      <time datetime={p.toolkit.copied.iso}>{p.toolkit.copied.label}</time>.
+    </p>
+  </section>
+
+  <section class="wrap" id="speed">
+    <h2>Speed and search basics</h2>
+    <dl class="scores">
+      <div><dt>Performance</dt><dd>{speed.performance}</dd></div>
+      <div><dt>Accessibility</dt><dd>{speed.accessibility}</dd></div>
+      <div><dt>Best practices</dt><dd>{speed.bestPractices}</dd></div>
+      <div><dt>SEO</dt><dd>{speed.seo}</dd></div>
+    </dl>
+    <p>
+      Google's PageSpeed Insights, on a simulated phone, for the home page: one run
+      on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>. Scores
+      run from 0 to 100 and vary a little from run to run.
+      <a href={rerun}>Re-run the test</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="search">
+    <h2>Clicks from Google since the relaunch</h2>
+    <p>
+      In the 28 days from {latest.from} to {latest.to}, Google sent
+      <strong>{latest.clicks} clicks</strong> to the site, from
+      {latest.impressions.toLocaleString('en-GB')} appearances in search results.
+      The table shows every 28-day block since the relaunch.
+    </p>
+    <div class="table-wrap" role="region" aria-label="Clicks from Google in 28-day blocks" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col">28 days</th><th scope="col" class="num">Clicks</th><th scope="col" class="num">Appearances</th></tr>
+        </thead>
+        <tbody>
+          {blocks.map((b) => (
+            <tr>
+              <th scope="row">{b.from} to {b.to}</th>
+              <td class="num">{b.clicks}</td>
+              <td class="num">{b.impressions.toLocaleString('en-GB')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Clicks rose from almost nothing to a best 28 days of {peak.clicks}
+      ({peak.from} to {peak.to}), and have fallen since. The cause of the fall is
+      not established.
+    </p>
+    <p>
+      For its main local searches the site sits near the bottom of the first
+      results page:
+      {p.search.positions.map((q, i) => (
+        <Fragment>{i > 0 && ', and '}<q>{q.query}</q> at an average position of {q.position}</Fragment>
+      ))}, in the latest block.
+    </p>
+    <p class="note">
+      Source: the site's own Google Search Console account, whole site, all
+      countries. You cannot re-run these figures, so the daily numbers behind them
+      are published: <a href={p.search.csv}>download the file</a> (CSV). The latest
+      block ends on the last day Search Console had data for when the file was made.
+    </p>
+  </section>
+
+  <section class="wrap" id="ai">
+    <h2>Do AI assistants name it?</h2>
+    <p>
+      On <time datetime={p.ai.date.iso}>{p.ai.date.label}</time> the weekly check
+      asked each assistant two questions, up to three times each:
+    </p>
+    <ul class="steps">
+      {p.ai.questions.map((question) => <li><q>{question}</q></li>)}
+    </ul>
+    <div class="table-wrap" role="region" aria-label="Results of the AI check" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col">Assistant</th><th scope="col">With web search</th><th scope="col">Without web search</th></tr>
+        </thead>
+        <tbody>
+          {p.ai.rows.map((row) => (
+            <tr><th scope="row">{row.assistant}</th><td>{row.withSearch}</td><td>{row.withoutSearch}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When an assistant searches the web, it tends to find the site and name it.
+      From memory alone, none did. The check counts mentions for two questions on
+      one day, and answers change from run to run. It talks to each assistant
+      through its API, which can answer differently from the app.
+    </p>
+    <p class="note">
+      This is a different thing from the panel in the
+      <a href={p.lab}>Builder Lab</a>, where four assistants rate the site. A rating
+      is an opinion; this check only counts whether the site is named.
+    </p>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>What this page does not show</h2>
+    <ul class="steps">
+      <li><strong>More than one site.</strong> One example cannot show that a result repeats.</li>
+      <li><strong>A comparison.</strong> Nothing here shows what the site would have done without Webcroft.</li>
+      <li><strong>Large numbers.</strong> This is a community site with tens of clicks a month, not a traffic story.</li>
+    </ul>
+    <p>
+      The <a href={p.lab}>Builder Lab</a> keeps a fuller scorecard for the same site.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/#quickstart">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  code { font-size: 0.9em; }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+
+  .scores { display: flex; flex-wrap: wrap; gap: 0.8rem 2.5rem; margin: 0 0 1rem; }
+  .scores div { display: flex; flex-direction: column-reverse; }
+  .scores dt { font-size: 0.85rem; color: var(--muted); }
+  .scores dd { margin: 0; font-size: 2.2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
+
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  thead th { font-size: 0.9rem; color: var(--muted); }
+  tbody th { font-weight: 400; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  #search tbody tr:last-child th, #search tbody tr:last-child td { font-weight: 700; }
+  #ai .table-wrap { max-width: none; }
+  #ai tbody th { font-weight: 600; white-space: nowrap; }
+</style>

@@ -81,7 +81,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Checks | `/checks` | the test gate in detail, suite by suite | website test gate | The test gate in every Webcroft site | [x] |
 | Skills | `/skills` | catalogue by lifecycle: Build, Verify, Launch, Grow | website skills | Website skills catalogue | [ ] |
 | Start | `/start` | zero to a first site | quickstart | Quickstart: your first site | [ ] |
-| Proof | `/proof` | sites built with it, with re-runnable results | built with Webcroft | Sites built with Webcroft | [ ] |
+| Proof | `/proof` | one site built with it, measured; re-runnable where possible | built with Webcroft | Built with Webcroft: one site, measured | [x] |
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [ ] |
 | Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Webcroft and its alternatives | [ ] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap | [ ] |

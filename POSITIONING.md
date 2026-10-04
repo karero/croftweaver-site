@@ -58,14 +58,14 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Search work done by default | Fast, accessible, and the search basics in place from the first build | PageSpeed Insights, mobile, home page, 4 October 2026 (performance / accessibility / best practices / SEO): genai-wednesday.de 99/100/100/100, m-squad.com 99/100/100/100, apreet.com 100/100/100/100. Re-run: pagespeed.web.dev with each address. This measures speed, accessibility and SEO basics, not rankings and not AI readability |
 | AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo |
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
-| Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: Google Search Console badges for 50 clicks in 28 days (17 June 2026) and 90 clicks in 28 days (2 July 2026), shown on genai-wednesday.de/builder-lab |
+| Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: clicks from Google per 28 days rose from 3 around the relaunch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
 4 October 2026 and are the ones on the home page (`src/data/proof.ts`). The Search
-Console figures are the last published ones and are re-checked before reuse. Fresh,
-publicly checkable figures for at least three sites on `/proof` are a launch
-requirement (README status table, step 0b).
+Console figures were re-checked on 4 October 2026 and are published on `/proof`, with
+the daily numbers behind them. Owner decision, 2026-10-04: `/proof` shows one site,
+genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 
 ## 4. Target customer
 
@@ -140,7 +140,7 @@ is built.
 | Checks | `/checks` | test gate | — | live |
 | Skills | `/skills` | website skills | — | planned |
 | Start | `/start` | quickstart | — | planned |
-| Proof | `/proof` | built with Webcroft | — | planned |
+| Proof | `/proof` | built with Webcroft | — | live |
 | Why | `/why` | search and AI visibility | — | planned |
 | Compare | `/compare` | alternatives | — | planned |
 | Roadmap | `/roadmap` | roadmap | — | planned |
@@ -152,9 +152,10 @@ is built.
 - The Builder Lab is the community showcase and owns GenAI Wednesday's own evidence:
   its scorecard, the AI score table and the FAQPage schema.
 - webcroft.dev is the project home: the promise, the test gate, the skills catalogue,
-  the quickstart and a cross-site proof index (`/proof`), with SoftwareSourceCode
-  schema. Each `/proof` entry is written fresh from new measurements and approved by
-  that site's owner; the Lab's detailed evidence is linked, not copied.
+  the quickstart and a proof page (`/proof`) for one site, genai-wednesday.de, with
+  SoftwareSourceCode schema. `/proof` is written fresh from new measurements (speed,
+  clicks from Google, the weekly AI check) and approved by the site's owner; the Lab's
+  scorecard and AI score table are linked, not copied.
 - No copy is shared between the two, apart from one third-party testimonial quoted
   verbatim with attribution. Each links to the other.
 
@@ -169,8 +170,8 @@ is built.
   Ownership is the most crowded claim among comparable products; it stays as the brand
   voice and sign-off.
 - The risk accepted with the chosen route: search and AI visibility is a crowded field
-  with large audit packs and hosted dashboards, and proof is thin until several sites
-  are published. The wording rule and the three-site launch requirement are the guard.
+  with large audit packs and hosted dashboards, and proof is thin: one site. The
+  wording rule and the limits that `/proof` states about itself are the guard.
 
 ## Hand-off to the rest of the pipeline
 

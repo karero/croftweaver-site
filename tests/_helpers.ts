@@ -4,6 +4,7 @@
 export const PAGES = [
   '/',
   '/checks',
+  '/proof',
   '/privacy',
   '/imprint',
 ] as const;
