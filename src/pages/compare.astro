@@ -1,0 +1,96 @@
+---
+// /compare — honest alternatives. Positioning term (tests/positioning.spec.ts):
+// "alternatives", in the title, the description and the H1.
+// Rule (CONTENT_GUIDE.md): comparisons are factual, sourced and dated; never "the
+// only". The statements about other products live in src/data/compare.ts.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { GROUPS, CHECKED } from '../data/compare';
+---
+<Base
+  title="Webcroft and its alternatives"
+  description="Webcroft and its alternatives: hosted website builders, AI app builders, open-source visual builders and other skills for AI assistants. When to choose which."
+  image="/images/og/compare.jpg"
+>
+  <section class="wrap hero">
+    <h1>Webcroft and its alternatives</h1>
+    <p class="lead">
+      There are good alternatives to Webcroft, and for many people one of them is
+      the better choice. This page says when.
+    </p>
+    <p class="note">
+      Every statement about another product restates what its own page says and
+      links to it. All links were checked on
+      <time datetime={CHECKED.iso}>{CHECKED.label}</time>. Prices and plans change.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
+  </section>
+
+  {GROUPS.map((group) => (
+    <section class="wrap" id={group.id}>
+      <h2>{group.title}</h2>
+      <p>{group.what}</p>
+      <ul class="examples" role="list">
+        {group.examples.map((e) => (
+          <li><a href={e.url}>{e.name}</a><span>{e.fact}</span></li>
+        ))}
+      </ul>
+      <div class="grid">
+        <div class="card">
+          <h3>Choose one of these when</h3>
+          <p>{group.chooseThem}</p>
+        </div>
+        <div class="card">
+          <h3>Choose Webcroft when</h3>
+          <p>{group.chooseWebcroft}</p>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="wrap" id="wrong-choice">
+    <h2>When Webcroft is the wrong choice</h2>
+    <ul class="steps">
+      <li><strong>You want to see and drag things.</strong> Webcroft has no visual editor.</li>
+      <li><strong>You need a shop, accounts or a database.</strong> It builds content sites.</li>
+      <li><strong>You want someone else to host and run it.</strong> You publish to hosting you control.</li>
+      <li><strong>You do not want an AI coding assistant or a GitHub account.</strong> It needs both.</li>
+      <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one.</li>
+    </ul>
+    <p>
+      What is missing and what comes next is on <a href="/roadmap">the roadmap</a>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
+  .examples { list-style: none; margin: 1rem 0 0; padding: 0; max-width: 56rem; }
+  .examples li {
+    display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: 0.2rem 1.5rem;
+    padding: 0.7rem 0; border-bottom: 1px solid var(--line); line-height: 1.6;
+  }
+  .examples a { font-weight: 600; }
+  .examples span { color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.4rem 0 0; max-width: 56rem; }
+  .card p { margin: 0; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 40rem) {
+    .examples li { grid-template-columns: 1fr; }
+  }
+</style>

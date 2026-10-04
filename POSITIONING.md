@@ -142,8 +142,8 @@ is built.
 | Start | `/start` | quickstart | — | live |
 | Proof | `/proof` | built with Webcroft | — | live |
 | Why | `/why` | search and AI visibility | — | planned |
-| Compare | `/compare` | alternatives | — | planned |
-| Roadmap | `/roadmap` | roadmap | — | planned |
+| Compare | `/compare` | alternatives | — | live |
+| Roadmap | `/roadmap` | roadmap | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 

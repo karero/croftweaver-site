@@ -1,0 +1,100 @@
+---
+// /roadmap — what is missing, what comes next, what stays out. Positioning term
+// (tests/positioning.spec.ts): "roadmap", in the title, the description and the H1.
+// No dates and no promises: the order is the maintainer's current intent
+// (owner-approved plan, 2026-10-03) and may change.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+const next = [
+  { title: 'A standard way to count enquiries', text: 'Cookieless analytics with one conversion event set up by default, so arrivals can be tied to enquiries.' },
+  { title: 'Checks that go deeper and cannot be skipped', text: 'A check for leftover template slots in the finished pages. Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page.' },
+  { title: 'An easier install', text: 'A plugin package, a listing where people look for skills, and one command that starts a project.' },
+  { title: 'Import of an existing site', text: 'Bring a site you already have under the same tests.' },
+  { title: 'Forms', text: 'A dedicated skill for contact forms, with a bundled test that submits one.' },
+];
+const later = [
+  'A pipeline for regular posts.',
+  'Starting from a screenshot or a design file.',
+  'A few worked example sites to look at.',
+];
+const out = [
+  { title: 'A visual editor.', text: 'You work with your assistant in plain language.' },
+  { title: 'Shops and accounts.', text: 'An app builder serves you better there.' },
+  { title: 'Hosting by us.', text: 'Your site stays on hosting you control.' },
+];
+---
+<Base
+  title="Roadmap: what is missing, what comes next"
+  description="The Webcroft roadmap: what is missing today, what comes next and in which order, and what stays out on purpose. No dates, and none of it is a promise."
+  image="/images/og/roadmap.jpg"
+>
+  <section class="wrap hero">
+    <h1>Roadmap: what is missing, what comes next</h1>
+    <p class="lead">
+      This roadmap lists what Webcroft does not do yet, the order in which the
+      gaps are meant to close, and what will stay out on purpose.
+    </p>
+    <p class="aside">
+      There are no dates here, and none of it is a promise. Webcroft has one
+      maintainer, and the order can change.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="missing">
+    <h2>Missing today</h2>
+    <ul class="steps">
+      <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
+      <li><strong>A standard way to count enquiries.</strong> Analytics is optional today: the interview offers a cookieless tool, and nothing sets up a conversion to count.</li>
+      <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
+      <li><strong>A one-line install.</strong> Today you clone the repository and run a script.</li>
+      <li><strong>Import.</strong> There is no route for bringing an existing site in.</li>
+      <li><strong>Forms.</strong> A site can have one small server function for a form, but there is no dedicated forms skill and no bundled test that submits one.</li>
+      <li><strong>Tested support beyond Claude Code.</strong> The guides for Codex and Antigravity exist; neither has been tested from start to finish.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="next">
+    <h2>Next, in this order</h2>
+    <ol class="steps">
+      {next.map((item) => <li><strong>{item.title}.</strong> {item.text}</li>)}
+    </ol>
+  </section>
+
+  <section class="wrap" id="later">
+    <h2>Later, perhaps</h2>
+    <ul class="steps">
+      {later.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+
+  <section class="wrap" id="out">
+    <h2>Out, on purpose</h2>
+    <ul class="steps">
+      {out.map((item) => <li><strong>{item.title}</strong> {item.text}</li>)}
+    </ul>
+    <p>
+      If one of these is what you need, <a href="/compare">the alternatives</a> page
+      says which kind of tool fits. To argue for a change of order, open an issue
+      on <a href={`${SITE.repo}/issues`}>GitHub</a>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.6rem; }
+</style>
