@@ -7,11 +7,11 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 const next = [
-  { title: 'Analytics and a kept history', text: 'Cookieless analytics with one conversion event, so arrivals can be tied to enquiries. And a kept history of the weekly AI check, the way search rankings already have one.' },
+  { title: 'A standard way to count enquiries', text: 'Cookieless analytics with one conversion event set up by default, so arrivals can be tied to enquiries.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'A check for leftover template slots in the finished pages. Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page.' },
   { title: 'An easier install', text: 'A plugin package, a listing where people look for skills, and one command that starts a project.' },
   { title: 'Import of an existing site', text: 'Bring a site you already have under the same tests.' },
-  { title: 'Forms', text: 'A skill for contact forms, with a test that submits one.' },
+  { title: 'Forms', text: 'A dedicated skill for contact forms, with a bundled test that submits one.' },
 ];
 const later = [
   'A pipeline for regular posts.',
@@ -39,17 +39,20 @@ const out = [
       There are no dates here, and none of it is a promise. Webcroft has one
       maintainer, and the order can change.
     </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
   </section>
 
   <section class="wrap" id="missing">
     <h2>Missing today</h2>
     <ul class="steps">
       <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
-      <li><strong>Analytics.</strong> A new site gets Google Search Console, and nothing that counts enquiries.</li>
+      <li><strong>A standard way to count enquiries.</strong> Analytics is optional today: the interview offers a cookieless tool, and nothing sets up a conversion to count.</li>
       <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
       <li><strong>A one-line install.</strong> Today you clone the repository and run a script.</li>
       <li><strong>Import.</strong> There is no route for bringing an existing site in.</li>
-      <li><strong>Forms.</strong> A site can have one small server function, but no skill builds or tests a form.</li>
+      <li><strong>Forms.</strong> A site can have one small server function for a form, but there is no dedicated forms skill and no bundled test that submits one.</li>
       <li><strong>Tested support beyond Claude Code.</strong> The guides for Codex and Antigravity exist; neither has been tested from start to finish.</li>
     </ul>
   </section>

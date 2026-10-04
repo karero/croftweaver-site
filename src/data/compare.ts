@@ -39,7 +39,7 @@ export const GROUPS = [
       { name: 'Instatic', url: 'https://github.com/CoreBunch/Instatic', fact: 'An open-source, self-hosted visual CMS that outputs static pages. MIT licence.' },
     ],
     chooseThem: 'You want a visual editor and open-source code.',
-    chooseWebcroft: 'You want tests on every change, and no editor to run or maintain.',
+    chooseWebcroft: 'You prefer to edit files with an assistant, with the tests of your site running before each push and on each pull request. The default setup needs no editor.',
   },
   {
     id: 'skills',
@@ -53,6 +53,6 @@ export const GROUPS = [
       { name: 'Wondel.ai skills', url: 'https://github.com/wondelai/skills', fact: 'Fifty skills built on business, marketing, UX and coding books, with guided journeys, one of them for creating a website. MIT licence.' },
     ],
     chooseThem: 'You already have a site and want it analysed (the two SEO skills), you are moving off WordPress (website-build-kit), or you want marketing help beyond a website (marketingskills, the Wondel.ai skills).',
-    chooseWebcroft: 'You want one suite that builds the site, does the search and AI work by default, tests every change, and keeps improving the site from search data.',
+    chooseWebcroft: 'You want one suite that builds the site, does the search and AI work by default, runs its tests before each push and on each pull request, and includes tools that read your Search Console data and point to the next edits.',
   },
 ] as const;
