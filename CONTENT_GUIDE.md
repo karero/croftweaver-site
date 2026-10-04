@@ -77,7 +77,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 
 | Page | URL | Purpose | Primary keyword | Target `<title>` (≤60 rendered) | Status |
 |---|---|---|---|---|---|
-| Home | `/` | the promise, the proof, the gate, the loop | website skills for search and AI visibility | Webcroft: website skills for search and AI visibility | [ ] rewrite; live title until then: "Webcroft: open-source website skills for AI assistants" |
+| Home | `/` | the promise, the proof, the gate, the loop | website skills for search and AI visibility | Webcroft: website skills for search and AI visibility | [x] |
 | Checks | `/checks` | the test gate in detail, suite by suite | website test gate | The test gate in every Webcroft site | [ ] |
 | Skills | `/skills` | catalogue by lifecycle: Build, Verify, Launch, Grow | website skills | Website skills catalogue | [ ] |
 | Start | `/start` | zero to a first site | quickstart | Quickstart: your first site | [ ] |

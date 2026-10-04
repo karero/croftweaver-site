@@ -11,6 +11,7 @@
 //   - schemas: extra JSON-LD objects (FAQPage, Article, …).
 //   - <slot name="head" /> lets a page add its own <head> tags.
 import '../styles/global.css';
+import Header from '../components/Header.astro';
 import { SITE, COMPANY, ANALYTICS, SAME_AS, KNOWS_ABOUT, ogLocaleFor } from '../config';
 
 interface Props {
@@ -135,6 +136,7 @@ const ogLocale = ogLocaleFor(lang);
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
     <main id="main"><slot /></main>
     <!-- Every page links the legal pages (GDPR: reachable from anywhere). -->
     <footer class="site-footer">
