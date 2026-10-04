@@ -48,7 +48,7 @@ const description =
         {SKILLS.filter((s) => s.stage === stage.id).map((s) => (
           <div>
             <dt><code>{s.name}</code>{s.optional && <span class="tag">optional</span>}</dt>
-            <dd>{s.does}{s.more && <> <a href={s.more}>How it works</a>.</>}</dd>
+            <dd>{s.does}{s.more && <> <a href={s.more}>How positioning works</a>.</>}</dd>
           </div>
         ))}
       </dl>
@@ -73,12 +73,12 @@ const description =
       by Corey Haines, under the MIT licence.
     </p>
     <p class="note">
-      Two skills follow published methods, in Webcroft's own words:
-      <code>website-positioning</code> uses the five positioning components from
+      Two skills build on published methods, in Webcroft's own words:
+      <code>website-positioning</code> uses the five parts of positioning from
       April Dunford's book <cite>Obviously Awesome</cite>, and
       <code>website-story</code> is inspired by Donald Miller's StoryBrand framework.
-      Webcroft is not affiliated with either author, and neither endorses it.
-      StoryBrand is a trademark of its owner.
+      Webcroft is not affiliated with April Dunford or Donald Miller, and neither
+      endorses it. StoryBrand is a trademark of its owner.
       <a href="/positioning#sources">Sources and links</a>.
     </p>
   </section>

@@ -57,7 +57,7 @@ the body copy true:
 - **"GEO"** is explained once per page where it appears (how AI assistants read and
   cite a site).
 - **"EEAT"** is explained once per page where it appears (experience, expertise,
-  authoritativeness, trust: what Google's quality raters look for). It is not a score,
+  authoritativeness, trustworthiness: what Google's quality raters look for). It is not a score,
   and Google says it is not a ranking factor by itself. Say which signals are built in
   and which a test checks (structured data present and parsing; links inside the site
   written from the root; not page-relative links, outside links or profiles); never
@@ -108,16 +108,17 @@ of anyone's book.
 never worked through positioning; and the decision-maker who wonders why the build
 starts with questions and not with a design.
 
-**Term and metadata (drafts, fixed when the page is built).**
+**Term and metadata (as built on 2026-10-04).**
 
 - Positioning term: `positioning`. Not "website positioning": a search on 2026-10-04
   showed that phrase means search ranking, so it would file the page under the wrong
   topic.
 - Title: "Positioning first: what your site says" (38 characters, 49 rendered).
-- H1, three candidates for the owner: "Decide what your site says. Then build it." ·
-  "Say what you offer before you write a word." · "Know what your site says first."
-- Description: 140 to 160 characters, carrying the term (`AGENTS.md`; the test allows
-  120 to 160).
+- H1 on the page: "Decide what your site says. Then build it." The owner has not
+  chosen yet; the other candidates are "Say what you offer before you write a word."
+  and "Know what your site says first."
+- Description: 152 characters, carrying the term (`AGENTS.md` wants 140 to 160; the
+  test allows 120 to 160).
 
 **Sections, in this order.**
 
