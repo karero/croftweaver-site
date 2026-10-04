@@ -70,7 +70,7 @@ requests.
 | # | Step | Who | State | Evidence |
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
-| 0a | Name and trademark check for "Webcroft" | owner | identical name: no hit in TMview, USPTO, the UK register and EUIPO (owner's own searches, 2026-10-04); similar marks such as "webcraft" not yet searched | — |
+| 0a | Name and trademark check for "Webcroft" | owner | identical name: no hit in TMview, USPTO, the UK register and EUIPO (owner's own searches, 2026-10-04). Similar marks: first look in TMview on 2026-10-04 ("webcraft", "web craft" and "croft" in classes 9, 35 and 42), no legal opinion; one earlier mark needs a professional view before step 7 | — |
 | 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on the home page (step 4). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/webcroft-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/webcroft-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/webcroft-site#4, merged 2026-10-04 (`0d38a11`) |
