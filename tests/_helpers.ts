@@ -3,6 +3,7 @@
 // CONVENTION: NO trailing slash (matches `trailingSlash: 'never'`); home stays '/'.
 export const PAGES = [
   '/',
+  '/checks',
   '/privacy',
   '/imprint',
 ] as const;

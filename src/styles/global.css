@@ -90,6 +90,22 @@ a { color: var(--link); }
    viewport top; raise it if you add a sticky header (then mirror it onto h3). */
 h2, h3 { scroll-margin-top: 1.5rem; }
 
+/* Shared page furniture: buttons, cards and the aside. Page-specific layout stays
+   in each page's own <style>. */
+.cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+.btn {
+  display: inline-block; padding: 0.7rem 1.3rem; border-radius: var(--radius);
+  border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  background: var(--surface); box-shadow: var(--shadow); font-weight: 600;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.2rem 1.4rem; box-shadow: var(--shadow);
+}
+.card h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
+.aside { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); }
+
 .site-footer {
   max-width: var(--maxw); margin-inline: auto; padding: 1.5rem 1.25rem;
   border-top: 1px solid var(--line); font-size: 0.9rem;

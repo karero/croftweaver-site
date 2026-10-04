@@ -1,0 +1,114 @@
+---
+// /checks — the test gate in detail. Positioning term (tests/positioning.spec.ts):
+// "test gate", carried in the title, the description and the H1.
+// The suite list, its count and the template version are read at build time
+// (src/data/suites.ts); nothing here is typed by hand.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { SUITES, SUITE_GROUPS, SUITE_COUNT, SUITES_VERSION } from '../data/suites';
+
+const copied = new Date(`${SUITES_VERSION.copied}T12:00:00Z`).toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+});
+const description =
+  `Every Webcroft site carries its own test gate: ${SUITE_COUNT} suites for accessibility, ` +
+  'search, tone and positioning. See what each checks and what a pass does not prove.';
+---
+<Base title="The test gate in every Webcroft site" description={description} image="/images/og/checks.jpg">
+  <section class="wrap hero">
+    <h1>The test gate, suite by suite</h1>
+    <p class="lead">
+      Every site built with Webcroft carries its own test gate: {SUITE_COUNT} test
+      suites that run against the finished build. This page lists each one, with
+      what it checks, an example of a failure, and what a pass does not prove.
+    </p>
+  </section>
+
+  <section class="wrap" id="when">
+    <h2>When the gate runs</h2>
+    <p>
+      By default the suites run before every push: a git hook builds the site and
+      tests that build in one desktop-size browser. They run again on GitHub, for
+      every pull request and for every push to <code>main</code> and
+      <code>production</code>.
+    </p>
+    <p class="aside">
+      Two limits apply. The hook can be skipped with one flag. And today nothing on
+      the server stops a person from publishing a build that failed: the default
+      way to publish tests first, but it is a default, not a lock.
+    </p>
+    <p class="note">
+      These are the suites of the toolkit template at commit
+      <code>{SUITES_VERSION.commit.slice(0, 7)}</code>, copied on
+      <time datetime={SUITES_VERSION.copied}>{copied}</time>.
+    </p>
+  </section>
+
+  {SUITE_GROUPS.map((group) => (
+    <section class="wrap" id={group.id}>
+      <h2>{group.title}</h2>
+      <div class="suites">
+        {SUITES.filter((s) => s.group === group.id).map((s) => (
+          <article class="card">
+            <h3>{s.name} <code>tests/{s.file}.spec.ts</code></h3>
+            <dl>
+              <dt>Checks</dt><dd>{s.checks}</dd>
+              <dt>Fails when</dt><dd>{s.example}</dd>
+              <dt>Does not prove</dt><dd>{s.limit}</dd>
+            </dl>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <section class="wrap" id="review">
+    <h2>After the tests, a review in two passes</h2>
+    <p>
+      The tests are the floor. Before a launch, and after a page is added or
+      rewritten, a review skill reads the site in two passes. The first looks for
+      bugs. The second looks for things that no longer match across files: routes,
+      addresses, metadata, config and docs. It reports a ranked list and changes
+      nothing by itself.
+    </p>
+    <p>
+      For a change with more at stake, such as repositioning a whole site, the
+      skill can send the same material to one independent AI model for a second
+      opinion. It explains the choice and asks you first.
+    </p>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>What no test here covers</h2>
+    <ul class="steps">
+      <li><strong>Whether the copy is true.</strong> A test can check the form of a claim, not the fact behind it.</li>
+      <li><strong>Whether the design is good.</strong> That stays a judgment.</li>
+      <li><strong>Rankings and traffic.</strong> Those are measured after launch, with Search Console data.</li>
+      <li><strong>Every leftover template slot.</strong> A placeholder in the agreed format fails on GitHub; other unfilled slots are caught in review.</li>
+    </ul>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/#quickstart">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  code { font-size: 0.9em; }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+
+  .suites { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .card h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
+  .card h3 code { font-weight: 400; color: var(--muted); }
+  dl { margin: 0; line-height: 1.6; }
+  dt { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-top: 0.7rem; }
+  dd { margin: 0; }
+</style>
