@@ -50,11 +50,11 @@ LOGO = None                        # faint emblem watermark, right side. Point a
                                    # leave None for clean text-only cards. (SVG won't
                                    # load — Pillow needs raster.)
 BG_TOP = (24, 54, 40)              # background gradient, top    (deep brand tone)
-BG_BOT = (10, 11, 30)              # background gradient, bottom (near-black)
+BG_BOT = (14, 19, 16)              # background gradient, bottom (--bg dark, #0e1310)
 TITLE_COL = (255, 255, 255)        # headline
 SUB_COL = (143, 212, 171)          # subtitle lines  (--accent on dark, #8aa0ff)
 ACCENT = (143, 212, 171)           # accent bar      (--accent)
-FOOTER_COL = (150, 150, 170)       # footer url (muted)
+FOOTER_COL = (162, 172, 159)       # footer url (--muted dark, #a2ac9f)
 
 # Home + fallback card (this is Base.astro's default `image`). Edit for your site.
 DEFAULT_TITLE = BRAND_NAME

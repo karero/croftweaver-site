@@ -70,7 +70,8 @@ requests.
 | 0a | Name and trademark check for "Webcroft" | owner | open | — |
 | 0b | Fresh, publishable proof figures for three sites; consent for third-party site and testimonial | owner | open | — |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | in review | karero/webcroft-site#3 |
-| 2 | Brand: palette tokens, share-card colours, 404 page, legal address, `_headers` placeholder, `llms.txt` licence wording | PR | open, needs the legal address | — |
+| 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | committed, not pushed | branch `setup/brand-palette` |
+| 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
 | 4 | Header and navigation; home page rewrite | PR | open | — |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | open | — |

@@ -1,0 +1,20 @@
+---
+// 404 — Cloudflare Pages serves this file for any unknown address. A utility
+// page: not in PAGES, the sitemap or llms.txt, and noindex so it never competes
+// in search (see CONTENT_GUIDE.md, page inventory).
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Page not found"
+  description="This address does not exist on webcroft.dev. Go back to the home page to read what Webcroft is and how to start your first site."
+  noindex
+>
+  <section class="wrap">
+    <h1>This page does not exist.</h1>
+    <p>
+      The address may be mistyped, or the page has moved. Nothing is broken on
+      your side.
+    </p>
+    <p><a href="/">Back to the home page</a></p>
+  </section>
+</Base>
