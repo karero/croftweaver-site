@@ -1,0 +1,275 @@
+---
+// /positioning — how a site's positioning is worked out before any copy, and how a test
+// keeps each page on it. Positioning term (tests/positioning.spec.ts): "positioning",
+// carried in the title, the description and the first paragraph.
+// Spec: CONTENT_GUIDE.md, "Page `/positioning`". The page-and-term table is read
+// from the test file at build time (src/data/positioning.ts); nothing in it is typed.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { SPINE } from '../data/positioning';
+import { SUITE_COUNT } from '../data/suites';
+
+const description =
+  'How Webcroft works out your positioning before any copy: five questions after April Dunford, ' +
+  'one file in your repo, and a test that keeps each page on it.';
+
+// The first lines of a real failure of the positioning suite, for a page that lost its term.
+const failure = [
+  '/checks positioning not threaded (title="Our checks | Webcroft" · h1="How we check"):',
+  '  • <title> needs "test gate"',
+  '  • <h1>/intro needs "test gate"',
+].join('\n');
+
+const ownFile = 'https://github.com/karero/webcroft-site/blob/main/POSITIONING.md';
+
+// Plain links, no tag. Checked by hand when the page was built (CONTENT_GUIDE.md).
+const books = [
+  {
+    author: 'April Dunford', title: 'Obviously Awesome',
+    role: 'The method behind the five questions.',
+    own: { label: 'aprildunford.com', href: 'https://www.aprildunford.com/books' },
+    asin: 'B0GLHYWFT9',
+  },
+  {
+    author: 'April Dunford', title: 'Sales Pitch',
+    role: 'Her second book, on the sales pitch. Further reading: Webcroft does not use it.',
+    own: { label: 'aprildunford.com', href: 'https://www.aprildunford.com/books' },
+    asin: 'B0CHY6BNDN',
+  },
+  {
+    author: 'Donald Miller', title: 'Building a StoryBrand 2.0',
+    role: 'The idea behind the optional story skill.',
+    own: { label: 'storybrand.com', href: 'https://storybrand.com/building-a-storybrand-book-new/' },
+    asin: 'B0CWTNCZCH',
+  },
+];
+---
+<Base title="Positioning first: what your site says" description={description} image="/images/og/positioning.jpg">
+  <section class="wrap hero">
+    <h1>Decide what your site says. Then build it.</h1>
+    <p class="lead">
+      Before Webcroft writes a line of copy or picks a colour, it works out your
+      positioning: what you offer, for whom, and what they would use instead. The
+      answers go into one file in your repo, and a test keeps every page on them.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="what">
+    <h2>Positioning is the decision behind the copy</h2>
+    <p>
+      Positioning is not a slogan. It is a short set of decisions: who the site is
+      for, what you offer them, what they would do if you did not exist, and which
+      kind of thing you are. A visitor who recognises the kind of thing understands
+      the value without a long explanation.
+    </p>
+    <p>
+      It comes first because it decides what the copy is trying to say. Keywords,
+      page titles, the tone of voice and the design all read these decisions. They
+      do not make them.
+    </p>
+  </section>
+
+  <section class="wrap" id="questions">
+    <h2>Five questions, asked in plain words</h2>
+    <p>
+      The assistant explains the idea in a few sentences, then asks. Where it can,
+      it first looks at your customers and at what they use today, so the answers
+      rest on facts. It asks in words like these:
+    </p>
+    <ol class="steps">
+      <li><strong>Competitive alternatives.</strong> What would your customer use if you did not exist? Often that is a spreadsheet, a colleague or doing nothing, not a direct rival.</li>
+      <li><strong>Unique attributes.</strong> What do you have that those alternatives do not? Facts, not adjectives.</li>
+      <li><strong>Value and proof.</strong> What does each of those make possible for the customer, and what shows that it is true?</li>
+      <li><strong>Target customer.</strong> Who cares a lot about that value? A group you can describe, not everyone.</li>
+      <li><strong>Market category.</strong> Which kind of thing are you, so that the value is obvious? The assistant searches each candidate first. If the results show a different idea, that category would file your site in the wrong place.</li>
+    </ol>
+    <p class="note">
+      The method is April Dunford's, from her book <cite>Obviously Awesome</cite>.
+      The five parts are hers. The questions, and the way a site is built on the
+      answers, are Webcroft's. <a href="#sources">Sources</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="file">
+    <h2>What you get: one file, and one term for each page</h2>
+    <p>
+      The answers land in a file called <code>POSITIONING.md</code> in your
+      repository. It holds the five parts, a positioning statement of one
+      paragraph, a description of about fifty words for search engines and AI
+      assistants, and one term for each page: the thing that page wants to be known
+      for.
+    </p>
+    <p>
+      This site is built the same way. <a href={ownFile}>Its own positioning file</a>
+      is public, and these are the terms its pages carry today:
+    </p>
+    <div class="table-wrap" role="region" aria-label="The positioning term of each page of this site" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col">Page</th><th scope="col">Term</th></tr>
+        </thead>
+        <tbody>
+          {SPINE.map((row) => (
+            <tr>
+              <th scope="row"><a href={row.path}><code>{row.path}</code></a></th>
+              <td>
+                {row.term}
+                {row.body.length > 0 && <span class="also"> (in the text also: {row.body.join('; ')})</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      This table is read from the test file when the site is built. Nobody types
+      it. The two legal pages carry no term.
+    </p>
+  </section>
+
+  <section class="wrap" id="test">
+    <h2>A test keeps every page on its term</h2>
+    <p>
+      Each term is also written into the positioning suite, one of the
+      {SUITE_COUNT} test suites every site carries. For every page in its list the
+      suite checks that the term appears in three places: the page title, the
+      description for search results, and the main heading or the first paragraph.
+      On the home page it also looks for the market category in the text.
+    </p>
+    <p>Rewrite a heading and lose the term, and the suite fails with a message like this:</p>
+    <pre class="message"><code>{failure}</code></pre>
+    <p>
+      By default it runs before every push and again on GitHub, with the rest of
+      <a href="/checks">the test gate</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>What the test does not prove</h2>
+    <ul class="steps">
+      <li><strong>That the positioning is good.</strong> It proves that the term is there and the same everywhere. Whether it is the right term stays a judgment.</li>
+      <li><strong>That more is better.</strong> It does not count words. The term said once, where it belongs, passes. Repeating it earns nothing.</li>
+      <li><strong>That every page has a term.</strong> A page with no declared term only raises a warning.</li>
+      <li><strong>That the decisions were the assistant's to make.</strong> It asks and drafts. You decide.</li>
+    </ul>
+    <p>
+      For a look from outside there is an optional skill,
+      <code>website-positioning-check</code>: can a visitor tell what is on offer,
+      for whom, and why to believe it?
+    </p>
+  </section>
+
+  <section class="wrap" id="trust">
+    <h2>Then make it believable</h2>
+    <p>
+      Positioning says what you claim. The next step, the content guide, decides
+      how the site sounds and why a reader should believe it. Google's name for
+      those reasons is E-E-A-T, often written EEAT: experience, expertise,
+      authoritativeness and trust. It is what Google's quality raters look for. It
+      is not a score, and
+      <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content">Google says</a>
+      it is not a ranking factor by itself.
+    </p>
+    <p>The skills build these signals in, from the facts you supply:</p>
+    <ul class="steps">
+      <li>Structured data that names the organisation behind the site, with links to profiles that are really yours.</li>
+      <li>A named author with a short bio, where a page has one.</li>
+      <li>Sources, cited where a page makes claims.</li>
+      <li>An imprint, a privacy page and a clear way to reach you.</li>
+      <li>Links that work.</li>
+    </ul>
+    <p class="aside">
+      A test checks two of these: every page carries structured data that can be
+      read, and links inside the site resolve when they are written from the site
+      root. The rest is a checklist in your content guide. Whether a profile or
+      another outside link still works is checked by hand or by a link audit. No
+      test can tell whether a claim is true.
+    </p>
+  </section>
+
+  <section class="wrap" id="story">
+    <h2>Optional: the home page as your visitor's story</h2>
+    <p>
+      After positioning, the assistant offers one more step, once: the skill
+      <code>website-story</code>. It tells the home page as the story of your
+      visitor, in seven sections, and writes it down in a file called
+      <code>STORY.md</code>. It is optional and never runs unasked. This site does
+      not use it.
+    </p>
+    <p class="note">
+      The skill is inspired by Donald Miller's StoryBrand framework and puts the
+      idea in Webcroft's own words. <a href="#sources">Sources</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="sources">
+    <h2>Sources</h2>
+    <dl class="books">
+      {books.map((b) => (
+        <div>
+          <dt>{b.author}, <cite>{b.title}</cite></dt>
+          <dd>
+            {b.role}
+            <span class="links">
+              <a href={b.own.href}>{b.own.label}</a>
+              <a href={`https://www.amazon.com/dp/${b.asin}`}>Amazon.com</a>
+              <a href={`https://www.amazon.de/dp/${b.asin}`}>Amazon.de</a>
+            </span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+    <p class="note">
+      Webcroft is not affiliated with April Dunford or Donald Miller, and neither
+      endorses it. StoryBrand is a trademark of its owner. These are plain links:
+      Webcroft earns nothing from them. The Amazon links open the Kindle edition;
+      the other formats are one click from there.
+    </p>
+  </section>
+
+  <section class="wrap" id="next">
+    <h2>See it on your own site</h2>
+    <p>
+      The quickstart takes you from nothing to a first site. Positioning is the
+      second step of every build, right after a look at your customers and what
+      they use today.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  code { font-size: 0.9em; }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  thead th { font-size: 0.9rem; color: var(--muted); }
+  tbody th { font-weight: 400; white-space: nowrap; }
+  .also { color: var(--muted); }
+
+  /* The failure message is prose-width text: it wraps instead of scrolling. */
+  .message { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 46rem; }
+
+  .books { margin: 1rem 0 0; max-width: 46rem; }
+  .books > div { padding: 0.8rem 0; border-bottom: 1px solid var(--line); line-height: 1.6; }
+  .books dt { font-weight: 600; }
+  .books dd { margin: 0; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 0.2rem 1.2rem; margin-top: 0.3rem; }
+</style>

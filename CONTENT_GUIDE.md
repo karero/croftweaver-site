@@ -91,12 +91,12 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [x] page; the PDF follows with the deck refresh |
 | Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Webcroft and its alternatives | [x] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
-| Positioning | `/positioning` | how Webcroft works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [ ] spec below |
+| Positioning | `/positioning` | how Webcroft works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [x] spec below |
 | Privacy | `/privacy` | GDPR | — | Privacy Policy | [x] |
 | Imprint | `/imprint` | § 5 DDG legal disclosure | — | Imprint | [x] |
 | 404 | (not a route in `PAGES`) | not found | — | — | [ ] |
 
-### Planned page: `/positioning` (spec, 2026-10-04)
+### Page `/positioning` (spec, 2026-10-04; built the same day)
 
 **Why this page.** Tested positioning is what the comparable kits do not have
 (`POSITIONING.md`, alternatives). `/checks` explains the positioning check; no page

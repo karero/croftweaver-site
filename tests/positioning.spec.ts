@@ -37,6 +37,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/proof': { term: 'built with Webcroft' },
   '/skills': { term: 'website skills' },
   '/start': { term: 'quickstart' },
+  '/positioning': { term: 'positioning' },
   '/why': { term: 'search and AI visibility' },
   '/compare': { term: 'alternatives' },
   '/roadmap': { term: 'roadmap' },

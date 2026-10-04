@@ -14,9 +14,10 @@ export const STAGES = [
 
 type StageId = (typeof STAGES)[number]['id'];
 
-export const SKILLS: { name: string; stage: StageId; does: string; optional?: true }[] = [
+// `more` links a skill to the page that explains it.
+export const SKILLS: { name: string; stage: StageId; does: string; optional?: true; more?: string }[] = [
   { name: 'new-website', stage: 'build', does: 'Runs the whole build: an interview of six questions, the project with its tests, then the other skills in order.' },
-  { name: 'website-positioning', stage: 'build', does: 'Works out what you offer, for whom and in which market category, before any copy is written.' },
+  { name: 'website-positioning', stage: 'build', does: 'Works out what you offer, for whom and in which market category, before any copy is written.', more: '/positioning' },
   { name: 'customer-research', stage: 'build', does: 'Collects and analyses what customers say, so the positioning rests on their words.' },
   { name: 'website-content-guide', stage: 'build', does: 'Sets the tone of voice and the trust signals that every page follows.' },
   { name: 'website-story', stage: 'build', optional: true, does: 'Tells the home page as the story of your visitor, in seven sections.' },
