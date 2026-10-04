@@ -79,8 +79,8 @@ requests.
 | 4 | Header and navigation; home page rewrite | PR | done | karero/webcroft-site#5, merged 2026-10-04 (`f7e7eb1`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/webcroft-site#6 (`40c6031`), karero/webcroft-site#7 (`646bcd1`), karero/webcroft-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
-| 5b | Page `/why` with the PDF | PR | page committed, not pushed; the PDF waits for the deck refresh (5a) | branch `content/why-page` |
-| 5c | Pages `/compare` + `/roadmap` | PR | in review (built before 5b: `/why` waits for the deck) | karero/webcroft-site#9 |
+| 5b | Page `/why` with the PDF | PR | page in review; the PDF waits for the deck refresh (5a) | karero/webcroft-site#10 (page only) |
+| 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/webcroft-site#9, merged 2026-10-04 (`fe7a5dc`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | open | — |
 | 7 | GitHub rename `website-builder` → `webcroft`, release v0.30 (site links assume it) | owner | open, waits for 0a | — |
 | 8 | Launch: mail for `hello@webcroft.dev`, DNS to Cloudflare, Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
