@@ -10,6 +10,8 @@
 - [Home](https://webcroft.dev/): what Webcroft is, PageSpeed results for sites built with it, the test suites every site carries, the weekly loop from search data, quickstart.
 - [Checks](https://webcroft.dev/checks): the test gate in every Webcroft site, suite by suite: what each one checks, an example of a failure, and what a pass does not prove.
 - [Proof](https://webcroft.dev/proof): one site built with Webcroft, genai-wednesday.de, with its PageSpeed scores, its clicks from Google since the relaunch, and a check of which AI assistants name it.
+- [Skills](https://webcroft.dev/skills): the website skills catalogue by stage (build, verify, launch, grow), one line per skill, with the toolkit release it describes.
+- [Quickstart](https://webcroft.dev/start): what you need, the starter prompt, how to install the skills for Claude Code, Codex or Antigravity, and the six questions the assistant asks.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
 - [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 

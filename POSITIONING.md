@@ -138,8 +138,8 @@ is built.
 |---|---|---|---|---|
 | Home | `/` | website skills | website skills for search and AI visibility | live |
 | Checks | `/checks` | test gate | — | live |
-| Skills | `/skills` | website skills | — | planned |
-| Start | `/start` | quickstart | — | planned |
+| Skills | `/skills` | website skills | — | live |
+| Start | `/start` | quickstart | — | live |
 | Proof | `/proof` | built with Webcroft | — | live |
 | Why | `/why` | search and AI visibility | — | planned |
 | Compare | `/compare` | alternatives | — | planned |

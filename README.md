@@ -77,7 +77,7 @@ requests.
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/webcroft-site#5, merged 2026-10-04 (`f7e7eb1`) |
-| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` done; `/proof` in review; `/skills` and `/start` open | karero/webcroft-site#6, merged 2026-10-04 (`40c6031`); karero/webcroft-site#7 (`/proof`) |
+| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` done; `/proof` in review; `/skills` and `/start` committed, not pushed | karero/webcroft-site#6, merged 2026-10-04 (`40c6031`); karero/webcroft-site#7 (`/proof`); branch `content/skills-start` |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | open | — |
 | 5c | Pages `/compare` + `/roadmap` | PR | open | — |

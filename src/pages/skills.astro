@@ -1,0 +1,102 @@
+---
+// /skills — the catalogue, by stage. Positioning term (tests/positioning.spec.ts):
+// "website skills", carried in the title, the description and the H1.
+// The list and its count come from src/data/skills.ts, which describes ONE toolkit
+// release; the page says which.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { SKILLS, STAGES, SKILL_COUNT, RELEASE, RECENT } from '../data/skills';
+
+const description =
+  `The ${SKILL_COUNT} website skills in Webcroft, by stage: build, verify, launch and grow. ` +
+  'What each one does, and what the last three toolkit releases added.';
+---
+<Base title="Website skills catalogue" description={description} image="/images/og/skills.jpg">
+  <section class="wrap hero">
+    <h1>The website skills, by stage</h1>
+    <p class="lead">
+      Webcroft is {SKILL_COUNT} website skills for AI coding assistants. Each one is a
+      plain Markdown file that your assistant reads and follows. This page lists
+      them by the stage of a site's life they serve.
+    </p>
+    <p class="note">
+      As of toolkit release {RELEASE.version},
+      <time datetime={RELEASE.iso}>{RELEASE.label}</time>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="how">
+    <h2>You do not call them one by one</h2>
+    <p>
+      You say <em>new website</em>, and the first skill in the list runs the others
+      in order. Later you ask in your own words, for example for your Google
+      report or a review of a new page, and the assistant picks the skill. A site
+      built with them carries its own copy of the skills it needs, so the next
+      person or assistant to work on it has them too.
+    </p>
+  </section>
+
+  {STAGES.map((stage) => (
+    <section class="wrap" id={stage.id}>
+      <h2>{stage.title}</h2>
+      <p>{stage.intro}</p>
+      <dl class="skills">
+        {SKILLS.filter((s) => s.stage === stage.id).map((s) => (
+          <div>
+            <dt><code>{s.name}</code>{s.optional && <span class="tag">optional</span>}</dt>
+            <dd>{s.does}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))}
+
+  <section class="wrap" id="recent">
+    <h2>New in the last three releases</h2>
+    <dl class="skills">
+      {RECENT.map((r) => (
+        <div>
+          <dt>{r.version} <span class="tag">{r.label}</span></dt>
+          <dd>{r.text}</dd>
+        </div>
+      ))}
+    </dl>
+    <p>
+      What keeps the result honest is on another page:
+      <a href="/checks">the test gate, suite by suite</a>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  code { font-size: 0.95em; }
+
+  .skills { margin: 1rem 0 0; max-width: 56rem; }
+  .skills > div {
+    display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); gap: 0.2rem 1.5rem;
+    padding: 0.7rem 0; border-bottom: 1px solid var(--line); line-height: 1.6;
+  }
+  .skills dt { font-weight: 600; }
+  .skills dd { margin: 0; color: var(--muted); }
+  .tag {
+    margin-left: 0.5rem; font-size: 0.8rem; font-weight: 400; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 0.05rem 0.5rem; white-space: nowrap;
+  }
+  @media (max-width: 40rem) {
+    .skills > div { grid-template-columns: 1fr; }
+  }
+</style>

@@ -35,6 +35,8 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
   '/checks': { term: 'test gate' },
   '/proof': { term: 'built with Webcroft' },
+  '/skills': { term: 'website skills' },
+  '/start': { term: 'quickstart' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
