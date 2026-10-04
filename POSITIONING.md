@@ -141,7 +141,7 @@ is built.
 | Skills | `/skills` | website skills | — | live |
 | Start | `/start` | quickstart | — | live |
 | Proof | `/proof` | built with Webcroft | — | live |
-| Why | `/why` | search and AI visibility | — | planned |
+| Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
