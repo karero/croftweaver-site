@@ -9,13 +9,24 @@ export const SITE = {
   locale: 'en',
   themeColor: '#2e6e4e',               // croft moss-green; matches brand primary + manifest
   // Home <title> is special-cased (NOT "Example | Example"). Keep ≤ 60 chars.
-  titleHome: 'Webcroft: open-source website skills for AI assistants',
+  titleHome: 'Webcroft: website skills for search and AI visibility',
   tagline: 'Your own plot of the web.',
   // 120–160 chars: default meta description + Organization/WebPage schema text.
   description:
     'Webcroft is a suite of open-source website skills for AI coding assistants. ' +
-    'It builds fast, accessible, SEO-ready Astro sites in a repo you fully own.',
+    'Build websites that rank, then keep improving SEO and GEO, week by week.',
+  repo: 'https://github.com/karero/webcroft',   // the toolkit; goes live with the repo rename
 } as const;
+
+// Header navigation, in order. Labels live here so a second language can swap them.
+// Link only to pages and anchors that exist: tests/navigation.spec.ts and
+// tests/anchors.spec.ts reject a dead target. A home-page anchor becomes a page link
+// in the pull request that adds that page.
+export const NAV: { label: string; href: string }[] = [
+  { label: 'Proof', href: '/#proof' },
+  { label: 'Checks', href: '/#checks' },
+  { label: 'Quickstart', href: '/#quickstart' },
+];
 
 // og:locale derivation — ONE implementation shared by Base.astro (emission)
 // and tests/seo.spec.ts (assertion), so they can't drift: 'de' → de_DE via

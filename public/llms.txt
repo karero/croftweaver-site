@@ -1,12 +1,13 @@
 # Webcroft
 
-> Webcroft is an open-source suite of skills that turns an AI coding assistant
-> (Claude Code, Codex, Antigravity) into a careful website builder: fast,
-> accessible, SEO-ready Astro sites you fully own. Served at
+> Webcroft is a suite of open-source website skills for AI coding assistants. It
+> turns an assistant such as Claude Code into a careful website builder: fast,
+> accessible Astro sites built to rank on Google and show up in AI answers,
+> tested on every change, in a repo you fully own. Served at
 > https://webcroft.dev/llms.txt — a curated index for AI answer engines (GEO).
 
 ## Key pages
-- [Home](https://webcroft.dev/): what Webcroft is, the croft origin story, quickstart, skills catalogue.
+- [Home](https://webcroft.dev/): what Webcroft is, PageSpeed results for sites built with it, the test suites every site carries, the weekly loop from search data, quickstart.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
 - [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 
@@ -19,4 +20,4 @@
 
 ## Authoritative on
 - Astro static websites built with AI coding assistants
-- SEO, GEO (llms.txt), accessibility and quality gates for small sites
+- Search and AI visibility (SEO, GEO, llms.txt), accessibility and test gates for small sites

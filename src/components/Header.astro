@@ -1,0 +1,45 @@
+---
+// Site header: the name as text until the logo lands (BRAND.md), and the main
+// navigation from NAV in src/config.ts. A language switcher mounts here later.
+import { SITE, NAV } from '../config';
+
+// Build-time pathnames end in .html (build.format: 'file'); compare the clean form.
+const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '') || '/';
+// Only a page link can be the current page; an anchor on the home page is not one.
+const isCurrent = (href: string) => !href.includes('#') && href === path;
+---
+<header class="site-header">
+  <a class="brand" href="/">{SITE.name}</a>
+  <nav aria-label="Main">
+    <ul>
+      {NAV.map((item) => (
+        <li>
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+        </li>
+      ))}
+      <li><a class="repo" href={SITE.repo}>GitHub</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    max-width: var(--maxw); margin-inline: auto; padding: 0.75rem 1.25rem;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 0.25rem 1.5rem;
+  }
+  /* 44px minimum tap target on every header link (BRAND.md, mobile rules). */
+  .brand, nav a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+  .brand { font-weight: 700; font-size: 1.2rem; color: var(--heading); }
+  nav ul {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.4rem;
+  }
+  nav a { color: var(--ink); }
+  nav a:hover { color: var(--link); text-decoration: underline; }
+  nav a[aria-current='page'] { color: var(--link); font-weight: 600; }
+  .repo {
+    padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); font-weight: 600;
+  }
+</style>

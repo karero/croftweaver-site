@@ -55,15 +55,17 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 | Unique attribute | Value it enables | Proof |
 |---|---|---|
-| Search work done by default | Fast, accessible, and the search basics in place from the first build | genai-wednesday.de: Lighthouse 98/100/100/100 on mobile (16 July 2026). Re-run: pagespeed.web.dev with that address. This measures speed, accessibility and SEO basics, not AI readability |
+| Search work done by default | Fast, accessible, and the search basics in place from the first build | PageSpeed Insights, mobile, home page, 4 October 2026 (performance / accessibility / best practices / SEO): genai-wednesday.de 99/100/100/100, m-squad.com 99/100/100/100, apreet.com 100/100/100/100. Re-run: pagespeed.web.dev with each address. This measures speed, accessibility and SEO basics, not rankings and not AI readability |
 | AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo |
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: Google Search Console badges for 50 clicks in 28 days (17 June 2026) and 90 clicks in 28 days (2 July 2026), shown on genai-wednesday.de/builder-lab |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
 
-Every figure is per named site and dated. Fresh figures for at least three sites are a
-launch requirement (README status table, step 0b); the figures above are the last
-published ones and are re-checked before reuse.
+Every figure is per named site and dated. The PageSpeed figures were measured on
+4 October 2026 and are the ones on the home page (`src/data/proof.ts`). The Search
+Console figures are the last published ones and are re-checked before reuse. Fresh,
+publicly checkable figures for at least three sites on `/proof` are a launch
+requirement (README status table, step 0b).
 
 ## 4. Target customer
 
@@ -134,7 +136,7 @@ is built.
 
 | Page | URL | Positioning term | Market category (home only) | State |
 |---|---|---|---|---|
-| Home | `/` | website skills | website skills for search and AI visibility | live; the category clause changes with the home rewrite |
+| Home | `/` | website skills | website skills for search and AI visibility | live |
 | Checks | `/checks` | test gate | — | planned |
 | Skills | `/skills` | website skills | — | planned |
 | Start | `/start` | quickstart | — | planned |
