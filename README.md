@@ -68,13 +68,13 @@ requests.
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
 | 0a | Name and trademark check for "Webcroft" | owner | open | — |
-| 0b | Fresh, publishable proof figures for three sites; consent for third-party site and testimonial | owner | figures pulled 2026-10-04 for genai-wednesday.de, m-squad.com, apreet.com (PageSpeed mobile; Search Console 5 Sep to 2 Oct 2026; AI check of 2026-09-28). The PageSpeed figures are on the home page (step 4); open: owner picks which search and AI figures are published, consents | — |
-| 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | in review | karero/webcroft-site#3 |
-| 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | in review | karero/webcroft-site#4 (stacked on #3) |
+| 0b | Fresh, publishable proof figures for three sites; consent for third-party site and testimonial | owner | figures pulled 2026-10-04 for genai-wednesday.de, m-squad.com, apreet.com (PageSpeed mobile; Search Console 5 Sep to 2 Oct 2026; AI check of 2026-09-28). The PageSpeed figures are on the home page (step 4). Owner, 2026-10-04: search and AI-check figures come from genai-wednesday.de only. Open: whether one site satisfies the three-site launch requirement below; consents | — |
+| 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/webcroft-site#3, merged 2026-10-04 (`f304bef`) |
+| 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/webcroft-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
-| 4 | Header and navigation; home page rewrite | PR | in review | karero/webcroft-site#5 (stacked on #4) |
-| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` committed, not pushed; `/proof` waits for the owner's answers in 0b; `/skills` and `/start` open | branch `content/checks-page` |
+| 4 | Header and navigation; home page rewrite | PR | done | karero/webcroft-site#5, merged 2026-10-04 (`f7e7eb1`) |
+| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` in review; `/proof`, `/skills` and `/start` open | karero/webcroft-site#6 (`/checks`) |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | open | — |
 | 5c | Pages `/compare` + `/roadmap` | PR | open | — |
