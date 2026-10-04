@@ -52,7 +52,7 @@ LOGO = None                        # faint emblem watermark, right side. Point a
 BG_TOP = (24, 54, 40)              # background gradient, top    (deep brand tone)
 BG_BOT = (14, 19, 16)              # background gradient, bottom (--bg dark, #0e1310)
 TITLE_COL = (255, 255, 255)        # headline
-SUB_COL = (143, 212, 171)          # subtitle lines  (--accent on dark, #8aa0ff)
+SUB_COL = (143, 212, 171)          # subtitle lines  (--accent on dark, #8fd4ab)
 ACCENT = (143, 212, 171)           # accent bar      (--accent)
 FOOTER_COL = (162, 172, 159)       # footer url (--muted dark, #a2ac9f)
 

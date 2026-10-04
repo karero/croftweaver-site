@@ -33,8 +33,8 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 ### Brand (fixed, theme-independent)
 | Token | Hex | Use |
 |---|---|---|
-| Primary (`--brand`) | `#2e6e4e` | buttons, brand surfaces (croft moss green) |
-| Accent (`--accent`) | `#2e6e4e` light / `#8fd4ab` dark | links, highlights; also the "pass" state |
+| Primary (`--brand`) | `#2e6e4e` | the fixed brand colour: theme colour, share cards, brand surfaces. It does not change with the theme, so text on it is always white (6.1:1), never a theme token |
+| Accent (`--accent`) | `#2e6e4e` light / `#8fd4ab` dark | buttons, links, highlights; also the "pass" state |
 
 ### Light theme
 | Token | Hex |
@@ -71,7 +71,8 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 - Every text colour above was calculated against background, soft background and
   surface in both themes on 2026-10-04: the lowest pair is warn on soft background in
   light at 5.2:1 (AA needs 4.5:1). The a11y test in both themes is the judge.
-- Hairline is a border colour and must never carry text (1.25:1 by design).
+- Hairline is a border colour and must never carry text (about 1.1 to 1.4:1 against
+  the three backgrounds, by design).
 
 ## Typography
 
