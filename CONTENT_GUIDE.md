@@ -56,6 +56,10 @@ the body copy true:
 - **Comparisons** are factual, sourced and dated. Never "the only".
 - **"GEO"** is explained once per page where it appears (how AI assistants read and
   cite a site).
+- **"EEAT"** is explained once per page where it appears (experience, expertise,
+  authoritativeness, trust: what Google's quality raters look for). It is not a score,
+  and Google says it is not a ranking factor by itself. Say which signals are built in
+  and which a test checks; never promise an effect on rankings.
 
 ## EEAT signals (build in from the start)
 
@@ -121,9 +125,10 @@ starts with questions and not with a design.
 | 4 | What you get | `POSITIONING.md` in your repo: the five parts, a one-paragraph statement, a 50-word description, one term per page. Worked example: this site's own file, linked, and this site's page-and-term table | this repo's `POSITIONING.md`, `tests/positioning.spec.ts` |
 | 5 | How the test keeps it true | what the positioning suite checks (term in the title, the description, and the H1 or the first paragraph; on the home page also the category in the body), one failure message, when it runs | `tests/positioning.spec.ts`, `/checks` |
 | 6 | Limits | the test proves the term is present and consistent, not that the positioning is good; it is no keyword-density check; the judgment stays with the owner; the optional skill `website-positioning-check` gives a look from outside | honesty rules above |
-| 7 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site does not use it. "Inspired by Donald Miller's StoryBrand framework, in Webcroft's own words." | toolkit skill `website-story` |
-| 8 | Sources | the books, with links (below), and the no-endorsement sentence | owner, 2026-10-04 |
-| 9 | Next step | quickstart, GitHub | page template |
+| 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data present, links resolve) and which stay a checklist the owner fills with real facts. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
+| 8 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site does not use it. "Inspired by Donald Miller's StoryBrand framework, in Webcroft's own words." | toolkit skill `website-story` |
+| 9 | Sources | the books, with links (below), and the no-endorsement sentence | owner, 2026-10-04 |
+| 10 | Next step | quickstart, GitHub | page template |
 
 **Sources section: links.** Plain links, no affiliate tag, no country detection, no
 cover images (no third-party request, no copyright question). For each book: the
@@ -147,6 +152,7 @@ is a trademark of its owner."
   framework graphics. The five parts are named, as the skill names them.
 - Use an author's name or "StoryBrand" in the address, the title or the H1.
 - Claim what the test cannot prove (honesty rules).
+- Promise a better "EEAT score" or a ranking effect. There is no such score.
 - Add a header link. The header takes no more links until it has a compact phone menu.
 
 **Where it is linked from.** `/skills` (the `website-positioning` entry and the
@@ -163,6 +169,7 @@ neither today.
 | someone changes a page's term in the test map | the site is rebuilt | the page-and-term table on `/positioning` shows the new term, with no edit to the page |
 | a reader wants the book | they reach the sources section | they find the author's page and plain Amazon.com and Amazon.de links, with no tag in the address |
 | a reader who knows StoryBrand | they read the story section | it says "inspired by", says the skill is optional, and says neither author endorses Webcroft |
+| a reader who has heard of EEAT | they read the trust section | it says what the letters stand for, that it is no score, which signals the skills build in, and which of them a test checks |
 | a reader looks at `/skills` | they read the credits | April Dunford and Donald Miller are named beside the existing credit |
 | a phone 360 pixels wide | the page loads | the header is unchanged, and nothing scrolls sideways |
 
