@@ -1,0 +1,153 @@
+---
+// /start — from nothing to a first site. Positioning term
+// (tests/positioning.spec.ts): "quickstart", in the title, the description and the H1.
+// Every step comes from the toolkit's own guides (README, docs/GETTING-STARTED.md,
+// docs/CODEX.md, docs/ANTIGRAVITY.md) and the interview in the new-website skill.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+// The toolkit's starter prompt, with the new name and address.
+const prompt = [
+  `I want to use the Webcroft skill suite (${SITE.repo}) to create a new website.`,
+  'Please guide me step by step in plain language.',
+  'First, check which required tools this computer already has.',
+  'Explain every command before you run it, and install missing tools only when they are actually needed.',
+  'Then install the Webcroft skills, tell me when to restart or reopen you so the skills load, and continue from there: start a fresh site by running "new website" in a new, empty folder.',
+].join(' ');
+
+const clone = `git clone ${SITE.repo}.git\ncd webcroft`;
+const installs = [
+  { assistant: 'Claude Code', command: './scripts/install.sh', note: 'Links every skill into the folder Claude Code reads.' },
+  { assistant: 'Codex', command: './scripts/install-codex.sh', note: 'Links every skill into the folder Codex reads.' },
+  { assistant: 'Antigravity', command: 'mkdir -p ~/.gemini/config/skills\ncp -R skills/* ~/.gemini/config/skills/', note: 'Copies the skills into the folder Antigravity reads.' },
+];
+
+const questions = [
+  { q: 'Which pages do you need, and does anything repeat?', why: 'Fixed pages, or content with one shape and many entries, such as posts or events.' },
+  { q: 'Does a server have to do anything?', why: 'Most sites are static. A form that emails you or one live widget needs a single small function.' },
+  { q: 'Who edits the content after launch?', why: 'You and your assistant in files, or a person who needs an editor.' },
+  { q: 'One language or several, and which language is the copy in?', why: 'A second language can be added later without moving existing addresses.' },
+  { q: 'Do you need analytics?', why: 'Google Search Console alone is free and needs no script and no banner.' },
+  { q: 'Which domain, and how do changes go live?', why: 'Recommended: a preview that search engines do not index, then one command to publish.' },
+];
+---
+<Base
+  title="Quickstart: your first site"
+  description="Quickstart for Webcroft: what you need, the starter prompt, how to install the skills for Claude Code, Codex or Antigravity, and the six questions it asks."
+  image="/images/og/start.jpg"
+>
+  <section class="wrap hero">
+    <h1>Quickstart: from nothing to your first site</h1>
+    <p class="lead">
+      This quickstart needs an AI coding assistant, a GitHub account and a
+      computer. The assistant does the typing: it checks what is installed,
+      explains each command and asks before it installs a missing tool.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="need">
+    <h2>What you need</h2>
+    <ul class="steps">
+      <li><strong>An AI coding assistant.</strong> Claude Code is the one Webcroft is developed and used with. There are install guides for Codex and Antigravity too.</li>
+      <li><strong>A GitHub account.</strong> Free. Your site's files live there, and the account is yours.</li>
+      <li><strong>A computer.</strong> macOS, Linux or Windows. On Windows, WSL2 is the smoothest route.</li>
+      <li><strong>Later, a Cloudflare account.</strong> Free. You need it when you publish, not on the first day.</li>
+    </ul>
+    <p>
+      You do not have to install Node, git or anything else first. The assistant
+      installs a tool only when the site needs it, and asks you before it does.
+    </p>
+    <p class="aside">
+      The guides for Codex and Antigravity exist, but Webcroft has not been tested
+      from start to finish with either of them yet. If you try one, an issue on
+      GitHub saying how it went is welcome.
+    </p>
+  </section>
+
+  <section class="wrap" id="prompt">
+    <h2>The easy way: one prompt</h2>
+    <ol class="steps">
+      <li>Install an assistant and open it.</li>
+      <li>Paste this prompt and send it:</li>
+    </ol>
+    <pre class="message"><code>{prompt}</code></pre>
+    <ol class="steps" start="3">
+      <li>Answer its questions. It builds the site from your answers.</li>
+    </ol>
+  </section>
+
+  <section class="wrap" id="install">
+    <h2>Or install by hand</h2>
+    <p>Get the repository first:</p>
+    <pre tabindex="0"><code>{clone}</code></pre>
+    <p>Then run the installer for your assistant:</p>
+    <dl class="installs">
+      {installs.map((i) => (
+        <div>
+          <dt>{i.assistant}</dt>
+          <dd>
+            <pre tabindex="0"><code>{i.command}</code></pre>
+            <p>{i.note}</p>
+          </dd>
+        </div>
+      ))}
+    </dl>
+    <p>
+      Restart the assistant, open it in a new, empty folder, and say
+      <em>new website</em>.
+    </p>
+  </section>
+
+  <section class="wrap" id="questions">
+    <h2>The six questions it asks</h2>
+    <p>
+      Before any code, the assistant asks six questions. They are decisions, not
+      commands, and it records your answers in the README of your project.
+    </p>
+    <ol class="questions">
+      {questions.map((item) => (
+        <li><strong>{item.q}</strong> <span>{item.why}</span></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap" id="next">
+    <h2>What happens then</h2>
+    <p>
+      The assistant works out with you what you offer and for whom, drafts the
+      pages, adds the search and AI work, and runs the tests. Then it helps you
+      publish. <a href="/skills">The skills, by stage</a> shows which skill does
+      which part, and <a href="/checks">the test gate</a> shows what is checked.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn" href="/proof">See one site, measured</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps, .questions { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .steps, .questions { padding-left: 1.3rem; }
+  .steps li, .questions li { margin-bottom: 0.6rem; }
+  .questions span { color: var(--muted); }
+  pre {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem; margin: 0.6rem 0;
+  }
+  /* The prompt is prose to paste, so it wraps; commands keep their lines and scroll. */
+  pre.message { white-space: pre-wrap; overflow-wrap: anywhere; hyphens: none; }
+  code { font-size: 0.95rem; }
+  .installs { margin: 0; max-width: 46rem; }
+  .installs dt { font-weight: 600; margin-top: 1rem; }
+  .installs dd { margin: 0; }
+  .installs dd p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.95rem; }
+</style>

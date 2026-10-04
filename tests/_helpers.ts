@@ -5,6 +5,8 @@ export const PAGES = [
   '/',
   '/checks',
   '/proof',
+  '/skills',
+  '/start',
   '/privacy',
   '/imprint',
 ] as const;

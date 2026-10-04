@@ -25,7 +25,8 @@ export const SITE = {
 export const NAV: { label: string; href: string }[] = [
   { label: 'Proof', href: '/proof' },
   { label: 'Checks', href: '/checks' },
-  { label: 'Quickstart', href: '/#quickstart' },
+  { label: 'Skills', href: '/skills' },
+  { label: 'Quickstart', href: '/start' },
 ];
 
 // og:locale derivation — ONE implementation shared by Base.astro (emission)
