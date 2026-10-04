@@ -144,6 +144,7 @@ is built.
 | Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
+| Positioning | `/positioning` | positioning | — | planned |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 
