@@ -52,12 +52,13 @@ const softwareSchema = {
   </section>
 
   <section class="wrap" id="proof">
-    <h2>Three sites built with Webcroft, measured on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time></h2>
+    <h2>Sites built with Webcroft, measured on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time></h2>
     <p>
       The test is Google's PageSpeed Insights, on a simulated phone, for the home
-      page of each site. Scores run from 0 to 100.
+      page of each site: one run each. Scores run from 0 to 100 and vary a little
+      from run to run. The sites belong to the maintainer of Webcroft.
     </p>
-    <ul class="grid proof-grid">
+    <ul class="grid proof-grid" role="list">
       {PROOF.map((p) => (
         <li class="card">
           <h3><a href={p.url}>{p.site}</a></h3>
@@ -83,13 +84,14 @@ const softwareSchema = {
   <section class="wrap" id="problem">
     <h2>Capability is not the problem. Keeping it up is.</h2>
     <p>
-      Every serious website builder can do search optimization. The controls are
-      all there: titles, descriptions, redirects, structured data.
+      A website builder gives you the controls for search optimization: titles,
+      descriptions, redirects, structured data. Using them stays your job, on every
+      page and after every edit.
     </p>
     <p>
-      The work is still yours, on every page and after every edit. Nobody checks
-      page forty. A description goes missing, a link breaks, a share card shows the
-      wrong picture, and nothing tells you.
+      Unless something checks after each edit, a site slips. A description goes
+      missing, a link breaks, a share card shows the wrong picture, and nothing
+      tells you.
     </p>
     <p>
       Webcroft takes the other route: do the work by default, then test it on every
@@ -101,7 +103,7 @@ const softwareSchema = {
     <h2>The search and AI work ships with the first build</h2>
     <p>You do not switch any of this on. The skills build it into every page:</p>
     <ul class="steps">
-      <li>Titles and descriptions at the length search results show.</li>
+      <li>Titles and descriptions kept within set length limits.</li>
       <li>Structured data (schema.org JSON-LD) on every page, so a search engine can tell what the page is.</li>
       <li>An <code>llms.txt</code> file that maps your site for AI assistants.</li>
       <li>A sitemap, clean addresses and internal links that all resolve.</li>
@@ -126,7 +128,7 @@ const softwareSchema = {
       {SUITE_GROUPS.map((group) => (
         <div class="card">
           <h3>{group.title}</h3>
-          <ul class="checks">
+          <ul class="checks" role="list">
             {SUITES.filter((s) => s.group === group.id).map((s) => (
               <li><strong>{s.name}.</strong> {s.checks}</li>
             ))}
@@ -145,16 +147,17 @@ const softwareSchema = {
   <section class="wrap" id="loop">
     <h2>After launch, search data drives the next edit</h2>
     <p>
-      A launch is the start. Once Google has data on your site, the skills read it
-      and point at the two or three edits most worth making this week:
+      A launch is the start. Once you connect Google Search Console and it has data
+      on your site, the skills read it and point at the two or three edits most
+      worth making this week:
     </p>
     <ul class="steps">
       <li>Searches where you sit just below the first page of results.</li>
       <li>Pages that people see in the results but rarely click.</li>
-      <li>A weekly check that asks AI assistants the questions your buyers ask, and counts how often they name you.</li>
+      <li>An optional weekly check, run with your own API keys, that asks AI assistants the questions your buyers ask and counts how often they name you.</li>
     </ul>
     <p>The skills cover the whole life of a site, and every edit goes back through the same tests:</p>
-    <ol class="flow">
+    <ol class="flow" role="list">
       <li><strong>Build</strong><span>Brief, positioning, content, design.</span></li>
       <li><strong>Verify</strong><span>The test suites, then a two-pass review.</span></li>
       <li><strong>Launch</strong><span>Publish, and register with Search Console.</span></li>
@@ -174,10 +177,10 @@ const softwareSchema = {
       Install guides cover Claude Code, Codex and Antigravity.
     </p>
     <p class="aside">
-      A croft is a small farm in the Scottish Highlands, worked and owned by the
-      family that lives on it: a modest piece of ground that feeds the people who
-      tend it. That is the deal Webcroft offers for the web. And yes, the name sits
-      one vowel away from webcraft, on purpose.
+      A croft is a small farm in the Scottish Highlands, worked by the family that
+      lives on it: a modest piece of ground that feeds the people who tend it.
+      Webcroft offers the same deal for the web, on ground you own. And yes, the
+      name sits one vowel away from webcraft, on purpose.
     </p>
   </section>
 
@@ -186,7 +189,7 @@ const softwareSchema = {
     <div class="grid">
       <div class="card">
         <h3>A good fit</h3>
-        <ul class="checks">
+        <ul class="checks" role="list">
           <li>Event and community sites</li>
           <li>Startup landing pages</li>
           <li>Expert and personal profiles</li>
@@ -196,7 +199,7 @@ const softwareSchema = {
       </div>
       <div class="card">
         <h3>Not a fit</h3>
-        <ul class="plain">
+        <ul class="plain" role="list">
           <li>Shops, accounts or anything that needs a database. An app builder serves you better.</li>
           <li>Drag-and-drop editing. You work with your assistant, in plain language.</li>
           <li>A hosted service. You publish to hosting you control.</li>
@@ -207,40 +210,6 @@ const softwareSchema = {
       A contact form or one live widget is fine: the output supports a single
       serverless function when a site truly needs one.
     </p>
-  </section>
-
-  <section class="wrap" id="compared">
-    <h2>Compared with the usual routes</h2>
-    <div class="table-wrap" role="region" aria-label="Comparison of routes" tabindex="0">
-      <table>
-        <thead>
-          <tr><th scope="col">Route</th><th scope="col">What it does well</th><th scope="col">What stays with you</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Hosted website builder</th>
-            <td>Design tools, hosting and search controls in one place.</td>
-            <td>Doing the search work on every page and keeping it done. A monthly fee.</td>
-          </tr>
-          <tr>
-            <th scope="row">SEO or GEO audit tool</th>
-            <td>Finds problems and advises.</td>
-            <td>Building the site, fixing the findings, and checking again after each change.</td>
-          </tr>
-          <tr>
-            <th scope="row">AI assistant without guardrails</th>
-            <td>A quick first version.</td>
-            <td>Finding the gaps in accessibility, search basics, links and tone yourself.</td>
-          </tr>
-          <tr>
-            <th scope="row">Webcroft</th>
-            <td>Builds the site, does the search and AI work by default, tests every change.</td>
-            <td>The brief, the facts and the weekly edits. Your own hosting.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">General picture of each route, as of October 2026.</p>
   </section>
 
   <section class="wrap" id="quickstart">
@@ -272,7 +241,7 @@ const softwareSchema = {
      global hyphens: auto. */
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
 
-  .hero { padding-top: 3rem; }
+  section.hero { padding-top: 3rem; }
   .kicker { margin: 0 0 0.6rem; color: var(--accent); font-weight: 600; }
   .hero h1 { font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1.08; margin: 0 0 0.6rem; }
   .subline { font-size: clamp(1.2rem, 2.6vw, 1.5rem); font-weight: 600; line-height: 1.35; margin: 0 0 1.2rem; }
@@ -285,6 +254,7 @@ const softwareSchema = {
   }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
   .grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none;
@@ -309,7 +279,6 @@ const softwareSchema = {
   .steps { padding-left: 1.3rem; }
   .steps li { margin-bottom: 0.5rem; }
   .aside { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); }
-  .note { font-size: 0.9rem; color: var(--muted); }
   pre {
     background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem;
@@ -333,12 +302,6 @@ const softwareSchema = {
   .flow-back { color: var(--muted); }
   .flow-back::before { content: '↩ '; color: var(--accent); font-weight: 700; }
 
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0 0.4rem; }
-  table { border-collapse: collapse; width: 100%; min-width: 36rem; }
-  th, td { text-align: left; vertical-align: top; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
-  thead th { font-size: 0.9rem; color: var(--muted); }
-  tbody tr:last-child th, tbody tr:last-child td { background: var(--bg-soft); border-bottom: 0; }
-
-  .signoff { text-align: center; padding-bottom: 4rem; }
+  section.signoff { text-align: center; padding-bottom: 4rem; }
   .signoff .plot { max-width: none; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; margin: 0 0 1.2rem; }
 </style>

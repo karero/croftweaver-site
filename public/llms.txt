@@ -7,7 +7,7 @@
 > https://webcroft.dev/llms.txt — a curated index for AI answer engines (GEO).
 
 ## Key pages
-- [Home](https://webcroft.dev/): what Webcroft is, PageSpeed results for three sites built with it, the test suites every site carries, the weekly loop from search data, quickstart.
+- [Home](https://webcroft.dev/): what Webcroft is, PageSpeed results for sites built with it, the test suites every site carries, the weekly loop from search data, quickstart.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
 - [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 
