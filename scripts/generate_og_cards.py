@@ -70,6 +70,8 @@ PAGES: list[tuple[str, str, list[str]]] = [
     ("proof", "Built with Webcroft", ["One site, measured:", "speed, search clicks, AI mentions."]),
     ("skills", "Website skills", ["The catalogue, by stage:", "build, verify, launch, grow."]),
     ("start", "Quickstart", ["From nothing to your first site,", "with your AI coding assistant."]),
+    ("compare", "Webcroft and its alternatives", ["When to choose which,", "sourced and dated."]),
+    ("roadmap", "Roadmap", ["What is missing, what comes next,", "and what stays out on purpose."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
 ]

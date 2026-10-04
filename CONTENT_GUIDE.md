@@ -83,8 +83,8 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Start | `/start` | zero to a first site | quickstart | Quickstart: your first site | [x] |
 | Proof | `/proof` | one site built with it, measured; re-runnable where possible | built with Webcroft | Built with Webcroft: one site, measured | [x] |
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [ ] |
-| Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Webcroft and its alternatives | [ ] |
-| Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap | [ ] |
+| Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Webcroft and its alternatives | [x] |
+| Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
 | Privacy | `/privacy` | GDPR | — | Privacy Policy | [x] |
 | Imprint | `/imprint` | § 5 DDG legal disclosure | — | Imprint | [x] |
 | 404 | (not a route in `PAGES`) | not found | — | — | [ ] |

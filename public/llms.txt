@@ -12,6 +12,8 @@
 - [Proof](https://webcroft.dev/proof): one site built with Webcroft, genai-wednesday.de, with its PageSpeed scores, its clicks from Google since the relaunch, and a check of which AI assistants name it.
 - [Skills](https://webcroft.dev/skills): the website skills catalogue by stage (build, verify, launch, grow), one line per skill, with the toolkit release it describes.
 - [Quickstart](https://webcroft.dev/start): what you need, the starter prompt, how to install the skills for Claude Code, Codex or Antigravity, and the six questions the assistant asks.
+- [Compare](https://webcroft.dev/compare): Webcroft and its alternatives in four groups (hosted website builders, AI app builders, open-source visual builders, skills for AI assistants), with when to choose which; sourced and dated.
+- [Roadmap](https://webcroft.dev/roadmap): what is missing today, what comes next and in which order, and what stays out on purpose.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
 - [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 
