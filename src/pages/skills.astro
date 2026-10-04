@@ -15,9 +15,10 @@ const description =
   <section class="wrap hero">
     <h1>The website skills, by stage</h1>
     <p class="lead">
-      Webcroft is {SKILL_COUNT} website skills for AI coding assistants. Each one is a
-      plain Markdown file that your assistant reads and follows. This page lists
-      them by the stage of a site's life they serve.
+      Webcroft is {SKILL_COUNT} website skills for AI coding assistants. Each one
+      starts with a plain Markdown file of instructions that your assistant reads
+      and follows; some bring scripts and templates. This page lists them by the
+      stage of a site's life they serve.
     </p>
     <p class="note">
       As of toolkit release {RELEASE.version},
@@ -53,6 +54,17 @@ const description =
       </dl>
     </section>
   ))}
+
+  <section class="wrap" id="limits">
+    <h2>What a skill is not</h2>
+    <p>
+      A skill is a set of instructions that an assistant follows, not a program
+      that runs the same way every time. Not every site uses every skill: the ones
+      marked optional run only when you ask for them or when your answers call for
+      them. And a skill that finishes cleanly promises no ranking and no citation
+      by an AI assistant.
+    </p>
+  </section>
 
   <section class="wrap" id="recent">
     <h2>New in the last three releases</h2>

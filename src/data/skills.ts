@@ -27,7 +27,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'website-seo-geo', stage: 'build', does: 'The contract for every page head: title and description limits, share tags, canonical address, structured data, llms.txt.' },
   { name: 'schema-markup', stage: 'build', does: 'Adds and fixes structured data (schema.org JSON-LD).' },
   { name: 'og-images', stage: 'build', does: 'Generates a share card for every page.' },
-  { name: 'website-testimonials', stage: 'build', does: 'Shows testimonials on the page and encodes them as review data, from one source.' },
+  { name: 'website-testimonials', stage: 'build', optional: true, does: 'For a site with testimonials: shows them on the page and encodes them as review data, from one source.' },
   { name: 'website-motion', stage: 'build', optional: true, does: 'Adds two restrained motion effects, and respects visitors who turn motion off.' },
   { name: 'astro-i18n-setup', stage: 'build', optional: true, does: 'Makes the site multilingual: routing, language tags, a language switcher, tests per language.' },
   { name: 'keystatic-setup', stage: 'build', optional: true, does: 'Adds an editor (Keystatic) for people who do not edit files.' },
@@ -37,14 +37,14 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'website-review', stage: 'verify', does: 'A review in two passes: bugs first, then consistency across files.' },
   { name: 'double-knuth', stage: 'verify', does: 'The same two-pass review for any repository or set of files.' },
   { name: 'independent-review', stage: 'verify', does: 'Sends a plan or a change to independent AI models for a second opinion.' },
-  { name: 'website-positioning-check', stage: 'verify', does: 'A quick look from outside: can a visitor tell what is on offer, for whom, and why to believe it?' },
+  { name: 'website-positioning-check', stage: 'verify', optional: true, does: 'A quick look from outside: can a visitor tell what is on offer, for whom, and why to believe it?' },
   { name: 'seo-audit', stage: 'verify', does: 'Audits a site for technical and on-page SEO problems.' },
   { name: 'internal-link-audit', stage: 'verify', does: 'Finds pages that are orphaned, thinly linked or buried, and suggests where to link.' },
   { name: 'outgoing-link-audit', stage: 'verify', does: 'Checks every link to another site: alive, redirected, rebranded or dead.' },
 
   { name: 'search-console-setup', stage: 'launch', does: 'Registers the live site with Google Search Console and Bing, submits the sitemap, turns on IndexNow.' },
-  { name: 'business-listings-setup', stage: 'launch', does: 'Claims Google Business Profile, Bing Places and directory listings, and checks that the profile links resolve.' },
-  { name: 'website-team-setup', stage: 'launch', does: 'Readies the repository for several people and assistants: collaborators, a protected main branch, automatic checks, previews.' },
+  { name: 'business-listings-setup', stage: 'launch', optional: true, does: 'For a business with listings: claims Google Business Profile, Bing Places and directory entries, and checks that the profile links resolve.' },
+  { name: 'website-team-setup', stage: 'launch', optional: true, does: 'Readies the repository for several people and assistants: collaborators, a rule that changes arrive as pull requests, automatic checks, previews.' },
 
   { name: 'search-console-insights', stage: 'grow', does: 'Reads your Search Console data: where you rank, what sits just below the first page, which pages are seen but not clicked. Also runs the optional weekly AI check.' },
   { name: 'ai-seo', stage: 'grow', does: 'Improves pages so that AI assistants can read and cite them.' },
@@ -58,7 +58,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
-  { version: '0.29', label: '29 September 2026', text: 'One prepaid key covers the weekly AI check for four assistants, and every run shows what it cost. A full weekly check for one site cost about 0.72 US dollars when it was measured.' },
+  { version: '0.29', label: '29 September 2026', text: 'One prepaid key covers the weekly AI check for four assistants, and every run shows what it cost. Measured on 26 September 2026 through OpenRouter, a full weekly check for one site (42 questions) cost 0.72 US dollars, before the fee for topping up credit. Prices change.' },
   { version: '0.28', label: '27 September 2026', text: 'A report page on how people find you on Google: week by week, up to 16 months back, with the searches just below the first page and the pages seen but rarely clicked. It stays on your own computer.' },
   { version: '0.27', label: '27 September 2026', text: 'An optional story layer for the home page, the weekly check of whether AI assistants name you, a report on it that reads in plain words, and a guided setup for teams.' },
 ] as const;
