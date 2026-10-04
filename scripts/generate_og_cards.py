@@ -67,6 +67,7 @@ DEFAULT_SUBTITLES = ["Keep improving SEO and GEO, week by week.", "Website skill
 # Title: short, punchy (wraps to ≤ 3 lines). Subtitles: 0–2 supporting lines.
 PAGES: list[tuple[str, str, list[str]]] = [
     ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
+    ("proof", "Built with Webcroft", ["One site, measured:", "speed, search clicks, AI mentions."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
 ]

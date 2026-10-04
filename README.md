@@ -33,14 +33,17 @@ coding assistants (https://github.com/karero/webcroft). Built with Webcroft itse
 - **Logo:** designed by the owner; the site is built with the name as text until it
   lands.
 - **Languages:** English first; German is the last step.
+- **Proof:** `/proof` shows one site, genai-wednesday.de (owner, 2026-10-04). This
+  replaces the earlier launch requirement of three sites.
 
 ## Differentiation contract
 
 genai-wednesday.de/builder-lab is the community showcase and owns GenAI Wednesday's own
 evidence (its scorecard, the AI score table, FAQPage schema). This site is the project
-home (the promise, the test gate, skills catalogue, quickstart, a cross-site proof
-index, SoftwareSourceCode schema). No shared copy apart from one attributed
-testimonial; the pages crosslink. Details: `POSITIONING.md`.
+home (the promise, the test gate, skills catalogue, quickstart, a proof page for one
+site, SoftwareSourceCode schema). No shared copy apart from one attributed
+testimonial. This site links to the Lab; the Lab links back in step 9. Details:
+`POSITIONING.md`.
 
 ## Working on the site
 
@@ -68,13 +71,13 @@ requests.
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
 | 0a | Name and trademark check for "Webcroft" | owner | open | — |
-| 0b | Fresh, publishable proof figures for three sites; consent for third-party site and testimonial | owner | figures pulled 2026-10-04 for genai-wednesday.de, m-squad.com, apreet.com (PageSpeed mobile; Search Console 5 Sep to 2 Oct 2026; AI check of 2026-09-28). The PageSpeed figures are on the home page (step 4). Owner, 2026-10-04: search and AI-check figures come from genai-wednesday.de only. Open: whether one site satisfies the three-site launch requirement below; consents | — |
+| 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on the home page (step 4). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/webcroft-site#7 |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/webcroft-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/webcroft-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/webcroft-site#5, merged 2026-10-04 (`f7e7eb1`) |
-| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` in review; `/proof`, `/skills` and `/start` open | karero/webcroft-site#6 (`/checks`) |
+| 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | `/checks` done; `/proof` in review; `/skills` and `/start` open | karero/webcroft-site#6, merged 2026-10-04 (`40c6031`); karero/webcroft-site#7 (`/proof`) |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | open | — |
 | 5c | Pages `/compare` + `/roadmap` | PR | open | — |
@@ -91,7 +94,8 @@ Launch requirements that no test enforces:
   only catches `[MISSING:`.
 - `hello@webcroft.dev` receives mail after the move to Cloudflare DNS (the current
   forwarding is tied to the registrar's DNS).
-- Three sites with fresh, publicly checkable figures on `/proof`.
+- `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
+  decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
