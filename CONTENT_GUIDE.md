@@ -59,7 +59,8 @@ the body copy true:
 - **"EEAT"** is explained once per page where it appears (experience, expertise,
   authoritativeness, trust: what Google's quality raters look for). It is not a score,
   and Google says it is not a ranking factor by itself. Say which signals are built in
-  and which a test checks; never promise an effect on rankings.
+  and which a test checks (structured data present, internal links resolve; not outside
+  links or profiles); never promise an effect on rankings.
 
 ## EEAT signals (build in from the start)
 
@@ -97,7 +98,8 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 ### Planned page: `/positioning` (spec, 2026-10-04)
 
 **Why this page.** Tested positioning is what the comparable kits do not have
-(`POSITIONING.md`, alternatives). No page explains it yet, and no page credits the two
+(`POSITIONING.md`, alternatives). `/checks` explains the positioning check; no page
+explains how the positioning is worked out before any copy, and no page credits the two
 methods the skills build on. The page is about how Webcroft does it. It is not a summary
 of anyone's book.
 
@@ -113,7 +115,8 @@ starts with questions and not with a design.
 - Title: "Positioning first: what your site says" (38 characters, 49 rendered).
 - H1, three candidates for the owner: "Decide what your site says. Then build it." ·
   "Say what you offer before you write a word." · "Know what your site says first."
-- Description, 120 to 160 characters, carrying the term.
+- Description: 140 to 160 characters, carrying the term (`AGENTS.md`; the test allows
+  120 to 160).
 
 **Sections, in this order.**
 
@@ -125,7 +128,7 @@ starts with questions and not with a design.
 | 4 | What you get | `POSITIONING.md` in your repo: the five parts, a one-paragraph statement, a 50-word description, one term per page. Worked example: this site's own file, linked, and this site's page-and-term table | this repo's `POSITIONING.md`, `tests/positioning.spec.ts` |
 | 5 | How the test keeps it true | what the positioning suite checks (term in the title, the description, and the H1 or the first paragraph; on the home page also the category in the body), one failure message, when it runs | `tests/positioning.spec.ts`, `/checks` |
 | 6 | Limits | the test proves the term is present and consistent, not that the positioning is good; it is no keyword-density check; the judgment stays with the owner; the optional skill `website-positioning-check` gives a look from outside | honesty rules above |
-| 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data present, links resolve) and which stay a checklist the owner fills with real facts. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
+| 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data is present and parses; internal links resolve) and which a test does not check: whether a profile or another outside link still works is looked at by hand or by the link audit, and the facts themselves come from the owner. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
 | 8 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site does not use it. "Inspired by Donald Miller's StoryBrand framework, in Webcroft's own words." | toolkit skill `website-story` |
 | 9 | Sources | the books, with links (below), and the no-endorsement sentence | owner, 2026-10-04 |
 | 10 | Next step | quickstart, GitHub | page template |
@@ -133,8 +136,15 @@ starts with questions and not with a design.
 **Sources section: links.** Plain links, no affiliate tag, no country detection, no
 cover images (no third-party request, no copyright question). For each book: the
 author's own page first, then Amazon.com and Amazon.de. The German pages later link the
-German edition where one exists. Every link is opened by hand when the page is built;
-Amazon often refuses automated link checks, so the external link audit may warn there.
+German edition where one exists. Checked on 2026-10-04: all nine links answer the
+request the link audit sends with 200, and each page title names the right book. They
+are checked again when the page is built.
+
+Open, for the owner: the launch gate in `README.md` wants the external link audit to
+report no warning. Today it would report none for these links, but a shop can refuse
+automated requests on another day, and the audit then lists the link as unverified.
+Either a dated check by hand counts for a link a shop refuses to answer, or the page
+links the authors' own pages only.
 
 | Book | Role on the page | Author's page | Amazon (as supplied by the owner, 2026-10-04) |
 |---|---|---|---|
@@ -166,12 +176,26 @@ neither today.
 |---|---|---|
 | a visitor who has never heard of positioning | they read the first screen | they can say what Webcroft asks before it writes copy, and why |
 | the page is built | the test suite runs | the positioning suite finds "positioning" in the title, the description and the H1 or first paragraph |
-| someone changes a page's term in the test map | the site is rebuilt | the page-and-term table on `/positioning` shows the new term, with no edit to the page |
+| someone changes a page's term in the test map | the site is rebuilt | the page-and-term table on `/positioning` shows the new term, with no edit to the page; a map the build cannot read fails the build |
 | a reader wants the book | they reach the sources section | they find the author's page and plain Amazon.com and Amazon.de links, with no tag in the address |
-| a reader who knows StoryBrand | they read the story section | it says "inspired by", says the skill is optional, and says neither author endorses Webcroft |
-| a reader who has heard of EEAT | they read the trust section | it says what the letters stand for, that it is no score, which signals the skills build in, and which of them a test checks |
+| a reader who knows StoryBrand | they read the story section and the sources | the story section says "inspired by" and that the skill is optional; the sources section says neither author endorses Webcroft |
+| a reader who has heard of EEAT | they read the trust section | it says what the letters stand for, that it is no score, which signals the skills build in, which of them a test checks, and that outside links and profiles are not among them |
 | a reader looks at `/skills` | they read the credits | April Dunford and Donald Miller are named beside the existing credit |
 | a phone 360 pixels wide | the page loads | the header is unchanged, and nothing scrolls sideways |
+
+How the page-and-term table gets its rows: the build reads `tests/positioning.spec.ts`
+as text and takes the map from it. It never imports the file, because importing it would
+run the test registration outside the test runner. Both forms of an entry (one term, or
+separate rules per surface) are handled; anything else fails the build, as `/checks`
+does for its suite list.
+
+How the two scenarios without a test are checked, when the page is built:
+
+- First screen: the owner reads it and answers two questions without scrolling: what
+  does Webcroft ask before it writes copy, and why does that come first?
+- Phone: the page is opened 360 pixels wide in a browser; the document is no wider than
+  the window, and the header shows the same links as on `main`. The test suite runs at
+  desktop width only, so this is a check by hand, recorded in the pull request.
 
 The per-page contract applies as for every page: route in `PAGES`, line in
 `public/llms.txt`, own share card, entry in the positioning map and in the spine table
