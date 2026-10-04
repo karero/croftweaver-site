@@ -73,7 +73,7 @@ requests.
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | in review | karero/webcroft-site#4 (stacked on #3) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
-| 4 | Header and navigation; home page rewrite | PR | committed, not pushed | branch `content/home-findability` |
+| 4 | Header and navigation; home page rewrite | PR | in review | karero/webcroft-site#5 (stacked on #4) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | open | — |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | open | — |
