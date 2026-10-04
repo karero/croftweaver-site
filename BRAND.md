@@ -9,13 +9,21 @@
 
 ## Brand in one line
 
-A croft on the web: calm, earthy, self-assured. Moss-green accent on generous
-whitespace, soft cards, no stock photography, typography does the work.
+A croft on the web: calm, earthy, self-assured. Moss green on warm, green-tinted
+neutrals, generous whitespace, soft cards, no stock photography, typography does the
+work. The palette is Webcroft's own; it deliberately does not reuse the violet and
+amber of genai-wednesday.de (owner decision, 2026-10-03).
 
 ## Logo
 
-- No logo yet: the wordmark "Webcroft" in the heading font is the mark for now.
-- When one exists: transparent PNG + light variant for dark/OG use (see OG rules).
+- The logo is in progress (owner). Until it lands, the name "Webcroft" set as text in
+  the heading font is the mark.
+- Name styling: "Webcroft" in text, never "WebCroft"; lower case only in code contexts
+  (domain, repo). No "WC" monogram.
+- When the logo exists: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal
+  lockup, each in dark and light ink), a transparent PNG at `public/images/logo.png`
+  for structured data, a light variant for dark and OG use (see OG rules), favicon and
+  app icons in `public/`.
 
 ## Colour palette
 
@@ -25,28 +33,46 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 ### Brand (fixed, theme-independent)
 | Token | Hex | Use |
 |---|---|---|
-| Primary | `#2e6e4e` | buttons, brand surfaces (croft moss green) |
-| Accent | `#2e6e4e` light / `#8fd4ab` dark | links, highlights (AA on both bg) |
+| Primary (`--brand`) | `#2e6e4e` | the fixed brand colour: theme colour, share cards, brand surfaces. It does not change with the theme, so text on it is always white (6.1:1), never a theme token |
+| Accent (`--accent`) | `#2e6e4e` light / `#8fd4ab` dark | buttons, links, highlights; also the "pass" state |
 
 ### Light theme
 | Token | Hex |
 |---|---|
-| Heading | `#16162a` |
-| Body (ink) | `#16162a` |
-| Muted | `#5a5a72` |
-| Hairline | `#e3e7f2` |
-| Background | `#ffffff` |
-| Surface (cards) | `#ffffff` |
+| Heading, body (`--heading`, `--ink`) | `#1a1f1b` |
+| Muted (`--muted`) | `#586157` |
+| Hairline (`--line`), borders only | `#dfe3d9` |
+| Background (`--bg`) | `#fbfaf6` |
+| Soft background (`--bg-soft`) | `#f1f0e9` |
+| Surface, cards (`--surface`) | `#ffffff` |
 
 ### Dark theme
 | Token | Hex |
 |---|---|
-| Heading | `#e7e9fb` |
-| Body | `#dce0f5` |
-| Muted | `#a6abce` |
-| Hairline | `#272c4d` |
-| Background | `#0a0b1e` |
-| Surface | `#161836` |
+| Heading, body | `#e3e8e1` |
+| Muted | `#a2ac9f` |
+| Link (`--link`) | `#a3e0bc` |
+| Hairline, borders only | `#2a332b` |
+| Background | `#0e1310` |
+| Soft background | `#141a15` |
+| Surface | `#182019` |
+
+### States and secondary
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| Pass (`--pass`) | accent | accent | a passing check |
+| Fail (`--fail`) | `#b3261e` | `#ff8a80` | a failing check |
+| Warn (`--warn`) | `#8a5a00` | `#f0b84a` | a warning |
+| Secondary (`--secondary`, heather) | `#6b4e9b` | `#c3acec` | sparing: highlights, illustration. Heather grows on crofts; it is also the one quiet link to GenAI Wednesday's violet |
+
+### Pairings
+- Text on a primary button uses the background colour (`color: var(--bg)` on
+  `background: var(--accent)`): 5.8:1 light, 10.9:1 dark.
+- Every text colour above was calculated against background, soft background and
+  surface in both themes on 2026-10-04: the lowest pair is warn on soft background in
+  light at 5.2:1 (AA needs 4.5:1). The a11y test in both themes is the judge.
+- Hairline is a border colour and must never carry text (about 1.1 to 1.4:1 against
+  the three backgrounds, by design).
 
 ## Typography
 
@@ -75,7 +101,7 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 
 This drives `scripts/generate_og_cards.py` (run `npm run og`). Fill its BRAND block
 from the tokens below so `public/images/og/default.jpg` + the per-page cards stay on-brand:
-1. Canvas 1200×630, deep-green to near-black gradient (24,54,40 → 10,11,30).
+1. Canvas 1200×630, deep-green to near-black gradient (24,54,40 → 14,19,16).
 2. No logo emblem yet (LOGO = None).
 3. Wordmark "Webcroft", top-left, white.
 4. Headline per page; default card: "Your own plot of the web."
@@ -103,7 +129,7 @@ Per-page variants: change only the headline; keep everything else identical.
 
 ## Imagery style (do / don't)
 
-- **Do:** moss green + neutrals, hand-drawn or typographic motifs, breathing room;
+- **Do:** moss green + green-tinted neutrals, hand-drawn or typographic motifs, breathing room;
   legible in both themes.
 - **Don't:** rainbow palettes, busy gradients, AI robot/brain clichés, Tomb Raider
   references (the croft is Scottish farmland, not a game), low-contrast text on images.
