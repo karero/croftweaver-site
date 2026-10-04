@@ -11,7 +11,8 @@ import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 const p = SITE_PROOF;
 const speed = PROOF.find((entry) => entry.site === p.site)!;
 const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
-const { latest, peak, blocks } = p.search;
+const { latest, peak, blocks, positionsPeriod } = p.search;
+const google = (query: string) => `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 ---
 <Base
   title="Built with Webcroft: one site, measured"
@@ -66,7 +67,8 @@ const { latest, peak, blocks } = p.search;
       In the 28 days from {latest.from} to {latest.to}, Google sent
       <strong>{latest.clicks} clicks</strong> to the site, from
       {latest.impressions.toLocaleString('en-GB')} appearances in search results.
-      The table shows every 28-day block since the relaunch.
+      The table counts back from that day in 28-day blocks. The relaunch on
+      {p.relaunched.label} falls inside the first one.
     </p>
     <div class="table-wrap" role="region" aria-label="Clicks from Google in 28-day blocks" tabindex="0">
       <table>
@@ -90,11 +92,13 @@ const { latest, peak, blocks } = p.search;
       not established.
     </p>
     <p>
-      For its main local searches the site sits near the bottom of the first
-      results page:
+      For its two main local searches, Search Console reports these average
+      positions from {positionsPeriod.from} to {positionsPeriod.to}:
       {p.search.positions.map((q, i) => (
-        <Fragment>{i > 0 && ', and '}<q>{q.query}</q> at an average position of {q.position}</Fragment>
-      ))}, in the latest block.
+        <Fragment>{i > 0 && ' and '}{q.position} for <a href={google(q.query)}><q>{q.query}</q></a></Fragment>
+      ))}. An average position is the mean over every appearance, not a fixed
+      rank. The links run the search for you; what you see depends on where you
+      are.
     </p>
     <p class="note">
       Source: the site's own Google Search Console account, whole site, all
@@ -110,9 +114,9 @@ const { latest, peak, blocks } = p.search;
       On <time datetime={p.ai.date.iso}>{p.ai.date.label}</time> the weekly check
       asked each assistant two questions, up to three times each:
     </p>
-    <ul class="steps">
+    <ol class="steps">
       {p.ai.questions.map((question) => <li><q>{question}</q></li>)}
-    </ul>
+    </ol>
     <div class="table-wrap" role="region" aria-label="Results of the AI check" tabindex="0">
       <table>
         <thead>
@@ -126,10 +130,16 @@ const { latest, peak, blocks } = p.search;
       </table>
     </div>
     <p>
-      When an assistant searches the web, it tends to find the site and name it.
-      From memory alone, none did. The check counts mentions for two questions on
-      one day, and answers change from run to run. It talks to each assistant
-      through its API, which can answer differently from the app.
+      With web search, {p.ai.withSearch.named} of {p.ai.withSearch.answers} answers
+      named the site that day. Without it, {p.ai.withoutSearch.named} of
+      {p.ai.withoutSearch.answers} did. The check counts mentions for two
+      questions on one day, and answers change from run to run. It talks to each
+      assistant through its API, which can answer differently from the app.
+    </p>
+    <p class="note">
+      The counts behind the table are published:
+      <a href={p.ai.csv}>download the file</a> (CSV, one row per assistant, mode and
+      question).
     </p>
     <p class="note">
       This is a different thing from the panel in the
@@ -180,5 +190,7 @@ const { latest, peak, blocks } = p.search;
   .num { text-align: right; font-variant-numeric: tabular-nums; }
   #search tbody tr:last-child th, #search tbody tr:last-child td { font-weight: 700; }
   #ai .table-wrap { max-width: none; }
+  /* On a phone the table keeps a readable width and scrolls inside its region. */
+  #ai table { min-width: 38rem; }
   #ai tbody th { font-weight: 600; white-space: nowrap; }
 </style>

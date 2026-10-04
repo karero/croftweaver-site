@@ -42,7 +42,8 @@ genai-wednesday.de/builder-lab is the community showcase and owns GenAI Wednesda
 evidence (its scorecard, the AI score table, FAQPage schema). This site is the project
 home (the promise, the test gate, skills catalogue, quickstart, a proof page for one
 site, SoftwareSourceCode schema). No shared copy apart from one attributed
-testimonial; the pages crosslink. Details: `POSITIONING.md`.
+testimonial. This site links to the Lab; the Lab links back in step 9. Details:
+`POSITIONING.md`.
 
 ## Working on the site
 

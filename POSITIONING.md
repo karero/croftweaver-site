@@ -157,7 +157,8 @@ is built.
   clicks from Google, the weekly AI check) and approved by the site's owner; the Lab's
   scorecard and AI score table are linked, not copied.
 - No copy is shared between the two, apart from one third-party testimonial quoted
-  verbatim with attribution. Each links to the other.
+  verbatim with attribution. This site links to the Lab; the Lab links back when its
+  page is reworked (README status table, step 9).
 
 ## Routes considered and not chosen
 
