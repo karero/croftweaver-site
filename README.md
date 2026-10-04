@@ -69,7 +69,7 @@ requests.
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
 | 0a | Name and trademark check for "Webcroft" | owner | open | — |
 | 0b | Fresh, publishable proof figures for three sites; consent for third-party site and testimonial | owner | open | — |
-| 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | in review | branch `content/positioning-findability` |
+| 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | in review | karero/webcroft-site#3 |
 | 2 | Brand: palette tokens, share-card colours, 404 page, legal address, `_headers` placeholder, `llms.txt` licence wording | PR | open, needs the legal address | — |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
 | 4 | Header and navigation; home page rewrite | PR | open | — |
