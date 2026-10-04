@@ -14,7 +14,17 @@ const fail = (why: string): never => {
   throw new Error(`${WHERE}: ${why} /positioning renders its table from this file; fix the file or src/data/positioning.ts.`);
 };
 
+// The compiler recovers from a syntax error and still returns a tree. Such a file must
+// not be read: ask for the syntax errors first and stop on any.
+const syntax = ts.transpileModule(spec, { reportDiagnostics: true, fileName: 'positioning.spec.ts' }).diagnostics ?? [];
+if (syntax.length) fail(`the file has a syntax error (${ts.flattenDiagnosticMessageText(syntax[0].messageText, ' ')}).`);
 const source = ts.createSourceFile('positioning.spec.ts', spec, ts.ScriptTarget.Latest, true);
+// Brackets and type notes around a value change nothing about the value.
+const unwrap = (node: ts.Expression): ts.Expression => {
+  let n = node;
+  while (ts.isParenthesizedExpression(n) || ts.isAsExpression(n) || ts.isSatisfiesExpression(n)) n = n.expression;
+  return n;
+};
 const declared = (name: string): ts.Expression => {
   for (const statement of source.statements) {
     if (!ts.isVariableStatement(statement)) continue;
@@ -27,7 +37,8 @@ const declared = (name: string): ts.Expression => {
 
 // Only plain values: a phrase, a list, or an object of those. Anything computed (a name,
 // a spread, a template with a placeholder) stops the build instead of being guessed at.
-const plain = (node: ts.Expression): unknown => {
+const plain = (wrapped: ts.Expression): unknown => {
+  const node = unwrap(wrapped);
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
   if (ts.isArrayLiteralExpression(node)) return node.elements.map(plain);
   if (ts.isObjectLiteralExpression(node)) {
@@ -43,7 +54,7 @@ const plain = (node: ts.Expression): unknown => {
   return fail('a value is not a plain phrase, list or object.');
 };
 
-const mapNode = declared('POSITIONING');
+const mapNode = unwrap(declared('POSITIONING'));
 if (!ts.isObjectLiteralExpression(mapNode)) fail('POSITIONING is not written as a plain object.');
 const map = plain(mapNode) as Record<string, Record<string, unknown>>;
 
@@ -79,7 +90,7 @@ if (!SPINE.length) fail('the POSITIONING map is empty.');
 if (!SPINE.some((row) => row.path === '/positioning')) fail('there is no entry for /positioning.');
 
 // The pages that carry no term on purpose: new Set<string>(['/privacy', …]) in the test.
-const exemptNode = declared('POSITIONING_EXEMPT');
+const exemptNode = unwrap(declared('POSITIONING_EXEMPT'));
 if (!ts.isNewExpression(exemptNode) || !ts.isIdentifier(exemptNode.expression) || exemptNode.expression.text !== 'Set') {
   fail('POSITIONING_EXEMPT is not written as new Set([...]).');
 }
@@ -88,4 +99,4 @@ const exemptValue = exemptArg ? plain(exemptArg) : [];
 if (!Array.isArray(exemptValue) || !exemptValue.every((p) => typeof p === 'string')) {
   fail('POSITIONING_EXEMPT is not a list of page addresses.');
 }
-export const EXEMPT = exemptValue as string[];
+export const EXEMPT = [...new Set(exemptValue as string[])];

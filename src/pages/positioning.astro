@@ -159,7 +159,7 @@ const books = [
     <h2>What the test does not prove</h2>
     <ul class="steps">
       <li><strong>That the positioning is good.</strong> It proves that the term is in those three places. Whether it is the right term stays a judgment.</li>
-      <li><strong>That more is better.</strong> It does not count words. Once in each of the three places passes. Repeating the term earns nothing.</li>
+      <li><strong>That more is better.</strong> It does not count words. Each required phrase only needs to appear once in its place. Repeating it earns nothing.</li>
       <li><strong>That every page has a term.</strong> A page with no declared term only raises a warning.</li>
     </ul>
     <p>
@@ -193,8 +193,9 @@ const books = [
       Tests cover part of this. Every page must carry structured data that a
       machine can read; no test checks what it says. Links inside the site must
       work when they are written from the start of the address (such as
-      <code>/checks</code>) or as a full address; links written relative to the
-      current page are not tested. A separate audit looks at links to other sites,
+      <code>/checks</code>) or as a full address. A link written relative to the
+      current page is tested only when it points to a section of a page. A
+      separate audit looks at links to other sites,
       and it sees only links on a page: a profile that appears only in the
       structured data is checked by hand. The rest is a checklist in your content
       guide, and no test can tell whether a claim is true.
