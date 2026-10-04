@@ -22,6 +22,9 @@ const description =
       suites that run against the finished build. This page lists each one, with
       what it checks, an example of a failure, and what a pass does not prove.
     </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+    </div>
   </section>
 
   <section class="wrap" id="when">
@@ -35,7 +38,7 @@ const description =
     <p class="aside">
       Two limits apply. The hook can be skipped with one flag. And today nothing on
       the server stops a person from publishing a build that failed: the default
-      way to publish tests first, but it is a default, not a lock.
+      publish path runs the tests first, but it is a default, not a lock.
     </p>
     <p class="note">
       These are the suites of the toolkit template at commit

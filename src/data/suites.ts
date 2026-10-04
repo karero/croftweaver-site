@@ -33,14 +33,14 @@ export const SUITES: {
   },
   {
     file: 'anchors', group: 'people', name: 'Anchors',
-    checks: 'Every link to a section lands on a real section.',
-    example: 'A link to a section fails when no element on the target page has that id.',
-    limit: 'It cannot tell whether the section is the one you meant.',
+    checks: 'Every internal link to a section lands on a real section.',
+    example: 'An internal link to a section fails when no element on the target page has that id.',
+    limit: 'It cannot tell whether the section is the one you meant. Section links into other sites, and into files such as PDFs, are skipped.',
   },
   {
     file: 'images', group: 'people', name: 'Images',
     checks: 'A modern format, fixed dimensions, an alt text and a loading choice for every image.',
-    example: 'A JPEG photo without width and height fails on two counts: the format, and the missing dimensions.',
+    example: 'A JPEG with no modern format beside it and no width and height fails on two counts: the format, and the missing dimensions.',
     limit: 'An empty alt text passes, because a decorative image needs one. It cannot tell whether a description fits the picture.',
   },
   {
@@ -59,7 +59,7 @@ export const SUITES: {
     file: 'orphans', group: 'search', name: 'Orphans',
     checks: 'Every page can be reached from the home page.',
     example: 'A page that sits in the sitemap but is linked from nowhere fails.',
-    limit: 'One link is enough to pass. Whether a page is linked from the right places is a judgment for a review.',
+    limit: 'One link from a page that is itself reachable is enough to pass. Whether a page is linked from the right places is a judgment for a review.',
   },
   {
     file: 'positioning', group: 'message', name: 'Positioning',
@@ -69,8 +69,8 @@ export const SUITES: {
   },
   {
     file: 'tone', group: 'message', name: 'Tone',
-    checks: 'No em dashes, no contractions, no words from the buzzword list.',
-    example: 'A headline with a contraction fails. So does an em dash anywhere in the copy.',
+    checks: 'No em dashes, no common contractions and no listed buzzwords, in copy and metadata. Quotations are exempt.',
+    example: 'A headline with a common contraction fails. So does an em dash outside a quotation.',
     limit: 'The word list is short and fixed. It cannot tell whether a sentence is clear or true.',
   },
   {
@@ -94,9 +94,11 @@ export const SUITES: {
 ];
 
 // The glob is resolved from the project root at build time, whatever directory the
-// build was started from. `?raw` keeps the spec files from being bundled or run.
-const onDisk = Object.keys(import.meta.glob('/tests/*.spec.ts', { query: '?raw' }))
-  .map((path) => path.replace(/^.*\//, '').replace(/\.spec\.ts$/, ''))
+// build was started from, and covers what Playwright would pick up under tests/
+// (nested folders, .spec and .test files). `?raw` keeps the files from being bundled
+// or run. A suite's id is its path under tests/ without the suffix.
+const onDisk = Object.keys(import.meta.glob('/tests/**/*.{spec,test}.{ts,js,mjs}', { query: '?raw' }))
+  .map((path) => path.replace(/^\/tests\//, '').replace(/\.(spec|test)\.(ts|js|mjs)$/, ''))
   .sort();
 const described = SUITES.map((s) => s.file).sort();
 const undescribed = onDisk.filter((f) => !described.includes(f));
@@ -117,6 +119,12 @@ export const SUITES_VERSION = {
   commit: versionFile.match(/^suite_commit:\s*(\S+)/m)?.[1] ?? '',
   copied: versionFile.match(/^copied:\s*(\S+)/m)?.[1] ?? '',
 };
-if (!/^[0-9a-f]{40}$/.test(SUITES_VERSION.commit) || !/^\d{4}-\d{2}-\d{2}$/.test(SUITES_VERSION.copied)) {
-  throw new Error('tests/TESTS-VERSION is missing or has no suite_commit and copied lines.');
+// A real commit id and a real calendar date (2026-02-31 must not pass as "3 March").
+const copiedDate = new Date(`${SUITES_VERSION.copied}T00:00:00Z`);
+const realDate =
+  /^\d{4}-\d{2}-\d{2}$/.test(SUITES_VERSION.copied) &&
+  !Number.isNaN(copiedDate.getTime()) &&
+  copiedDate.toISOString().slice(0, 10) === SUITES_VERSION.copied;
+if (!/^[0-9a-f]{40}$/.test(SUITES_VERSION.commit) || !realDate) {
+  throw new Error('tests/TESTS-VERSION needs a 40-character suite_commit and a real copied date (YYYY-MM-DD).');
 }
