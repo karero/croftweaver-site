@@ -66,6 +66,7 @@ DEFAULT_SUBTITLES = ["Keep improving SEO and GEO, week by week.", "Website skill
 # Pages you don't list here fall back to default.jpg automatically.
 # Title: short, punchy (wraps to ≤ 3 lines). Subtitles: 0–2 supporting lines.
 PAGES: list[tuple[str, str, list[str]]] = [
+    ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
 ]

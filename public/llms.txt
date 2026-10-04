@@ -8,6 +8,7 @@
 
 ## Key pages
 - [Home](https://webcroft.dev/): what Webcroft is, PageSpeed results for sites built with it, the test suites every site carries, the weekly loop from search data, quickstart.
+- [Checks](https://webcroft.dev/checks): the test gate in every Webcroft site, suite by suite: what each one checks, an example of a failure, and what a pass does not prove.
 - [Privacy](https://webcroft.dev/privacy): privacy policy (GDPR).
 - [Imprint](https://webcroft.dev/imprint): legal disclosure (German § 5 DDG).
 

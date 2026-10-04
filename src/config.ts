@@ -24,7 +24,7 @@ export const SITE = {
 // in the pull request that adds that page.
 export const NAV: { label: string; href: string }[] = [
   { label: 'Proof', href: '/#proof' },
-  { label: 'Checks', href: '/#checks' },
+  { label: 'Checks', href: '/checks' },
   { label: 'Quickstart', href: '/#quickstart' },
 ];
 

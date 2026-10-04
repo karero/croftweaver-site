@@ -137,7 +137,7 @@ is built.
 | Page | URL | Positioning term | Market category (home only) | State |
 |---|---|---|---|---|
 | Home | `/` | website skills | website skills for search and AI visibility | live |
-| Checks | `/checks` | test gate | — | planned |
+| Checks | `/checks` | test gate | — | live |
 | Skills | `/skills` | website skills | — | planned |
 | Start | `/start` | quickstart | — | planned |
 | Proof | `/proof` | built with Webcroft | — | planned |

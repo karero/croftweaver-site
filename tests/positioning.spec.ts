@@ -33,6 +33,7 @@ type TermRule = { term: string; body?: Clause[] };
 type SurfaceRule = { title?: Clause[]; desc?: Clause[]; h1?: Clause[]; body?: Clause[] };
 export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
+  '/checks': { term: 'test gate' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
