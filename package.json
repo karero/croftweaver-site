@@ -20,15 +20,15 @@
     "prepare": "git config core.hooksPath scripts/hooks 2>/dev/null || true"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.2.9",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5",
     "node-html-parser": "^9.0.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.19.1",
     "typescript": "^6.0.3"
   },
   "allowScripts": {
