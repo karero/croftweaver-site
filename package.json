@@ -20,8 +20,8 @@
     "prepare": "git config core.hooksPath scripts/hooks 2>/dev/null || true"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.2.9",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5",
     "node-html-parser": "^9.0.2"
   },
   "devDependencies": {
