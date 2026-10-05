@@ -145,6 +145,8 @@ is built.
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
 | Positioning | `/positioning` | positioning | — | live |
+| Stack | `/stack` | tech stack | — | planned |
+| Teams | `/teams` | team | — | planned |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 

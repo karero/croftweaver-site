@@ -82,6 +82,8 @@ requests.
 | 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/webcroft-site#10, merged 2026-10-04 (`bea52e7`), page only |
 | 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/webcroft-site#9, merged 2026-10-04 (`fe7a5dc`) |
 | 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | done; the H1 is the owner's to confirm | spec: karero/webcroft-site#14 (`268fbe4`); page: karero/webcroft-site#15 (`98f30be`), both merged 2026-10-04 |
+| 5e | Page `/stack`: the three places a site lives, what each costs, where Keystatic fits | PR | spec written and reviewed (2 rounds); page not built | — |
+| 5f | Page `/teams`: the GitHub flow, `AGENTS.md`, two ways to run a team, people responsible for parts of the site, the one-time setup | PR | spec written and reviewed (2 rounds); page not built | — |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | draft, reviewed; to be merged right after the rename in step 7, with release v0.30 cut straight after | karero/website-builder#147 (draft) |
 | 7 | GitHub rename `website-builder` → `webcroft`, release v0.30 (site links assume it) | owner | open, waits for 0a | — |
 | 8 | Launch: mail for `hello@webcroft.dev`, DNS to Cloudflare, Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
