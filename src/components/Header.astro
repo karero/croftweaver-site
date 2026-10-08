@@ -5,17 +5,18 @@ import { SITE, NAV } from '../config';
 import lockupSource from '../assets/brand/lockup-horizontal-dark-ink.svg?raw';
 
 // Inline the lockup so it follows the site theme (light, dark, or the visitor's toggle):
-// every fill and stroke colour becomes currentColor, set by .brand below. The embedded
+// every fill and stroke (except none) becomes currentColor, set by .brand below. The embedded
 // content credentials stay in the source file; the inlined copy drops them, and its
 // fixed size, so CSS sizes it (the viewBox keeps the proportions).
 const lockup = lockupSource
   .replace(/<metadata>[\s\S]*?<\/metadata>/, '')
   .replace(/ xmlns:c2pa="[^"]*"/, '')
   .replace(/ width="[\d.]+" height="[\d.]+"/, '')
-  .replace(/(fill|stroke)="#[0-9a-fA-F]{3,8}"/g, '$1="currentColor"');
-// A re-exported logo that slips past the lines above would ship a fixed colour (invisible
-// on one theme) or kilobytes of credentials on every page. Stop the build instead.
-if (/<metadata|c2pa|#[0-9a-fA-F]{3,8}\b/.test(lockup) || !lockup.includes('currentColor')) {
+  .replace(/(fill|stroke)="(?!none")[^"]*"/g, '$1="currentColor"');
+// What the lines above cannot theme (CSS, inline styles, gradients) or should not ship
+// (credentials) would leave a fixed colour, invisible on one theme, or kilobytes on every
+// page. A re-exported logo with any of it stops the build instead.
+if (/<metadata|c2pa|<style|style="|stop-color|Gradient/.test(lockup) || !lockup.includes('currentColor')) {
   throw new Error('Header: the logo lockup could not be made theme-aware; check src/assets/brand/lockup-horizontal-dark-ink.svg');
 }
 
