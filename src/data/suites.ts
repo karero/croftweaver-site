@@ -103,11 +103,13 @@ export const SUITES: {
 // id is its path under tests/ without the suffix.
 const testFiles = Object.keys(
   import.meta.glob(
-    ['/tests/**/*.{spec,test}.{js,ts,jsx,tsx,cjs,cts,cjsx,ctsx,mjs,mts,mjsx,mtsx}', '!**/node_modules/**'],
+    '/tests/**/*.{spec,test}.{js,ts,jsx,tsx,cjs,cts,cjsx,ctsx,mjs,mts,mjsx,mtsx}',
     { query: '?raw', caseSensitive: false, exhaustive: true },
   ),
 )
-  .filter((path) => /\.[a-z]+$/.test(path)) // the extension in lower case
+  // The extension in lower case; node_modules spelled exactly so (Playwright compares
+  // the folder name as is, a negative glob here would ignore case).
+  .filter((path) => /\.[a-z]+$/.test(path) && !path.includes('/node_modules/'))
   .map((path) => path.replace(/^\/tests\//, ''))
   .sort();
 const idOf = (file: string) => file.replace(/\.(spec|test)\.[^.]+$/i, '');
@@ -115,7 +117,7 @@ const onDisk = testFiles.map(idOf);
 // The file behind each suite id, for pages that name it.
 export const SUITE_FILES: Record<string, string> = Object.fromEntries(testFiles.map((f) => [idOf(f), f]));
 const described = SUITES.map((s) => s.file).sort();
-const undescribed = onDisk.filter((f) => !described.includes(f));
+const undescribed = testFiles.filter((f) => !described.includes(idOf(f)));
 const stale = described.filter((f) => !onDisk.includes(f));
 const twoFiles = onDisk.filter((f, i) => onDisk.indexOf(f) !== i);
 if (undescribed.length || stale.length || twoFiles.length || new Set(described).size !== described.length) {
