@@ -107,7 +107,7 @@ const testFiles = Object.keys(
     { query: '?raw', caseSensitive: false, exhaustive: true },
   ),
 )
-  .filter((path) => /\.[cm]?[jt]sx?$/.test(path))
+  .filter((path) => /\.[a-z]+$/.test(path)) // the extension in lower case
   .map((path) => path.replace(/^\/tests\//, ''))
   .sort();
 const idOf = (file: string) => file.replace(/\.(spec|test)\.[^.]+$/i, '');
