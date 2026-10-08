@@ -37,7 +37,7 @@ const steps = [
       'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your buyer’s own questions, without naming the business.',
       'Where an engine allows it, two answers: “knows you” from memory, and “finds you” with web search on, which lists the sites the engine cited. Gemini gives the first only, and Google’s own AI answers give the second only.',
       'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
-      'Needs no Search Console access. One prepaid OpenRouter key covers the four chat assistants.',
+      'Needs no Search Console access. One OpenRouter key covers the four chat assistants.',
     ],
     say: 'Set up the weekly AI check for example.com with these three buyer questions.',
   },
@@ -85,7 +85,7 @@ const steps = [
 
 const needs = [
   { item: 'Search Console access to the site', steps: '1, 3, 6', note: 'Browser sign-in once, read-only. The token stays on your computer.' },
-  { item: 'OpenRouter key', steps: '2', note: 'One key for the four chat assistants. Paid by use, prepaid.' },
+  { item: 'OpenRouter key', steps: '2', note: 'One key for the four chat assistants.' },
   { item: 'Serper key', steps: '3, 6', note: 'Optional, free tier. The live top 10 for any search.' },
   { item: 'SerpApi key', steps: '2', note: 'Optional. Adds Google AI Mode and AI Overview.' },
   { item: 'Bing Webmaster key', steps: '1', note: 'Optional, free. Adds the Bing column.' },
@@ -95,6 +95,7 @@ const needs = [
 const limits = [
   { title: 'No import.', text: 'Bringing an existing site under the Croftweaver starter is planned, not built. The roadmap has the order.' },
   { title: 'The ready-made test suite needs the starter.', text: 'The test gate, the link audits and the share-card generator run on sites built with it. On another stack the guard method carries over, and the tests are written for that site’s own build checks.' },
+  { title: 'One market at a time.', text: 'The AI check is set up for one country and one language per site. A site in several markets needs one setup per market, and nothing compares the markets for you. Search Console data can be filtered by country, and the technical audit checks language and country tags (hreflang). Through OpenRouter, the web searches do not know the country, so results can lean towards the United States.' },
   { title: 'Built and tried on small sites.', text: 'Search Console pulls stop at 25,000 rows per request, and the weekly tracker is tuned for a short list of searches. The only site measured on this website is a small one. Read the numbers on a large site with that in mind.' },
   { title: 'No backlink campaigns.', text: 'Directory listings, profile links and requests for links to existing partners are covered. Cold outreach and bought links are not.' },
   { title: 'No page generator.', text: 'It improves the pages a site has. It does not mass-produce new ones.' },
