@@ -1,7 +1,11 @@
 ---
-// Site header: the name as text until the logo lands (BRAND.md), and the main
-// navigation from NAV in src/config.ts. A language switcher mounts here later.
+// Site header: the horizontal logo lockup (BRAND.md), and the main navigation from
+// NAV in src/config.ts. A language switcher mounts here later.
 import { SITE, NAV } from '../config';
+// The theme-ready lockup: its ink is currentColor, set by .brand below, so it follows the
+// light and dark theme and the visitor's toggle. How it is made from the design files:
+// BRAND.md, Logo. tests/a11y.spec.ts checks it renders in the theme's colour.
+import lockup from '../assets/brand/lockup-horizontal-theme.svg?raw';
 
 // Build-time pathnames end in .html (build.format: 'file'); compare the clean form.
 const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '') || '/';
@@ -9,7 +13,7 @@ const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/
 const isCurrent = (href: string) => !href.includes('#') && href === path;
 ---
 <header class="site-header">
-  <a class="brand" href="/">{SITE.name}</a>
+  <a class="brand" href="/" aria-label={SITE.name}><Fragment set:html={lockup} /></a>
   <nav aria-label="Main">
     <ul>
       {NAV.map((item) => (
@@ -30,7 +34,8 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   }
   /* 44px minimum tap target on every header link (BRAND.md, mobile rules). */
   .brand, nav a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
-  .brand { font-weight: 700; font-size: 1.2rem; color: var(--heading); }
+  .brand { color: var(--heading); }
+  .brand :global(svg) { display: block; height: 1.75rem; width: auto; }
   nav ul {
     list-style: none; margin: 0; padding: 0;
     display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.4rem;
