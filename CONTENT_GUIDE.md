@@ -118,7 +118,7 @@ starts with questions and not with a design.
 - H1 on the page: "Decide what your site says. Then build it." The owner has not
   chosen yet; the other candidates are "Say what you offer before you write a word."
   and "Know what your site says first."
-- Description: 152 characters, carrying the term (`AGENTS.md` wants 140 to 160; the
+- Description: 155 characters, carrying the term (`AGENTS.md` wants 140 to 160; the
   test allows 120 to 160).
 
 **Sections, in this order.**

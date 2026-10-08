@@ -43,12 +43,12 @@ MAX_KB = 300
 # The card is a DARK share card (light text on a deep background): it reads well in
 # every chat app regardless of whether your SITE theme is light or dark. Copy the
 # hexes from src/styles/global.css / BRAND.md and tune to taste.
-BRAND_NAME = "Croftweaver"            # wordmark, top-left
-SITE_URL_LABEL = "croftweaver.com"      # footer text — your bare domain (no https://)
+BRAND_NAME = "Croftweaver"             # wordmark, top-left
+SITE_URL_LABEL = "croftweaver.com"     # footer text — your bare domain (no https://)
 LOGO = None                            # faint emblem watermark, right side. Point at a
-                                   # transparent PNG (e.g. ROOT/"public/logo.png");
-                                   # leave None for clean text-only cards. (SVG won't
-                                   # load — Pillow needs raster.)
+                                       # transparent PNG (e.g. ROOT/"public/logo.png");
+                                       # leave None for clean text-only cards. (SVG won't
+                                       # load — Pillow needs raster.)
 BG_TOP = (24, 54, 40)              # background gradient, top    (deep brand tone)
 BG_BOT = (14, 19, 16)              # background gradient, bottom (--bg dark, #0e1310)
 TITLE_COL = (255, 255, 255)        # headline
