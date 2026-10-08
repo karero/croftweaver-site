@@ -104,6 +104,13 @@ for (let start = 1; start + 28 <= days.length; start++) {
   const w = sum(days.slice(start, start + 28));
   if (w.clicks > peak.clicks) peak = w;
 }
+// The clicks in the 28 days up to each date, from the first date with a full 28 days.
+// This is the line in the chart on /proof: its last point is the latest block and its
+// highest is the peak. tests/a11y.spec.ts recomputes it from the CSV and compares.
+const rolling = days.slice(27).map((d, i) => ({
+  iso: d.date,
+  clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0),
+}));
 
 // ── The weekly AI check, from the published export ───────────────────────────────
 // One row per assistant, mode and question: how many calls answered, how many of the
@@ -165,6 +172,17 @@ const overall = (mode: Mode) => {
   if (!t) throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${checkDate}.`);
   return { named: t.named, answers: t.answers };
 };
+// The same counts as the table, for the chart: one mark per answer that named the site,
+// one per answer that did not, one per failed call. A string where the assistant is not
+// asked in this mode (the same two cases as `cell`).
+const marks = (engine: string, mode: Mode) => {
+  const now = on(checkDate, mode, engine);
+  if (!now) return mode === 'without_search' ? 'Always searches' : 'Not asked';
+  if (now.named > now.answers) {
+    throw new Error(`genai-wednesday-de-ai-check.csv: ${engine} (${mode}) names the site in more answers than it gave.`);
+  }
+  return { named: now.named, unnamed: now.answers - now.named, failed: now.failed };
+};
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
@@ -190,6 +208,8 @@ export const SITE_PROOF = {
     blocks,
     latest: blocks.at(-1)!,
     peak,
+    rolling,
+    rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
     // Average positions from Search Console's query report for exactly this period
     // (whole site, all countries; pulled 2026-10-04). Checked against `latest` below.
     positionsPeriod: POSITIONS_PERIOD,
@@ -210,6 +230,12 @@ export const SITE_PROOF = {
       assistant,
       withSearch: cell(engine, 'with_search'),
       withoutSearch: cell(engine, 'without_search'),
+    })),
+    chart: ENGINES.map(([engine, assistant]) => ({
+      engine,
+      assistant,
+      withSearch: marks(engine, 'with_search'),
+      withoutSearch: marks(engine, 'without_search'),
     })),
     withSearch: overall('with_search'),
     withoutSearch: overall('without_search'),

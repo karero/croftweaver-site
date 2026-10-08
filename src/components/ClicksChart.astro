@@ -1,0 +1,82 @@
+---
+// A line chart drawn at build time as inline SVG: no script, no chart library. It plots
+// one series, the clicks in the 28 days up to each date (SITE_PROOF.search.rolling in
+// src/data/proof.ts). The axis starts at zero, so a small number cannot look big.
+// tests/a11y.spec.ts reads the drawing back and compares it with the published CSV and
+// with the axis labels, so keep the data-* attributes.
+interface Props {
+  /** Unique on the page: names the ids that the SVG's title and description use. */
+  id: string;
+  points: readonly { iso: string; clicks: number }[];
+  /** The date of the highest point. It and the last point carry a number. */
+  peakIso: string;
+  title: string;
+  desc: string;
+}
+const { id, points, peakIso, title, desc } = Astro.props;
+
+const n = points.length;
+const peakAt = points.findIndex((p) => p.iso === peakIso);
+if (n < 2 || peakAt < 0) throw new Error(`ClicksChart "${id}": needs at least two points and the peak date among them.`);
+
+const W = 420;
+const H = 250;
+const left = 42;
+const right = W - 18;
+const top = 26;
+const base = H - 30;
+
+const high = Math.max(...points.map((p) => p.clicks));
+// The step between gridlines is 1, 2, 5 or 10 times a power of ten: at most five intervals.
+const power = 10 ** Math.max(0, Math.floor(Math.log10(high / 5)));
+const step = [1, 2, 5, 10].map((k) => k * power).find((s) => s * 5 >= high)!;
+const ceiling = Math.max(step, Math.ceil(high / step) * step);
+const ticks = Array.from({ length: ceiling / step + 1 }, (_, i) => i * step);
+
+const round = (v: number) => Math.round(v * 100) / 100;
+const xAt = (i: number) => round(left + (i / (n - 1)) * (right - left));
+const yAt = (v: number) => round(base - (v / ceiling) * (base - top));
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const months = points.flatMap((p, i) => (p.iso.slice(8) === '01' ? [{ iso: p.iso, x: xAt(i), name: MONTHS[Number(p.iso.slice(5, 7)) - 1]! }] : []));
+
+const line = points.map((p, i) => `${xAt(i)},${yAt(p.clicks)}`).join(' ');
+const area = `${left},${base} ${line} ${right},${base}`;
+const peak = points[peakAt]!;
+const last = points[n - 1]!;
+---
+<svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby={`${id}-title`} aria-describedby={`${id}-desc`} data-chart={id}>
+  <title id={`${id}-title`}>{title}</title>
+  <desc id={`${id}-desc`}>{desc}</desc>
+  {ticks.map((t) => (
+    <>
+      <line class={t === 0 ? 'base' : 'grid'} x1={left} x2={right} y1={yAt(t)} y2={yAt(t)} data-tick={t} />
+      <text class="tick" x={left - 8} y={yAt(t)} dy="0.35em" text-anchor="end">{t}</text>
+    </>
+  ))}
+  {months.map((m) => (
+    <text class="tick" x={m.x} y={base + 20} text-anchor="middle" data-date={m.iso}>{m.name}</text>
+  ))}
+  <polygon class="area" points={area} />
+  <polyline class="line" points={line} data-from={points[0]!.iso} data-to={last.iso} />
+  <circle class="dot" cx={xAt(peakAt)} cy={yAt(peak.clicks)} r="5" data-marker="peak" data-date={peak.iso} data-clicks={peak.clicks} />
+  <text class="value" x={xAt(peakAt)} y={yAt(peak.clicks) - 11} text-anchor="middle">{peak.clicks}</text>
+  <circle class="dot" cx={xAt(n - 1)} cy={yAt(last.clicks)} r="5" data-marker="latest" data-date={last.iso} data-clicks={last.clicks} />
+  <text class="value" x={xAt(n - 1) + 6} y={yAt(last.clicks) + 22} text-anchor="end">{last.clicks}</text>
+</svg>
+
+<style>
+  svg { display: block; width: 100%; height: auto; }
+  text { font-family: var(--font); font-size: 15px; fill: var(--muted); }
+  /* The numbers on the line sit over gridlines and the filled area: a halo in the
+     card colour keeps them readable. */
+  text.value {
+    fill: var(--ink); font-size: 17px; font-weight: 700;
+    paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round;
+  }
+  .grid { stroke: var(--line); stroke-width: 1; }
+  .base { stroke: var(--muted); stroke-width: 1.5; }
+  .area { fill: var(--accent); fill-opacity: 0.14; stroke: none; }
+  .line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+</style>
