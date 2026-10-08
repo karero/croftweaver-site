@@ -34,6 +34,7 @@ for (const path of PAGES) {
 // header link's colour, and that colour stands out from the page background at 3:1 (the
 // WCAG threshold for graphics; logos are exempt, we hold ours to it anyway).
 const DRAWING = 'path, rect, circle, ellipse, line, polyline, polygon, text, use, image';
+const brandFile = (f: string) => readFileSync(new URL(`../src/assets/brand/${f}`, import.meta.url), 'utf8');
 for (const theme of THEMES) {
   test(`a11y — header logo follows the theme [${theme}]`, async ({ page }) => {
     await page.addInitScript((t) => {
@@ -42,17 +43,25 @@ for (const theme of THEMES) {
     await page.goto('/');
     const logo = await page.evaluate((drawing) => {
       const brand = document.querySelector('.brand');
-      const svg = brand?.querySelector('svg');
+      const svg = brand?.querySelector<SVGSVGElement>('svg');
       if (!brand || !svg) return null;
       const ink = getComputedStyle(brand).color;
+      // Opacity does not inherit, so multiply it up the whole chain: a transparent group
+      // or header hides the logo as surely as a transparent path.
+      const opacity = (el: Element | null) => {
+        let product = 1;
+        for (; el; el = el.parentElement) product *= Number(getComputedStyle(el).opacity);
+        return product;
+      };
       const parts = [...svg.querySelectorAll<SVGGraphicsElement>(drawing)].map((el) => {
         const cs = getComputedStyle(el);
-        const box = el.getBBox();
+        let box = { width: 0, height: 0 };
+        try { box = el.getBBox(); } catch { /* not rendered: stays 0 x 0 */ }
         const paints = [
           cs.fill !== 'none' && Number(cs.fillOpacity) > 0 ? cs.fill : null,
           cs.stroke !== 'none' && Number(cs.strokeOpacity) > 0 && parseFloat(cs.strokeWidth) > 0 ? cs.stroke : null,
         ].filter((p): p is string => p !== null);
-        const shown = cs.display !== 'none' && cs.visibility !== 'hidden' && Number(cs.opacity) > 0;
+        const shown = cs.display !== 'none' && cs.visibility !== 'hidden' && opacity(el) > 0;
         return { tag: el.tagName, paints, shown, sized: box.width > 0 && box.height > 0 };
       });
       let el: Element | null = brand;
@@ -63,12 +72,14 @@ for (const theme of THEMES) {
       }
       const rect = svg.getBoundingClientRect();
       const { width: vbWidth, height: vbHeight } = svg.viewBox.baseVal;
-      return { theme: document.documentElement.dataset.theme, ink, bg, parts,
-        svgShown: Number(getComputedStyle(svg).opacity) > 0 && getComputedStyle(svg).visibility !== 'hidden' && rect.height > 0,
+      return { theme: document.documentElement.dataset.theme, ink, bg, parts, markup: svg.outerHTML,
+        svgShown: opacity(svg) > 0 && getComputedStyle(svg).visibility !== 'hidden' && rect.height > 0,
         ratio: rect.width / rect.height, vbRatio: vbWidth / vbHeight };
     }, DRAWING);
     expect(logo, 'header logo (.brand svg) is missing').not.toBeNull();
     expect(logo!.theme, 'the requested theme was not applied').toBe(theme);
+    // The header must show the checked theme copy itself, not some other artwork.
+    expect(logo!.markup.trim(), 'the header logo is not lockup-horizontal-theme.svg').toBe(brandFile('lockup-horizontal-theme.svg').trim());
     expect(logo!.svgShown, 'the logo is hidden or has no height').toBe(true);
     expect(Math.abs(logo!.ratio / logo!.vbRatio - 1), 'the logo is drawn out of proportion').toBeLessThan(0.02);
     expect(logo!.parts.length, 'the logo has no drawing elements').toBeGreaterThan(0);
@@ -95,12 +106,11 @@ for (const theme of THEMES) {
 // edits (BRAND.md, Logo), so a new logo from the designer cannot leave the old one in
 // the header unnoticed. Any difference fails: remake the copy, or update this recipe.
 test('a11y — header logo copy matches the design file', () => {
-  const brand = (f: string) => readFileSync(new URL(`../src/assets/brand/${f}`, import.meta.url), 'utf8');
-  const made = brand('lockup-horizontal-dark-ink.svg')
+  const made = brandFile('lockup-horizontal-dark-ink.svg')
     .replace(/<metadata>[\s\S]*?<\/metadata>/, '')
     .replace(/ xmlns:c2pa="[^"]*"/, '')
     .replace(/ width="\d+" height="\d+"/, '')
     .replace(' role="img" aria-label="Croftweaver"', ' aria-hidden="true"')
     .replaceAll('#1a1f1b', 'currentColor');
-  expect(brand('lockup-horizontal-theme.svg').trim()).toBe(made.trim());
+  expect(brandFile('lockup-horizontal-theme.svg').trim()).toBe(made.trim());
 });
