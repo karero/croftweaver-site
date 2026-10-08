@@ -19,7 +19,7 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
 - The logo is in progress (owner). Until it lands, the name "Croftweaver" set as text in
   the heading font is the mark.
 - Name styling: "Croftweaver" in text, never "CroftWeaver"; lower case only in code contexts
-  (domain, repo). No "WC" monogram.
+  (domain, repo). No "CW" monogram.
 - When the logo exists: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal
   lockup, each in dark and light ink), a transparent PNG at `public/images/logo.png`
   for structured data, a light variant for dark and OG use (see OG rules), favicon and

@@ -25,8 +25,8 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old
   name is never created again, or its redirect stops working.
-- **Name and trademark check:** commissioned before the rename; the rename and the
-  v0.30 release wait for its result.
+- **Name and trademark check:** commissioned before the rename; the rename (release
+  v0.31) waits for its result.
 - **Pitch deck:** rebuilt as the page `/why`, with the deck as a PDF download.
 - **Colour:** an own moss palette with green-tinted neutrals; the values land in
   `BRAND.md` in step 2.
@@ -70,7 +70,7 @@ requests.
 | # | Step | Who | State | Evidence |
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
-| 0a | Name and trademark check for "Croftweaver" | owner | open, waits for a professional view on one earlier mark found among the similar marks. Identical name: no hit in TMview, USPTO, the UK register and EUIPO (owner's own searches, 2026-10-04). Similar marks: first look in TMview on 2026-10-04 ("webcraft", "web craft" and "croft" in classes 9, 35 and 42), no legal opinion | — |
+| 0a | Name and trademark check for "Croftweaver" | owner | open: no search for "Croftweaver" recorded here yet. The earlier check was for the dropped name "Webcroft" (owner's own searches, 2026-10-04: no identical hit in TMview, USPTO, the UK register and EUIPO; similar marks "webcraft", "web craft" and "croft" in classes 9, 35 and 42, no legal opinion). Webcroft was then dropped as too close to an existing company | — |
 | 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on the home page (step 4). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
@@ -93,8 +93,9 @@ Launch requirements that no test enforces:
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` are still open; CI
   only catches `[MISSING:`.
-- `hello@croftweaver.com` exists and receives mail. The domain already runs on Cloudflare
-  DNS, and its mail goes to Google (MX records seen 2026-10-08).
+- A test mail to `hello@croftweaver.com` arrives; record the date here. The domain's DNS
+  is on Cloudflare and its MX records point to Google (seen 2026-10-08), which alone does
+  not prove the mailbox exists.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,

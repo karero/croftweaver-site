@@ -78,7 +78,7 @@ Trust. Ship these, not just claims:
 ## Page inventory
 
 Planned pages are built in the order of the status table in `README.md`. A planned
-title is a draft: at most 49 characters, because the layout appends " | Croftweaver". The
+title is a draft: at most 46 characters, because the layout appends " | Croftweaver". The
 home page is the exception: it passes `title={SITE.name}` to the layout, which then
 uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters.
 
@@ -114,7 +114,7 @@ starts with questions and not with a design.
 - Positioning term: `positioning`. Not "website positioning": a search on 2026-10-04
   showed that phrase means search ranking, so it would file the page under the wrong
   topic.
-- Title: "Positioning first: what your site says" (38 characters, 49 rendered).
+- Title: "Positioning first: what your site says" (38 characters, 52 rendered).
 - H1 on the page: "Decide what your site says. Then build it." The owner has not
   chosen yet; the other candidates are "Say what you offer before you write a word."
   and "Know what your site says first."
