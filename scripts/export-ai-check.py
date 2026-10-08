@@ -11,14 +11,17 @@ is read and never scored, and the answers themselves, which are never published.
 Mapping, checked on 2026-10-08 by regenerating the 26 and 28 September 2026 rows that were
 already published (all 37 lines identical):
   mode    finds -> with_search, knows -> without_search
-  slot    broad -> question 1, narrow -> question 2
+  slot    broad -> question 1, narrow -> question 2 (branded is skipped)
   answers = ok, named = named, cited = cited_own (empty counts as 0),
   failed  = X in the status "X of Y failed" (0 when the status is "ok")
 Several runs on one day are merged. Each assistant, mode and question must come from exactly
-one run; the script stops if two runs claim the same one.
+one run; the script stops if two runs claim the same one. It also stops on a column the history
+lacks, and on a mode, a slot or a status it does not know, instead of dropping the row.
 
-Usage: export-ai-check.py [--history PATH]
+The tracker records no skipped run. When the check was not run for an assistant on the latest
+day, say so in NOT_RUN in src/data/proof.ts.
 """
+import argparse
 import csv
 import os
 import re
@@ -27,14 +30,27 @@ import sys
 SITE = 'genai-wednesday.de'
 MODE = {'finds': 'with_search', 'knows': 'without_search'}
 QUESTION = {'broad': 1, 'narrow': 2}
+SKIPPED_SLOTS = {'branded'}
+COLUMNS = {'date', 'run_id', 'site', 'engine', 'mode', 'slot', 'ok', 'named', 'cited_own', 'status'}
 DEFAULT_HISTORY = os.path.expanduser('~/.config/gsc-insights/geo/geo_history.csv')
 
-history = sys.argv[sys.argv.index('--history') + 1] if '--history' in sys.argv else DEFAULT_HISTORY
+parser = argparse.ArgumentParser(description='Export the AI check counts for ' + SITE + ' as the published CSV.')
+parser.add_argument('--history', default=DEFAULT_HISTORY, help='the tracker history (default: %(default)s)')
+args = parser.parse_args()
+
+reader = csv.DictReader(open(args.history, newline=''))
+missing = COLUMNS - set(reader.fieldnames or [])
+if missing:
+    sys.exit(f'{args.history}: the history has no column {", ".join(sorted(missing))}')
 
 kept = {}
-for row in csv.DictReader(open(history, newline='')):
-    if row['site'] != SITE or row['slot'] not in QUESTION:
+for row in reader:
+    if row['site'] != SITE or row['slot'] in SKIPPED_SLOTS:
         continue
+    if row['slot'] not in QUESTION:
+        sys.exit(f'{row["date"]} {row["engine"]}: unexpected slot {row["slot"]!r}')
+    if row['mode'] not in MODE:
+        sys.exit(f'{row["date"]} {row["engine"]}: unexpected mode {row["mode"]!r}')
     key = (row['date'], row['engine'], MODE[row['mode']], QUESTION[row['slot']])
     if key in kept:
         sys.exit(f'{key}: two runs, {kept[key]["run"]} and {row["run_id"]}')
@@ -50,7 +66,7 @@ for row in csv.DictReader(open(history, newline='')):
     }
 
 if not kept:
-    sys.exit(f'no rows for {SITE} in {history}')
+    sys.exit(f'no rows for {SITE} in {args.history}')
 
 out = csv.writer(sys.stdout, lineterminator='\n')
 out.writerow(['date', 'engine', 'mode', 'question', 'answers', 'named', 'cited', 'failed'])

@@ -132,6 +132,8 @@ const csvRows = (file: string) =>
   readFileSync(new URL(`../public/data/${file}`, import.meta.url), 'utf8').trim().split(/\r?\n/).slice(1).map((line) => line.split(','));
 const longDate = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// Names in a sentence, as the page writes them: "A", "A and B", "A, B and C".
+const list = (names: string[]) => (names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
 // A whole-word match, so "50" is not found inside "150".
 const word = (text: string) => new RegExp(`\\b${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
 
@@ -323,7 +325,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     });
   });
   if (failedAll.length > 0) {
-    const said = `Every call to ${failedAll.map((e) => labels.find((l) => l.engine === e)!.text).join(' and ')} failed`;
+    const said = `Every call to ${list(labels.filter((l) => failedAll.includes(l.engine)).map((l) => l.text))} failed`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
     await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
   }
@@ -334,19 +336,20 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const ranOnLatest = new Set(today.map((r) => r.engine));
   const notRunEngines = [...new Set(rows.map((r) => r.engine))].filter((e) => !ranOnLatest.has(e));
   if (notRunEngines.length > 0) {
-    const names = notRunEngines.map((e) => labels.find((l) => l.engine === e)!.text);
-    const said = `${names.join(' and ')} ${names.length === 1 ? 'was' : 'were'} not run that day`;
+    // In the order of the chart's rows, which is the order the page uses.
+    const names = labels.filter((l) => notRunEngines.includes(l.engine)).map((l) => l.text);
+    const said = `${list(names)} ${names.length === 1 ? 'was' : 'were'} not run that day`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
     // A paragraph of the page, not the section's text: the chart's hidden description says it too.
     await expect(page.locator('#ai p').filter({ hasText: said }), `the page does not say "${said}"`).toHaveCount(1);
-    for (const [i, engine] of notRunEngines.entries()) {
+    for (const engine of notRunEngines) {
       for (const [column, mode] of ['with_search', 'without_search'].entries()) {
         const earlier = rows.filter((r) => r.engine === engine && r.mode === mode);
         if (earlier.length === 0) continue;
         const answered = [...new Set(earlier.map((r) => r.date))].sort()
           .filter((d) => earlier.filter((r) => r.date === d).reduce((n, r) => n + r.answers, 0) > 0);
         const lastDay = answered.at(-1);
-        const tableCell = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: new RegExp(`^${names[i]!.replace(/[()]/g, '\\$&')}$`) }) }).locator('td').nth(column);
+        const tableCell = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: new RegExp(`^${labels.find((l) => l.engine === engine)!.text.replace(/[()]/g, '\\$&')}$`) }) }).locator('td').nth(column);
         if (!lastDay) { await expect(tableCell, `${engine}: no earlier result to give`).toHaveText('Not run that day.'); continue; }
         const day = earlier.filter((r) => r.date === lastDay);
         const [gave, named] = [day.reduce((n, r) => n + r.answers, 0), day.reduce((n, r) => n + r.named, 0)];

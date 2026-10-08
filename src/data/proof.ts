@@ -120,8 +120,9 @@ if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no im
 // answers named the site, how many cited it, how many calls failed. The table on
 // /proof is computed from this file, so its cells cannot drift from the download.
 // Make the file with scripts/export-ai-check.py: it keeps this one site and nothing else.
-// The check is not always run for every assistant: one with rows on earlier days and none on
-// the latest was not run that day, and the page says so and shows its last result.
+// The check is not always run for every assistant. When it was not run for one on a day,
+// declare it in NOT_RUN below: the page then says so and shows its last result. An assistant
+// that is missing and not declared stops the build, because it may be a gap in the export.
 type Mode = 'with_search' | 'without_search';
 type Check = { date: string; engine: string; mode: Mode; answers: number; named: number; cited: number; failed: number };
 const aiLines = aiCsv.trim().split(/\r?\n/);
@@ -160,9 +161,19 @@ const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'na
   t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
-// Rows for this mode on an earlier day and none on the latest: the assistant was not run that
-// day (as against one the check never asks in that mode: see `absent`).
-const ranBefore = (engine: string, mode: Mode) => checkDates.slice(0, -1).some((d) => on(d, mode, engine) !== null);
+// The assistants the check was not run for on a day, declared by hand when the file is made (the
+// tracker records no skipped run). Only the latest day is read. Whole assistants only: one that
+// has rows on that day in one mode and not in another is a gap in the export, not a skipped run.
+const NOT_RUN: Record<string, string[]> = {
+  '2026-10-08': ['google-ai-mode', 'google-overview'],
+};
+const skipped = NOT_RUN[checkDate] ?? [];
+for (const engine of skipped) {
+  if (!ENGINES.some(([id]) => id === engine)) throw new Error(`src/data/proof.ts: NOT_RUN names ${engine}, which /proof does not list.`);
+  if (checks.some((c) => c.date === checkDate && c.engine === engine)) {
+    throw new Error(`src/data/proof.ts: ${engine} is declared not run on ${checkDate}, but the CSV has rows for it that day.`);
+  }
+}
 // The most recent earlier day on which the assistant answered in this mode.
 const lastAnswered = (engine: string, mode: Mode) => {
   for (const date of checkDates.slice(0, -1).reverse()) {
@@ -177,19 +188,21 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
-const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' => {
+const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' | 'not-run' => {
   if (mode === 'without_search' && SEARCH_ONLY.includes(engine)) return 'search-only';
   if (mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(engine)) return 'not-asked';
-  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${checkDate}. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH in src/data/proof.ts; otherwise the export is missing rows.`);
+  if (skipped.includes(engine)) return 'not-run';
+  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${checkDate}. If the check was not run for it that day, declare it in NOT_RUN in src/data/proof.ts. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH. Otherwise the export is missing rows.`);
 };
 const cell = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
   if (!now) {
-    if (ranBefore(engine, mode)) {
+    const why = absent(engine, mode);
+    if (why === 'not-run') {
       const last = lastAnswered(engine, mode);
       return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}` : 'Not run that day.';
     }
-    return absent(engine, mode) === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
+    return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
@@ -209,7 +222,10 @@ const overall = (mode: Mode) => {
 // asked in this mode (the same two cases as `cell`, through `absent`).
 const marks = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  if (!now) return ranBefore(engine, mode) ? 'Not run' : absent(engine, mode) === 'search-only' ? 'Always searches' : 'Not asked';
+  if (!now) {
+    const why = absent(engine, mode);
+    return why === 'not-run' ? 'Not run' : why === 'search-only' ? 'Always searches' : 'Not asked';
+  }
   if (now.named > now.answers) {
     throw new Error(`genai-wednesday-de-ai-check.csv: ${engine} (${mode}) names the site in more answers than it gave.`);
   }
@@ -221,10 +237,9 @@ const allFailed = ENGINES.filter(([engine]) => {
   const cells = (['with_search', 'without_search'] as const).map((mode) => on(checkDate, mode, engine)).filter((c) => c !== null);
   return cells.length > 0 && cells.every((c) => c.answers === 0 && c.failed > 0);
 }).map(([, assistant]) => assistant);
-// Assistants with rows on earlier days and none on the latest: not run that day. The page
-// names them, and their cells give their last result.
-const notRun = ENGINES.filter(([engine]) => !checks.some((c) => c.date === checkDate && c.engine === engine) && checks.some((c) => c.engine === engine))
-  .map(([, assistant]) => assistant);
+// The assistants declared not run on the latest day: the page names them, and their cells give
+// their last result.
+const notRun = ENGINES.filter(([engine]) => skipped.includes(engine)).map(([, assistant]) => assistant);
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
