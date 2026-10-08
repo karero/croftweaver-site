@@ -11,19 +11,19 @@ const copied = new Date(`${SUITES_VERSION.copied}T12:00:00Z`).toLocaleDateString
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
 const description =
-  `Every Webcroft site carries its own test gate: ${SUITE_COUNT} suites for accessibility, ` +
+  `Each Croftweaver site carries its own test gate: ${SUITE_COUNT} suites for accessibility, ` +
   'search, tone and positioning. See what each checks and what a pass does not prove.';
 ---
-<Base title="The test gate in every Webcroft site" description={description} image="/images/og/checks.jpg">
+<Base title="The test gate in every Croftweaver site" description={description} image="/images/og/checks.jpg">
   <section class="wrap hero">
     <h1>The test gate, suite by suite</h1>
     <p class="lead">
-      Every site built with Webcroft carries its own test gate: {SUITE_COUNT} test
+      Every site built with Croftweaver carries its own test gate: {SUITE_COUNT} test
       suites that run against the finished build. This page lists each one, with
       what it checks, an example of a failure, and what a pass does not prove.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
     </div>
   </section>
 
@@ -96,7 +96,7 @@ const description =
       <li><strong>Every leftover template slot.</strong> A placeholder in the agreed format fails on GitHub; other unfilled slots are caught in review.</li>
     </ul>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
     </div>
   </section>

@@ -1,6 +1,6 @@
 ---
-// /proof — one site built with Webcroft, with everything that can be measured
-// about it. Positioning term (tests/positioning.spec.ts): "built with Webcroft".
+// /proof — one site built with Croftweaver, with everything that can be measured
+// about it. Positioning term (tests/positioning.spec.ts): "built with Croftweaver".
 // Owner decision 2026-10-04: genai-wednesday.de is the one site shown here.
 // Honesty rules (CONTENT_GUIDE.md): every figure is dated and names its tool; the
 // search table is computed from the published file (src/data/proof.ts).
@@ -15,20 +15,20 @@ const { latest, peak, blocks, positionsPeriod } = p.search;
 const google = (query: string) => `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 ---
 <Base
-  title="Built with Webcroft: one site, measured"
-  description="Built with Webcroft: genai-wednesday.de, with its PageSpeed scores, its Google clicks since the relaunch, and a check of which AI assistants name it."
+  title="Built with Croftweaver: one site, measured"
+  description="Built with Croftweaver: genai-wednesday.de, with its PageSpeed scores, its Google clicks since the relaunch, and a check of which AI assistants name it."
   image="/images/og/proof.jpg"
 >
   <section class="wrap hero">
-    <h1>Built with Webcroft: one site, measured</h1>
+    <h1>Built with Croftweaver: one site, measured</h1>
     <p class="lead">
-      <a href={p.url}>{p.site}</a> is the site Webcroft grew out of. This page shows
+      <a href={p.url}>{p.site}</a> is the site Croftweaver grew out of. This page shows
       what can be measured about it: speed, clicks from Google since its relaunch,
       and whether AI assistants name it. Every figure has a date. Where you can
       re-run a test, there is a link.
     </p>
     <p class="aside">
-      It is one site, and it belongs to the maintainer of Webcroft. Read it as a
+      It is one site, and it belongs to the maintainer of Croftweaver. Read it as a
       worked example, not as a promise for yours.
     </p>
   </section>
@@ -152,14 +152,14 @@ const google = (query: string) => `https://www.google.com/search?q=${encodeURICo
     <h2>What this page does not show</h2>
     <ul class="steps">
       <li><strong>More than one site.</strong> One example cannot show that a result repeats.</li>
-      <li><strong>A comparison.</strong> Nothing here shows what the site would have done without Webcroft.</li>
+      <li><strong>A comparison.</strong> Nothing here shows what the site would have done without Croftweaver.</li>
       <li><strong>Large numbers.</strong> This is a community site with tens of clicks a month, not a traffic story.</li>
     </ul>
     <p>
       The <a href={p.lab}>Builder Lab</a> keeps a fuller scorecard for the same site.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
     </div>
   </section>

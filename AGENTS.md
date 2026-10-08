@@ -1,7 +1,7 @@
 # AGENTS.md — rules for AI assistants (Codex, Claude Code) working on this site
 
-Website of Webcroft. Astro, static, GitHub → Cloudflare Pages.
-Live: https://webcroft.dev (not launched yet) · Preview: none yet; becomes
+Website of Croftweaver. Astro, static, GitHub → Cloudflare Pages.
+Live: https://croftweaver.com (not launched yet) · Preview: none yet; becomes
 `main.<project>.pages.dev` once `website-team-setup` §6 connects Cloudflare.
 
 Several people and several AI assistants may work on this site, sometimes at the same
@@ -100,7 +100,7 @@ applies there; instead of steps 2 to 4, only this:
 
   **Two-stage (main = preview, production = live).** A merge into `main` rebuilds
   the preview (`main.<project>.pages.dev`, once Cloudflare is connected) within a
-  few minutes. Nothing reaches https://webcroft.dev until someone runs `npm run ship`,
+  few minutes. Nothing reaches https://croftweaver.com until someone runs `npm run ship`,
   which publishes `main` to `production` and verifies the live site serves the new
   build. Who may run it is set in §5. The assistant never
   runs `npm run ship` unasked, and always says whether an address is the preview or
@@ -187,13 +187,13 @@ share-card list and redirects are checked by no test; work through the steps bel
 completely. Addresses always without accents or umlauts and without a trailing `/`
 (`/about-us`, not `/About-Us/`).
 
-The layout appends " | Webcroft" (11 characters) to every page title
+The layout appends " | Croftweaver" (14 characters) to every page title
 except the home page, and the total may be at most 60. So a page `title` is at most
-**49 characters**.
+**46 characters**.
 
 **New page** (e.g. `/pricing`):
 1. Create `src/pages/pricing.astro` with `Base`, like the other pages. `title` at most
-   49 characters, `description` 140 to 160 characters (test: 120 to 160).
+   46 characters, `description` 140 to 160 characters (test: 120 to 160).
 2. Link the page from somewhere, usually the navigation. A page without a link fails a
    test.
 3. Add the address to `PAGES` in `tests/_helpers.ts`.
@@ -206,7 +206,7 @@ except the home page, and the total may be at most 60. So a page `title` is at m
 **New entry in a content collection** (e.g. a project or a post):
 1. Folder or file under `src/content/<collection>/`, modelled on an existing entry.
    Mandatory fields: `src/content.config.ts`. The entry's title is the page title:
-   at most 49 characters.
+   at most 46 characters.
 2. If the collection has a hand-kept order (a list in `src/config.ts` or similar):
    add the entry at the wanted position.
 3. Add the entry's address to `PAGES` in `tests/_helpers.ts`.

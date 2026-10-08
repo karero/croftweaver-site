@@ -43,12 +43,12 @@ MAX_KB = 300
 # The card is a DARK share card (light text on a deep background): it reads well in
 # every chat app regardless of whether your SITE theme is light or dark. Copy the
 # hexes from src/styles/global.css / BRAND.md and tune to taste.
-BRAND_NAME = "Webcroft"          # wordmark, top-left
-SITE_URL_LABEL = "webcroft.dev"     # footer text — your bare domain (no https://)
-LOGO = None                        # faint emblem watermark, right side. Point at a
-                                   # transparent PNG (e.g. ROOT/"public/logo.png");
-                                   # leave None for clean text-only cards. (SVG won't
-                                   # load — Pillow needs raster.)
+BRAND_NAME = "Croftweaver"             # wordmark, top-left
+SITE_URL_LABEL = "croftweaver.com"     # footer text — your bare domain (no https://)
+LOGO = None                            # faint emblem watermark, right side. Point at a
+                                       # transparent PNG (e.g. ROOT/"public/logo.png");
+                                       # leave None for clean text-only cards. (SVG won't
+                                       # load — Pillow needs raster.)
 BG_TOP = (24, 54, 40)              # background gradient, top    (deep brand tone)
 BG_BOT = (14, 19, 16)              # background gradient, bottom (--bg dark, #0e1310)
 TITLE_COL = (255, 255, 255)        # headline
@@ -67,11 +67,11 @@ DEFAULT_SUBTITLES = ["Keep improving SEO and GEO, week by week.", "Website skill
 # Title: short, punchy (wraps to ≤ 3 lines). Subtitles: 0–2 supporting lines.
 PAGES: list[tuple[str, str, list[str]]] = [
     ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
-    ("proof", "Built with Webcroft", ["One site, measured:", "speed, search clicks, AI mentions."]),
+    ("proof", "Built with Croftweaver", ["One site, measured:", "speed, search clicks, AI mentions."]),
     ("skills", "Website skills", ["The catalogue, by stage:", "build, verify, launch, grow."]),
     ("start", "Quickstart", ["From nothing to your first site,", "with your AI coding assistant."]),
     ("why", "Why build for search and AI visibility", ["The case, for the person", "who decides."]),
-    ("compare", "Webcroft and its alternatives", ["When to choose which,", "sourced and dated."]),
+    ("compare", "Croftweaver and its alternatives", ["When to choose which,", "sourced and dated."]),
     ("roadmap", "Roadmap", ["What is missing, what comes next,", "and what stays out on purpose."]),
     ("positioning", "Positioning first", ["What your site says,", "decided before the copy."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),

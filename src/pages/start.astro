@@ -8,14 +8,14 @@ import { SITE } from '../config';
 
 // The toolkit's starter prompt, with the new name and address.
 const prompt = [
-  `I want to use the Webcroft skill suite (${SITE.repo}) to create a new website.`,
+  `I want to use the Croftweaver skill suite (${SITE.repo}) to create a new website.`,
   'Please guide me step by step in plain language.',
   'First, check which required tools this computer already has.',
   'Explain every command before you run it, and install missing tools only when they are actually needed.',
-  'Then install the Webcroft skills, tell me when to restart or reopen you so the skills load, and continue from there: start a fresh site by running "new website" in a new, empty folder.',
+  'Then install the Croftweaver skills, tell me when to restart or reopen you so the skills load, and continue from there: start a fresh site by running "new website" in a new, empty folder.',
 ].join(' ');
 
-const clone = `git clone ${SITE.repo}.git\ncd webcroft`;
+const clone = `git clone ${SITE.repo}.git\ncd croftweaver`;
 const installs = [
   { assistant: 'Claude Code', command: './scripts/install.sh', note: 'Links every skill into the folder Claude Code reads.' },
   { assistant: 'Codex', command: './scripts/install-codex.sh', note: 'Links every skill into the folder Codex reads.' },
@@ -33,7 +33,7 @@ const questions = [
 ---
 <Base
   title="Quickstart: your first site"
-  description="Quickstart for Webcroft: what you need, the starter prompt, how to install the skills for Claude Code, Codex or Antigravity, and the six questions it asks."
+  description="Quickstart for Croftweaver: what you need, the starter prompt, how to install the skills for Claude Code, Codex or Antigravity, and the six questions it asks."
   image="/images/og/start.jpg"
 >
   <section class="wrap hero">
@@ -44,14 +44,14 @@ const questions = [
       explains each command and asks before it installs a missing tool.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
     </div>
   </section>
 
   <section class="wrap" id="need">
     <h2>What you need</h2>
     <ul class="steps">
-      <li><strong>An AI coding assistant.</strong> Claude Code is the one Webcroft is developed and used with. There are install guides for Codex and Antigravity too.</li>
+      <li><strong>An AI coding assistant.</strong> Claude Code is the one Croftweaver is developed and used with. There are install guides for Codex and Antigravity too.</li>
       <li><strong>A GitHub account.</strong> Free. Your site's files live there, and the account is yours.</li>
       <li><strong>A computer.</strong> macOS, Linux or Windows. On Windows, WSL2 is the smoothest route.</li>
       <li><strong>Later, a Cloudflare account.</strong> Free. You need it when you publish, not on the first day.</li>
@@ -61,7 +61,7 @@ const questions = [
       installs a tool only when the site needs it, and asks you before it does.
     </p>
     <p class="aside">
-      The guides for Codex and Antigravity exist, but Webcroft has not been tested
+      The guides for Codex and Antigravity exist, but Croftweaver has not been tested
       from start to finish with either of them yet. If you try one, an issue on
       GitHub saying how it went is welcome.
     </p>
@@ -123,7 +123,7 @@ const questions = [
       which part, and <a href="/checks">the test gate</a> shows what is checked.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/proof">See one site, measured</a>
     </div>
   </section>

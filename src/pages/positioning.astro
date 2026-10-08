@@ -10,7 +10,7 @@ import { SPINE, EXEMPT } from '../data/positioning';
 import { SUITE_COUNT } from '../data/suites';
 
 const description =
-  "How Webcroft works out your positioning before any copy: April Dunford's five parts, " +
+  "How Croftweaver works out your positioning before any copy: April Dunford's five parts, " +
   'one file in your repository, and a test that keeps each page on it.';
 
 // The first lines of a failure of the positioning suite, in its real format, for a page
@@ -18,12 +18,12 @@ const description =
 // Outside links were opened and checked on this date (CONTENT_GUIDE.md, spec).
 const CHECKED = { iso: '2026-10-04', label: '4 October 2026' };
 const failure = [
-  '/checks positioning not threaded (title="Our checks | Webcroft" · h1="How we check"):',
+  '/checks positioning not threaded (title="Our checks | Croftweaver" · h1="How we check"):',
   '  • <title> needs "test gate"',
   '  • <h1>/intro needs "test gate"',
 ].join('\n');
 
-const ownFile = 'https://github.com/karero/webcroft-site/blob/main/POSITIONING.md';
+const ownFile = 'https://github.com/karero/croftweaver-site/blob/main/POSITIONING.md';
 
 // Plain links, no tag. Checked by hand when the page was built (CONTENT_GUIDE.md).
 const books = [
@@ -35,7 +35,7 @@ const books = [
   },
   {
     author: 'April Dunford', title: 'Sales Pitch',
-    role: 'On building a sales pitch. Further reading: Webcroft does not use it.',
+    role: 'On building a sales pitch. Further reading: Croftweaver does not use it.',
     own: { label: 'aprildunford.com', href: 'https://www.aprildunford.com/books' },
     asin: 'B0CHY6BNDN',
   },
@@ -51,13 +51,13 @@ const books = [
   <section class="wrap hero">
     <h1>Decide what your site says. Then build it.</h1>
     <p class="lead">
-      Before Webcroft writes a line of copy or picks a colour, it works out your
+      Before Croftweaver writes a line of copy or picks a colour, it works out your
       positioning: what you offer, for whom, and what they would use instead. Every
       title, heading and line of copy then follows from those answers. They go into
       one file in your repository, and a test keeps every page on them.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
     </div>
   </section>
@@ -94,7 +94,7 @@ const books = [
     <p class="note">
       The method is April Dunford's, from her book <cite>Obviously Awesome</cite>.
       The five parts are hers. How the assistant asks about them, and how a site is
-      built on the answers, is Webcroft's. <a href="#sources">Sources</a>.
+      built on the answers, is Croftweaver's. <a href="#sources">Sources</a>.
     </p>
   </section>
 
@@ -213,7 +213,7 @@ const books = [
     </p>
     <p class="note">
       The skill is inspired by Donald Miller's StoryBrand framework and puts the
-      idea in Webcroft's own words. <a href="#sources">Sources</a>.
+      idea in Croftweaver's own words. <a href="#sources">Sources</a>.
     </p>
   </section>
 
@@ -235,9 +235,9 @@ const books = [
       ))}
     </dl>
     <p class="note">
-      Webcroft is not affiliated with April Dunford or Donald Miller, and neither
+      Croftweaver is not affiliated with April Dunford or Donald Miller, and neither
       endorses it. StoryBrand is a trademark of its owner. These are plain links:
-      Webcroft earns nothing from them. The Amazon links open the Kindle edition;
+      Croftweaver earns nothing from them. The Amazon links open the Kindle edition;
       the other formats are one click from there. Links checked on
       <time datetime={CHECKED.iso}>{CHECKED.label}</time>.
     </p>
@@ -251,7 +251,7 @@ const books = [
       today, and before any page copy.
     </p>
     <div class="cta">
-      <a class="btn primary" href={SITE.repo}>Get Webcroft on GitHub</a>
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
     </div>
   </section>

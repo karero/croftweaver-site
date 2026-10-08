@@ -3,7 +3,7 @@
   page copy). Single source of truth for WHAT we offer, FOR WHOM, and the MARKET
   CATEGORY. Built on April Dunford's framework. Enforced by tests/positioning.spec.ts.
 -->
-# Webcroft — positioning
+# Croftweaver — positioning
 
 Reworked 2026-10-03 after a market scan and a brainstorm with two independent models.
 Owner decision: lead with being found by search engines and AI assistants; the test
@@ -85,7 +85,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 ## Positioning statement (one paragraph)
 
 > For founders, communities and small teams who need their website to be found,
-> Webcroft is a suite of open-source website skills for AI coding assistants that
+> Croftweaver is a suite of open-source website skills for AI coding assistants that
 > builds fast, accessible Astro sites with the search and AI-visibility work done by
 > default, unlike design-first builders that hand you the controls and audit tools that
 > only report, because every site carries its own test gate and a weekly loop from real
@@ -96,7 +96,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 - **Hero (H1):** Build websites that rank.
 - **Subline:** Keep improving SEO and GEO, week by week.
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
-- **~50-word boilerplate:** Webcroft is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
+- **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
 
 ## Wording rule (owner decision, 2026-10-03)
 
@@ -140,7 +140,7 @@ is built.
 | Checks | `/checks` | test gate | — | live |
 | Skills | `/skills` | website skills | — | live |
 | Start | `/start` | quickstart | — | live |
-| Proof | `/proof` | built with Webcroft | — | live |
+| Proof | `/proof` | built with Croftweaver | — | live |
 | Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
@@ -152,7 +152,7 @@ is built.
 
 - The Builder Lab is the community showcase and owns GenAI Wednesday's own evidence:
   its scorecard, the AI score table and the FAQPage schema.
-- webcroft.dev is the project home: the promise, the test gate, the skills catalogue,
+- croftweaver.com is the project home: the promise, the test gate, the skills catalogue,
   the quickstart and a proof page (`/proof`) for one site, genai-wednesday.de, with
   SoftwareSourceCode schema. `/proof` is written fresh from new measurements (speed,
   clicks from Google, the weekly AI check) and approved by the site's owner; the Lab's

@@ -1,4 +1,4 @@
-// The test suites every Webcroft site ships with, described once for the site's copy.
+// The test suites every Croftweaver site ships with, described once for the site's copy.
 // The list must match tests/*.spec.ts one to one: a suite without an entry here, or an
 // entry without a suite, fails the build. A count in copy is rendered from SUITE_COUNT,
 // never typed (CONTENT_GUIDE.md, honesty rules).
