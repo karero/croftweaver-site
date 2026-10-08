@@ -5,7 +5,7 @@
 // (src/data/suites.ts); nothing here is typed by hand.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { SUITES, SUITE_GROUPS, SUITE_COUNT, SUITES_VERSION } from '../data/suites';
+import { SUITES, SUITE_GROUPS, SUITE_COUNT, SUITES_VERSION, SUITE_FILES } from '../data/suites';
 
 const copied = new Date(`${SUITES_VERSION.copied}T12:00:00Z`).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
@@ -53,7 +53,7 @@ const description =
       <div class="suites">
         {SUITES.filter((s) => s.group === group.id).map((s) => (
           <article class="card">
-            <h3>{s.name} <code>tests/{s.file}.spec.ts</code></h3>
+            <h3>{s.name} <code>tests/{SUITE_FILES[s.file]}</code></h3>
             <dl>
               <dt>Checks</dt><dd>{s.checks}</dd>
               <dt>Fails when</dt><dd>{s.example}</dd>

@@ -1,7 +1,7 @@
 // The test suites every Croftweaver site ships with, described once for the site's copy.
-// The list must match tests/*.spec.ts one to one: a suite without an entry here, or an
-// entry without a suite, fails the build. A count in copy is rendered from SUITE_COUNT,
-// never typed (CONTENT_GUIDE.md, honesty rules).
+// The list must match the test files under tests/ one to one: a suite without an entry
+// here, or an entry without a suite, fails the build. A count in copy is rendered from
+// SUITE_COUNT, never typed (CONTENT_GUIDE.md, honesty rules).
 import versionFile from '../../tests/TESTS-VERSION?raw';
 
 export const SUITE_GROUPS = [
@@ -13,9 +13,9 @@ export const SUITE_GROUPS = [
 
 type GroupId = (typeof SUITE_GROUPS)[number]['id'];
 
-// `file` is the spec file name without ".spec.ts". `checks` is shown on the home
-// page and on /checks; `example` (a failure) and `limit` (what a pass does not prove)
-// on /checks only. Each must say what the spec asserts and no more.
+// `file` is the test file's path under tests/ without its suffix (".spec.ts"). `checks`
+// is shown on the home page and on /checks; `example` (a failure) and `limit` (what a
+// pass does not prove) on /checks only. Each must say what the spec asserts and no more.
 export const SUITES: {
   file: string; group: GroupId; name: string; checks: string; example: string; limit: string;
 }[] = [
@@ -94,20 +94,38 @@ export const SUITES: {
 ];
 
 // The glob is resolved from the project root at build time, whatever directory the
-// build was started from, and covers what Playwright would pick up under tests/
-// (nested folders, .spec and .test files). `?raw` keeps the files from being bundled
-// or run. A suite's id is its path under tests/ without the suffix.
-const onDisk = Object.keys(import.meta.glob('/tests/**/*.{spec,test}.{ts,js,mjs}', { query: '?raw' }))
-  .map((path) => path.replace(/^\/tests\//, '').replace(/\.(spec|test)\.(ts|js|mjs)$/, ''))
+// build was started from. It must find every file Playwright runs under tests/, or that
+// suite escapes the check below and the count. playwright.config.ts leaves testMatch
+// unset, so Playwright uses its default, `**/*.@(spec|test).?(c|m)[jt]s?(x)`: twelve
+// extensions at any folder depth, hidden folders included, never inside node_modules,
+// the name in any case but the extension in lower case only (foo.SPEC.ts runs,
+// foo.spec.TS does not). `?raw` keeps the files from being bundled or run. A suite's
+// id is its path under tests/ without the suffix.
+const testFiles = Object.keys(
+  import.meta.glob(
+    '/tests/**/*.{spec,test}.{js,ts,jsx,tsx,cjs,cts,cjsx,ctsx,mjs,mts,mjsx,mtsx}',
+    { query: '?raw', caseSensitive: false, exhaustive: true },
+  ),
+)
+  // The extension in lower case; node_modules spelled exactly so (Playwright compares
+  // the folder name as is, a negative glob here would ignore case).
+  .filter((path) => /\.[a-z]+$/.test(path) && !path.includes('/node_modules/'))
+  .map((path) => path.replace(/^\/tests\//, ''))
   .sort();
+const idOf = (file: string) => file.replace(/\.(spec|test)\.[^.]+$/i, '');
+const onDisk = testFiles.map(idOf);
+// The file behind each suite id, for pages that name it.
+export const SUITE_FILES: Record<string, string> = Object.fromEntries(testFiles.map((f) => [idOf(f), f]));
 const described = SUITES.map((s) => s.file).sort();
-const undescribed = onDisk.filter((f) => !described.includes(f));
+const undescribed = testFiles.filter((f) => !described.includes(idOf(f)));
 const stale = described.filter((f) => !onDisk.includes(f));
-if (undescribed.length || stale.length || new Set(described).size !== described.length) {
+const twoFiles = onDisk.filter((f, i) => onDisk.indexOf(f) !== i);
+if (undescribed.length || stale.length || twoFiles.length || new Set(described).size !== described.length) {
   throw new Error(
-    'src/data/suites.ts does not match tests/*.spec.ts. ' +
+    'src/data/suites.ts does not match the test files under tests/. ' +
       `Suites without a description: [${undescribed.join(', ')}]. ` +
       `Descriptions without a suite: [${stale.join(', ')}]. ` +
+      `Suites with more than one file: [${twoFiles.join(', ')}]. ` +
       'Describe each suite exactly once.',
   );
 }
