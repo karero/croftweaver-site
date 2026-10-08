@@ -127,7 +127,9 @@ at the end of section 1.
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
-owner reviewed. They are not positioning claims, and the cost answer matches `/why`.
+owner reviewed. The cost answer also draws on `/why` ("Your domain, your hosting and your
+AI assistant can still cost money") and on the price the 0.29 release note on `/skills`
+gives for the optional weekly AI check. None of these are positioning claims.
 
 ## Beyond the seven sections: the learning section
 
@@ -138,8 +140,8 @@ The owner approved the passage on 2026-10-08, in the first person, with a byline
 
 ## Not adopted: tests/story.spec.ts
 
-`src/data/suites.ts` counts every spec file under `tests/` and fails the build when a spec
-has no description. Its list describes the test gate that every Croftweaver site ships
-with. The story test is opt-in, so adding it would put a thirteenth suite on the home page
+`src/data/suites.ts` counts the spec files its glob matches under `tests/` (`.spec` and
+`.test` files ending in `.ts`, `.js` or `.mjs`) and fails the build when one has no
+description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would put a thirteenth suite on the home page
 and on `/checks` that most sites do not have, while POSITIONING.md §2 says 12. The direct
 CTA, the one-liner and the plan are guarded by review instead.

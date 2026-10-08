@@ -86,7 +86,7 @@ requests.
 | 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | done | spec: karero/croftweaver-site#14, merged 2026-10-04 (`268fbe4`); page: karero/croftweaver-site#15, merged 2026-10-04 (`98f30be`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | draft, reviewed; merges right after the rename in step 7. Replaces karero/website-builder#147, which used the dropped name Webcroft | karero/website-builder#212 (draft) |
 | 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | open, waits for 0a and v0.30 | — |
-| 8 | Launch: mailbox `hello@croftweaver.com`, Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
+| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 
@@ -95,9 +95,9 @@ Launch requirements that no test enforces:
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` are still open; CI
   only catches `[MISSING:`.
-- A test mail to `hello@croftweaver.com` arrives; record the date here. The domain's DNS
-  is on Cloudflare and its MX records point to Google (seen 2026-10-08), which alone does
-  not prove the mailbox exists.
+- `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
+  and its MX records point to Google (seen 2026-10-08). Record the date of a test mail
+  here once one has been sent.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
