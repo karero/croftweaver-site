@@ -155,7 +155,7 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
   for (const part of [`starts at ${start.clicks} clicks`, `${peak.clicks} on ${longDate(peak.date)}`, `ends at ${last.clicks}`, `from ${longDate(start.date)} to ${longDate(last.date)}`]) {
     await expect(svg, `the chart's description does not say "${part}"`).toHaveAccessibleDescription(word(part));
   }
-  await expect(svg.locator('text.axis-title'), 'the chart does not say what its numbers are').toHaveText(/28 days/);
+  await expect(svg.locator('.axis-title'), 'the chart does not say what its numbers are').toHaveText(/28 days/);
   await expect(page.locator('#search p strong').first(), 'the clicks in the text and the end of the line differ').toHaveText(`${last.clicks} clicks`);
   await expect(page.locator('#search table'), 'the same clicks must also be in a table').toHaveCount(1);
 
@@ -264,8 +264,15 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // Colour alone must not tell the marks apart (WCAG 1.4.1): the three kinds differ in shape
   // or fill, in the legend and in the chart, and a mark in the chart looks like its legend entry.
   const KINDS = ['named', 'unnamed', 'failed'];
-  const look = (scope: string, kind: string) => page.locator(`${scope} .${kind}`).first()
-    .evaluate((el) => `${el.tagName} ${getComputedStyle(el).fill === 'none' ? 'hollow' : 'filled'}`);
+  const look = (scope: string, kind: string) => page.locator(`${scope} .${kind}`).first().evaluate((el) => {
+    const box = (el as SVGGraphicsElement).getBBox();
+    return `${el.tagName} ${getComputedStyle(el).fill === 'none' ? 'hollow' : 'filled'} ${box.width.toFixed(1)} x ${box.height.toFixed(1)}`;
+  });
+  // The words next to each legend mark, so a swapped legend cannot misname a mark.
+  const SAYS = { named: /named the site/i, unnamed: /did not name/i, failed: /failed/i };
+  for (const kind of KINDS) {
+    await expect(page.locator('.legend li').filter({ has: page.locator(`.${kind}`) }), `the legend entry for the ${kind} mark says something else`).toHaveText(SAYS[kind as keyof typeof SAYS]);
+  }
   const legend = await Promise.all(KINDS.map((kind) => look('.legend', kind)));
   expect(new Set(legend).size, `the legend marks look alike apart from colour: ${legend.join(', ')}`).toBe(KINDS.length);
   for (const [i, kind] of KINDS.entries()) {
@@ -277,7 +284,14 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const { cells, labels, heads } = await svg.evaluate((el) => {
     const inCell = (g: Element, kind: string) => g.querySelectorAll(`[data-mark="${kind}"]`).length;
     // Where a mark is drawn, not what it says about itself: its box and the centre of it.
-    const box = (m: Element) => { const b = (m as SVGGraphicsElement).getBBox(); return [b.x, b.y, b.x + b.width, b.y + b.height]; };
+    // A stroke and its round caps reach half a stroke width beyond the box, so a dash (a box of
+    // no height) still has a size and two dashes drawn on one spot still overlap.
+    const box = (m: Element) => {
+      const b = (m as SVGGraphicsElement).getBBox();
+      const cs = getComputedStyle(m);
+      const half = cs.stroke === 'none' ? 0 : parseFloat(cs.strokeWidth) / 2;
+      return [b.x - half, b.y - half, b.x + b.width + half, b.y + b.height + half];
+    };
     return {
       cells: [...el.querySelectorAll('g[data-engine]')].map((g) => ({
         engine: g.getAttribute('data-engine')!, mode: g.getAttribute('data-mode')!,
@@ -286,18 +300,24 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
         marks: [...g.querySelectorAll('[data-mark]')].map((m) => box(m)),
       })),
       labels: [...el.querySelectorAll('text.label')].map((t) => ({ engine: t.getAttribute('data-engine')!, text: t.textContent!.trim(), y: Number(t.getAttribute('y')) })),
-      heads: [...el.querySelectorAll('text.head')].map((t) => t.textContent!.trim()),
+      heads: [...el.querySelectorAll('text.head')].map((t) => ({ text: t.textContent!.trim(), x: Number(t.getAttribute('x')) })),
     };
   });
 
   // The names and the column headings are the table's: the same words, in the same order.
   expect(labels.map((l) => l.text), 'the assistants in the chart and in the table differ').toEqual((await page.locator('#ai tbody th').allTextContents()).map((t) => t.trim()));
-  expect([`${heads[0]} ${heads[1]}`, `${heads[2]} ${heads[3]}`], 'the column headings in the chart and in the table differ')
+  expect([`${heads[0]!.text} ${heads[1]!.text}`, `${heads[2]!.text} ${heads[3]!.text}`], 'the column headings in the chart and in the table differ')
     .toEqual((await page.locator('#ai thead th').allTextContents()).slice(1).map((t) => t.trim()));
 
   // An assistant whose every call failed is named in the description and in the caption: a
   // row of dashes must not be read as a verdict on the site.
-  const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => today.filter((r) => r.engine === e).every((r) => r.answers === 0 && r.failed > 0));
+  const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
+    const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
+    return modes.every((m) => {
+      const rs = today.filter((r) => r.engine === e && r.mode === m);
+      return rs.reduce((n, r) => n + r.answers, 0) === 0 && rs.reduce((n, r) => n + r.failed, 0) > 0;
+    });
+  });
   if (failedAll.length > 0) {
     const said = `Every call to ${failedAll.map((e) => labels.find((l) => l.engine === e)!.text).join(' and ')} failed`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
@@ -341,6 +361,18 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   for (const mode of ['with_search', 'without_search']) {
     const starts = new Set(cells.filter((x) => x.mode === mode && x.marks.length > 0).map((x) => Math.min(...x.marks.map((b) => (b[0]! + b[2]!) / 2)).toFixed(1)));
     expect(starts.size, `the ${mode} marks do not start in one column`).toBe(1);
+  }
+  // Each column's marks start under its own heading (within one mark's width of where the
+  // heading starts), and the with-search marks end before the other heading: swapped columns
+  // would reverse which result belongs to which kind of question.
+  const headAt: Record<string, number> = { with_search: heads[0]!.x, without_search: heads[2]!.x };
+  for (const cell of cells.filter((x) => x.marks.length > 0)) {
+    const start = Math.min(...cell.marks.map((b) => (b[0]! + b[2]!) / 2)) - headAt[cell.mode]!;
+    expect(start, `the ${cell.mode} marks of ${cell.engine} do not start under their heading`).toBeGreaterThanOrEqual(0);
+    expect(start, `the ${cell.mode} marks of ${cell.engine} start far from their heading`).toBeLessThanOrEqual(12);
+    if (cell.mode === 'with_search') {
+      expect(Math.max(...cell.marks.map((b) => b[2]!)), `the with_search marks of ${cell.engine} run into the next column`).toBeLessThan(headAt.without_search!);
+    }
   }
   const all = cells.flatMap((x) => x.marks.map((b) => ({ box: b, who: `${x.engine} ${x.mode}` })));
   const clashes = all.flatMap((a, i) => all.slice(i + 1)
@@ -436,14 +468,22 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
   });
 }
 
-// Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider
-// than ours, so the layout needs spare room. Widen every character by 7% of the font size
-// (about a seventh on an average word) and check that no text or mark leaves the drawing and
-// no two texts touch. A longer series of months fails here first: see MAX_MONTH_LABELS.
+// Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider than
+// the one the layout was drawn in. So set the chart text in Verdana (macOS and Windows) or
+// DejaVu Sans (Linux), the widest common system fonts, and check that no text or mark leaves
+// the drawing and no two texts touch. (Letter-spacing on top of the machine's own font was
+// tried first and gave a different test on each machine: this one failed on the Linux CI
+// image, whose default font is already wide.) A longer series of months fails here first:
+// see MAX_MONTH_LABELS in ClicksChart.astro.
 test('a11y — text in the /proof charts stays inside its drawing and clear of other text', async ({ page }) => {
   await page.goto('/proof');
   await expect(page.locator('svg[data-chart]'), 'the charts are missing').toHaveCount(2);
-  await page.addStyleTag({ content: 'svg[data-chart] text { letter-spacing: 0.07em !important; }' });
+  await page.addStyleTag({ content: 'svg[data-chart] text { font-family: Verdana, "DejaVu Sans", sans-serif !important; }' });
+  // The test proves nothing in a narrow font. At 17 px "Google AI Overview" takes 149 units in
+  // the system font of macOS and about 1.13 times that in Verdana.
+  const widest = await page.evaluate(() => [...document.querySelectorAll<SVGTextElement>('svg[data-chart="ai"] text.label')]
+    .find((t) => t.textContent?.trim() === 'Google AI Overview')?.getBBox().width ?? 0);
+  expect(widest, 'neither Verdana nor DejaVu Sans is installed, so the layout was not tried in a wide font').toBeGreaterThan(149 * 1.05);
   const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
     const { width, height } = svg.viewBox.baseVal;
     const name = (el: Element) => `${svg.dataset.chart}: "${el.textContent?.trim() || el.getAttribute('data-mark') || el.tagName}"`;

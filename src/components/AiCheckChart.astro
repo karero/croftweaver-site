@@ -7,9 +7,10 @@
 // below the chart repeats the shapes for sighted readers; the SVG's own description says the
 // same for everyone else. tests/a11y.spec.ts counts the marks, compares them with the
 // published CSV and checks where they sit, so keep the data-* attributes. The layout is
-// tested with every letter about a seventh wider (letter-spacing of 7% of the font size) and
-// not with any particular font: the longest row label, "Google AI Overview", takes 153 units
-// here and the longest word cell, "Always searches", 129.
+// tested in a wide font (Verdana, or DejaVu Sans on Linux). At 17 px the longest row label,
+// "Google AI Overview", takes 149 units in the system font of macOS and 169 in Verdana; the
+// longest word cell, "Always searches", 126 and 140; a semibold heading line, "web search",
+// 91 and 109.
 type Counts = { named: number; unnamed: number; failed: number };
 // A string where the assistant is not asked in that mode: shown as words instead of marks.
 type Cell = Counts | string;
@@ -33,11 +34,11 @@ const radius = 6;
 const H = firstY + (rows.length - 1) * rowH + rowH / 2 + 4;
 const columns = [
   { mode: 'with_search', heading: ['With', 'web search'], x: 188, cell: (r: (typeof rows)[number]) => r.withSearch },
-  { mode: 'without_search', heading: ['Without', 'web search'], x: 295, cell: (r: (typeof rows)[number]) => r.withoutSearch },
+  { mode: 'without_search', heading: ['Without', 'web search'], x: 305, cell: (r: (typeof rows)[number]) => r.withoutSearch },
 ] as const;
 
-// A cell has room for the marks that fit between its column and the next one: six, for
-// three calls on each of two questions.
+// A cell has room for the marks that fit between its column and the next one: seven. The
+// data has at most six, for three calls on each of two questions.
 const MAX_MARKS = Math.floor((columns[1].x - columns[0].x - 2 * radius) / pitch) + 1;
 for (const r of rows) {
   for (const cell of [r.withSearch, r.withoutSearch]) {
@@ -81,7 +82,7 @@ const dash = (cx: number, cy: number) => `M${cx - 4.5},${cy}L${cx + 4.5},${cy}`;
     );
   })}
 </svg>
-<ul class="legend" role="list" aria-hidden="true">
+<ul class="legend" aria-hidden="true">
   <li>
     <svg viewBox="-9 -9 18 18" width="18" height="18" aria-hidden="true" focusable="false"><circle class="named" r={radius} /></svg>
     Named the site
