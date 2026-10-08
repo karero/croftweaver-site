@@ -2,35 +2,10 @@
 // Site header: the horizontal logo lockup (BRAND.md), and the main navigation from
 // NAV in src/config.ts. A language switcher mounts here later.
 import { SITE, NAV } from '../config';
-import lockupSource from '../assets/brand/lockup-horizontal-dark-ink.svg?raw';
-
-// Inline the lockup so it follows the site theme (light, dark, or the visitor's toggle):
-// every fill and stroke (except none) becomes currentColor, set by .brand below. The
-// embedded content credentials stay in the source file; the inlined copy drops them,
-// and its fixed size, so CSS sizes it (the viewBox keeps the proportions).
-const lockup = lockupSource
-  .replace(/<\?xml[\s\S]*?\?>|<!--[\s\S]*?-->|<metadata[\s\S]*?<\/metadata>/g, '')
-  .replace(/\s(?:xmlns:c2pa|width|height)\s*=\s*(?:"[^"]*"|'[^']*')/g, '')
-  .replace(/\s(fill|stroke)\s*=\s*(?:"([^"]*)"|'([^']*)')/g, (_, name, dq, sq) =>
-    ` ${name}="${(dq ?? sq).trim().toLowerCase() === 'none' ? 'none' : 'currentColor'}"`);
-
-// Allowlist, not a blocklist: the lockup may hold only what the theming above handles.
-// A re-exported logo with anything else (a style, a gradient, another colour attribute,
-// a new element) would ship a fixed colour, invisible on one theme, so the build stops
-// and names it.
-const ELEMENTS = new Set(['svg', 'g', 'path']);
-const ATTRIBUTES = new Set(['xmlns', 'viewBox', 'role', 'aria-label', 'fill', 'stroke', 'd',
-  'transform', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'fill-rule', 'clip-rule']);
-const problems = [
-  ...[...lockup.matchAll(/<\s*([\w:-]+)/g)].map((m) => m[1]).filter((tag) => !ELEMENTS.has(tag)).map((tag) => `<${tag}>`),
-  ...[...lockup.matchAll(/([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)]
-    .filter(([, name, dq, sq]) => !ATTRIBUTES.has(name)
-      || ((name === 'fill' || name === 'stroke') && !['currentColor', 'none'].includes(dq ?? sq)))
-    .map(([, name]) => name),
-];
-if (problems.length || !lockup.includes('currentColor')) {
-  throw new Error(`Header: the logo lockup cannot follow the theme (${problems.join(', ') || 'no colour found'}); check src/assets/brand/lockup-horizontal-dark-ink.svg`);
-}
+// The theme-ready lockup: its ink is currentColor, set by .brand below, so it follows the
+// light and dark theme and the visitor's toggle. How it is made from the design files:
+// BRAND.md, Logo. tests/a11y.spec.ts checks it renders in the theme's colour.
+import lockup from '../assets/brand/lockup-horizontal-theme.svg?raw';
 
 // Build-time pathnames end in .html (build.format: 'file'); compare the clean form.
 const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '') || '/';
