@@ -337,7 +337,8 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const names = notRunEngines.map((e) => labels.find((l) => l.engine === e)!.text);
     const said = `${names.join(' and ')} ${names.length === 1 ? 'was' : 'were'} not run that day`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
-    await expect(page.locator('#ai'), `the page does not say "${said}"`).toContainText(said);
+    // A paragraph of the page, not the section's text: the chart's hidden description says it too.
+    await expect(page.locator('#ai p').filter({ hasText: said }), `the page does not say "${said}"`).toHaveCount(1);
     for (const [i, engine] of notRunEngines.entries()) {
       for (const [column, mode] of ['with_search', 'without_search'].entries()) {
         const earlier = rows.filter((r) => r.engine === engine && r.mode === mode);
@@ -354,6 +355,10 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       }
     }
   }
+
+  // The sentence that introduces the questions names who was asked.
+  await expect(page.locator('#ai > p').first(), 'the sentence that introduces the questions names the wrong assistants')
+    .toContainText(notRunEngines.length > 0 ? 'the assistants it ran' : 'each assistant');
 
   // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
   // for one mode and none for the other would leave the count right and the chart wrong).
