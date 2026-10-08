@@ -270,7 +270,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const box = shape.getBBox();
     const cs = getComputedStyle(el);
     return [el.tagName, cs.fill === 'none' ? 'hollow' : 'filled', `${box.width.toFixed(1)} x ${box.height.toFixed(1)}`, `outline ${shape.getTotalLength().toFixed(1)}`,
-      cs.stroke === 'none' ? 'no stroke' : `stroke ${cs.strokeWidth} ${cs.strokeLinecap}`].join(', ');
+      cs.stroke === 'none' ? 'no stroke' : `stroke ${cs.strokeWidth} ${cs.strokeLinecap} ${cs.strokeLinejoin} dashes ${cs.strokeDasharray} ${cs.strokeDashoffset}`].join(', ');
   });
   // The words next to each legend mark, so a swapped legend cannot misname a mark.
   const SAYS = { named: /^\s*Named the site\s*$/, unnamed: /^\s*Answered, did not name it\s*$/, failed: /^\s*Call failed\s*$/ };
@@ -494,7 +494,14 @@ test('a11y — text in the /proof charts stays inside its drawing and clear of o
   const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
     const { width, height } = svg.viewBox.baseVal;
     const name = (el: Element) => `${svg.dataset.chart}: "${el.textContent?.trim() || el.getAttribute('data-mark') || el.tagName}"`;
-    const boxes = [...svg.querySelectorAll<SVGGraphicsElement>('text, circle, path')].map((el) => ({ el, b: el.getBBox() }));
+    // A mark is measured with its stroke (and round caps), as in the AI chart test; text as it is.
+    const grow = (el: SVGGraphicsElement) => {
+      const b = el.getBBox();
+      const cs = getComputedStyle(el);
+      const half = el.tagName === 'text' || cs.stroke === 'none' ? 0 : parseFloat(cs.strokeWidth) / 2;
+      return { x: b.x - half, y: b.y - half, width: b.width + 2 * half, height: b.height + 2 * half };
+    };
+    const boxes = [...svg.querySelectorAll<SVGGraphicsElement>('text, circle, path')].map((el) => ({ el, b: grow(el) }));
     const outside = boxes.filter(({ b }) => b.x < 0 || b.y < 0 || b.x + b.width > width || b.y + b.height > height)
       .map(({ el, b }) => `${name(el)} spans ${Math.round(b.x)} to ${Math.round(b.x + b.width)} of ${width}`);
     // A text box is taller than its letters (it includes the line spacing), so two boxes
@@ -504,11 +511,12 @@ test('a11y — text in the /proof charts stays inside its drawing and clear of o
     const touching = texts.flatMap(({ el, b }, i) => texts.slice(i + 1)
       .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
       .map(({ el: other }) => `${name(el)} touches ${name(other)}`));
-    // A word or a name must not run into a mark either.
-    const marks = boxes.filter(({ el }) => el.hasAttribute('data-mark'));
+    // A word or a name must not run into a mark either: the dots on the clicks line and the marks
+    // of the AI chart. A mark has to overlap by half its own height at most (a dash is 2.4 units high).
+    const marks = boxes.filter(({ el }) => el.hasAttribute('data-mark') || el.hasAttribute('data-marker'));
     const crossing = texts.flatMap(({ el, b }) => marks
-      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
-      .map(({ el: mark }) => `${name(el)} crosses a ${mark.getAttribute('data-mark')} mark`));
+      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > Math.min(4, o.height / 2))
+      .map(({ el: mark }) => `${name(el)} crosses a ${mark.getAttribute('data-mark') ?? mark.getAttribute('data-marker')} mark`));
     return [...outside, ...touching, ...crossing];
   }));
   expect(problems, 'a chart has text that is cut off or runs into other text').toEqual([]);
