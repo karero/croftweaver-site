@@ -18,7 +18,7 @@ page-level content that hangs off that positioning.
 
 - **Top 3 jobs-to-be-done (for copy):** understand in one screen what Croftweaver does for being found · judge the proof (dated results, links to re-run them) · get from zero to a first site (quickstart)
 - **Primary action we want:** visit the GitHub repo (star / clone).
-- **Two audiences:** the home page speaks to builders (developers and technically comfortable owners); `/why` makes the case for decision-makers.
+- **Two audiences:** the home page speaks to owners first (founders, organizers, experts and small teams) and to the people who build for them second; `/why` makes the case for decision-makers.
 
 ## Tone of voice
 

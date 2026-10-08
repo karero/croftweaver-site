@@ -11,12 +11,12 @@
 -->
 # Croftweaver — story layer
 
-## Source map (every line below cites POSITIONING.md)
+## Source map (every line below cites POSITIONING.md; a fact that comes from a page of the site names the page)
 
 | Story element | From POSITIONING.md |
 |---|---|
 | Character + want | §4 Target customer and "why they care most" |
-| Problem and villain | §1 the status quo; §4 "why they care most"; "Routes not chosen" (agencies are not the villain) |
+| Problem and villain | §1 the status quo; §4 "why they care most"; "Routes considered and not chosen" (agencies are not the villain) |
 | Guide: empathy and authority | §4 (the situation); §2 and §3 (proof) |
 | Plan | §2 how the attributes are delivered |
 | Calls to action | owner decision: "Get Croftweaver on GitHub" |
@@ -50,45 +50,49 @@
 - **Empathy:** the search and AI work is the part that gets skipped when a site has to
   go live fast (§4, restated).
 - **Authority (proof from §3 only):** three sites built with Croftweaver score 99 to 100
-  in Google's PageSpeed Insights (measured 4 October 2026); genai-wednesday.de, relaunched
-  on 27 March 2026, went from 3 clicks from Google per 28 days to a best 99. Both are on
-  the home page's proof strip and on `/proof`, with their limits.
+  in Google's PageSpeed Insights (measured 4 October 2026); those scorecards are the home
+  page's proof strip. `/proof` shows one site, genai-wednesday.de, relaunched on 27 March
+  2026: clicks from Google per 28 days went from 3 around the relaunch to a best 99
+  (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September, with the
+  limits that page states about itself.
 
 ## 4. Plan
 
 **Title:** Three steps to a site people can find
 
 1. **Describe** → your assistant works out what the site says before it writes a word
-   (§2: the pipeline starts with positioning; `/start`: six questions).
+   (`/positioning`: positioning comes first; `/start`: the interview).
 2. **Build and check** → pages with the search and AI work done by default, and the test
    suites check every change by default (§2, §3).
-3. **Publish and keep improving** → free hosting you control, and once Search Console is
-   connected your own data points to the next edit, week by week (§2).
+3. **Publish and keep improving** → hosting you control (§3: Cloudflare Pages free tier;
+   `/start`), and once Search Console is connected your own data points to the next edit,
+   week by week (§2).
 
 - **Promise:** none. The wording rule forbids a ranking guarantee (POSITIONING.md,
   wording rule 1); the proof strip carries the evidence.
-- **Rebuilding an old site:** the old pages are the brief. There is no automatic import
-  yet (`/roadmap`).
+- **Rebuilding an old site:** tell your assistant what the old site says. There is no
+  automatic import yet (`/roadmap`).
 
 ## 5. Calls to action
 
 - **Direct CTA (one label, verbatim everywhere):** `Get Croftweaver on GitHub` →
-  `SITE.repo`. Used in the header, after the plan and in the sign-off, as on the other pages.
+  `SITE.repo`. Used in the hero, after the plan and in the sign-off, as on the other pages.
 - **Transitional CTA (lead generator):** none. The site has no email-gated guide, and
   none is invented.
 
 ## 6. Stakes (what stays wrong if nothing changes)
 
-- Every update waits on someone else, so changes pile up and the site falls behind (§1).
-- Without a check after each edit, a site slips: a description goes missing, a link
-  breaks, and nothing tells you (§1).
+- Many sites start from an old page nobody dares to touch, or from nothing: every update
+  waits on someone else, so changes pile up and the site falls behind (§1, §4).
+- The work that gets a site found is the first to go, and without a check after each edit
+  a site slips: a description goes missing, a link breaks, and nothing tells you (§1, §4).
 
 ## 7. Success (life after)
 
 - **You make the changes yourself.** Everyday updates are a conversation with your
   assistant (§3, independence row).
 - **Search and AI can read it from the first build** (§3 rows 1 and 2).
-- **Nothing slips unnoticed.** The test suites check every change by default, and your
+- **Common slips get caught.** The test suites check every change by default, and your
   own search data points to the next edit (§3 rows 3 and 4).
 
 ## One-liner (30 words)
@@ -114,12 +118,16 @@ at the end of section 1.
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
 | 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, three short outcomes (one per §7 line), then the proof strip. No customer image: the site has none, and none is invented | yes |
-| 2 | Stakes | §6, then a one-line pivot to the guide | no |
+| 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail | no |
-| 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections answered from POSITIONING.md only (coding, ranking, cost), a link to `/why` | no |
+| 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and a link to `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
 | 7 | Junk drawer | the detail sections (built in, the test suites, the weekly loop, "The site is yours", fit, quickstart), the learning section below, then the sign-off | yes |
+
+Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
+what you need, the starter prompt and the free accounts come from `/start`, a page the
+owner reviewed. They are not positioning claims, and the cost answer matches `/why`.
 
 ## Beyond the seven sections: the learning section
 
@@ -130,7 +138,8 @@ The owner approved the passage on 2026-10-08, in the first person, with a byline
 
 ## Not adopted: tests/story.spec.ts
 
-`src/data/suites.ts` counts every file in `tests/` as one of the suites that every
-Croftweaver site ships with, and the home page renders that count. The story test is
-opt-in, so adding it would make the page claim 13 suites while POSITIONING.md §2 says 12.
-The direct CTA, the one-liner and the plan are guarded by review instead.
+`src/data/suites.ts` counts every spec file under `tests/` and fails the build when a spec
+has no description. Its list describes the test gate that every Croftweaver site ships
+with. The story test is opt-in, so adding it would put a thirteenth suite on the home page
+and on `/checks` that most sites do not have, while POSITIONING.md §2 says 12. The direct
+CTA, the one-liner and the plan are guarded by review instead.

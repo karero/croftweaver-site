@@ -101,7 +101,7 @@ const softwareSchema = {
     </p>
     <p>
       Croftweaver takes the other route: you and your assistant make the changes, the
-      search and AI work is done by default, and the tests check it.
+      search and AI work is done by default, and the tests check it by default.
       <a href="/why">Why build for search and AI visibility</a> makes the full case, for
       the person who decides.
     </p>
@@ -112,11 +112,11 @@ const softwareSchema = {
     <ol class="flow" role="list">
       <li><strong>Describe</strong><span>Say <em>new website</em> to your assistant and answer its questions. It works out what the site says before it writes a word.</span></li>
       <li><strong>Build and check</strong><span>Your assistant builds the pages with the search and AI work done by default, and {SUITE_COUNT} test suites check every change by default.</span></li>
-      <li><strong>Publish and keep improving</strong><span>Publish on free hosting you control. Once you connect Google Search Console, your own data points to the next edit, week by week.</span></li>
+      <li><strong>Publish and keep improving</strong><span>Publish on hosting you control, such as Cloudflare's free plan. Once you connect Google Search Console, your own data points to the next edit, week by week.</span></li>
     </ol>
     <p>
-      Rebuilding an old site? Its pages are your brief. There is no automatic import
-      yet; <a href="/roadmap">the roadmap</a> says what is missing.
+      Rebuilding an old site? Tell your assistant what the old site says. There is no
+      automatic import yet; <a href="/roadmap">the roadmap</a> says what is missing.
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
@@ -128,14 +128,14 @@ const softwareSchema = {
     <div class="grid">
       <div class="card">
         <h3>You make the changes yourself</h3>
-        <p>Everyday updates (text, pages, images and layout) are a conversation with your assistant. No brief, no wait. A stubborn problem can still need outside help. <a href="#yours">The site is yours</a>.</p>
+        <p>Everyday updates (text, pages, images and layout) are a conversation with your assistant. No brief, and nobody to wait for. A stubborn problem can still need outside help. <a href="#yours">The site is yours</a>.</p>
       </div>
       <div class="card">
         <h3>Search and AI can read it from the first build</h3>
         <p>Titles, structured data, a map for AI assistants, a sitemap and clean links are built into every site. <a href="#built-in">What ships with the first build</a>.</p>
       </div>
       <div class="card">
-        <h3>Nothing slips unnoticed</h3>
+        <h3>Common slips get caught</h3>
         <p>{SUITE_COUNT} test suites check every change by default, and your own search data points to the next edit. <a href="#checks">The test suites</a> and <a href="#loop">the weekly loop</a>.</p>
       </div>
     </div>
@@ -151,21 +151,21 @@ const softwareSchema = {
     </p>
     <p>
       The search and AI work is the part that gets skipped when a site has to go live
-      fast. Croftweaver does it by default and checks it. The proof is above and on
+      fast. Croftweaver does that work by default, and by default the tests check it. The proof is above and on
       <a href="/proof">the proof page</a>, measured and dated.
     </p>
     <dl class="qa">
       <div>
         <dt>Do I need to code?</dt>
-        <dd>Not to start. You work with your assistant in plain language: it does the typing, explains each command and asks before it installs anything.</dd>
+        <dd>Not to start. You work with your assistant in plain language, and <a href="/start#prompt">the starter prompt</a> asks it to explain every command and to install a tool only when the site needs it.</dd>
       </div>
       <div>
         <dt>Will it rank my site?</dt>
-        <dd>Croftweaver builds in the search and AI basics and tests them. It cannot promise a ranking: that depends on your content and your competition.</dd>
+        <dd>Croftweaver builds in the search and AI basics and, by default, tests them. It cannot promise a ranking: that depends on your content and your competition.</dd>
       </div>
       <div>
         <dt>What does it cost?</dt>
-        <dd>Croftweaver is free and MIT-licensed. A GitHub account and a Cloudflare account are free. Your AI coding assistant comes with its own terms.</dd>
+        <dd>Croftweaver itself is free and MIT-licensed, and a GitHub account and a Cloudflare account are free to open. Your domain, your hosting and your AI assistant can still cost money, and so can the optional weekly AI check.</dd>
       </div>
     </dl>
   </section>
@@ -245,7 +245,7 @@ const softwareSchema = {
     <p>
       Your code sits in your repository, your domain is in your name, and your
       pages are static files that any host can serve. Croftweaver is MIT-licensed.
-      There is no account and no subscription, and nothing runs on our servers.
+      It has no account and no subscription, and nothing runs on our servers.
     </p>
     <p>
       Install guides cover Claude Code, Codex and Antigravity.
@@ -314,9 +314,9 @@ const softwareSchema = {
       <li>Say: <em>new website</em>. The interview and the pipeline take it from there.</li>
     </ol>
     <p>
-      <a href="/start">The full quickstart</a> has the one-prompt route, the
-      installers for Codex and Antigravity, and the six questions the assistant
-      asks.
+      <a href="/start">The full quickstart</a> has the one-prompt route (paste a
+      starter prompt, and the assistant does the typing), the installers for Codex
+      and Antigravity, and the six questions the assistant asks.
     </p>
   </section>
 
@@ -329,8 +329,9 @@ const softwareSchema = {
 <style>
   section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
   h2 { margin-bottom: 0.8rem; line-height: 1.25; }
-  /* Prose at full measure reads better unhyphenated; the narrow cards keep the
-     global hyphens: auto. */
+  /* Prose at full measure reads better unhyphenated, and so do the short cards and
+     answers below (hyphens: manual); the lists in the test-suite cards keep the global
+     hyphens: auto. */
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
 
   section.hero { padding-top: 3rem; }
