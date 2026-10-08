@@ -17,8 +17,8 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
 ## Logo
 
 - The logo exists (owner's design package, received 2026-10-08): a mark and the wordmark
-  "Croftweaver". The header shows the horizontal lockup inline, in the theme's heading
-  colour (see the theme copy below).
+  "Croftweaver". The header shows the horizontal lockup inline, in the header link's
+  colour (`.brand`, set to the theme's `--heading`; see the theme copy below).
 - Name styling: "Croftweaver" in text, never "CroftWeaver"; lower case only in code contexts
   (domain, repo). No "CW" monogram.
 - Files: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal lockup, each in
@@ -27,10 +27,12 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
   adaptive `favicon.svg` (moss on light, mint on dark), `favicon.ico`,
   `apple-touch-icon.png` and the manifest icons (192, 512, maskable 512).
 - `src/assets/brand/lockup-horizontal-theme.svg` is the header's copy, made once from the
-  dark-ink lockup: content credentials and the fixed width and height removed, the ink
+  dark-ink lockup: content credentials and the fixed width and height removed, its own
+  accessible name replaced by `aria-hidden="true"` (the link carries the name), the ink
   colour set to `currentColor`. When the logo changes, remake it the same way.
-  `tests/a11y.spec.ts` checks in both themes that every painted part of the header logo
-  renders in the header colour, at 3:1 against the background.
+  `tests/a11y.spec.ts` checks that the copy still matches the dark-ink file with exactly
+  these edits, and in both themes that every drawing element of the header logo is
+  visible and renders in the header colour, at 3:1 against the background.
 - The light-ink SVGs are for dark backgrounds the site theme does not cover, such as a
   logo on the share cards (see "Logo on a dark card needs a light variant" under the OG
   spec; the card script needs a PNG made from one).
