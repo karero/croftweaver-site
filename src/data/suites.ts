@@ -95,10 +95,15 @@ export const SUITES: {
 
 // The glob is resolved from the project root at build time, whatever directory the
 // build was started from, and covers what Playwright would pick up under tests/
-// (nested folders, .spec and .test files). `?raw` keeps the files from being bundled
-// or run. A suite's id is its path under tests/ without the suffix.
-const onDisk = Object.keys(import.meta.glob('/tests/**/*.{spec,test}.{ts,js,mjs}', { query: '?raw' }))
-  .map((path) => path.replace(/^\/tests\//, '').replace(/\.(spec|test)\.(ts|js|mjs)$/, ''))
+// (nested folders, .spec and .test files). The extensions are the twelve of
+// Playwright's default testMatch, `**/*.@(spec|test).?(c|m)[jt]s?(x)`, which
+// playwright.config.ts leaves unset: a suite Playwright runs but this glob misses
+// would escape the check below and the count. `?raw` keeps the files from being
+// bundled or run. A suite's id is its path under tests/ without the suffix.
+const onDisk = Object.keys(
+  import.meta.glob('/tests/**/*.{spec,test}.{js,ts,jsx,tsx,cjs,cts,cjsx,ctsx,mjs,mts,mjsx,mtsx}', { query: '?raw' }),
+)
+  .map((path) => path.replace(/^\/tests\//, '').replace(/\.(spec|test)\.[cm]?[jt]sx?$/, ''))
   .sort();
 const described = SUITES.map((s) => s.file).sort();
 const undescribed = onDisk.filter((f) => !described.includes(f));
