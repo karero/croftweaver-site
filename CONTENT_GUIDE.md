@@ -47,6 +47,9 @@ the body copy true:
   passed, nothing more.
 - **Figures are per named site and dated.** Tool, value, date and a link to re-run it.
   Re-check every figure against the live source before reuse.
+- **Charts show the whole series, start their axis at zero and sit beside a table with
+  the same figures.** The two on `/proof` are drawn from the published CSV files, and
+  `tests/a11y.spec.ts` reads them back against those files. A new chart gets the same check.
 - **AI panel scores are assessments** by assistants, not evidence that assistants
   recommend the site.
 - **"Twelve test suites" means twelve spec files**, each with several assertions. A
