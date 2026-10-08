@@ -41,10 +41,14 @@ for (const theme of THEMES) {
       try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
     }, theme);
     await page.goto('/');
-    const logo = await page.evaluate((drawing) => {
+    const logo = await page.evaluate(({ drawing, expected }) => {
       const brand = document.querySelector('.brand');
       const svg = brand?.querySelector<SVGSVGElement>('svg');
       if (!brand || !svg) return null;
+      // Parse the file with the page's own HTML parser, so both sides are serialized the
+      // same way: equivalent markup (self-closing tags, quoting) compares equal.
+      const parsed = document.createElement('template');
+      parsed.innerHTML = expected.trim();
       const ink = getComputedStyle(brand).color;
       // Opacity does not inherit, so multiply it up the whole chain: a transparent group
       // or header hides the logo as surely as a transparent path.
@@ -61,7 +65,7 @@ for (const theme of THEMES) {
           cs.fill !== 'none' && Number(cs.fillOpacity) > 0 ? cs.fill : null,
           cs.stroke !== 'none' && Number(cs.strokeOpacity) > 0 && parseFloat(cs.strokeWidth) > 0 ? cs.stroke : null,
         ].filter((p): p is string => p !== null);
-        const shown = cs.display !== 'none' && cs.visibility !== 'hidden' && opacity(el) > 0;
+        const shown = cs.display !== 'none' && cs.visibility === 'visible' && opacity(el) > 0;
         return { tag: el.tagName, paints, shown, sized: box.width > 0 && box.height > 0 };
       });
       let el: Element | null = brand;
@@ -72,14 +76,17 @@ for (const theme of THEMES) {
       }
       const rect = svg.getBoundingClientRect();
       const { width: vbWidth, height: vbHeight } = svg.viewBox.baseVal;
-      return { theme: document.documentElement.dataset.theme, ink, bg, parts, markup: svg.outerHTML,
-        svgShown: opacity(svg) > 0 && getComputedStyle(svg).visibility !== 'hidden' && rect.height > 0,
+      return { theme: document.documentElement.dataset.theme, ink, bg, parts,
+        svgCount: brand.querySelectorAll('svg').length,
+        sameMarkup: svg.outerHTML === parsed.content.firstElementChild?.outerHTML,
+        svgShown: opacity(svg) > 0 && getComputedStyle(svg).visibility === 'visible' && rect.height > 0,
         ratio: rect.width / rect.height, vbRatio: vbWidth / vbHeight };
-    }, DRAWING);
+    }, { drawing: DRAWING, expected: brandFile('lockup-horizontal-theme.svg') });
     expect(logo, 'header logo (.brand svg) is missing').not.toBeNull();
     expect(logo!.theme, 'the requested theme was not applied').toBe(theme);
-    // The header must show the checked theme copy itself, not some other artwork.
-    expect(logo!.markup.trim(), 'the header logo is not lockup-horizontal-theme.svg').toBe(brandFile('lockup-horizontal-theme.svg').trim());
+    // The header must show the checked theme copy itself, and nothing beside it.
+    expect(logo!.svgCount, 'the header link holds more than the logo').toBe(1);
+    expect(logo!.sameMarkup, 'the header logo is not lockup-horizontal-theme.svg').toBe(true);
     expect(logo!.svgShown, 'the logo is hidden or has no height').toBe(true);
     expect(Math.abs(logo!.ratio / logo!.vbRatio - 1), 'the logo is drawn out of proportion').toBeLessThan(0.02);
     expect(logo!.parts.length, 'the logo has no drawing elements').toBeGreaterThan(0);
