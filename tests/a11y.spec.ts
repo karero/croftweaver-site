@@ -248,7 +248,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   };
   const failedCalls = (mode: string) => {
     const n = today.filter((r) => r.mode === mode).reduce((sum, r) => sum + r.failed, 0);
-    return `${n} ${n === 1 ? 'call' : 'calls'} failed`;
+    return n === 0 ? 'no call failed' : `${n} ${n === 1 ? 'call' : 'calls'} failed`;
   };
 
   await page.goto('/proof');
@@ -328,6 +328,33 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
   }
 
+  // An assistant with rows on earlier days and none on the latest was not run that day: the
+  // description and the page say so, and its table cell gives its last result with the day it
+  // comes from. (Not the same as one the check never asks in that mode.)
+  const ranOnLatest = new Set(today.map((r) => r.engine));
+  const notRunEngines = [...new Set(rows.map((r) => r.engine))].filter((e) => !ranOnLatest.has(e));
+  if (notRunEngines.length > 0) {
+    const names = notRunEngines.map((e) => labels.find((l) => l.engine === e)!.text);
+    const said = `${names.join(' and ')} ${names.length === 1 ? 'was' : 'were'} not run that day`;
+    await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
+    await expect(page.locator('#ai'), `the page does not say "${said}"`).toContainText(said);
+    for (const [i, engine] of notRunEngines.entries()) {
+      for (const [column, mode] of ['with_search', 'without_search'].entries()) {
+        const earlier = rows.filter((r) => r.engine === engine && r.mode === mode);
+        if (earlier.length === 0) continue;
+        const answered = [...new Set(earlier.map((r) => r.date))].sort()
+          .filter((d) => earlier.filter((r) => r.date === d).reduce((n, r) => n + r.answers, 0) > 0);
+        const lastDay = answered.at(-1);
+        const tableCell = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: new RegExp(`^${names[i]!.replace(/[()]/g, '\\$&')}$`) }) }).locator('td').nth(column);
+        if (!lastDay) { await expect(tableCell, `${engine}: no earlier result to give`).toHaveText('Not run that day.'); continue; }
+        const day = earlier.filter((r) => r.date === lastDay);
+        const [gave, named] = [day.reduce((n, r) => n + r.answers, 0), day.reduce((n, r) => n + r.named, 0)];
+        await expect(tableCell, `${engine}, ${mode}: the cell does not give the last result`)
+          .toHaveText(new RegExp(`^Not run that day\\. On ${longDate(lastDay)} it named( and cited the site| it) in ${named} of ${gave} answers?\\.$`));
+      }
+    }
+  }
+
   // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
   // for one mode and none for the other would leave the count right and the chart wrong).
   const engines = [...new Set(cells.map((x) => x.engine))];
@@ -348,7 +375,9 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       expect(cell.words, `${cell.engine}, ${cell.mode}: words and marks in one cell`).toBe('');
     } else {
       expect(shown, `${cell.engine}, ${cell.mode}: the CSV has no rows, so no marks`).toEqual({ named: 0, unnamed: 0, failed: 0 });
-      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a mode the check does not run`).toBe(cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
+      // Rows on an earlier day and none on the latest: the assistant was not run that day.
+      const notRun = rows.some((r) => r.engine === cell.engine && r.mode === cell.mode && r.date !== latest);
+      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a cell with no rows`).toBe(notRun ? 'Not run' : cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
     }
   }
 
@@ -399,14 +428,16 @@ const contrast = (a: string, b: string) => {
   const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
   return (hi! + 0.05) / (lo! + 0.05);
 };
-const CHART_INK: [selector: string, property: 'fill' | 'stroke', minimum: number, what: string][] = [
+// A mark of a kind that the day's data does not have is not in the chart (there may be no failed
+// call), so those entries are optional; the legend always shows all three kinds and is not.
+const CHART_INK: [selector: string, property: 'fill' | 'stroke', minimum: number, what: string, optional?: true][] = [
   ['svg[data-chart="clicks"] .line', 'stroke', 3, 'the clicks line'],
   ['svg[data-chart="clicks"] .dot', 'fill', 3, 'a marker on the clicks line'],
   ['svg[data-chart="clicks"] .base', 'stroke', 3, 'the zero line'],
   ['svg[data-chart="clicks"] text', 'fill', 4.5, 'text in the clicks chart'],
-  ['svg[data-chart="ai"] .named', 'fill', 3, 'a mark for an answer that named the site'],
-  ['svg[data-chart="ai"] .unnamed', 'stroke', 3, 'a mark for an answer that did not'],
-  ['svg[data-chart="ai"] .failed', 'stroke', 3, 'a mark for a failed call'],
+  ['svg[data-chart="ai"] .named', 'fill', 3, 'a mark for an answer that named the site', true],
+  ['svg[data-chart="ai"] .unnamed', 'stroke', 3, 'a mark for an answer that did not', true],
+  ['svg[data-chart="ai"] .failed', 'stroke', 3, 'a mark for a failed call', true],
   ['svg[data-chart="ai"] text', 'fill', 4.5, 'text in the AI check chart'],
   ['.legend .named', 'fill', 3, 'the legend mark for a named answer'],
   ['.legend .unnamed', 'stroke', 3, 'the legend mark for an answer that did not'],
@@ -438,7 +469,8 @@ for (const theme of THEMES) {
     }, CHART_INK);
     expect(applied, 'the requested theme was not applied').toBe(theme);
     seen.forEach((found, i) => {
-      const [, , minimum, what] = CHART_INK[i]!;
+      const [, , minimum, what, optional] = CHART_INK[i]!;
+      if (optional && found.length === 0) return;
       expect(found.length, `nothing matches ${what}`).toBeGreaterThan(0);
       for (const el of found) {
         expect(el.shown && el.opacity === 1, `${what} is hidden or see-through`).toBe(true);

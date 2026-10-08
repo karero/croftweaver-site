@@ -119,6 +119,9 @@ if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no im
 // One row per assistant, mode and question: how many calls answered, how many of the
 // answers named the site, how many cited it, how many calls failed. The table on
 // /proof is computed from this file, so its cells cannot drift from the download.
+// Make the file with scripts/export-ai-check.py: it keeps this one site and nothing else.
+// The check is not always run for every assistant: one with rows on earlier days and none on
+// the latest was not run that day, and the page says so and shows its last result.
 type Mode = 'with_search' | 'without_search';
 type Check = { date: string; engine: string; mode: Mode; answers: number; named: number; cited: number; failed: number };
 const aiLines = aiCsv.trim().split(/\r?\n/);
@@ -143,7 +146,6 @@ if (unknown.length) throw new Error(`genai-wednesday-de-ai-check.csv names an as
 
 const checkDates = [...new Set(checks.map((c) => c.date))].sort();
 const checkDate = checkDates.at(-1)!;
-const earlierDate = checkDates.at(-2);
 const total = (rows: Check[]) =>
   rows.length === 0
     ? null
@@ -158,6 +160,17 @@ const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'na
   t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
+// Rows for this mode on an earlier day and none on the latest: the assistant was not run that
+// day (as against one the check never asks in that mode: see `absent`).
+const ranBefore = (engine: string, mode: Mode) => checkDates.slice(0, -1).some((d) => on(d, mode, engine) !== null);
+// The most recent earlier day on which the assistant answered in this mode.
+const lastAnswered = (engine: string, mode: Mode) => {
+  for (const date of checkDates.slice(0, -1).reverse()) {
+    const t = on(date, mode, engine);
+    if (t && t.answers > 0) return { date, t };
+  }
+  return null;
+};
 // An assistant can have no rows in a mode on purpose: Google's two assistants are search
 // products, so they have no "without web search" mode, and the check does not ask Gemini
 // with web search. Any other gap means rows are missing from the export, and the page must
@@ -171,11 +184,17 @@ const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' => {
 };
 const cell = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
+  if (!now) {
+    if (ranBefore(engine, mode)) {
+      const last = lastAnswered(engine, mode);
+      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}` : 'Not run that day.';
+    }
+    return absent(engine, mode) === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
+  }
   if (now.answers === 0) {
-    const before = earlierDate ? on(earlierDate, mode, engine) : null;
-    return before && before.answers > 0
-      ? `No result: every call failed that day. On ${label(earlierDate!)} it ${sentence(before, 'named')}`
+    const last = lastAnswered(engine, mode);
+    return last
+      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named')}`
       : 'No result: every call failed that day.';
   }
   return sentence(now, 'Named') + (now.failed ? ` ${now.failed} ${now.failed === 1 ? 'call' : 'calls'} failed.` : '');
@@ -190,7 +209,7 @@ const overall = (mode: Mode) => {
 // asked in this mode (the same two cases as `cell`, through `absent`).
 const marks = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches' : 'Not asked';
+  if (!now) return ranBefore(engine, mode) ? 'Not run' : absent(engine, mode) === 'search-only' ? 'Always searches' : 'Not asked';
   if (now.named > now.answers) {
     throw new Error(`genai-wednesday-de-ai-check.csv: ${engine} (${mode}) names the site in more answers than it gave.`);
   }
@@ -202,6 +221,10 @@ const allFailed = ENGINES.filter(([engine]) => {
   const cells = (['with_search', 'without_search'] as const).map((mode) => on(checkDate, mode, engine)).filter((c) => c !== null);
   return cells.length > 0 && cells.every((c) => c.answers === 0 && c.failed > 0);
 }).map(([, assistant]) => assistant);
+// Assistants with rows on earlier days and none on the latest: not run that day. The page
+// names them, and their cells give their last result.
+const notRun = ENGINES.filter(([engine]) => !checks.some((c) => c.date === checkDate && c.engine === engine) && checks.some((c) => c.engine === engine))
+  .map(([, assistant]) => assistant);
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
@@ -259,6 +282,7 @@ export const SITE_PROOF = {
       withoutSearch: marks(engine, 'without_search'),
     })),
     allFailed,
+    notRun,
     withSearch: overall('with_search'),
     withoutSearch: overall('without_search'),
   },
