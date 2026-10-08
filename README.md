@@ -16,7 +16,7 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 6. **Publish model:** two-stage. `main` = noindexed preview (`*.pages.dev`),
    `production` = live at https://croftweaver.com. Publish with `npm run ship`.
 
-## Decisions (owner, 2026-10-03 and 2026-10-04)
+## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
 
 - **Positioning:** lead with being found by search engines and AI assistants; the test
   gate is the proof; ownership is the brand voice. Hero: "Weave websites that rank."
