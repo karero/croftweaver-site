@@ -265,11 +265,15 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // or fill, in the legend and in the chart, and a mark in the chart looks like its legend entry.
   const KINDS = ['named', 'unnamed', 'failed'];
   const look = (scope: string, kind: string) => page.locator(`${scope} .${kind}`).first().evaluate((el) => {
-    const box = (el as SVGGraphicsElement).getBBox();
-    return `${el.tagName} ${getComputedStyle(el).fill === 'none' ? 'hollow' : 'filled'} ${box.width.toFixed(1)} x ${box.height.toFixed(1)}`;
+    // The shape (box and outline length), the fill, and the stroke that draws it.
+    const shape = el as SVGGeometryElement;
+    const box = shape.getBBox();
+    const cs = getComputedStyle(el);
+    return [el.tagName, cs.fill === 'none' ? 'hollow' : 'filled', `${box.width.toFixed(1)} x ${box.height.toFixed(1)}`, `outline ${shape.getTotalLength().toFixed(1)}`,
+      cs.stroke === 'none' ? 'no stroke' : `stroke ${cs.strokeWidth} ${cs.strokeLinecap}`].join(', ');
   });
   // The words next to each legend mark, so a swapped legend cannot misname a mark.
-  const SAYS = { named: /named the site/i, unnamed: /did not name/i, failed: /failed/i };
+  const SAYS = { named: /^\s*Named the site\s*$/, unnamed: /^\s*Answered, did not name it\s*$/, failed: /^\s*Call failed\s*$/ };
   for (const kind of KINDS) {
     await expect(page.locator('.legend li').filter({ has: page.locator(`.${kind}`) }), `the legend entry for the ${kind} mark says something else`).toHaveText(SAYS[kind as keyof typeof SAYS]);
   }
@@ -471,7 +475,8 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
 // Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider than
 // the one the layout was drawn in. So set the chart text in Verdana (macOS and Windows) or
 // DejaVu Sans (Linux), the widest common system fonts, and check that no text or mark leaves
-// the drawing and no two texts touch. (Letter-spacing on top of the machine's own font was
+// the drawing and no two texts touch. Verdana is about as wide as a sans-serif system font gets;
+// a wider one is not tried. (Letter-spacing on top of the machine's own font was
 // tried first and gave a different test on each machine: this one failed on the Linux CI
 // image, whose default font is already wide.) A longer series of months fails here first:
 // see MAX_MONTH_LABELS in ClicksChart.astro.
@@ -479,11 +484,13 @@ test('a11y — text in the /proof charts stays inside its drawing and clear of o
   await page.goto('/proof');
   await expect(page.locator('svg[data-chart]'), 'the charts are missing').toHaveCount(2);
   await page.addStyleTag({ content: 'svg[data-chart] text { font-family: Verdana, "DejaVu Sans", sans-serif !important; }' });
-  // The test proves nothing in a narrow font. At 17 px "Google AI Overview" takes 149 units in
-  // the system font of macOS and about 1.13 times that in Verdana.
+  // The test proves nothing in a font as narrow as the one the layout was drawn in. At 17 px
+  // "Google AI Overview" takes 149 units in the system font of macOS (the font in global.css
+  // there) and about 1.13 times that in Verdana; DejaVu Sans on the Linux CI image passes this
+  // bar too. If the font stack in global.css changes, measure the label again and update 149.
   const widest = await page.evaluate(() => [...document.querySelectorAll<SVGTextElement>('svg[data-chart="ai"] text.label')]
     .find((t) => t.textContent?.trim() === 'Google AI Overview')?.getBBox().width ?? 0);
-  expect(widest, 'neither Verdana nor DejaVu Sans is installed, so the layout was not tried in a wide font').toBeGreaterThan(149 * 1.05);
+  expect(widest, 'no font wider than the design font took effect: install Verdana or DejaVu Sans').toBeGreaterThan(149 * 1.05);
   const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
     const { width, height } = svg.viewBox.baseVal;
     const name = (el: Element) => `${svg.dataset.chart}: "${el.textContent?.trim() || el.getAttribute('data-mark') || el.tagName}"`;
@@ -497,7 +504,12 @@ test('a11y — text in the /proof charts stays inside its drawing and clear of o
     const touching = texts.flatMap(({ el, b }, i) => texts.slice(i + 1)
       .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
       .map(({ el: other }) => `${name(el)} touches ${name(other)}`));
-    return [...outside, ...touching];
+    // A word or a name must not run into a mark either.
+    const marks = boxes.filter(({ el }) => el.hasAttribute('data-mark'));
+    const crossing = texts.flatMap(({ el, b }) => marks
+      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
+      .map(({ el: mark }) => `${name(el)} crosses a ${mark.getAttribute('data-mark')} mark`));
+    return [...outside, ...touching, ...crossing];
   }));
   expect(problems, 'a chart has text that is cut off or runs into other text').toEqual([]);
 });
