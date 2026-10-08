@@ -24,7 +24,7 @@ const steps = [
     skills: ['search-console-insights'],
     points: [
       'The position of each target search, from Google Search Console, after a one-time, read-only sign-in.',
-      'Searches just below page 1 (positions 8 to 20). Each is a small edit away.',
+      'Searches just below page 1 (positions 8 to 20). These are candidates worth investigating first, not a promise of an easy gain.',
       'Pages shown often but rarely clicked. The skill checks the live results page before it suggests a new title or description.',
       'Google and Bing side by side. A weekly tracker builds the history, and a report page shows visits per week for up to 16 months.',
     ],
@@ -35,7 +35,7 @@ const steps = [
     skills: ['geo_check.py'],
     points: [
       'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your buyer’s own questions, without naming the business.',
-      'Two columns per engine: “knows you” answers from memory, “finds you” answers with web search on and lists the sites the engine cited.',
+      'Where an engine allows it, two answers: “knows you” from memory, and “finds you” with web search on, which lists the sites the engine cited. Gemini gives the first only, and Google’s own AI answers give the second only.',
       'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
       'Needs no Search Console access. One prepaid OpenRouter key covers the four chat assistants.',
     ],
@@ -67,7 +67,7 @@ const steps = [
     skills: ['seo-reposition', 'independent-review', 'double-knuth'],
     points: [
       'Guard tests come before the copy changes. They start red, turn green page by page, and stay as regression checks. Each guard is first shown to fire on a broken sample.',
-      'Plans and diffs go to independent reviewers from other model families before anything is built or merged.',
+      'Optionally, plans and diffs go to independent reviewers from other model families before anything is built or merged. You choose whether to use an outside reviewer.',
       'A two-pass review catches drift across files that a review of the diff alone cannot see.',
     ],
     say: 'Write the guard tests from the wording guide before we touch the copy.',
@@ -96,7 +96,7 @@ const limits = [
   { title: 'No import.', text: 'Bringing an existing site under the Croftweaver starter is planned, not built. The roadmap has the order.' },
   { title: 'The ready-made test suite needs the starter.', text: 'The test gate, the link audits and the share-card generator run on sites built with it. On another stack the guard method carries over, and the tests are written for that site’s own build checks.' },
   { title: 'Built and tried on small sites.', text: 'Search Console pulls stop at 25,000 rows per request, and the weekly tracker is tuned for a short list of searches. The only site measured on this website is a small one. Read the numbers on a large site with that in mind.' },
-  { title: 'No backlink or outreach work.', text: 'Only directory listings and profile links are covered.' },
+  { title: 'No backlink campaigns.', text: 'Directory listings, profile links and requests for links to existing partners are covered. Cold outreach and bought links are not.' },
   { title: 'No page generator.', text: 'It improves the pages a site has. It does not mass-produce new ones.' },
   { title: 'No promised score.', text: 'It reports what it measured, and the next run shows whether a change worked.' },
 ];
@@ -217,7 +217,7 @@ const weeks = [
   <section class="wrap" id="loop">
     <h2>The same plan in six steps, in this order</h2>
     <p>
-      On a large site, the cheapest gains sit on pages Google already shows. The
+      On a large site, the best place to start is the pages Google already shows. The
       order makes sure those are found before anything new is written.
     </p>
     <ol class="loop" role="list">
@@ -268,11 +268,11 @@ const weeks = [
   </section>
 
   <section class="wrap" id="success">
-    <h2>After the pilot</h2>
+    <h2>After the grading run</h2>
     <ul class="steps">
       <li>You know where the site stands, in numbers you can rerun.</li>
       <li>You know what the AI assistants say about the company, and which sites they cite.</li>
-      <li>You decide the next step from a measured before and after, not from a report you cannot check.</li>
+      <li>Once the grading run is done, 3 to 6 weeks after shipping, you decide the next step from a measured before and after, not from a report you cannot check.</li>
     </ul>
   </section>
 
