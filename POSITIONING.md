@@ -58,9 +58,10 @@ announcements. `/compare` carries a link and a date for every statement it makes
   Console is registered at launch.
 - The owner and their assistant make the everyday changes themselves, in plain language:
   text, pages, images and layout of a static content site. By default the test gate runs
-  on each change (before every push, and in CI on pull requests). Nobody else is needed
-  for an everyday update; anything that needs a database or an account system is outside
-  what Croftweaver is for (see "Not a fit" on the home page).
+  on each change (before every push, and in CI on pull requests). Owners can make
+  everyday updates without waiting for an agency or a developer, though a stubborn
+  problem can still need outside help; anything that needs a database or an account
+  system is outside what Croftweaver is for (see "Not a fit" on the home page).
 - A suite of skills for AI coding assistants, not a hosted product. The output is a
   static-first Astro repo the user fully owns, and the skills travel inside it.
 
@@ -73,7 +74,7 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: clicks from Google per 28 days rose from 3 around the relaunch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
-| The owner and the assistant make the everyday changes | No waiting on someone else for an everyday update (text, pages, images, layout): a change is a conversation with your assistant, and the tests run on it by default | The output is plain files in your own repository; no account, no subscription, nothing runs on our servers (home page, "The site is yours"). Not measured: how long a change takes compared with an agency. Not covered: anything that needs a database or accounts |
+| The owner and the assistant make the everyday changes | Everyday updates (text, pages, images, layout) need no agency or developer: a change is a conversation with your assistant, and the tests run on it by default. A stubborn problem can still need outside help | The output is plain files in your own repository; no account, no subscription, nothing runs on our servers (home page, "The site is yours"). Not measured: how long a change takes compared with an agency. Not covered: anything that needs a database or accounts. Tested end to end with Claude Code only; the Codex and Antigravity guides are not (`/roadmap`) |
 | A real project to learn with | A rebuild is a real learning curve: hands-on practice for you and your team in directing and checking an AI assistant, on a site you know. The maintainer offers to help with questions along the way (best effort) | None measured. The owner's experience with one team he works with: they work with an AI assistant happily and keep learning, improving and fixing (anecdotal; the team is not named here). A secondary benefit: never the lead, never on a share card |
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
