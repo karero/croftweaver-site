@@ -50,22 +50,32 @@ if [ "$(export_to_stdout one-site)" = "$want" ]; then pass "keeps one site, drop
 want=$'date,engine,mode,question,answers,named,cited,failed\n2026-10-05,anthropic,with_search,1,1,0,0,2\n2026-10-05,gemini,without_search,1,3,0,0,0'
 if [ "$(export_to_stdout merged)" = "$want" ]; then pass "reads failed calls, merges runs of one day"; else fail "failed calls or merged runs are read wrongly"; fi
 
-# 3. Each of these must stop the script (non-zero exit, nothing on stdout).
-stops() { # name, then the rows on stdin
-  local name=$1
-  history "$name"
-  if out=$(export_to_stdout "$name") ; then fail "$name: did not stop"; elif [ -n "$out" ]; then fail "$name: stopped, but wrote output first"; else pass "stops on $name"; fi
+# 3. Each of these must stop the script: a non-zero exit, nothing on standard output, and a message
+#    that says why (a Python traceback is not a message). Each is made first, then checked in THIS
+#    shell: a check run at the end of a pipeline loses its failures in a subshell.
+stops() { # FILE-NAME WHAT: the history in $tmp/FILE-NAME.csv must stop the script
+  local file=$1 what=$2 out
+  if out=$(python3 scripts/export-ai-check.py --history "$tmp/$file.csv" 2> "$tmp/stderr"); then fail "$what: did not stop"
+  elif [ -n "$out" ]; then fail "$what: stopped, but wrote output first"
+  elif grep -q Traceback "$tmp/stderr"; then fail "$what: stopped with a Python traceback, not a message"
+  elif [ ! -s "$tmp/stderr" ]; then fail "$what: stopped without saying why"
+  else pass "stops on $what"; fi
 }
-{ row 2026-10-08 a $SITE openai finds broad 3 3 3 ok; row 2026-10-08 b $SITE openai finds broad 3 3 3 ok; } | stops "two runs for one assistant, mode and question"
-row 2026-10-08 a $SITE openai finds broad 3 3 3 weird | stops "an unknown status"
-row 2026-10-08 a $SITE openai finds typo 3 3 3 ok | stops "an unknown slot"
-row 2026-10-08 a $SITE openai weird broad 3 3 3 ok | stops "an unknown mode"
-row 8-Oct a $SITE openai finds broad 3 3 3 ok | stops "a date that is not YYYY-MM-DD"
-row 2026-10-08 a $SITE 'Open AI' finds broad 3 3 3 ok | stops "an assistant name with a space and capitals"
-row 2026-10-08 a $SITE openai finds broad 3 4 3 ok | stops "named above answers"
-row 2026-10-08 a $SITE openai finds broad 3 2 3 ok | stops "cited above named"
-row 2026-10-08 a $SITE openai finds broad 2 2 2 '2 of 3 failed' | stops "answers and failed calls that do not add up"
-row 2026-10-08 a other.example openai finds broad 3 3 3 ok | stops "no row for the site at all"
+{ row 2026-10-08 a $SITE openai finds broad 3 3 3 ok; row 2026-10-08 b $SITE openai finds broad 3 3 3 ok; } | history s-dup
+stops s-dup "two runs for one assistant, mode and question"
+row 2026-10-08 a $SITE openai finds broad 3 3 3 weird | history s-status;        stops s-status "an unknown status"
+row 2026-10-08 a $SITE openai finds typo 3 3 3 ok | history s-slot;              stops s-slot "an unknown slot"
+row 2026-10-08 a $SITE openai weird broad 3 3 3 ok | history s-mode;            stops s-mode "an unknown mode"
+row 8-Oct a $SITE openai finds broad 3 3 3 ok | history s-date;                 stops s-date "a date that is not YYYY-MM-DD"
+row 2026-02-31 a $SITE openai finds broad 3 3 3 ok | history s-day;             stops s-day "a date that is not a real day"
+row 2026-10-08 a $SITE 'Open AI' finds broad 3 3 3 ok | history s-name;         stops s-name "an assistant name with a space and capitals"
+row 2026-10-08 a $SITE openai finds broad 3 4 3 ok | history s-named;           stops s-named "named above answers"
+row 2026-10-08 a $SITE openai finds broad 3 2 3 ok | history s-cited;           stops s-cited "cited above named"
+row 2026-10-08 a $SITE openai finds broad 3 -1 -2 ok | history s-negative;      stops s-negative "counts below zero"
+row 2026-10-08 a $SITE openai finds broad '' 3 3 ok | history s-empty;          stops s-empty "an empty count of answers"
+row 2026-10-08 a $SITE openai finds broad 2 2 2 '2 of 3 failed' | history s-sum; stops s-sum "answers and failed calls that do not add up"
+row 2026-10-08 a other.example openai finds broad 3 3 3 ok | history s-none;    stops s-none "no row for the site at all"
+{ echo "$header"; echo "2026-10-08,a,$SITE,openai,finds,broad"; } > "$tmp/s-short.csv"; stops s-short "a row that is cut short"
 # A strange value in ANOTHER site's rows does not matter: only this site's rows are read.
 { row 2026-10-08 a other.example openai finds typo 3 3 3 weird; row 2026-10-08 a $SITE openai finds broad 3 3 3 ok; } | history other-odd
 if export_to_stdout other-odd >/dev/null; then pass "ignores a strange value in another site's rows"; else fail "stopped on another site's row"; fi

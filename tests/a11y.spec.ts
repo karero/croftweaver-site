@@ -357,7 +357,18 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // description and the page say so, and its table cell gives its last result with the day it
   // comes from. (Not the same as one the check never asks in that mode.)
   const ranOnLatest = new Set(today.map((r) => r.engine));
-  const notRunEngines = [...new Set(rows.map((r) => r.engine))].filter((e) => !ranOnLatest.has(e));
+  // Every assistant in the chart with no rows on the latest day was declared not run (the build stops
+  // otherwise), one that has no earlier rows either included.
+  const notRunEngines = labels.map((l) => l.engine).filter((e) => !ranOnLatest.has(e));
+  // The three lists the page reads in src/data/proof.ts, read here as text: the search products (no
+  // mode without web search), the assistants the check does not ask with web search, and the
+  // assistants declared not run on the latest day. The last must be exactly those with no rows.
+  const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
+  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/'[a-z-]+'/g) ?? []).map((s) => s.slice(1, -1));
+  const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
+  const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
+  const declared = listIn(`'${latest}': \\[([^\\]]*)\\]`);
+  expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
   let notRunSaid = '';
   if (notRunEngines.length > 0) {
     // In the order of the chart's rows, which is the order the page uses.
@@ -370,11 +381,28 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       .toHaveText(`${said}. The table shows ${names.length === 1 ? 'its last result, if it has one' : 'their last results, where they have any'}.`);
     for (const engine of notRunEngines) {
       for (const mode of ['with_search', 'without_search']) {
-        if (!rows.some((r) => r.engine === engine && r.mode === mode)) continue;
-        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell does not give the last result`)
-          .toHaveText(`Not run that day.${lastResult(engine, mode)}`);
+        const expectedCell = mode === 'without_search' && searchOnly.includes(engine) ? 'Always searches.'
+          : mode === 'with_search' && notAsked.includes(engine) ? 'Not asked with web search.'
+          : `Not run that day.${lastResult(engine, mode)}`;
+        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell of an assistant that was not run`).toHaveText(expectedCell);
       }
     }
+  }
+
+  // Nobody named the site from memory: the page says why, next to the number, and only while that is
+  // true (owner, 2026-10-08). The relaunch date is the one the page gives in its section about the site.
+  const fromMemoryNamed = today.filter((r) => r.mode === 'without_search').reduce((n, r) => n + r.named, 0);
+  const why = page.locator('#ai p').filter({ hasText: 'Why the second number is zero' });
+  if (fromMemoryNamed === 0) {
+    const relaunched = (await page.locator('#site time').first().textContent())!.trim();
+    await expect(why, 'the page does not say why the number from memory is zero').toHaveText(
+      'Why the second number is zero: an assistant recalls a name from memory only if it met that name often enough in the text it was trained on, '
+      + 'and a name reaches that memory only when a new version of the model is trained. '
+      + `A site relaunched on ${relaunched} is young for that. The check also asks one model per assistant, not always the largest. `
+      + 'Web search does not depend on any of this, which is why the assistants that searched the web found the site.',
+    );
+  } else {
+    await expect(why, 'the page explains a zero that is not there').toHaveCount(0);
   }
 
   // The sentence that introduces the questions names who was asked.
@@ -401,9 +429,12 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       expect(cell.words, `${cell.engine}, ${cell.mode}: words and marks in one cell`).toBe('');
     } else {
       expect(shown, `${cell.engine}, ${cell.mode}: the CSV has no rows, so no marks`).toEqual({ named: 0, unnamed: 0, failed: 0 });
-      // Rows on an earlier day and none on the latest: the assistant was not run that day.
-      const notRun = rows.some((r) => r.engine === cell.engine && r.mode === cell.mode && r.date !== latest);
-      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a cell with no rows`).toBe(notRun ? 'Not run' : cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
+      // No rows on the latest day: by design (a search product has no mode without web search, one
+      // assistant is not asked with it) or because the assistant was declared not run.
+      const byDesign = cell.mode === 'without_search' && searchOnly.includes(cell.engine) ? 'Always searches'
+        : cell.mode === 'with_search' && notAsked.includes(cell.engine) ? 'Not asked'
+        : declared.includes(cell.engine) ? 'Not run' : null;
+      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a cell with no rows`).toBe(byDesign);
     }
   }
 
@@ -444,6 +475,11 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     await page.goto('/why');
     await expect(page.locator('li', { hasText: 'AI assistants.' }), 'the summary on /why leaves out who was not run').toContainText(`${notRunSaid}.`);
   }
+  // ... and points to the explanation while there is one.
+  await page.goto('/why');
+  const whyPoint = page.locator('li', { hasText: 'AI assistants.' });
+  if (fromMemoryNamed === 0) await expect(whyPoint, '/why does not point to the explanation').toContainText('The proof page says why the second number is zero.');
+  else await expect(whyPoint, '/why points to an explanation that is not there').not.toContainText('says why the second number is zero');
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG

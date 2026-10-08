@@ -17,15 +17,16 @@ already published (all 37 lines identical):
   failed  = X in the status "X of Y failed" (0 when the status is "ok")
 Several runs on one day are merged. Each assistant, mode and question must come from exactly
 one run. The script stops, and leaves the --out file as it was, on two runs for one key, on a
-column the history lacks, on a mode, slot, status, date or engine it does not know, and on
-counts that cannot be true (named above answers, cited above named, answers and failed calls
-not adding up to the calls asked).
+column the history lacks, on a row that is cut short, on a mode, slot, status, engine or a date
+that is not a real day, and on counts that cannot be true (not whole numbers, named above
+answers, cited above named, answers and failed calls not adding up to the calls asked).
 
 The tracker records no skipped run. When the check was not run for an assistant on the latest
 day, say so in NOT_RUN in src/data/proof.ts.
 """
 import argparse
 import csv
+import datetime
 import io
 import os
 import re
@@ -37,6 +38,14 @@ QUESTION = {'broad': 1, 'narrow': 2}
 SKIPPED_SLOTS = {'branded'}
 COLUMNS = {'date', 'run_id', 'site', 'engine', 'mode', 'slot', 'ok', 'named', 'cited_own', 'status'}
 DEFAULT_HISTORY = os.path.expanduser('~/.config/gsc-insights/geo/geo_history.csv')
+
+def count(value, what, where, empty_is_zero=False):
+    if empty_is_zero and value == '':
+        return 0
+    if not re.fullmatch(r'\d+', value or ''):
+        sys.exit(f'{where}: {what} {value!r} is not a count')
+    return int(value)
+
 
 parser = argparse.ArgumentParser(description='Export the AI check counts for ' + SITE + ' as the published CSV.')
 parser.add_argument('--history', default=DEFAULT_HISTORY, help='the tracker history (default: %(default)s)')
@@ -57,12 +66,18 @@ for row in reader:
     if row['slot'] in SKIPPED_SLOTS:
         branded += 1
         continue
-    where = f'{row["date"]} {row["engine"]}'
+    where = f'{row.get("date")} {row.get("engine")}'
+    if None in row or None in row.values():
+        sys.exit(f'{where}: the row is cut short or has too many fields')
     if row['slot'] not in QUESTION:
         sys.exit(f'{where}: unexpected slot {row["slot"]!r}')
     if row['mode'] not in MODE:
         sys.exit(f'{where}: unexpected mode {row["mode"]!r}')
-    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', row['date']):
+    try:
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', row['date']):
+            raise ValueError
+        datetime.date.fromisoformat(row['date'])
+    except ValueError:
         sys.exit(f'{where}: unexpected date {row["date"]!r}')
     if not re.fullmatch(r'[a-z-]+', row['engine']):
         sys.exit(f'{where}: unexpected assistant name {row["engine"]!r}')
@@ -74,9 +89,9 @@ for row in reader:
         sys.exit(f'{key}: unexpected status {row["status"]!r}')
     v = {
         'run': row['run_id'],
-        'answers': int(row['ok']),
-        'named': int(row['named'] or 0),
-        'cited': int(row['cited_own'] or 0),
+        'answers': count(row['ok'], 'ok', where),
+        'named': count(row['named'], 'named', where, True),
+        'cited': count(row['cited_own'], 'cited_own', where, True),
         'failed': int(failed.group(1)) if failed else 0,
     }
     if v['named'] > v['answers'] or v['cited'] > v['named']:

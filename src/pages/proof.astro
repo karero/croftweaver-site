@@ -23,6 +23,8 @@ const clicksDesc =
   `It starts at ${first.clicks} clicks, reaches ${peak.clicks} on ${peak.to}, and ends at ${latest.clicks}. ` +
   'The table in this section gives the clicks in separate 28-day blocks, and the daily figures are in the CSV file linked after it.';
 const failedCalls = (n: number) => (n === 0 ? 'no call failed' : `${n} ${n === 1 ? 'call' : 'calls'} failed`);
+// The explanation of the number from memory is only true while that number is zero.
+const nobodyFromMemory = p.ai.withoutSearch.named === 0;
 const everyCallFailed = `Every call to ${nameList(allFailed)} failed`;
 const wereNotRun = `${nameList(notRun)} ${notRun.length === 1 ? 'was' : 'were'} not run that day`;
 const aiDesc =
@@ -186,6 +188,16 @@ const aiDesc =
       questions on one day, and answers change from run to run. It talks to each
       assistant through its API, which can answer differently from the app.
     </p>
+    {nobodyFromMemory && (
+      <p>
+        Why the second number is zero: an assistant recalls a name from memory only
+        if it met that name often enough in the text it was trained on, and a name
+        reaches that memory only when a new version of the model is trained. A site
+        relaunched on {p.relaunched.label} is young for that. The check also asks one
+        model per assistant, not always the largest. Web search does not depend on
+        any of this, which is why the assistants that searched the web found the site.
+      </p>
+    )}
     <p class="note">
       The counts behind the table are published:
       <a href={p.ai.csv}>download the file</a> (CSV, one row per day, assistant, mode

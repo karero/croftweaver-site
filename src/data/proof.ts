@@ -129,11 +129,21 @@ const aiLines = aiCsv.trim().split(/\r?\n/);
 if (aiLines[0] !== 'date,engine,mode,question,answers,named,cited,failed') {
   throw new Error('genai-wednesday-de-ai-check.csv: unexpected header line.');
 }
+const questionsOf = new Map<string, string[]>();
 const checks: Check[] = aiLines.slice(1).map((line, i) => {
-  const m = line.match(/^(\d{4}-\d{2}-\d{2}),([a-z-]+),(with_search|without_search),[12],(\d+),(\d+),(\d+),(\d+)$/);
+  const m = line.match(/^(\d{4}-\d{2}-\d{2}),([a-z-]+),(with_search|without_search),([12]),(\d+),(\d+),(\d+),(\d+)$/);
   if (!m) throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
-  return { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[4]), named: Number(m[5]), cited: Number(m[6]), failed: Number(m[7]) };
+  const group = `${m[1]},${m[2]},${m[3]}`;
+  questionsOf.set(group, [...(questionsOf.get(group) ?? []), m[4]!]);
+  return { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[5]), named: Number(m[6]), cited: Number(m[7]), failed: Number(m[8]) };
 });
+// Each assistant, mode and day has question 1 and question 2, once each: a missing or a repeated row
+// would change a total without anyone noticing.
+for (const [group, questions] of questionsOf) {
+  if (questions.slice().sort().join() !== '1,2') {
+    throw new Error(`genai-wednesday-de-ai-check.csv: ${group} has question ${questions.join(' and ')}; each assistant, mode and day needs question 1 and question 2, once each.`);
+  }
+}
 const ENGINES = [
   ['openai', 'GPT (OpenAI)'],
   ['perplexity', 'Perplexity'],
@@ -170,6 +180,9 @@ const NOT_RUN: Record<string, string[]> = {
   '2026-10-08': ['google-ai-mode', 'google-overview'],
 };
 const skipped = NOT_RUN[checkDate] ?? [];
+for (const day of Object.keys(NOT_RUN)) {
+  if (!checkDates.includes(day)) throw new Error(`src/data/proof.ts: NOT_RUN has ${day}, which is not a check day in the CSV (a typo?).`);
+}
 for (const engine of skipped) {
   if (!ENGINES.some(([id]) => id === engine)) throw new Error(`src/data/proof.ts: NOT_RUN names ${engine}, which /proof does not list.`);
   if (checks.some((c) => c.date === checkDate && c.engine === engine)) {
