@@ -43,7 +43,9 @@ genai-wednesday.de/builder-lab is the community showcase and owns GenAI Wednesda
 evidence (its scorecard, the AI score table, FAQPage schema). This site is the project
 home (the promise, the test gate, skills catalogue, quickstart, a proof page for one
 site, SoftwareSourceCode schema). No shared copy apart from one attributed
-testimonial. This site links to the Lab; the Lab links back in step 9. Details:
+testimonial and, by owner decision on 2026-10-08, the panel's scores and its one-line
+prompt, shown with their date, a link and the Lab's caveats. This site links to the Lab;
+the Lab links back in step 9. Details:
 `POSITIONING.md`.
 
 ## Working on the site
@@ -72,7 +74,7 @@ requests.
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
 | 0a | Name and trademark check for "Croftweaver" | owner | open: no search for "Croftweaver" recorded here yet. The earlier check was for the dropped name "Webcroft" (owner's own searches, 2026-10-04: no identical hit in TMview, USPTO, the UK register and EUIPO; similar marks "webcraft", "web craft" and "croft" in classes 9, 35 and 42, no legal opinion). Webcroft was then dropped as too close to an existing company | — |
-| 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on the home page (step 4). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
+| 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on `/more-proof` (step 4b). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check of 2026-09-28 are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
@@ -100,6 +102,10 @@ Launch requirements that no test enforces:
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
   the date here.
+- The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
+  2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
+  `src/data/proof.ts` if its numbers or caveats changed; the build only checks that the
+  rows still average to the figures copied that day.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,

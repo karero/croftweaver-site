@@ -12,16 +12,19 @@ const rerun = (url: string) =>
 ---
 <Base
   title="More proof: speed, trust and technical SEO"
-  description="More proof for Croftweaver: Google's PageSpeed Insights for three sites built with it, the E-E-A-T scores from four AI assistants, and what none of it shows."
+  description="More proof for Croftweaver: PageSpeed Insights for three sites built with it, four AI assistants' SEO, GEO and E-E-A-T scores, and what none of it shows."
   image="/images/og/more-proof.jpg"
 >
   <section class="wrap hero">
     <h1>More proof: speed, trust and technical SEO</h1>
     <p class="lead">
       The home page shows how four AI assistants score SEO and GEO for
-      genai-wednesday.de. Here is the rest: Google's PageSpeed Insights for three sites
-      built with Croftweaver, the E-E-A-T scores, and what none of it shows. Every
-      figure has a date, and where you can re-run a test, there is a link.
+      genai-wednesday.de. SEO is how well Google can find and read a site. GEO, short
+      for generative engine optimization, is how well AI assistants such as ChatGPT,
+      Perplexity or Gemini can read and quote it. Here is the rest: Google's PageSpeed
+      Insights for three sites built with Croftweaver, the E-E-A-T scores, and what none
+      of it shows. Every figure has a date, and where you can re-run a test, there is a
+      link.
     </p>
     <p class="aside">
       All three sites belong to the maintainer of Croftweaver. Read them as worked
@@ -68,8 +71,8 @@ const rerun = (url: string) =>
       <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content">Google says</a>
       it is not a ranking factor by itself. The <a href={PANEL.lab}>Builder Lab</a> asks
       four AI assistants to put a number on it anyway, with the same prompt as for SEO
-      and GEO, on {PANEL.date.label}. GEO and E-E-A-T have no official scorer, so these
-      numbers are AI opinions, not a Google metric.
+      and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
+      these numbers are AI opinions, not a Google metric.
     </p>
     <div class="table-wrap" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
@@ -100,9 +103,14 @@ const rerun = (url: string) =>
       </table>
     </div>
     <p class="note">
-      Scores out of 10. Gemini (Antigravity) scored out of 100; the Builder Lab shows
-      it normalised to a scale of 10. The Lab ran the same prompt twice, on {PANEL.firstRound.label}
-      and on {PANEL.date.label}, and keeps both rounds with a note for each assistant.
+      Scores out of 10, as the Builder Lab shows them (read on {PANEL.readOn.label}).
+      Gemini (Antigravity) answers out of 100 and the Lab shows it normalised to a scale
+      of 10; the others answer out of 10 directly. The Lab warns that scores are not
+      comparable between assistants, so read the average as a rough guide. The SEO
+      column here is an AI opinion of the whole site; the SEO score in the PageSpeed
+      cards above is an automatic check of technical basics. The Lab ran the same prompt
+      twice, on <time datetime={PANEL.firstRound.iso}>{PANEL.firstRound.label}</time> and on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>, and keeps both
+      rounds with a note for each assistant.
     </p>
     <h3>Try it on your own site</h3>
     <p>This is the Lab's prompt. Paste it into your own AI assistant, then change the address to your own:</p>
@@ -119,7 +127,9 @@ const rerun = (url: string) =>
       profiles that are really yours, a named author with a short bio where a page has
       one, cited sources, an imprint, a privacy page and links that work. Tests cover
       part of this: every page must carry structured data a machine can read, and
-      links inside the site must work. No test can tell whether a claim is true.
+      links inside the site that are written from the start of the address must work.
+      Outside links and profiles are not tested, and no test can tell whether a claim
+      is true.
       <a href="/positioning#trust">Positioning first</a> says more.
     </p>
   </section>
@@ -129,6 +139,7 @@ const rerun = (url: string) =>
     <ul class="steps">
       <li><strong>Rankings.</strong> A PageSpeed score and an AI opinion are not a ranking. Rankings depend on your content and your competition.</li>
       <li><strong>That the AI scores repeat.</strong> It is one panel on one site, run twice, and the scores vary by run and by the state of the site.</li>
+      <li><strong>Recommendations.</strong> The AI scores are opinions. They do not show that an assistant would recommend the site.</li>
       <li><strong>A comparison.</strong> Nothing here shows what these sites would have scored without Croftweaver.</li>
     </ul>
     <p>

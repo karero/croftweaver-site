@@ -58,11 +58,12 @@ const softwareSchema = {
     <h2>Four AI assistants scored a site built with Croftweaver</h2>
     <p>
       The <a href={PANEL.lab}>Builder Lab at GenAI Wednesday</a> gave four AI assistants
-      the same prompt about genai-wednesday.de on {PANEL.date.label}. SEO is how well
+      the same prompt about genai-wednesday.de on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. SEO is how well
       Google can find and read a site. GEO, short for generative engine optimization, is
       how well AI assistants such as ChatGPT, Perplexity or Gemini can read and quote it.
-      GEO has no official scorer, so these are AI opinions, not a Google metric, and they
-      vary from run to run. The site belongs to the maintainer of Croftweaver.
+      GEO has no official scorer, so these are AI opinions, not a Google metric. They are
+      not rankings, they vary from run to run, and they do not show that an assistant
+      would recommend the site. The site belongs to the maintainer of Croftweaver.
     </p>
     <div class="table-wrap" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
@@ -78,13 +79,16 @@ const softwareSchema = {
       </table>
     </div>
     <p class="note">
-      Scores out of 10, as the Builder Lab shows them. GEO ranges from
-      {fmtScore(PANEL.geoLow)} to {fmtScore(PANEL.geoHigh)}.
+      Scores out of 10, as the Builder Lab shows them (read on {PANEL.readOn.label}).
+      Gemini (Antigravity) answers out of 100 and the Lab shows it out of 10. The Lab
+      warns that scores are not comparable between assistants, so read the average as a
+      rough guide. GEO ranges from {fmtScore(PANEL.geoLow)} to {fmtScore(PANEL.geoHigh)}.
     </p>
     <h3>Try it on your own site</h3>
     <p>
-      Paste this into your own AI assistant, then ask it again with your site's address.
-      Your scores will differ from these: they are opinions.
+      Paste this into your own AI assistant and replace the part in brackets with your
+      site's address. Your scores will differ from these: they are opinions. The Lab's
+      own prompt is on <a href="/more-proof#eeat">More proof</a>.
     </p>
     <pre class="message"><code>{tryIt}</code></pre>
     <p>

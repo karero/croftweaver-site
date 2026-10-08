@@ -123,7 +123,7 @@ at the end of section 1.
 | 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail | no |
-| 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and a link to `/proof` | no |
+| 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
 | 7 | Junk drawer | the detail sections (built in, the test suites, the weekly loop, "The site is yours", fit, quickstart), the learning section below, then the sign-off | yes |
 

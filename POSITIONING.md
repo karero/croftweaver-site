@@ -73,7 +73,7 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Unique attribute | Value it enables | Proof |
 |---|---|---|
 | Search work done by default | Fast, accessible, and the search basics in place from the first build | PageSpeed Insights, mobile, home page, 4 October 2026 (performance / accessibility / best practices / SEO): genai-wednesday.de 99/100/100/100, m-squad.com 99/100/100/100, apreet.com 100/100/100/100. Re-run: pagespeed.web.dev with each address. This measures speed, accessibility and SEO basics, not rankings and not AI readability |
-| AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo |
+| AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo. AI panel, genai-wednesday.de, second round of 20 August 2026 (SEO and GEO on the home page, E-E-A-T on `/more-proof`): AI opinions with no official scorer, not a measurement and not evidence that an assistant would recommend the site (`src/data/proof.ts`) |
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: clicks from Google per 28 days rose from 3 around the relaunch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
@@ -82,10 +82,13 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
 4 October 2026 and are the ones on `/more-proof` (`src/data/proof.ts`). The AI panel's
-scores (SEO, GEO and E-E-A-T, the second round of 20 August 2026, read from the Builder
-Lab on 2026-10-08) are on the home page and on `/more-proof`. They are AI opinions, and
-the build stops if the averages in `src/data/proof.ts` stop matching the Lab's. The Search
-Console figures were re-checked on 4 October 2026 and are published on `/proof`, with
+SEO and GEO scores are on the home page, and its SEO, GEO and E-E-A-T scores on
+`/more-proof` (the second round of 20 August 2026, copied from the Builder Lab on
+2026-10-08). They are AI opinions, and the Lab itself says they are not comparable across
+assistants. `src/data/proof.ts` checks that the rows still average to the figures the Lab
+showed that day; it never reads the Lab, so a later change there, or a small slip in one
+row, is not seen. Re-read the Lab before launch (README). The Search Console figures
+were re-checked on 4 October 2026 and are published on `/proof`, with
 the daily numbers behind them. Owner decision, 2026-10-04: `/proof` shows one site,
 genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 
@@ -191,11 +194,14 @@ is built.
 - Exception, owner decision 2026-10-08: the home page and `/more-proof` show the
   panel's scores for genai-wednesday.de (SEO and GEO on the home page; SEO, GEO and
   E-E-A-T on `/more-proof`), each with its date, a link to the Lab, and the Lab's own
-  caveat that they are AI opinions with no official scorer. The Lab keeps the full
-  scorecard, both rounds and the notes for each assistant.
+  caveats: AI opinions with no official scorer, and not comparable across assistants.
+  `/more-proof` also shows the Lab's one-line prompt, attributed, so a visitor can
+  reproduce the panel. The Lab keeps the full scorecard, both rounds and the notes for
+  each assistant.
 - No copy is shared between the two, apart from one third-party testimonial quoted
-  verbatim with attribution, and those scores, which are data shown with their source. This site links to the Lab; the Lab links back when its
-  page is reworked (README status table, step 9).
+  verbatim with attribution, and those scores and that prompt, which are shown with
+  their source. This site links to the Lab; the Lab links back when its page is
+  reworked (README status table, step 9).
 
 ## Routes considered and not chosen
 
