@@ -364,10 +364,10 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // mode without web search), the assistants the check does not ask with web search, and the
   // assistants declared not run on the latest day. The last must be exactly those with no rows.
   const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
-  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/'[a-z-]+'/g) ?? []).map((s) => s.slice(1, -1));
+  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
   const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
   const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
-  const declared = listIn(`'${latest}': \\[([^\\]]*)\\]`);
+  const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
   expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
   let notRunSaid = '';
   if (notRunEngines.length > 0) {
@@ -390,16 +390,20 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   }
 
   // Nobody named the site from memory: the page says why, next to the number, and only while that is
-  // true (owner, 2026-10-08). The relaunch date is the one the page gives in its section about the site.
-  const fromMemoryNamed = today.filter((r) => r.mode === 'without_search').reduce((n, r) => n + r.named, 0);
+  // true as written (owner, 2026-10-08): some answers came from memory, none named the site, and with
+  // web search some did. The check does not show why, so the text says so and calls the reason likely.
+  // The date is the one the page gives in its section about the site.
+  const sumOf = (mode: string, key: 'answers' | 'named') => today.filter((r) => r.mode === mode).reduce((n, r) => n + r[key], 0);
+  const explainsZero = sumOf('without_search', 'answers') > 0 && sumOf('without_search', 'named') === 0 && sumOf('with_search', 'named') > 0;
   const why = page.locator('#ai p').filter({ hasText: 'Why the second number is zero' });
-  if (fromMemoryNamed === 0) {
+  if (explainsZero) {
     const relaunched = (await page.locator('#site time').first().textContent())!.trim();
     await expect(why, 'the page does not say why the number from memory is zero').toHaveText(
-      'Why the second number is zero: an assistant recalls a name from memory only if it met that name often enough in the text it was trained on, '
+      'Why the second number is zero: the check does not show why, but the likely reason is how these assistants work. '
+      + 'An assistant recalls a name from memory mostly when it met that name often in the text it was trained on, '
       + 'and a name reaches that memory only when a new version of the model is trained. '
-      + `A site relaunched on ${relaunched} is young for that. The check also asks one model per assistant, not always the largest. `
-      + 'Web search does not depend on any of this, which is why the assistants that searched the web found the site.',
+      + `The present site dates from ${relaunched}, which is recent for that. The check also asks one model per assistant, not always the largest. `
+      + 'Web search does not rely on that memory, which is the likely reason the first number is higher.',
     );
   } else {
     await expect(why, 'the page explains a zero that is not there').toHaveCount(0);
@@ -478,7 +482,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // ... and points to the explanation while there is one.
   await page.goto('/why');
   const whyPoint = page.locator('li', { hasText: 'AI assistants.' });
-  if (fromMemoryNamed === 0) await expect(whyPoint, '/why does not point to the explanation').toContainText('The proof page says why the second number is zero.');
+  if (explainsZero) await expect(whyPoint, '/why does not point to the explanation').toContainText('The proof page says why the second number is zero.');
   else await expect(whyPoint, '/why points to an explanation that is not there').not.toContainText('says why the second number is zero');
 });
 

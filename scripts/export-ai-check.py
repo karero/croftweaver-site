@@ -17,7 +17,7 @@ already published (all 37 lines identical):
   failed  = X in the status "X of Y failed" (0 when the status is "ok")
 Several runs on one day are merged. Each assistant, mode and question must come from exactly
 one run. The script stops, and leaves the --out file as it was, on two runs for one key, on a
-column the history lacks, on a row that is cut short, on a mode, slot, status, engine or a date
+column the history lacks, on any row that is cut short (whatever site or slot it names), on a mode, slot, status, engine or a date
 that is not a real day, and on counts that cannot be true (not whole numbers, named above
 answers, cited above named, answers and failed calls not adding up to the calls asked).
 
@@ -60,15 +60,17 @@ if missing:
 kept = {}
 others = branded = 0
 for row in reader:
+    where = f'{row.get("date")} {row.get("engine")}'
+    # Before anything is skipped: a row cut short cannot be told from another site's row or a
+    # branded one (cut off inside the site name, it would be counted as another site's).
+    if None in row or None in row.values():
+        sys.exit(f'{where}: the row is cut short or has too many fields')
     if row['site'] != SITE:
         others += 1
         continue
     if row['slot'] in SKIPPED_SLOTS:
         branded += 1
         continue
-    where = f'{row.get("date")} {row.get("engine")}'
-    if None in row or None in row.values():
-        sys.exit(f'{where}: the row is cut short or has too many fields')
     if row['slot'] not in QUESTION:
         sys.exit(f'{where}: unexpected slot {row["slot"]!r}')
     if row['mode'] not in MODE:

@@ -112,7 +112,8 @@ Launch requirements that no test enforces:
   from `python3 scripts/export-ai-check.py --out public/data/genai-wednesday-de-ai-check.csv`,
   which needs the tracker's history on the owner's machine and publishes that one site and
   nothing else (`tests/check_export_ai_check.sh` keeps that true). An assistant the check
-  was not run for on the latest day is declared in `NOT_RUN` in `src/data/proof.ts`.
+  was not run for on a day is declared in `NOT_RUN` in `src/data/proof.ts`; the page
+  build stops on any other gap in the file.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The

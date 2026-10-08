@@ -122,7 +122,7 @@ if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no im
 // Make the file with scripts/export-ai-check.py: it keeps this one site and nothing else.
 // The check is not always run for every assistant. When it was not run for one on a day,
 // declare it in NOT_RUN below: the page then says so and shows its last result. An assistant
-// that is missing and not declared stops the build, because it may be a gap in the export.
+// that is missing on any day and not declared stops the build, because it may be a gap in the export.
 type Mode = 'with_search' | 'without_search';
 type Check = { date: string; engine: string; mode: Mode; answers: number; named: number; cited: number; failed: number };
 const aiLines = aiCsv.trim().split(/\r?\n/);
@@ -132,7 +132,8 @@ if (aiLines[0] !== 'date,engine,mode,question,answers,named,cited,failed') {
 const questionsOf = new Map<string, string[]>();
 const checks: Check[] = aiLines.slice(1).map((line, i) => {
   const m = line.match(/^(\d{4}-\d{2}-\d{2}),([a-z-]+),(with_search|without_search),([12]),(\d+),(\d+),(\d+),(\d+)$/);
-  if (!m) throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
+  // The shape and a real calendar day: the export script checks both, and this is the page's own guard.
+  if (!m || !realDay(m[1]!)) throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
   const group = `${m[1]},${m[2]},${m[3]}`;
   questionsOf.set(group, [...(questionsOf.get(group) ?? []), m[4]!]);
   return { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[5]), named: Number(m[6]), cited: Number(m[7]), failed: Number(m[8]) };
@@ -174,19 +175,20 @@ const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'na
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
 // The assistants the check was not run for on a day, declared by hand when the file is made (the
-// tracker records no skipped run). Only the latest day is read. Whole assistants only: one that
-// has rows on that day in one mode and not in another is a gap in the export, not a skipped run.
+// tracker records no skipped run). Whole assistants only: one that has rows on that day in one mode
+// and not in another is a gap in the export, not a skipped run. The page names who was not run on the
+// latest day; a declaration for an earlier day only keeps the build from calling that day's gap a fault.
 const NOT_RUN: Record<string, string[]> = {
   '2026-10-08': ['google-ai-mode', 'google-overview'],
 };
 const skipped = NOT_RUN[checkDate] ?? [];
-for (const day of Object.keys(NOT_RUN)) {
+for (const [day, engines] of Object.entries(NOT_RUN)) {
   if (!checkDates.includes(day)) throw new Error(`src/data/proof.ts: NOT_RUN has ${day}, which is not a check day in the CSV (a typo?).`);
-}
-for (const engine of skipped) {
-  if (!ENGINES.some(([id]) => id === engine)) throw new Error(`src/data/proof.ts: NOT_RUN names ${engine}, which /proof does not list.`);
-  if (checks.some((c) => c.date === checkDate && c.engine === engine)) {
-    throw new Error(`src/data/proof.ts: ${engine} is declared not run on ${checkDate}, but the CSV has rows for it that day.`);
+  for (const engine of engines) {
+    if (!ENGINES.some(([id]) => id === engine)) throw new Error(`src/data/proof.ts: NOT_RUN names ${engine} on ${day}, which /proof does not list.`);
+    if (checks.some((c) => c.date === day && c.engine === engine)) {
+      throw new Error(`src/data/proof.ts: ${engine} is declared not run on ${day}, but the CSV has rows for it that day.`);
+    }
   }
 }
 // The most recent earlier day on which the assistant answered in this mode.
@@ -203,12 +205,23 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
-const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' | 'not-run' => {
+const absent = (engine: string, mode: Mode, date = checkDate): 'search-only' | 'not-asked' | 'not-run' => {
   if (mode === 'without_search' && SEARCH_ONLY.includes(engine)) return 'search-only';
   if (mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(engine)) return 'not-asked';
-  if (skipped.includes(engine)) return 'not-run';
-  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${checkDate}. If the check was not run for it that day, declare it in NOT_RUN in src/data/proof.ts. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH. Otherwise the export is missing rows.`);
+  if ((NOT_RUN[date] ?? []).includes(engine)) return 'not-run';
+  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${date}. If the check was not run for it that day, declare it in NOT_RUN in src/data/proof.ts. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH. Otherwise the export is missing rows.`);
 };
+// Every check day, not only the latest: each assistant has each mode the check asks it in, or is
+// declared not run that day. A mode or an assistant dropped from the middle of the file would
+// otherwise pass unseen, and the last result shown for an assistant declared not run later would
+// quietly come from an older day.
+for (const date of checkDates) {
+  for (const [engine] of ENGINES) {
+    for (const mode of ['with_search', 'without_search'] as const) {
+      if (!on(date, mode, engine)) absent(engine, mode, date);
+    }
+  }
+}
 const cell = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
   if (!now) {
@@ -232,6 +245,8 @@ const overall = (mode: Mode) => {
   if (!t) throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${checkDate}.`);
   return { named: t.named, answers: t.answers, failed: t.failed };
 };
+const withSearch = overall('with_search');
+const withoutSearch = overall('without_search');
 // The same counts as the table, for the chart: one mark per answer that named the site,
 // one per answer that did not, one per failed call. A string instead of marks where the
 // assistant has nothing to count in this mode: it is not asked that way, the check does not
@@ -316,7 +331,10 @@ export const SITE_PROOF = {
     })),
     allFailed,
     notRun,
-    withSearch: overall('with_search'),
-    withoutSearch: overall('without_search'),
+    withSearch,
+    withoutSearch,
+    // /proof says why nobody named the site from memory, and /why points to it, only while that is
+    // true as written: some answers came from memory, none named the site, and with web search some did.
+    explainZero: withoutSearch.answers > 0 && withoutSearch.named === 0 && withSearch.named > 0,
   },
 } as const;
