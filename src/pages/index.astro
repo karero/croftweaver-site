@@ -61,9 +61,9 @@ const softwareSchema = {
       the same prompt about genai-wednesday.de on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. SEO is how well
       Google can find and read a site. GEO, short for generative engine optimization, is
       how well AI assistants such as ChatGPT, Perplexity or Gemini can read and quote it.
-      GEO has no official scorer, so these are AI opinions, not a Google metric. They are
-      not rankings, they vary from run to run, and they do not show that an assistant
-      would recommend the site. The site belongs to the maintainer of Croftweaver.
+      GEO has no official scorer, and the SEO scores here are the assistants' own opinions
+      too, not a Google metric. They are not rankings, they vary from run to run, and they
+      do not show that an assistant would recommend the site. The site belongs to the maintainer of Croftweaver.
     </p>
     <div class="table-wrap" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
@@ -79,7 +79,7 @@ const softwareSchema = {
       </table>
     </div>
     <p class="note">
-      Scores out of 10, as the Builder Lab shows them (read on {PANEL.readOn.label}).
+      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
       Gemini (Antigravity) answers out of 100 and the Lab shows it out of 10. The Lab
       warns that scores are not comparable between assistants, so read the average as a
       rough guide. GEO ranges from {fmtScore(PANEL.geoLow)} to {fmtScore(PANEL.geoHigh)}.

@@ -103,7 +103,7 @@ const rerun = (url: string) =>
       </table>
     </div>
     <p class="note">
-      Scores out of 10, as the Builder Lab shows them (read on {PANEL.readOn.label}).
+      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
       Gemini (Antigravity) answers out of 100 and the Lab shows it normalised to a scale
       of 10; the others answer out of 10 directly. The Lab warns that scores are not
       comparable between assistants, so read the average as a rough guide. The SEO

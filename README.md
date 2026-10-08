@@ -104,8 +104,9 @@ Launch requirements that no test enforces:
   the date here.
 - The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
   2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
-  `src/data/proof.ts` if its numbers or caveats changed; the build only checks that the
-  rows still average to the figures copied that day.
+  `src/data/proof.ts` if its numbers changed, and the caveat sentences in
+  `src/pages/index.astro` and `src/pages/more-proof.astro` if its caveats changed; the
+  build only checks that the rows still average to the figures copied that day.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
