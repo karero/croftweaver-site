@@ -352,3 +352,27 @@ test('a11y — the charts on /proof fit a phone and keep their text readable', a
     expect(px, `the ${id} chart's smallest text is ${px.toFixed(1)} px at 360 px`).toBeGreaterThanOrEqual(10);
   }
 });
+
+// Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider
+// than ours, so the layout needs spare room. Widen every character by about a tenth
+// (letter-spacing) and check that no text or mark leaves the drawing and no two texts touch.
+test('a11y — text in the /proof charts stays inside its drawing and clear of other text', async ({ page }) => {
+  await page.goto('/proof');
+  await page.addStyleTag({ content: 'svg[data-chart] text { letter-spacing: 0.07em !important; }' });
+  const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
+    const { width, height } = svg.viewBox.baseVal;
+    const name = (el: Element) => `${svg.dataset.chart}: "${el.textContent?.trim() || el.getAttribute('data-mark') || el.tagName}"`;
+    const boxes = [...svg.querySelectorAll<SVGGraphicsElement>('text, circle, path')].map((el) => ({ el, b: el.getBBox() }));
+    const outside = boxes.filter(({ b }) => b.x < 0 || b.y < 0 || b.x + b.width > width || b.y + b.height > height)
+      .map(({ el, b }) => `${name(el)} spans ${Math.round(b.x)} to ${Math.round(b.x + b.width)} of ${width}`);
+    // A text box is taller than its letters (it includes the line spacing), so two boxes
+    // may share a few units without the letters touching.
+    const overlap = (a0: number, a1: number, b0: number, b1: number) => Math.min(a1, b1) - Math.max(a0, b0);
+    const texts = boxes.filter(({ el }) => el.tagName === 'text');
+    const touching = texts.flatMap(({ el, b }, i) => texts.slice(i + 1)
+      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
+      .map(({ el: other }) => `${name(el)} touches ${name(other)}`));
+    return [...outside, ...touching];
+  }));
+  expect(problems, 'a chart has text that is cut off or runs into other text').toEqual([]);
+});

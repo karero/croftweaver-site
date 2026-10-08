@@ -17,17 +17,19 @@ interface Props {
 }
 const { id, rows, title, desc } = Astro.props;
 
-const W = 416;
+// The widths leave room for a font about a fifth wider than the one measured (the longest
+// label, "Google AI Overview", takes 135 units here): tests/a11y.spec.ts stresses them.
+const W = 438;
 const labelX = 6;
-const headY = 24;
-const firstY = 56;
+const headY = 16;
+const firstY = 64;
 const rowH = 34;
-const pitch = 20;
-const radius = 7;
+const pitch = 17;
+const radius = 6;
 const H = firstY + (rows.length - 1) * rowH + rowH / 2 + 4;
 const columns = [
-  { mode: 'with_search', heading: 'With web search', x: 150, cell: (r: (typeof rows)[number]) => r.withSearch },
-  { mode: 'without_search', heading: 'Without web search', x: 285, cell: (r: (typeof rows)[number]) => r.withoutSearch },
+  { mode: 'with_search', heading: ['With', 'web search'], x: 182, cell: (r: (typeof rows)[number]) => r.withSearch },
+  { mode: 'without_search', heading: ['Without', 'web search'], x: 295, cell: (r: (typeof rows)[number]) => r.withoutSearch },
 ] as const;
 
 type Kind = 'named' | 'unnamed' | 'failed';
@@ -37,7 +39,7 @@ const cross = (cx: number, cy: number) => `M${cx - 5},${cy - 5}L${cx + 5},${cy +
 <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby={`${id}-title`} aria-describedby={`${id}-desc`} data-chart={id}>
   <title id={`${id}-title`}>{title}</title>
   <desc id={`${id}-desc`}>{desc}</desc>
-  {columns.map((col) => <text class="head" x={col.x} y={headY}>{col.heading}</text>)}
+  {columns.map((col) => col.heading.map((line, i) => <text class="head" x={col.x} y={headY + i * 19}>{line}</text>))}
   {rows.map((r, i) => {
     const cy = firstY + i * rowH;
     return (
