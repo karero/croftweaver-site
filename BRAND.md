@@ -16,14 +16,16 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
 
 ## Logo
 
-- The logo is in progress (owner). Until it lands, the name "Croftweaver" set as text in
-  the heading font is the mark.
+- The logo exists (owner's design package, received 2026-10-08): a mark and the wordmark
+  "Croftweaver". The header shows the horizontal lockup, inlined from
+  `src/assets/brand/` so its single ink colour follows the theme (`currentColor`).
 - Name styling: "Croftweaver" in text, never "CroftWeaver"; lower case only in code contexts
   (domain, repo). No "CW" monogram.
-- When the logo exists: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal
-  lockup, each in dark and light ink), a transparent PNG at `public/images/logo.png`
-  for structured data, a light variant for dark and OG use (see OG rules), favicon and
-  app icons in `public/`.
+- Files: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal lockup, each in
+  dark and light ink, unchanged from the package, content credentials included), a
+  transparent PNG at `public/images/logo.png` for structured data, and in `public/` the
+  adaptive `favicon.svg` (moss on light, mint on dark), `favicon.ico`,
+  `apple-touch-icon.png` and the manifest icons (192, 512, maskable 512).
 
 ## Colour palette
 
