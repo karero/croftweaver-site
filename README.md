@@ -96,8 +96,9 @@ Launch requirements that no test enforces:
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` are still open; CI
   only catches `[MISSING:`.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
-  and its MX records point to Google (seen 2026-10-08). Record the date of a test mail
-  here once one has been sent.
+  and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
+  must arrive, because the imprint and privacy pages publish it as their contact; record
+  the date here.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites).
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
