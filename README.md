@@ -75,7 +75,7 @@ requests.
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
-| 3 | Logo, favicon and app icons, schema logo | owner + PR | logo in progress (owner) | — |
+| 3 | Logo, favicon and app icons, schema logo | owner + PR | logo delivered by the owner 2026-10-08; built in, in review | karero/croftweaver-site#18 (open) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |

@@ -26,6 +26,8 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
   transparent PNG at `public/images/logo.png` for structured data, and in `public/` the
   adaptive `favicon.svg` (moss on light, mint on dark), `favicon.ico`,
   `apple-touch-icon.png` and the manifest icons (192, 512, maskable 512).
+- The light-ink SVGs are for dark backgrounds the site theme does not cover, such as a
+  logo on the share cards (OG rule 2; the card script needs a PNG made from one).
 
 ## Colour palette
 

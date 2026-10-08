@@ -5,14 +5,19 @@ import { SITE, NAV } from '../config';
 import lockupSource from '../assets/brand/lockup-horizontal-dark-ink.svg?raw';
 
 // Inline the lockup so it follows the site theme (light, dark, or the visitor's toggle):
-// its one ink colour becomes currentColor, set by .brand below. The embedded content
-// credentials stay in the source file; the inlined copy drops them, and its fixed size,
-// so CSS sizes it.
+// every fill and stroke colour becomes currentColor, set by .brand below. The embedded
+// content credentials stay in the source file; the inlined copy drops them, and its
+// fixed size, so CSS sizes it (the viewBox keeps the proportions).
 const lockup = lockupSource
   .replace(/<metadata>[\s\S]*?<\/metadata>/, '')
   .replace(/ xmlns:c2pa="[^"]*"/, '')
-  .replace(/ width="\d+" height="\d+"/, '')
-  .replaceAll('#1a1f1b', 'currentColor');
+  .replace(/ width="[\d.]+" height="[\d.]+"/, '')
+  .replace(/(fill|stroke)="#[0-9a-fA-F]{3,8}"/g, '$1="currentColor"');
+// A re-exported logo that slips past the lines above would ship a fixed colour (invisible
+// on one theme) or kilobytes of credentials on every page. Stop the build instead.
+if (/<metadata|c2pa|#[0-9a-fA-F]{3,8}\b/.test(lockup) || !lockup.includes('currentColor')) {
+  throw new Error('Header: the logo lockup could not be made theme-aware; check src/assets/brand/lockup-horizontal-dark-ink.svg');
+}
 
 // Build-time pathnames end in .html (build.format: 'file'); compare the clean form.
 const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '') || '/';
@@ -20,7 +25,7 @@ const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/
 const isCurrent = (href: string) => !href.includes('#') && href === path;
 ---
 <header class="site-header">
-  <a class="brand" href="/"><Fragment set:html={lockup} /></a>
+  <a class="brand" href="/" aria-label={SITE.name}><Fragment set:html={lockup} /></a>
   <nav aria-label="Main">
     <ul>
       {NAV.map((item) => (
