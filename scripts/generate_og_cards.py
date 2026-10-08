@@ -68,6 +68,7 @@ DEFAULT_SUBTITLES = ["Stop waiting on someone else for every change.", "Website 
 PAGES: list[tuple[str, str, list[str]]] = [
     ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
     ("proof", "Built with Croftweaver", ["One site, measured:", "speed, search clicks, AI mentions."]),
+    ("more-proof", "More proof", ["Speed, trust and technical SEO,", "measured and dated."]),
     ("skills", "Website skills", ["The catalogue, by stage:", "build, verify, launch, grow."]),
     ("start", "Quickstart", ["From nothing to your first site,", "with your AI coding assistant."]),
     ("why", "Why build for search and AI visibility", ["The case, for the person", "who decides."]),

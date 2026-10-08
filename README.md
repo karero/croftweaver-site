@@ -79,6 +79,7 @@ requests.
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | done | karero/croftweaver-site#18, merged 2026-10-08 (`48b1738`) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
 | 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | positioning done; `STORY.md` and the page rewrite in review | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); `STORY.md` and the page: karero/croftweaver-site#20 (open) |
+| 4b | Home proof strip: the AI panel's SEO and GEO scores first, a try-it prompt, and a `/more-proof` page for PageSpeed and E-E-A-T | PR | in review | karero/croftweaver-site#21 (open) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`), page only |

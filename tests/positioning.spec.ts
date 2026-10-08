@@ -35,6 +35,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
   '/checks': { term: 'test gate' },
   '/proof': { term: 'built with Croftweaver' },
+  '/more-proof': { term: 'more proof' },
   '/skills': { term: 'website skills' },
   '/start': { term: 'quickstart' },
   '/positioning': { term: 'positioning' },

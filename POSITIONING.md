@@ -13,7 +13,10 @@ recorded at the end.
 Updated 2026-10-08: the hero takes the weaving image of the name and stays in the
 active voice; the customer's starting point is named (an old site, or none, where every
 change waits on someone else); and rebuilding as a way to learn working with an AI
-assistant is recorded as a secondary benefit, never the lead.
+assistant is recorded as a secondary benefit, never the lead. The home page's proof
+strip now leads with the AI panel's SEO and GEO scores for genai-wednesday.de and a
+prompt to try on your own site; PageSpeed for three sites and the E-E-A-T scores moved
+to `/more-proof`.
 
 ## 1. Competitive alternatives
 
@@ -78,7 +81,10 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | A real project to learn with | A rebuild is a real learning curve: hands-on practice for you and your team in directing and checking an AI assistant, on a site you know. The maintainer offers to help with questions along the way (best effort) | None measured. The owner's experience with one team he works with: they work with an AI assistant happily and keep learning, improving and fixing (anecdotal; the team is not named here). A secondary benefit: never the lead, never on a share card |
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
-4 October 2026 and are the ones on the home page (`src/data/proof.ts`). The Search
+4 October 2026 and are the ones on `/more-proof` (`src/data/proof.ts`). The AI panel's
+scores (SEO, GEO and E-E-A-T, the second round of 20 August 2026, read from the Builder
+Lab on 2026-10-08) are on the home page and on `/more-proof`. They are AI opinions, and
+the build stops if the averages in `src/data/proof.ts` stop matching the Lab's. The Search
 Console figures were re-checked on 4 October 2026 and are published on `/proof`, with
 the daily numbers behind them. Owner decision, 2026-10-04: `/proof` shows one site,
 genai-wednesday.de. This replaces the earlier launch requirement of three sites.
@@ -165,6 +171,7 @@ is built.
 | Skills | `/skills` | website skills | — | live |
 | Start | `/start` | quickstart | — | live |
 | Proof | `/proof` | built with Croftweaver | — | live |
+| More proof | `/more-proof` | more proof | — | live |
 | Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
@@ -180,9 +187,14 @@ is built.
   the quickstart and a proof page (`/proof`) for one site, genai-wednesday.de, with
   SoftwareSourceCode schema. `/proof` is written fresh from new measurements (speed,
   clicks from Google, the weekly AI check) and approved by the site's owner; the Lab's
-  scorecard and AI score table are linked, not copied.
+  scorecard is linked, not copied. The panel's scores are the one exception, below.
+- Exception, owner decision 2026-10-08: the home page and `/more-proof` show the
+  panel's scores for genai-wednesday.de (SEO and GEO on the home page; SEO, GEO and
+  E-E-A-T on `/more-proof`), each with its date, a link to the Lab, and the Lab's own
+  caveat that they are AI opinions with no official scorer. The Lab keeps the full
+  scorecard, both rounds and the notes for each assistant.
 - No copy is shared between the two, apart from one third-party testimonial quoted
-  verbatim with attribution. This site links to the Lab; the Lab links back when its
+  verbatim with attribution, and those scores, which are data shown with their source. This site links to the Lab; the Lab links back when its
   page is reworked (README status table, step 9).
 
 ## Routes considered and not chosen

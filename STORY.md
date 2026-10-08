@@ -49,12 +49,14 @@
 
 - **Empathy:** the search and AI work is the part that gets skipped when a site has to
   go live fast (§4, restated).
-- **Authority (proof from §3 only):** three sites built with Croftweaver score 99 to 100
-  in Google's PageSpeed Insights (measured 4 October 2026); those scorecards are the home
-  page's proof strip. `/proof` shows one site, genai-wednesday.de, relaunched on 27 March
-  2026: clicks from Google per 28 days went from 3 around the relaunch to a best 99
-  (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September, with the
-  limits that page states about itself.
+- **Authority (proof from §3 only):** the home page's proof strip shows how four AI
+  assistants scored genai-wednesday.de for SEO and GEO on 20 August 2026 (read from the
+  Builder Lab, labelled as AI opinions), with a prompt a visitor can run on their own
+  site. `/more-proof` has Google's PageSpeed Insights for three sites built with
+  Croftweaver (99 to 100, measured 4 October 2026) and the E-E-A-T scores. `/proof` shows
+  one site, genai-wednesday.de, relaunched on 27 March 2026: clicks from Google per 28
+  days went from 3 around the relaunch to a best 99 (16 June to 13 July 2026) and stood
+  at 50 in the 28 days to 29 September, with the limits that page states about itself.
 
 ## 4. Plan
 
@@ -117,7 +119,7 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, three short outcomes (one per §7 line), then the proof strip. No customer image: the site has none, and none is invented | yes |
+| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, three short outcomes (one per §7 line), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
 | 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail | no |
