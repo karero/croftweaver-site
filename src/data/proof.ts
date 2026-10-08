@@ -155,10 +155,20 @@ const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'na
   t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
+// An assistant can have no rows in a mode on purpose: Google's two assistants are search
+// products, so they have no "without web search" mode, and the check does not ask Gemini
+// with web search. Any other gap means rows are missing from the export, and the page must
+// not explain it away as a property of the assistant.
+const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
+const NOT_ASKED_WITH_SEARCH = ['gemini'];
+const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' => {
+  if (mode === 'without_search' && SEARCH_ONLY.includes(engine)) return 'search-only';
+  if (mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(engine)) return 'not-asked';
+  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${checkDate}. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH in src/data/proof.ts; otherwise the export is missing rows.`);
+};
 const cell = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  // No row at all: the assistant is not asked in this mode.
-  if (!now) return mode === 'without_search' ? 'Always searches.' : 'Not asked with web search.';
+  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   if (now.answers === 0) {
     const before = earlierDate ? on(earlierDate, mode, engine) : null;
     return before && before.answers > 0
@@ -174,10 +184,10 @@ const overall = (mode: Mode) => {
 };
 // The same counts as the table, for the chart: one mark per answer that named the site,
 // one per answer that did not, one per failed call. A string where the assistant is not
-// asked in this mode (the same two cases as `cell`).
+// asked in this mode (the same two cases as `cell`, through `absent`).
 const marks = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  if (!now) return mode === 'without_search' ? 'Always searches' : 'Not asked';
+  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches' : 'Not asked';
   if (now.named > now.answers) {
     throw new Error(`genai-wednesday-de-ai-check.csv: ${engine} (${mode}) names the site in more answers than it gave.`);
   }

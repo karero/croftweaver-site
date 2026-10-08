@@ -165,6 +165,8 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
       ticks: [...el.querySelectorAll('line[data-tick]')].map((l) => ({ value: num(l, 'data-tick'), x1: num(l, 'x1'), x2: num(l, 'x2'), y: num(l, 'y1') })),
       markers: [...el.querySelectorAll('circle[data-marker]')].map((m) => ({ kind: m.getAttribute('data-marker'), date: m.getAttribute('data-date'), clicks: num(m, 'data-clicks'), cx: num(m, 'cx'), cy: num(m, 'cy') })),
       months: [...el.querySelectorAll('text[data-date]')].map((t) => ({ date: t.getAttribute('data-date')!, name: t.textContent!.trim(), x: num(t, 'x') })),
+      tickLabels: [...el.querySelectorAll('text[data-tick-label]')].map((t) => ({ value: num(t, 'data-tick-label'), text: t.textContent!.trim(), y: num(t, 'y') })),
+      valueLabels: [...el.querySelectorAll('text[data-for]')].map((t) => ({ kind: t.getAttribute('data-for'), text: t.textContent!.trim() })),
     };
   });
 
@@ -185,7 +187,16 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
   });
   const ceiling = ticks.at(-1)!.value;
   expect(ceiling, 'the axis stops below the highest value').toBeGreaterThanOrEqual(high);
-  expect(ceiling - high, 'the axis reaches a whole step above the highest value').toBeLessThan(valueStep);
+  expect(ceiling - high, 'the axis reaches more than a step above the highest value').toBeLessThanOrEqual(valueStep);
+
+  // What the reader sees: each gridline has one label that says its value, at its height.
+  expect(c.tickLabels.length, 'an axis label has no gridline, or a gridline has none').toBe(ticks.length);
+  for (const t of ticks) {
+    const labels = c.tickLabels.filter((l) => l.value === t.value);
+    expect(labels.length, `the gridline at ${t.value} has ${labels.length} labels`).toBe(1);
+    expect(labels[0]!.text, `the label at the ${t.value} gridline reads "${labels[0]!.text}"`).toBe(String(t.value));
+    expect(Math.abs(labels[0]!.y - t.y), `the ${t.value} label is not at its gridline`).toBeLessThan(0.05);
+  }
 
   // Every point sits at the height its clicks have on the axis, and the points are evenly
   // spaced from one end of the axis to the other.
@@ -212,6 +223,7 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
     expect(m, `the ${kind} marker is missing`).toBeDefined();
     expect([m!.date, m!.clicks], `the ${kind} marker is for the wrong point`).toEqual([want.date, want.clicks]);
     expect([m!.cx, m!.cy], `the ${kind} marker is not on the line`).toEqual(c.points[expected.findIndex((e) => e.date === want.date)]);
+    expect(c.valueLabels.filter((l) => l.kind === kind).map((l) => l.text), `the number shown for the ${kind} point`).toEqual([String(want.clicks)]);
   }
 });
 
@@ -250,21 +262,33 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   }))).filter((look) => look !== null);
   expect(new Set(looks).size, `the marks look alike apart from colour: ${looks.join(', ')}`).toBe(looks.length);
 
-  const cells = await svg.evaluate((el) => {
+  const { cells, labels } = await svg.evaluate((el) => {
     const inCell = (g: Element, kind: string) => g.querySelectorAll(`[data-mark="${kind}"]`).length;
-    return [...el.querySelectorAll('g[data-engine]')].map((g) => ({
-      engine: g.getAttribute('data-engine')!, mode: g.getAttribute('data-mode')!,
-      named: inCell(g, 'named'), unnamed: inCell(g, 'unnamed'), failed: inCell(g, 'failed'),
-      words: g.querySelector('text')?.textContent?.trim() ?? '',
-    }));
+    // Where a mark is drawn, not what it says about itself: its box and the centre of it.
+    const box = (m: Element) => { const b = (m as SVGGraphicsElement).getBBox(); return [b.x, b.y, b.x + b.width, b.y + b.height]; };
+    return {
+      cells: [...el.querySelectorAll('g[data-engine]')].map((g) => ({
+        engine: g.getAttribute('data-engine')!, mode: g.getAttribute('data-mode')!,
+        named: inCell(g, 'named'), unnamed: inCell(g, 'unnamed'), failed: inCell(g, 'failed'),
+        words: g.querySelector('text')?.textContent?.trim() ?? '',
+        marks: [...g.querySelectorAll('[data-mark]')].map((m) => box(m)),
+      })),
+      labels: [...el.querySelectorAll('text.label')].map((t) => ({ engine: t.getAttribute('data-engine')!, y: Number(t.getAttribute('y')) })),
+    };
   });
 
-  // Every assistant in the CSV has both of its cells, and every cell shows the CSV's counts:
-  // marks where the assistant was asked, words where it was not.
-  expect(cells.length, 'each assistant needs one cell per mode').toBe(new Set(cells.map((x) => x.engine)).size * 2);
-  for (const engine of new Set(today.map((r) => r.engine))) {
-    expect(cells.some((x) => x.engine === engine), `${engine} is in the CSV but not in the chart`).toBe(true);
+  // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
+  // for one mode and none for the other would leave the count right and the chart wrong).
+  const engines = [...new Set(cells.map((x) => x.engine))];
+  for (const engine of engines) {
+    for (const mode of ['with_search', 'without_search']) {
+      expect(cells.filter((x) => x.engine === engine && x.mode === mode).length, `${engine} needs exactly one ${mode} cell`).toBe(1);
+    }
   }
+  for (const engine of new Set(today.map((r) => r.engine))) {
+    expect(engines, `${engine} is in the CSV but not in the chart`).toContain(engine);
+  }
+  // Every cell shows the CSV's counts: marks where the assistant was asked, words where it was not.
   for (const cell of cells) {
     const want = counts(cell.engine, cell.mode);
     const shown = { named: cell.named, unnamed: cell.unnamed, failed: cell.failed };
@@ -276,6 +300,26 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       expect(cell.words, `${cell.engine}, ${cell.mode}: an empty cell with no words`).not.toBe('');
     }
   }
+
+  // Where the marks sit: each assistant's marks on its own row, next to its name; the rows
+  // differ; the marks of one mode start in one column; and no two marks overlap, which
+  // also shows a cell with more marks than the layout has room for.
+  expect(new Set(labels.map((l) => l.engine)).size, 'an assistant is named twice').toBe(labels.length);
+  expect(new Set(labels.map((l) => l.y)).size, 'two assistants share a row').toBe(labels.length);
+  for (const cell of cells) {
+    const label = labels.find((l) => l.engine === cell.engine);
+    expect(label, `${cell.engine} has no name in the chart`).toBeDefined();
+    for (const b of cell.marks) expect(Math.abs((b[1]! + b[3]!) / 2 - label!.y), `a mark of ${cell.engine} is not on its row`).toBeLessThan(0.05);
+  }
+  for (const mode of ['with_search', 'without_search']) {
+    const starts = new Set(cells.filter((x) => x.mode === mode && x.marks.length > 0).map((x) => Math.min(...x.marks.map((b) => (b[0]! + b[2]!) / 2)).toFixed(1)));
+    expect(starts.size, `the ${mode} marks do not start in one column`).toBe(1);
+  }
+  const all = cells.flatMap((x) => x.marks.map((b) => ({ box: b, who: `${x.engine} ${x.mode}` })));
+  const clashes = all.flatMap((a, i) => all.slice(i + 1)
+    .filter((b) => a.box[0]! < b.box[2]! && b.box[0]! < a.box[2]! && a.box[1]! < b.box[3]! && b.box[1]! < a.box[3]!)
+    .map((b) => `${a.who} and ${b.who}`));
+  expect(clashes, 'marks overlap').toEqual([]);
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG

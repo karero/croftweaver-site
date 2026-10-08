@@ -17,6 +17,15 @@ interface Props {
 }
 const { id, rows, title, desc } = Astro.props;
 
+// A cell has room for three calls on each of two questions.
+const MAX_MARKS = 6;
+for (const r of rows) {
+  for (const cell of [r.withSearch, r.withoutSearch]) {
+    const marks = typeof cell === 'string' ? 0 : cell.named + cell.unnamed + cell.failed;
+    if (marks > MAX_MARKS) throw new Error(`AiCheckChart "${id}": ${r.assistant} has ${marks} marks in one cell and the layout has room for ${MAX_MARKS}. Widen the columns first.`);
+  }
+}
+
 // The widths leave room for a font about a fifth wider than the one measured (the longest
 // label, "Google AI Overview", takes 135 units here): tests/a11y.spec.ts stresses them.
 const W = 438;
@@ -45,7 +54,7 @@ const cross = (cx: number, cy: number) => `M${cx - 4},${cy - 4}L${cx + 4},${cy +
     return (
       <>
         {i > 0 && <line class="rule" x1="0" x2={W} y1={cy - rowH / 2} y2={cy - rowH / 2} />}
-        <text class="label" x={labelX} y={cy} dy="0.35em">{r.assistant}</text>
+        <text class="label" x={labelX} y={cy} dy="0.35em" data-engine={r.engine}>{r.assistant}</text>
         {columns.map((col) => {
           const cell = col.cell(r);
           return (

@@ -21,7 +21,6 @@ if (n < 2 || peakAt < 0) throw new Error(`ClicksChart "${id}": needs at least tw
 
 const W = 420;
 const H = 250;
-const left = 42;
 const right = W - 18;
 const top = 26;
 const base = H - 30;
@@ -32,6 +31,8 @@ const power = 10 ** Math.max(0, Math.floor(Math.log10(high / 5)));
 const step = [1, 2, 5, 10].map((k) => k * power).find((s) => s * 5 >= high)!;
 const ceiling = Math.max(step, Math.ceil(high / step) * step);
 const ticks = Array.from({ length: ceiling / step + 1 }, (_, i) => i * step);
+// The gutter holds the axis labels: about nine units a digit, with room on both sides.
+const left = 16 + 9 * String(ceiling).length;
 
 const round = (v: number) => Math.round(v * 100) / 100;
 const xAt = (i: number) => round(left + (i / (n - 1)) * (right - left));
@@ -51,7 +52,7 @@ const last = points[n - 1]!;
   {ticks.map((t) => (
     <>
       <line class={t === 0 ? 'base' : 'grid'} x1={left} x2={right} y1={yAt(t)} y2={yAt(t)} data-tick={t} />
-      <text class="tick" x={left - 8} y={yAt(t)} dy="0.35em" text-anchor="end">{t}</text>
+      <text class="tick" x={left - 8} y={yAt(t)} dy="0.35em" text-anchor="end" data-tick-label={t}>{t}</text>
     </>
   ))}
   {months.map((m) => (
@@ -60,9 +61,9 @@ const last = points[n - 1]!;
   <polygon class="area" points={area} />
   <polyline class="line" points={line} data-from={points[0]!.iso} data-to={last.iso} />
   <circle class="dot" cx={xAt(peakAt)} cy={yAt(peak.clicks)} r="5" data-marker="peak" data-date={peak.iso} data-clicks={peak.clicks} />
-  <text class="value" x={xAt(peakAt)} y={yAt(peak.clicks) - 11} text-anchor="middle">{peak.clicks}</text>
+  <text class="value" x={xAt(peakAt)} y={yAt(peak.clicks) - 11} text-anchor="middle" data-for="peak">{peak.clicks}</text>
   <circle class="dot" cx={xAt(n - 1)} cy={yAt(last.clicks)} r="5" data-marker="latest" data-date={last.iso} data-clicks={last.clicks} />
-  <text class="value" x={xAt(n - 1) + 6} y={yAt(last.clicks) + 22} text-anchor="end">{last.clicks}</text>
+  <text class="value" x={xAt(n - 1) + 6} y={yAt(last.clicks) + 22} text-anchor="end" data-for="latest">{last.clicks}</text>
 </svg>
 
 <style>

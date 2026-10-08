@@ -20,12 +20,12 @@ const first = rolling[0]!;
 const clicksDesc =
   `Line chart of Google Search Console clicks in the 28 days up to each date, from ${rollingFrom.label} to ${latest.to}. ` +
   `It starts at ${first.clicks} clicks, reaches ${peak.clicks} on ${peak.to}, and ends at ${latest.clicks}. ` +
-  'The table below gives the same clicks in separate 28-day blocks.';
+  'The table in this section gives the clicks in separate 28-day blocks, and the daily figures are in the CSV file linked after it.';
 const aiDesc =
-  `One mark for each answer in the AI check of ${p.ai.date.label}. ` +
+  `One mark for each call in the AI check of ${p.ai.date.label}: filled for an answer that named the site, hollow for an answer that did not, a cross for a call that failed. ` +
   `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site. ` +
   `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did. ` +
-  'The table below gives the result for each assistant.';
+  'The table in this section gives the result for each assistant.';
 ---
 <Base
   title="Built with Croftweaver: one site, measured"
@@ -149,8 +149,8 @@ const aiDesc =
     <figure class="card chart">
       <AiCheckChart id="ai" rows={p.ai.chart} title="Which answers named the site, by assistant" desc={aiDesc} />
       <figcaption>
-        Each mark is one answer. A call that failed gave no answer and is shown as a
-        cross. The table below says the same in words.
+        Each mark is one call to an assistant. A call that failed gave no answer. The
+        table below says the same in words.
       </figcaption>
     </figure>
     <div class="table-wrap" role="region" aria-label="Results of the AI check" tabindex="0">
