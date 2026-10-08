@@ -233,8 +233,8 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
 });
 
 test('a11y — the AI check chart on /proof draws the published CSV', async ({ page }) => {
-  const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, , failed]) =>
-    ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), failed: Number(failed) }));
+  const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, cited, failed]) =>
+    ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), cited: Number(cited), failed: Number(failed) }));
   const latest = rows.map((r) => r.date).sort().at(-1)!;
   const today = rows.filter((r) => r.date === latest);
   const counts = (engine: string, mode: string) => {
@@ -317,6 +317,22 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
 
   // An assistant whose every call failed is named in the description and in the caption: a
   // row of dashes must not be read as a verdict on the site.
+  // The cell of an assistant in a mode, found by the assistant's name in the table.
+  const tableCellOf = (engine: string, mode: string) => page.locator('#ai tbody tr')
+    .filter({ has: page.locator('th', { hasText: new RegExp(`^${labels.find((l) => l.engine === engine)!.text.replace(/[()]/g, '\\$&')}$`) }) })
+    .locator('td').nth(mode === 'with_search' ? 0 : 1);
+  // The last result of an assistant in a mode as the table gives it: the most recent earlier day on
+  // which it answered, and whether the answers also cited the site and whether calls failed.
+  const lastResult = (engine: string, mode: string) => {
+    const earlier = rows.filter((r) => r.engine === engine && r.mode === mode && r.date < latest);
+    const day = [...new Set(earlier.map((r) => r.date))].sort().reverse()
+      .find((d) => earlier.filter((r) => r.date === d).reduce((n, r) => n + r.answers, 0) > 0);
+    if (!day) return '';
+    const rs = earlier.filter((r) => r.date === day);
+    const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
+    const [gave, named, cited, failed] = [sum('answers'), sum('named'), sum('cited'), sum('failed')];
+    return ` On ${longDate(day)} it ${named > 0 && cited === named ? 'named and cited the site' : 'named it'} in ${named} of ${gave} ${gave === 1 ? 'answer' : 'answers'}.${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
+  };
   const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
     const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
     return modes.every((m) => {
@@ -328,6 +344,13 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const said = `Every call to ${list(labels.filter((l) => failedAll.includes(l.engine)).map((l) => l.text))} failed`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
     await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
+    for (const engine of failedAll) {
+      for (const mode of ['with_search', 'without_search']) {
+        if (!today.some((r) => r.engine === engine && r.mode === mode)) continue;
+        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell of an assistant whose every call failed`)
+          .toHaveText(`No result: every call failed that day.${lastResult(engine, mode)}`);
+      }
+    }
   }
 
   // An assistant with rows on earlier days and none on the latest was not run that day: the
@@ -335,26 +358,21 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // comes from. (Not the same as one the check never asks in that mode.)
   const ranOnLatest = new Set(today.map((r) => r.engine));
   const notRunEngines = [...new Set(rows.map((r) => r.engine))].filter((e) => !ranOnLatest.has(e));
+  let notRunSaid = '';
   if (notRunEngines.length > 0) {
     // In the order of the chart's rows, which is the order the page uses.
     const names = labels.filter((l) => notRunEngines.includes(l.engine)).map((l) => l.text);
     const said = `${list(names)} ${names.length === 1 ? 'was' : 'were'} not run that day`;
+    notRunSaid = said;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
     // A paragraph of the page, not the section's text: the chart's hidden description says it too.
-    await expect(page.locator('#ai p').filter({ hasText: said }), `the page does not say "${said}"`).toHaveCount(1);
+    await expect(page.locator('#ai p').filter({ hasText: said }), `the paragraph about the assistants not run reads otherwise`)
+      .toHaveText(`${said}. The table shows ${names.length === 1 ? 'its last result, if it has one' : 'their last results, where they have any'}.`);
     for (const engine of notRunEngines) {
-      for (const [column, mode] of ['with_search', 'without_search'].entries()) {
-        const earlier = rows.filter((r) => r.engine === engine && r.mode === mode);
-        if (earlier.length === 0) continue;
-        const answered = [...new Set(earlier.map((r) => r.date))].sort()
-          .filter((d) => earlier.filter((r) => r.date === d).reduce((n, r) => n + r.answers, 0) > 0);
-        const lastDay = answered.at(-1);
-        const tableCell = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: new RegExp(`^${labels.find((l) => l.engine === engine)!.text.replace(/[()]/g, '\\$&')}$`) }) }).locator('td').nth(column);
-        if (!lastDay) { await expect(tableCell, `${engine}: no earlier result to give`).toHaveText('Not run that day.'); continue; }
-        const day = earlier.filter((r) => r.date === lastDay);
-        const [gave, named] = [day.reduce((n, r) => n + r.answers, 0), day.reduce((n, r) => n + r.named, 0)];
-        await expect(tableCell, `${engine}, ${mode}: the cell does not give the last result`)
-          .toHaveText(new RegExp(`^Not run that day\\. On ${longDate(lastDay)} it named( and cited the site| it) in ${named} of ${gave} answers?\\.$`));
+      for (const mode of ['with_search', 'without_search']) {
+        if (!rows.some((r) => r.engine === engine && r.mode === mode)) continue;
+        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell does not give the last result`)
+          .toHaveText(`Not run that day.${lastResult(engine, mode)}`);
       }
     }
   }
@@ -420,6 +438,12 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     .filter((b) => a.box[0]! < b.box[2]! && b.box[0]! < a.box[2]! && a.box[1]! < b.box[3]! && b.box[1]! < a.box[3]!)
     .map((b) => `${a.who} and ${b.who}`));
   expect(clashes, 'marks overlap').toEqual([]);
+
+  // /why carries the same fact in one clause, after its figures.
+  if (notRunSaid) {
+    await page.goto('/why');
+    await expect(page.locator('li', { hasText: 'AI assistants.' }), 'the summary on /why leaves out who was not run').toContainText(`${notRunSaid}.`);
+  }
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG

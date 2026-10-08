@@ -157,6 +157,8 @@ const total = (rows: Check[]) =>
 const on = (date: string, mode: Mode, engine?: string) =>
   total(checks.filter((c) => c.date === date && c.mode === mode && (!engine || c.engine === engine)));
 const answers = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
+// Failed calls, as a clause after a result sentence.
+const failedClause = (t: NonNullable<ReturnType<typeof total>>) => (t.failed ? ` ${t.failed} ${t.failed === 1 ? 'call' : 'calls'} failed.` : '');
 const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'named') =>
   t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
@@ -200,17 +202,17 @@ const cell = (engine: string, mode: Mode) => {
     const why = absent(engine, mode);
     if (why === 'not-run') {
       const last = lastAnswered(engine, mode);
-      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}` : 'Not run that day.';
+      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}` : 'Not run that day.';
     }
     return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
     return last
-      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named')}`
+      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}`
       : 'No result: every call failed that day.';
   }
-  return sentence(now, 'Named') + (now.failed ? ` ${now.failed} ${now.failed === 1 ? 'call' : 'calls'} failed.` : '');
+  return sentence(now, 'Named') + failedClause(now);
 };
 const overall = (mode: Mode) => {
   const t = on(checkDate, mode);
@@ -218,8 +220,9 @@ const overall = (mode: Mode) => {
   return { named: t.named, answers: t.answers, failed: t.failed };
 };
 // The same counts as the table, for the chart: one mark per answer that named the site,
-// one per answer that did not, one per failed call. A string where the assistant is not
-// asked in this mode (the same two cases as `cell`, through `absent`).
+// one per answer that did not, one per failed call. A string instead of marks where the
+// assistant has nothing to count in this mode: it is not asked that way, the check does not
+// ask it that way, or it was not run that day (the same three cases as `cell`, through `absent`).
 const marks = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
   if (!now) {
@@ -240,6 +243,8 @@ const allFailed = ENGINES.filter(([engine]) => {
 // The assistants declared not run on the latest day: the page names them, and their cells give
 // their last result.
 const notRun = ENGINES.filter(([engine]) => skipped.includes(engine)).map(([, assistant]) => assistant);
+/** Names in a sentence: "A", "A and B", "A, B and C". */
+export const nameList = (names: readonly string[]) => (names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.

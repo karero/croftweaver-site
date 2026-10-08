@@ -109,7 +109,10 @@ Launch requirements that no test enforces:
   build only checks that the rows still average to the figures copied that day.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites). The AI check file comes
-  from `scripts/export-ai-check.py`, which publishes that one site and nothing else.
+  from `python3 scripts/export-ai-check.py --out public/data/genai-wednesday-de-ai-check.csv`,
+  which needs the tracker's history on the owner's machine and publishes that one site and
+  nothing else (`tests/check_export_ai_check.sh` keeps that true). An assistant the check
+  was not run for on the latest day is declared in `NOT_RUN` in `src/data/proof.ts`.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
