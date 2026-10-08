@@ -1,0 +1,336 @@
+---
+// /established-sites — which parts of Croftweaver work on a site that is already live,
+// on any stack, and in which order, told as the visitor's story (STORY.md pattern, owner
+// request 2026-10-08). Positioning term (tests/positioning.spec.ts): "established sites",
+// in the title, the description and the intro paragraph.
+// Hero: the head of a large site's search work. Villain: the delivery model (reports
+// arrive, changes wait), never a named agency (STORY.md §2). No price is claimed. The hook
+// was chosen after Codex ranked six angles; GLM was unavailable (quota).
+// Every claim about a skill was checked against skills/ in the toolkit repo. No client is
+// named; the example prompts use example.com. No figure is typed here: this page makes no
+// result claim, and /proof stays the one place for measured numbers.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+const plan = [
+  { title: 'Check', text: 'See where each target search ranks and what four AI assistants say about the business. Read-only, with no change to the site.' },
+  { title: 'Fix', text: 'Take the 20 to 30 pages Google already shows. Write guard tests first, change the pages, and have other AI models review the change.' },
+  { title: 'Measure', text: 'Three to six weeks later, set the prediction next to the outcome, and keep the weekly check running.' },
+];
+
+const steps = [
+  {
+    title: 'Baseline: where the site stands today',
+    skills: ['search-console-insights'],
+    points: [
+      'The position of each target search, from Google Search Console, after a one-time, read-only sign-in.',
+      'Searches just below page 1 (positions 8 to 20). Each is a small edit away.',
+      'Pages shown often but rarely clicked. The skill checks the live results page before it suggests a new title or description.',
+      'Google and Bing side by side. A weekly tracker builds the history, and a report page shows visits per week for up to 16 months.',
+    ],
+    say: 'Connect Search Console for example.com and show me the searches just below page 1.',
+  },
+  {
+    title: 'AI visibility: does an AI assistant name the business?',
+    skills: ['geo_check.py'],
+    points: [
+      'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your buyer’s own questions, without naming the business.',
+      'Two columns per engine: “knows you” answers from memory, “finds you” answers with web search on and lists the sites the engine cited.',
+      'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
+      'Needs no Search Console access. One prepaid OpenRouter key covers the four chat assistants.',
+    ],
+    say: 'Set up the weekly AI check for example.com with these three buyer questions.',
+  },
+  {
+    title: 'Diagnose',
+    skills: ['seo-audit', 'website-positioning-check', 'seo-reposition'],
+    points: [
+      'A technical audit: crawling, indexing, canonical tags, language and country tags (hreflang), Core Web Vitals.',
+      'A positioning check with a one-screen verdict of Clear, Blurred or Broken, the biggest blur, and the three fixes that would change the most.',
+      'When searches without the brand name bring almost nothing, the trap test reads each candidate phrase against the live top 10 and marks it wedge, crowded or trap. A person confirms every call.',
+    ],
+    say: 'Run an SEO audit on example.com, starting with the service pages.',
+  },
+  {
+    title: 'Fix the pages that are already seen',
+    skills: ['schema-markup', 'ai-seo', 'copywriting', 'site-architecture'],
+    points: [
+      'Start with the 20 to 30 pages that already have impressions, before any new page.',
+      'Structured data such as Organization, Service and Product as JSON-LD, with notes for sites on a content system.',
+      'Facts an AI assistant can quote: real figures in text and tables, each with its source.',
+      'Hubs and internal links, so deep pages are a few clicks from the home page.',
+    ],
+    say: 'Add Organization and Service structured data to the service pages.',
+  },
+  {
+    title: 'Guard and review',
+    skills: ['seo-reposition', 'independent-review', 'double-knuth'],
+    points: [
+      'Guard tests come before the copy changes. They start red, turn green page by page, and stay as regression checks. Each guard is first shown to fire on a broken sample.',
+      'Plans and diffs go to independent reviewers from other model families before anything is built or merged.',
+      'A two-pass review catches drift across files that a review of the diff alone cannot see.',
+    ],
+    say: 'Write the guard tests from the wording guide before we touch the copy.',
+  },
+  {
+    title: 'Measure again',
+    skills: ['seo-reposition', 'track.sh'],
+    points: [
+      'A grading run is booked 3 to 6 weeks after shipping. It pulls Search Console and the live results again and sets the prediction next to the outcome.',
+      'The weekly AI check shows the trend per engine and marks any week that cannot be compared with the one before.',
+    ],
+    say: 'Schedule the grading run for six weeks from today.',
+  },
+];
+
+const needs = [
+  { item: 'Search Console access to the site', steps: '1, 3, 6', note: 'Browser sign-in once, read-only. The token stays on your computer.' },
+  { item: 'OpenRouter key', steps: '2', note: 'Prepaid. 5 or 10 USD or EUR lasts weeks for one site.' },
+  { item: 'Serper key', steps: '3, 6', note: 'Optional, free tier. The live top 10 for any search.' },
+  { item: 'SerpApi key', steps: '2', note: 'Optional. Adds Google AI Mode and AI Overview.' },
+  { item: 'Bing Webmaster key', steps: '1', note: 'Optional, free. Adds the Bing column.' },
+  { item: 'Write access to the code', steps: '4, 5', note: 'Only when changes are made.' },
+];
+
+const limits = [
+  { title: 'No import.', text: 'Bringing an existing site under the Croftweaver starter is planned, not built. The roadmap has the order.' },
+  { title: 'The ready-made test suite needs the starter.', text: 'The test gate, the link audits and the share-card generator run on sites built with it. On another stack the guard method carries over, and the tests are written for that site’s own build checks.' },
+  { title: 'Built and tried on small sites.', text: 'Search Console pulls stop at 25,000 rows per request, and the weekly tracker is tuned for a short list of searches. The only site measured on this website is a small one. Read the numbers on a large site with that in mind.' },
+  { title: 'No backlink or outreach work.', text: 'Only directory listings and profile links are covered.' },
+  { title: 'No page generator.', text: 'It improves the pages a site has. It does not mass-produce new ones.' },
+  { title: 'No promised score.', text: 'It reports what it measured, and the next run shows whether a change worked.' },
+];
+
+const weeks = [
+  { week: 'Week 1', text: 'Connect Search Console and pull 90 days. Write the three buyer questions and run the first AI check.' },
+  { week: 'Week 2', text: 'Audit the 20 to 30 pages with the most impressions. Run the positioning check on the home page and the main offer pages.' },
+  { week: 'Week 3', text: 'Write the guard tests, then fix titles, structured data and quotable facts on those pages.' },
+  { week: 'Week 4', text: 'Review, ship, and book the grading run. The weekly AI check keeps running.' },
+];
+---
+<Base
+  title="Croftweaver for established sites"
+  description="Croftweaver for established sites: open-source skills that check what search and AI say about a live site, fix its most-seen pages and measure what changed."
+  image="/images/og/established-sites.jpg"
+>
+  <section class="wrap hero">
+    <h1>Another SEO meeting, a lot of words, and still no way to say what changed?</h1>
+    <p class="lead">
+      Croftweaver for established sites: open-source skills that give your team the
+      search and AI work on a live site, on any stack. They check where the site
+      stands, fix the pages Google already shows, and measure what changed.
+    </p>
+    <p class="tagline">Know what to fix. Check what changed. Fast.</p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+      <a class="btn" href="#plan">See the three steps</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="problem">
+    <h2>Reports arrive. Changes wait.</h2>
+    <p>
+      On a large site, search work often runs through a retainer, a ticket queue and a
+      monthly report. A title change waits for a sprint. A report says what moved, but
+      you cannot rerun it, and you cannot see what the hours bought.
+    </p>
+    <p>
+      This is not about any one agency. It is about a way of working that makes the
+      site slow to change and hard to inspect, and that leaves the people who own the
+      result unable to check it.
+    </p>
+    <p class="aside">
+      It is your site. You should be able to see where it stands, change what the data
+      points to, and check the result yourself. Agencies can use these skills too.
+    </p>
+  </section>
+
+  <section class="wrap" id="stakes">
+    <h2>What stays wrong if nothing changes</h2>
+    <ul class="steps">
+      <li>Fixes that would take an hour wait weeks, so the pages Google already shows stay as they are.</li>
+      <li>Nobody on your side can say what an AI assistant tells a buyer about the company today.</li>
+      <li>Money goes to work that is hard to compare with its result, so the next decision is made on trust.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="guide">
+    <h2>A method your team can inspect</h2>
+    <p>
+      Croftweaver is a set of open-source skills for AI coding assistants such as
+      Claude Code and Codex. Each step reads the public pages and the site’s own
+      Search Console data, and ends in a result that can be checked again. You keep the
+      code, the data and the keys. The licence is MIT.
+    </p>
+    <p>
+      The evidence so far comes from one small site, with its limits stated on
+      <a href="/proof">the proof page</a>. Nothing here promises a ranking.
+    </p>
+  </section>
+
+  <section class="wrap" id="driver-seat">
+    <h2>Get in the driver seat</h2>
+    <div class="seat">
+      <div>
+        <p>
+          Sit in the middle of the feedback loop and drive it, week after week.
+          Check, fix, measure, and around again. Your assistant keeps the loop
+          turning. You decide what changes and you see the result yourself.
+        </p>
+        <p>
+          Not a report from an outside company that is hard to follow and slow to
+          arrive. The loop runs on your own search data, in your own repository, at
+          your own pace.
+        </p>
+      </div>
+      <svg class="loop-art" viewBox="0 0 360 300" role="img" aria-labelledby="loop-art-title">
+        <title id="loop-art-title">A loop of three steps, check, fix and measure, with you in the middle.</title>
+        <defs>
+          <marker id="loop-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="arrow-head" />
+          </marker>
+        </defs>
+        <path class="arrow" d="M232 40 Q300 48 300 211" marker-end="url(#loop-arrow)" />
+        <path class="arrow" d="M248 233 Q180 290 112 233" marker-end="url(#loop-arrow)" />
+        <path class="arrow" d="M60 211 Q60 76 128 44" marker-end="url(#loop-arrow)" />
+        <g class="node"><rect x="130" y="22" width="100" height="36" rx="10" /><text x="180" y="45" text-anchor="middle">Check</text></g>
+        <g class="node"><rect x="250" y="215" width="100" height="36" rx="10" /><text x="300" y="238" text-anchor="middle">Fix</text></g>
+        <g class="node"><rect x="10" y="215" width="100" height="36" rx="10" /><text x="60" y="238" text-anchor="middle">Measure</text></g>
+        <circle class="you" cx="180" cy="148" r="38" />
+        <text class="you-label" x="180" y="154" text-anchor="middle">You</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="wrap" id="plan">
+    <h2>Three steps</h2>
+    <ol class="grid" role="list">
+      {plan.map((p, i) => (
+        <li class="card"><h3>{i + 1}. {p.title}</h3><p>{p.text}</p></li>
+      ))}
+    </ol>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="loop">
+    <h2>The same plan in six steps, in this order</h2>
+    <p>
+      On a large site, the cheapest gains sit on pages Google already shows. The
+      order makes sure those are found before anything new is written.
+    </p>
+    <ol class="loop" role="list">
+      {steps.map((s) => (
+        <li class="card">
+          <h3>{s.title}</h3>
+          <p class="skills">{s.skills.map((name) => <code>{name}</code>)}</p>
+          <ul class="points">
+            {s.points.map((p) => <li>{p}</li>)}
+          </ul>
+          <p class="say"><span>Say to the assistant:</span> <q>{s.say}</q></p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap" id="needs">
+    <h2>What your team needs</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Item</th><th scope="col">Steps</th><th scope="col">Note</th></tr></thead>
+        <tbody>
+          {needs.map((n) => (
+            <tr><th scope="row">{n.item}</th><td>{n.steps}</td><td>{n.note}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="aside">
+      It runs with Python 3.9 or newer and an AI coding assistant. The weekly
+      schedule is built in on a Mac. On Linux the tracker runs from cron or a
+      systemd timer that you set up yourself.
+    </p>
+  </section>
+
+  <section class="wrap" id="first-month">
+    <h2>Start with a four-week pilot</h2>
+    <p>
+      Do not start with the whole site. Pick one section, the 20 to 30 pages with the
+      most impressions, and one person who approves changes. This is a plan for where
+      the time goes, not a promise of a result.
+    </p>
+    <ol class="grid" role="list">
+      {weeks.map((w) => (
+        <li class="card"><h3>{w.week}</h3><p>{w.text}</p></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap" id="success">
+    <h2>After the pilot</h2>
+    <ul class="steps">
+      <li>You know where the site stands, in numbers you can rerun.</li>
+      <li>You know what the AI assistants say about the company, and which sites they cite.</li>
+      <li>You decide the next step from a measured before and after, not from a report you cannot check.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>What it does not do yet</h2>
+    <ul class="steps">
+      {limits.map((l) => <li><strong>{l.title}</strong> {l.text}</li>)}
+    </ul>
+    <p>
+      <a href="/roadmap">The roadmap</a> says what comes next and what stays out on
+      purpose.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+      <a class="btn" href="/start">Quickstart</a>
+    </div>
+    <p class="note">The example prompts use example.com. Replace it with your own domain.</p>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .tagline { font-size: 1.35rem; font-weight: 600; color: var(--accent); margin: 0 0 1rem; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.6rem; }
+  .seat { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; align-items: center; }
+  .seat p { max-width: 36rem; }
+  .loop-art { width: 100%; max-width: 22rem; height: auto; justify-self: center; }
+  .loop-art .arrow { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  .loop-art .arrow-head { fill: var(--accent); }
+  .loop-art .node rect { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+  .loop-art .node text { fill: var(--ink); font: 600 15px var(--font); }
+  .loop-art .you { fill: var(--accent); }
+  .loop-art .you-label { fill: var(--bg); font: 700 20px var(--font); }
+  .note { color: var(--muted); }
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
+  .loop {
+    display: grid; gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none; counter-reset: step;
+  }
+  .loop > li { counter-increment: step; }
+  .loop > li h3::before { content: counter(step) ". "; color: var(--accent); }
+  .loop .skills { margin: 0 0 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .loop .points { margin: 0 0 0.8rem; padding-left: 1.2rem; max-width: 46rem; line-height: 1.6; }
+  .loop .points li { margin-bottom: 0.35rem; }
+  .loop .say { margin: 0; color: var(--muted); }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem;
+    margin: 1.2rem 0; padding: 0; list-style: none;
+  }
+  .card p { margin: 0; color: var(--muted); line-height: 1.6; max-width: none; }
+  .loop .card p.skills { color: inherit; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; max-width: 52rem; border-collapse: collapse; }
+  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); }
+  tbody th { font-weight: 600; }
+</style>
