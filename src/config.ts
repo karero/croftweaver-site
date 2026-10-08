@@ -3,19 +3,19 @@
 // sync with `site:` in astro.config.mjs.
 
 export const SITE = {
-  url: 'https://webcroft.dev',         // production origin, no trailing slash
-  name: 'Webcroft',
+  url: 'https://croftweaver.com',         // production origin, no trailing slash
+  name: 'Croftweaver',
   legalName: 'Daniel Melter',
   locale: 'en',
   themeColor: '#2e6e4e',               // croft moss-green; matches brand primary + manifest
   // Home <title> is special-cased (NOT "Example | Example"). Keep ≤ 60 chars.
-  titleHome: 'Webcroft: website skills for search and AI visibility',
+  titleHome: 'Croftweaver: website skills for search and AI visibility',
   tagline: 'Your own plot of the web.',
   // 120–160 chars: default meta description + Organization/WebPage schema text.
   description:
-    'Webcroft is a suite of open-source website skills for AI coding assistants. ' +
+    'Croftweaver is a suite of open-source website skills for AI coding assistants. ' +
     'Build websites that rank, then keep improving SEO and GEO, week by week.',
-  repo: 'https://github.com/karero/webcroft',   // the toolkit; goes live with the repo rename
+  repo: 'https://github.com/karero/croftweaver',   // the toolkit; goes live with the repo rename
 } as const;
 
 // Header navigation, in order. Labels live here so a second language can swap them.
@@ -48,9 +48,9 @@ export const COMPANY = {
 
 // External profiles that corroborate the entity (EEAT). Only ship URLs that
 // resolve — a broken sameAs is worse than none. .filter(Boolean) drops the slots.
-// github.com/karero/webcroft goes live with the repo rename — publish is gated on it.
+// github.com/karero/croftweaver goes live with the repo rename — publish is gated on it.
 export const SAME_AS: string[] = [
-  'https://github.com/karero/webcroft',
+  'https://github.com/karero/croftweaver',
   'https://genai-wednesday.de/builder-lab',
 ].filter(Boolean);
 
@@ -75,6 +75,6 @@ export const PROD_BRANCH = 'production';
 // no consent banner. Flip `enabled` to the CF_PAGES_BRANCH check if that changes.
 export const ANALYTICS = {
   enabled: false,
-  domain: 'webcroft.dev',
+  domain: 'croftweaver.com',
   scriptHost: 'https://plausible.io',
 } as const;

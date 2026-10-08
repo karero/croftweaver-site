@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://webcroft.dev/sitemap-index.xml
+Sitemap: https://croftweaver.com/sitemap-index.xml

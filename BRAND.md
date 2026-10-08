@@ -5,20 +5,20 @@
   block in the stylesheet — src/styles/global.css (in the kit:
   templates/astro/src/styles/global.css); keep this file and that block in sync.
 -->
-# Webcroft — brand & style guide
+# Croftweaver — brand & style guide
 
 ## Brand in one line
 
 A croft on the web: calm, earthy, self-assured. Moss green on warm, green-tinted
 neutrals, generous whitespace, soft cards, no stock photography, typography does the
-work. The palette is Webcroft's own; it deliberately does not reuse the violet and
+work. The palette is Croftweaver's own; it deliberately does not reuse the violet and
 amber of genai-wednesday.de (owner decision, 2026-10-03).
 
 ## Logo
 
-- The logo is in progress (owner). Until it lands, the name "Webcroft" set as text in
+- The logo is in progress (owner). Until it lands, the name "Croftweaver" set as text in
   the heading font is the mark.
-- Name styling: "Webcroft" in text, never "WebCroft"; lower case only in code contexts
+- Name styling: "Croftweaver" in text, never "CroftWeaver"; lower case only in code contexts
   (domain, repo). No "WC" monogram.
 - When the logo exists: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal
   lockup, each in dark and light ink), a transparent PNG at `public/images/logo.png`
@@ -103,10 +103,10 @@ This drives `scripts/generate_og_cards.py` (run `npm run og`). Fill its BRAND bl
 from the tokens below so `public/images/og/default.jpg` + the per-page cards stay on-brand:
 1. Canvas 1200×630, deep-green to near-black gradient (24,54,40 → 14,19,16).
 2. No logo emblem yet (LOGO = None).
-3. Wordmark "Webcroft", top-left, white.
+3. Wordmark "Croftweaver", top-left, white.
 4. Headline per page; default card: "Build websites that rank.", with the subline and
    the category line beneath.
-5. Footer URL "webcroft.dev", muted.
+5. Footer URL "croftweaver.com", muted.
 
 Per-page variants: change only the headline; keep everything else identical.
 

@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 // Set `site` to the real production domain BEFORE first deploy — it drives the
 // sitemap, canonical tags and OG URLs. Keep in sync with SITE.url in src/config.ts.
 export default defineConfig({
-  site: 'https://webcroft.dev',
+  site: 'https://croftweaver.com',
   // Astro 7 defaults compressHTML to 'jsx' rules: a source line-break between two inline
   // elements (or between text and an inline element) collapses to ZERO characters instead
   // of a space — this bit real prose here (words ran together across a `</a>`/`<strong>`

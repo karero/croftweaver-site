@@ -34,7 +34,7 @@ type SurfaceRule = { title?: Clause[]; desc?: Clause[]; h1?: Clause[]; body?: Cl
 export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
   '/checks': { term: 'test gate' },
-  '/proof': { term: 'built with Webcroft' },
+  '/proof': { term: 'built with Croftweaver' },
   '/skills': { term: 'website skills' },
   '/start': { term: 'quickstart' },
   '/positioning': { term: 'positioning' },

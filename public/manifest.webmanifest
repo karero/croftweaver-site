@@ -1,6 +1,6 @@
 {
-  "name": "Webcroft",
-  "short_name": "Webcroft",
+  "name": "Croftweaver",
+  "short_name": "Croftweaver",
   "description": "Your own plot of the web. Open-source website skills for AI coding assistants.",
   "start_url": "/",
   "display": "standalone",
