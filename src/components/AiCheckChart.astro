@@ -34,7 +34,7 @@ const columns = [
 
 type Kind = 'named' | 'unnamed' | 'failed';
 const kinds = (c: Counts) => (['named', 'unnamed', 'failed'] as const).flatMap((k) => Array<Kind>(c[k]).fill(k));
-const cross = (cx: number, cy: number) => `M${cx - 5},${cy - 5}L${cx + 5},${cy + 5}M${cx - 5},${cy + 5}L${cx + 5},${cy - 5}`;
+const cross = (cx: number, cy: number) => `M${cx - 4},${cy - 4}L${cx + 4},${cy + 4}M${cx - 4},${cy + 4}L${cx + 4},${cy - 4}`;
 ---
 <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby={`${id}-title`} aria-describedby={`${id}-desc`} data-chart={id}>
   <title id={`${id}-title`}>{title}</title>
