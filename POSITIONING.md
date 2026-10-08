@@ -10,8 +10,16 @@ Owner decision: lead with being found by search engines and AI assistants; the t
 gate is the proof; ownership is the brand voice. The routes that were not chosen are
 recorded at the end.
 
+Updated 2026-10-08: the hero takes the weaving image of the name and stays in the
+active voice; the customer's starting point is named (an old site, or none, where every
+change waits on someone else); and rebuilding as a way to learn working with an AI
+assistant is recorded as a secondary benefit, never the lead.
+
 ## 1. Competitive alternatives
 
+- The status quo: an old site, or none, and someone else to ask for every update (an
+  agency or a developer). Each change means a brief, a wait and often a bill, so changes
+  pile up and the site falls behind.
 - Hosted builders with SEO controls and AI-visibility dashboards (Wix, Webflow,
   Squarespace, Framer, Durable): the controls are there; doing the work on every page
   and keeping it done stays your job. Rented platform, monthly fee.
@@ -48,6 +56,8 @@ announcements. `/compare` carries a link and a date for every statement it makes
   same gate. That weekly check is a different thing from the panel in which assistants
   rate a site; the copy keeps the two apart. This site itself gets the loop once Search
   Console is registered at launch.
+- The owner and their assistant make every change themselves, in plain language, and
+  each change goes through the test gate. Nobody else is needed for an update.
 - A suite of skills for AI coding assistants, not a hosted product. The output is a
   static-first Astro repo the user fully owns, and the skills travel inside it.
 
@@ -60,6 +70,8 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, relaunched 27 March 2026: clicks from Google per 28 days rose from 3 around the relaunch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
+| The owner and the assistant make every change | No waiting on someone else for an update: a change is a conversation with your assistant, checked by the tests | The output is plain files in your own repository; no account, no subscription, nothing runs on our servers (home page, "The site is yours"). Not measured: how long a change takes compared with an agency |
+| A real project to learn with | A rebuild gives you and your team hands-on practice in directing and checking an AI assistant, on a site you know | None measured. The owner's experience with one team he works with: they work with an AI assistant happily and keep learning, improving and fixing (anecdotal; the team is not named here). A secondary benefit: never the lead, never on a share card |
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
 4 October 2026 and are the ones on the home page (`src/data/proof.ts`). The Search
@@ -73,7 +85,11 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
   need their website to be found, and the developers and technically comfortable owners
   who build for them.
 - **Why they care most:** a site nobody finds earns nothing, and the search and AI work
-  is exactly what gets skipped when a site is built fast.
+  is exactly what gets skipped when a site is built fast. Many start from an old site, or
+  none, where every change waits on someone else, so that work never gets done.
+- **Secondary reason to start:** rebuilding a site you know is a good project for
+  learning to work with an AI assistant, alone or with a team. Never the lead (see the
+  value table).
 - **Where they are:** global, English-speaking, GitHub-native; discovery via the repo,
   search, word of mouth and the GenAI Wednesday Builder Lab.
 
@@ -93,7 +109,8 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 
 - **Core positioning term:** website skills
 - **Kicker (above the H1):** Website skills for search and AI visibility
-- **Hero (H1):** Build websites that rank.
+- **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
+  rank.", the plain fallback if "weave" tests badly with strangers.)
 - **Subline:** Keep improving SEO and GEO, week by week.
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
 - **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
@@ -120,6 +137,9 @@ The wording rule applies to all of them.
 - "Search finds you. AI names you." Only directly above dated proof; never alone on a
   share card.
 - "Build for search and AI." README headline, GitHub description.
+- "Stop waiting on someone else for every change." The villain line: the first sentence
+  of the home page one-liner (owner-approved 2026-10-08). The villain is the situation,
+  never a named agency.
 - "Build high-ranking websites." Deck and `/why`, with proof beside it.
 - "Twelve test suites check every change." · "Four AI assistants check who names you." ·
   "Open-source skills turn briefs into tested sites."
@@ -171,6 +191,16 @@ is built.
 - **Lead with ownership** ("Your own plot of the web.", the previous positioning).
   Ownership is the most crowded claim among comparable products; it stays as the brand
   voice and sign-off.
+- **A hero built on "woven by people and AI"** ("Websites woven to be found by people
+  and AI.", "Websites woven by people and AI."). Not chosen, 2026-10-08. "Woven by" and
+  "to be found" are passive, and the wording rule asks for the active voice; "people and
+  AI" puts the audience and a channel on one level when it describes finding; and the
+  second has no purpose. "Websites built to rank." and "Built to rank. Woven with AI."
+  are passive for the same reason. The chosen hero keeps the weaving image, in the
+  active voice, with the purpose.
+- **Naming agencies as the villain.** Not chosen. The villain is the situation, waiting
+  on someone else for every change. Agencies are also customers: the home page lists
+  small studio and agency sites as a good fit.
 - The risk accepted with the chosen route: search and AI visibility is a crowded field
   with large audit packs and hosted dashboards, and proof is thin: one site. The
   wording rule and the limits that `/proof` states about itself are the guard.
