@@ -111,6 +111,9 @@ const rolling = days.slice(27).map((d, i) => ({
   iso: d.date,
   clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0),
 }));
+// The first day with an impression: the chart caption says the file has none before it.
+const firstSeen = days.find((d) => d.impressions > 0);
+if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no impressions at all.');
 
 // ── The weekly AI check, from the published export ───────────────────────────────
 // One row per assistant, mode and question: how many calls answered, how many of the
@@ -180,7 +183,7 @@ const cell = (engine: string, mode: Mode) => {
 const overall = (mode: Mode) => {
   const t = on(checkDate, mode);
   if (!t) throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${checkDate}.`);
-  return { named: t.named, answers: t.answers };
+  return { named: t.named, answers: t.answers, failed: t.failed };
 };
 // The same counts as the table, for the chart: one mark per answer that named the site,
 // one per answer that did not, one per failed call. A string where the assistant is not
@@ -193,6 +196,12 @@ const marks = (engine: string, mode: Mode) => {
   }
   return { named: now.named, unnamed: now.answers - now.named, failed: now.failed };
 };
+// Assistants whose every call failed that day: the chart shows only dashes for them, and the
+// page says so, because a row of dashes must not be read as a verdict on the site.
+const allFailed = ENGINES.filter(([engine]) => {
+  const cells = (['with_search', 'without_search'] as const).map((mode) => on(checkDate, mode, engine)).filter((c) => c !== null);
+  return cells.length > 0 && cells.every((c) => c.answers === 0 && c.failed > 0);
+}).map(([, assistant]) => assistant);
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
@@ -220,6 +229,8 @@ export const SITE_PROOF = {
     peak,
     rolling,
     rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
+    fileFrom: { iso: days[0]!.date, label: label(days[0]!.date) },
+    firstImpression: { iso: firstSeen.date, label: label(firstSeen.date) },
     // Average positions from Search Console's query report for exactly this period
     // (whole site, all countries; pulled 2026-10-04). Checked against `latest` below.
     positionsPeriod: POSITIONS_PERIOD,
@@ -247,6 +258,7 @@ export const SITE_PROOF = {
       withSearch: marks(engine, 'with_search'),
       withoutSearch: marks(engine, 'without_search'),
     })),
+    allFailed,
     withSearch: overall('with_search'),
     withoutSearch: overall('without_search'),
   },

@@ -150,9 +150,12 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
   // A name and a description that say what the picture shows, with the numbers of the data.
   await expect(svg).toHaveAttribute('role', 'img');
   await expect(svg, 'the chart has no accessible name').toHaveAccessibleName(/\S/);
-  for (const part of [longDate(start.date), String(peak.clicks), longDate(peak.date), String(last.clicks), longDate(last.date)]) {
+  // Each phrase pins a number to what it is, so a value that also occurs elsewhere in the
+  // text (28, 13, 2026) cannot pass for the wrong one.
+  for (const part of [`starts at ${start.clicks} clicks`, `${peak.clicks} on ${longDate(peak.date)}`, `ends at ${last.clicks}`, `from ${longDate(start.date)} to ${longDate(last.date)}`]) {
     await expect(svg, `the chart's description does not say "${part}"`).toHaveAccessibleDescription(word(part));
   }
+  await expect(svg.locator('text.axis-title'), 'the chart does not say what its numbers are').toHaveText(/28 days/);
   await expect(page.locator('#search p strong').first(), 'the clicks in the text and the end of the line differ').toHaveText(`${last.clicks} clicks`);
   await expect(page.locator('#search table'), 'the same clicks must also be in a table').toHaveCount(1);
 
@@ -243,26 +246,35 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const rs = today.filter((r) => r.mode === mode);
     return `${rs.reduce((n, r) => n + r.named, 0)} of ${rs.reduce((n, r) => n + r.answers, 0)}`;
   };
+  const failedCalls = (mode: string) => {
+    const n = today.filter((r) => r.mode === mode).reduce((sum, r) => sum + r.failed, 0);
+    return `${n} ${n === 1 ? 'call' : 'calls'} failed`;
+  };
 
   await page.goto('/proof');
   const svg = page.locator('svg[data-chart="ai"]');
   await expect(svg, 'no AI check chart on /proof').toHaveCount(1);
   await expect(svg).toHaveAttribute('role', 'img');
   await expect(svg, 'the chart has no accessible name').toHaveAccessibleName(/\S/);
-  for (const part of [longDate(latest), total('with_search'), total('without_search')]) {
+  for (const part of [longDate(latest), `${total('with_search')} answers named the site, and ${failedCalls('with_search')}`, `${total('without_search')} did, and ${failedCalls('without_search')}`]) {
     await expect(svg, `the chart's description does not say "${part}"`).toHaveAccessibleDescription(word(part));
   }
   await expect(page.locator('#ai table'), 'the same results must also be in a table').toHaveCount(1);
 
-  // Colour alone must not tell the marks apart (WCAG 1.4.1): each kind that is drawn has
-  // its own shape or fill.
-  const looks = (await svg.evaluate((el) => ['named', 'unnamed', 'failed'].map((kind) => {
-    const mark = el.querySelector(`[data-mark="${kind}"]`);
-    return mark ? `${mark.tagName} ${getComputedStyle(mark).fill === 'none' ? 'hollow' : 'filled'}` : null;
-  }))).filter((look) => look !== null);
-  expect(new Set(looks).size, `the marks look alike apart from colour: ${looks.join(', ')}`).toBe(looks.length);
+  // Colour alone must not tell the marks apart (WCAG 1.4.1): the three kinds differ in shape
+  // or fill, in the legend and in the chart, and a mark in the chart looks like its legend entry.
+  const KINDS = ['named', 'unnamed', 'failed'];
+  const look = (scope: string, kind: string) => page.locator(`${scope} .${kind}`).first()
+    .evaluate((el) => `${el.tagName} ${getComputedStyle(el).fill === 'none' ? 'hollow' : 'filled'}`);
+  const legend = await Promise.all(KINDS.map((kind) => look('.legend', kind)));
+  expect(new Set(legend).size, `the legend marks look alike apart from colour: ${legend.join(', ')}`).toBe(KINDS.length);
+  for (const [i, kind] of KINDS.entries()) {
+    if ((await svg.locator(`[data-mark="${kind}"]`).count()) > 0) {
+      expect(await look('svg[data-chart="ai"]', kind), `a ${kind} mark in the chart does not look like its legend entry`).toBe(legend[i]);
+    }
+  }
 
-  const { cells, labels } = await svg.evaluate((el) => {
+  const { cells, labels, heads } = await svg.evaluate((el) => {
     const inCell = (g: Element, kind: string) => g.querySelectorAll(`[data-mark="${kind}"]`).length;
     // Where a mark is drawn, not what it says about itself: its box and the centre of it.
     const box = (m: Element) => { const b = (m as SVGGraphicsElement).getBBox(); return [b.x, b.y, b.x + b.width, b.y + b.height]; };
@@ -273,9 +285,24 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
         words: g.querySelector('text')?.textContent?.trim() ?? '',
         marks: [...g.querySelectorAll('[data-mark]')].map((m) => box(m)),
       })),
-      labels: [...el.querySelectorAll('text.label')].map((t) => ({ engine: t.getAttribute('data-engine')!, y: Number(t.getAttribute('y')) })),
+      labels: [...el.querySelectorAll('text.label')].map((t) => ({ engine: t.getAttribute('data-engine')!, text: t.textContent!.trim(), y: Number(t.getAttribute('y')) })),
+      heads: [...el.querySelectorAll('text.head')].map((t) => t.textContent!.trim()),
     };
   });
+
+  // The names and the column headings are the table's: the same words, in the same order.
+  expect(labels.map((l) => l.text), 'the assistants in the chart and in the table differ').toEqual((await page.locator('#ai tbody th').allTextContents()).map((t) => t.trim()));
+  expect([`${heads[0]} ${heads[1]}`, `${heads[2]} ${heads[3]}`], 'the column headings in the chart and in the table differ')
+    .toEqual((await page.locator('#ai thead th').allTextContents()).slice(1).map((t) => t.trim()));
+
+  // An assistant whose every call failed is named in the description and in the caption: a
+  // row of dashes must not be read as a verdict on the site.
+  const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => today.filter((r) => r.engine === e).every((r) => r.answers === 0 && r.failed > 0));
+  if (failedAll.length > 0) {
+    const said = `Every call to ${failedAll.map((e) => labels.find((l) => l.engine === e)!.text).join(' and ')} failed`;
+    await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
+    await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
+  }
 
   // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
   // for one mode and none for the other would leave the count right and the chart wrong).
@@ -297,7 +324,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       expect(cell.words, `${cell.engine}, ${cell.mode}: words and marks in one cell`).toBe('');
     } else {
       expect(shown, `${cell.engine}, ${cell.mode}: the CSV has no rows, so no marks`).toEqual({ named: 0, unnamed: 0, failed: 0 });
-      expect(cell.words, `${cell.engine}, ${cell.mode}: an empty cell with no words`).not.toBe('');
+      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a mode the check does not run`).toBe(cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
     }
   }
 
@@ -355,16 +382,25 @@ for (const theme of THEMES) {
       try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
     }, theme);
     await page.goto('/proof');
-    const seen = await page.evaluate((specs) => specs.map(([selector, property]) => [...document.querySelectorAll(selector)].map((el) => {
-      const cs = getComputedStyle(el);
-      const card = el.closest('figure');
+    const { applied, seen } = await page.evaluate((specs) => {
+      // Opacity does not inherit, so multiply it up the whole chain: a faded wrapper hides a
+      // chart as surely as a transparent line.
+      const faded = (el: Element | null) => { let product = 1; for (; el; el = el.parentElement) product *= Number(getComputedStyle(el).opacity); return product; };
       return {
-        paint: cs[property],
-        opacity: Number(property === 'fill' ? cs.fillOpacity : cs.strokeOpacity),
-        shown: cs.display !== 'none' && cs.visibility === 'visible',
-        card: card ? getComputedStyle(card).backgroundColor : '',
+        applied: document.documentElement.dataset.theme,
+        seen: specs.map(([selector, property]) => [...document.querySelectorAll(selector)].map((el) => {
+          const cs = getComputedStyle(el);
+          const card = el.closest('figure');
+          return {
+            paint: cs[property],
+            opacity: Number(property === 'fill' ? cs.fillOpacity : cs.strokeOpacity) * faded(el),
+            shown: cs.display !== 'none' && cs.visibility === 'visible',
+            card: card ? getComputedStyle(card).backgroundColor : '',
+          };
+        })),
       };
-    })), CHART_INK);
+    }, CHART_INK);
+    expect(applied, 'the requested theme was not applied').toBe(theme);
     seen.forEach((found, i) => {
       const [, , minimum, what] = CHART_INK[i]!;
       expect(found.length, `nothing matches ${what}`).toBeGreaterThan(0);
@@ -378,30 +414,35 @@ for (const theme of THEMES) {
   });
 }
 
-// The chart text is set in the drawing's own units, so it shrinks with the screen: hold it
-// to a size on a phone, and the page to its width.
-test('a11y — the charts on /proof fit a phone and keep their text readable', async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 740 });
-  await page.goto('/proof');
-  const phone = await page.evaluate(() => ({
-    overflow: document.documentElement.scrollWidth - window.innerWidth,
-    smallest: ['clicks', 'ai'].map((id) => {
-      const svg = document.querySelector<SVGSVGElement>(`svg[data-chart="${id}"]`)!;
-      const scale = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width;
-      return { id, px: Math.min(...[...svg.querySelectorAll('text')].map((t) => parseFloat(getComputedStyle(t).fontSize) * scale)) };
-    }),
-  }));
-  expect(phone.overflow, '/proof scrolls sideways at 360 px').toBeLessThanOrEqual(0);
-  for (const { id, px } of phone.smallest) {
-    expect(px, `the ${id} chart's smallest text is ${px.toFixed(1)} px at 360 px`).toBeGreaterThanOrEqual(10);
-  }
-});
+// The chart text is set in the drawing's own units, so it shrinks with the screen. The aim is
+// 11 px on a 360 px phone (about 10 px at 320 px, the width that WCAG 1.4.10 asks content to
+// reflow to), and the page must not scroll sideways at either width.
+for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
+  test(`a11y — the charts on /proof fit a ${width} px phone and keep their text readable`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    await page.goto('/proof');
+    const phone = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      smallest: ['clicks', 'ai'].map((id) => {
+        const svg = document.querySelector<SVGSVGElement>(`svg[data-chart="${id}"]`)!;
+        const scale = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width;
+        return { id, px: Math.min(...[...svg.querySelectorAll('text')].map((t) => parseFloat(getComputedStyle(t).fontSize) * scale)) };
+      }),
+    }));
+    expect(phone.overflow, `/proof scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+    for (const { id, px } of phone.smallest) {
+      expect(px, `the ${id} chart's smallest text is ${px.toFixed(1)} px at ${width} px`).toBeGreaterThanOrEqual(floor);
+    }
+  });
+}
 
 // Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider
-// than ours, so the layout needs spare room. Widen every character by about a tenth
-// (letter-spacing) and check that no text or mark leaves the drawing and no two texts touch.
+// than ours, so the layout needs spare room. Widen every character by 7% of the font size
+// (about a seventh on an average word) and check that no text or mark leaves the drawing and
+// no two texts touch. A longer series of months fails here first: see MAX_MONTH_LABELS.
 test('a11y — text in the /proof charts stays inside its drawing and clear of other text', async ({ page }) => {
   await page.goto('/proof');
+  await expect(page.locator('svg[data-chart]'), 'the charts are missing').toHaveCount(2);
   await page.addStyleTag({ content: 'svg[data-chart] text { letter-spacing: 0.07em !important; }' });
   const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
     const { width, height } = svg.viewBox.baseVal;

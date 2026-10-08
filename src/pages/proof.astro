@@ -13,7 +13,8 @@ import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 const p = SITE_PROOF;
 const speed = PROOF.find((entry) => entry.site === p.site)!;
 const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
-const { latest, peak, blocks, positionsPeriod, rolling, rollingFrom } = p.search;
+const { latest, peak, blocks, positionsPeriod, rolling, rollingFrom, fileFrom, firstImpression } = p.search;
+const { allFailed } = p.ai;
 const google = (query: string) => `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 // The text alternative of each chart says what the picture shows, with the same numbers.
 const first = rolling[0]!;
@@ -21,10 +22,13 @@ const clicksDesc =
   `Line chart of Google Search Console clicks in the 28 days up to each date, from ${rollingFrom.label} to ${latest.to}. ` +
   `It starts at ${first.clicks} clicks, reaches ${peak.clicks} on ${peak.to}, and ends at ${latest.clicks}. ` +
   'The table in this section gives the clicks in separate 28-day blocks, and the daily figures are in the CSV file linked after it.';
+const calls = (n: number) => `${n} ${n === 1 ? 'call' : 'calls'}`;
+const everyCallFailed = `Every call to ${allFailed.join(' and ')} failed`;
 const aiDesc =
-  `One mark for each call in the AI check of ${p.ai.date.label}: filled for an answer that named the site, hollow for an answer that did not, a cross for a call that failed. ` +
-  `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site. ` +
-  `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did. ` +
+  `One mark for each call in the AI check of ${p.ai.date.label}: filled for an answer that named the site, hollow for an answer that did not, a dash for a call that failed. ` +
+  `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site, and ${calls(p.ai.withSearch.failed)} failed. ` +
+  `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did, and ${calls(p.ai.withoutSearch.failed)} failed. ` +
+  (allFailed.length > 0 ? `${everyCallFailed}. ` : '') +
   'The table in this section gives the result for each assistant.';
 ---
 <Base
@@ -90,12 +94,14 @@ const aiDesc =
         points={rolling}
         peakIso={peak.toIso}
         title="Clicks from Google in the 28 days up to each date"
+        unit="Clicks in the 28 days up to each date"
         desc={clicksDesc}
       />
       <figcaption>
-        Each point is the total for the 28 days up to that date. The line begins on
-        {rollingFrom.label}, the first day with a full 28 days of data; the relaunch
-        was on {p.relaunched.label}. The scale starts at zero. Source: Google Search
+        Each point is the total for the 28 days up to that date. The file starts on
+        {fileFrom.label}, so the line begins on {rollingFrom.label}; the relaunch was
+        on {p.relaunched.label}, and the file shows no impressions before
+        {firstImpression.label}. The scale starts at zero. Source: Google Search
         Console, whole site, all countries.
       </figcaption>
     </figure>
@@ -149,8 +155,10 @@ const aiDesc =
     <figure class="card chart">
       <AiCheckChart id="ai" rows={p.ai.chart} title="Which answers named the site, by assistant" desc={aiDesc} />
       <figcaption>
-        Each mark is one call to an assistant. A call that failed gave no answer. The
-        table below says the same in words.
+        Each mark is one call to an assistant on {p.ai.date.label}. A call that failed
+        gave no answer.{allFailed.length > 0 && ` ${everyCallFailed} that day.`} The
+        table below gives the counts in words, and says where the answers also cited
+        the site.
       </figcaption>
     </figure>
     <div class="table-wrap" role="region" aria-label="Results of the AI check" tabindex="0">
