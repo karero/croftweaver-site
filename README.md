@@ -20,8 +20,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 
 - **Positioning:** lead with being found by search engines and AI assistants; the test
   gate is the proof; ownership is the brand voice. Hero: "Weave websites that rank."
-  (from 2026-10-08; before: "Build websites that rank."). Subline: "Keep improving SEO and GEO, week by week." Details, the wording rule and
-  the routes not chosen: `POSITIONING.md`.
+  (from 2026-10-08; before: "Build websites that rank."). The subline "Keep improving
+  SEO and GEO, week by week." is retired; the one-liner replaces it. Details, the wording
+  rule and the routes not chosen: `POSITIONING.md`; the home page story: `STORY.md`.
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old
   name is never created again, or its redirect stops working.
@@ -75,9 +76,9 @@ requests.
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
-| 3 | Logo, favicon and app icons, schema logo | owner + PR | logo delivered by the owner 2026-10-08; built in, in review | karero/croftweaver-site#18 (open) |
+| 3 | Logo, favicon and app icons, schema logo | owner + PR | done | karero/croftweaver-site#18, merged 2026-10-08 (`48b1738`) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
-| 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | positioning updated (this step); `STORY.md` and the page rewrite open, they follow the merge of karero/croftweaver-site#17 and #18 | — |
+| 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | positioning done; `STORY.md` and the page rewrite in review | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); the page: this pull request |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
 | 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`), page only |

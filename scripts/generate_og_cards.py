@@ -57,8 +57,8 @@ ACCENT = (143, 212, 171)           # accent bar      (--accent)
 FOOTER_COL = (162, 172, 159)       # footer url (--muted dark, #a2ac9f)
 
 # Home + fallback card (this is Base.astro's default `image`). Edit for your site.
-DEFAULT_TITLE = "Build websites that rank."
-DEFAULT_SUBTITLES = ["Keep improving SEO and GEO, week by week.", "Website skills for search and AI visibility."]
+DEFAULT_TITLE = "Weave websites that rank."
+DEFAULT_SUBTITLES = ["Stop waiting on someone else for every change.", "Website skills for search and AI visibility."]
 
 # ── PAGES ─────────────────────────────────────────────────────────────────────
 # One entry per page that should have its OWN card. The slug is the output filename
