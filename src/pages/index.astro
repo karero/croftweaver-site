@@ -11,11 +11,9 @@ import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
 import { SITE } from '../config';
 import { SUITES, SUITE_GROUPS, SUITE_COUNT } from '../data/suites';
-import { PROOF, PROOF_MEASURED } from '../data/proof';
+import { PANEL, fmtScore } from '../data/proof';
 
-const LAB = 'https://genai-wednesday.de/builder-lab';
-const rerun = (url: string) =>
-  `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}&form_factor=mobile`;
+const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of reason for each score. Then do the same for [your site\'s address].';
 
 // What a failing check looks like: the message format of the title rule in
 // tests/seo.spec.ts, with an example title of 63 characters.
@@ -57,34 +55,46 @@ const softwareSchema = {
   </section>
 
   <section class="wrap" id="proof">
-    <h2>Sites built with Croftweaver, measured on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time></h2>
+    <h2>Four AI assistants scored a site built with Croftweaver</h2>
     <p>
-      The test is Google's PageSpeed Insights, on a simulated phone, for the home
-      page of each site: one run each. Scores run from 0 to 100 and vary a little
-      from run to run. The sites belong to the maintainer of Croftweaver.
+      The <a href={PANEL.lab}>Builder Lab at GenAI Wednesday</a> gave four AI assistants
+      the same prompt about genai-wednesday.de on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. SEO is how well
+      Google can find and read a site. GEO, short for generative engine optimization, is
+      how well AI assistants such as ChatGPT, Perplexity or Gemini can read and quote it.
+      GEO has no official scorer, and the SEO scores here are the assistants' own opinions
+      too, not a Google metric. They are not rankings, they vary from run to run, and they
+      do not show that an assistant would recommend the site. The site belongs to the maintainer of Croftweaver.
     </p>
-    <ul class="grid proof-grid" role="list">
-      {PROOF.map((p) => (
-        <li class="card">
-          <h3><a href={p.url}>{p.site}</a></h3>
-          <dl class="scores">
-            <div><dt>Performance</dt><dd>{p.performance}</dd></div>
-            <div><dt>Accessibility</dt><dd>{p.accessibility}</dd></div>
-            <div><dt>Best practices</dt><dd>{p.bestPractices}</dd></div>
-            <div><dt>SEO</dt><dd>{p.seo}</dd></div>
-          </dl>
-          <a href={rerun(p.url)} aria-label={`Re-run the test for ${p.site}`}>Re-run the test</a>
-        </li>
-      ))}
-    </ul>
+    <div class="table-wrap" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col">Assistant</th><th scope="col" class="num">SEO</th><th scope="col" class="num">GEO</th></tr>
+        </thead>
+        <tbody>
+          {PANEL.rows.map((row) => (
+            <tr><th scope="row">{row.assistant}</th><td class="num">{fmtScore(row.seo)}</td><td class="num">{fmtScore(row.geo)}</td></tr>
+          ))}
+          <tr class="avg"><th scope="row">Panel average</th><td class="num">{fmtScore(PANEL.average.seo)}</td><td class="num">{fmtScore(PANEL.average.geo)}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
+      Gemini (Antigravity) answers out of 100 and the Lab shows it out of 10. The Lab
+      warns that scores are not comparable between assistants, so read the average as a
+      rough guide. GEO ranges from {fmtScore(PANEL.geoLow)} to {fmtScore(PANEL.geoHigh)}.
+    </p>
+    <h3>Try it on your own site</h3>
     <p>
-      These scores cover speed, accessibility, good practice and search basics. They
-      say nothing about rankings, which depend on your content and your competition.
-      For one of these sites, <a href="/proof">the proof page</a> adds its clicks
-      from Google since the relaunch and a check of which AI assistants name it.
-      The <a href={LAB}>Builder Lab at GenAI Wednesday</a>, where Croftweaver began,
-      keeps a full scorecard for the same site and its reviews by four AI
-      assistants.
+      Paste this into your own AI assistant and replace the part in brackets with your
+      site's address. Your scores will differ from these: they are opinions. The Lab's
+      own prompt is on <a href="/more-proof#eeat">More proof</a>.
+    </p>
+    <pre class="message"><code>{tryIt}</code></pre>
+    <p>
+      <a href="/more-proof">More proof</a> covers Google's PageSpeed Insights for three
+      sites and how the same four assistants score trust. <a href="/proof">One site in depth</a> has its clicks
+      from Google and a count of how often assistants name it.
     </p>
   </section>
 
@@ -151,8 +161,9 @@ const softwareSchema = {
     </p>
     <p>
       The search and AI work is the part that gets skipped when a site has to go live
-      fast. Croftweaver does that work by default, and by default the tests check it. The proof is above and on
-      <a href="/proof">the proof page</a>, measured and dated.
+      fast. Croftweaver does that work by default, and by default the tests check it. The proof is above.
+      <a href="/more-proof">More proof</a> and <a href="/proof">one site in depth</a> are
+      measured and dated.
     </p>
     <dl class="qa">
       <div>
@@ -181,11 +192,6 @@ const softwareSchema = {
       <li>A share card for every page, sized so messengers show a proper preview.</li>
       <li>Accessible markup and colours, in light and dark.</li>
     </ul>
-    <p>
-      The AI half of this has a name: GEO, short for generative engine optimization.
-      It means building pages that assistants such as ChatGPT, Perplexity or Gemini
-      can read and quote.
-    </p>
   </section>
 
   <section class="wrap" id="checks">
@@ -362,11 +368,14 @@ const softwareSchema = {
   .checks li::before { content: '✓'; position: absolute; left: 0; color: var(--pass); font-weight: 700; }
   .plain li::before { content: '·'; position: absolute; left: 0.4rem; font-weight: 700; }
 
-  .proof-grid .card { padding-left: 1.4rem; margin: 0; color: var(--ink); }
-  .scores { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem 1rem; margin: 0 0 1rem; }
-  .scores div { display: flex; flex-direction: column-reverse; }
-  .scores dt { font-size: 0.85rem; color: var(--muted); }
-  .scores dd { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  thead th { font-size: 0.9rem; color: var(--muted); }
+  tbody th { font-weight: 400; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.avg th, tr.avg td { font-weight: 700; }
+  .note { font-size: 0.9rem; color: var(--muted); }
 
   .steps { padding-left: 1.3rem; }
   .steps li { margin-bottom: 0.5rem; }

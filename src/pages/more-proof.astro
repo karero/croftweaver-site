@@ -1,0 +1,188 @@
+---
+// /more-proof — the proof that is not on the home page: Google's PageSpeed Insights for
+// three sites, the E-E-A-T scores of the AI panel, and what none of it shows. The home
+// page leads with the panel's SEO and GEO scores. Positioning term
+// (tests/positioning.spec.ts): "more proof". Honesty rules (CONTENT_GUIDE.md): every
+// figure names its tool and its date; E-E-A-T is explained once, here.
+import Base from '../layouts/Base.astro';
+import { PROOF, PROOF_MEASURED, PANEL, fmtScore } from '../data/proof';
+
+const rerun = (url: string) =>
+  `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}&form_factor=mobile`;
+---
+<Base
+  title="More proof: speed, trust and technical SEO"
+  description="More proof for Croftweaver: PageSpeed Insights for three sites built with it, four AI assistants' SEO, GEO and E-E-A-T scores, and what none of it shows."
+  image="/images/og/more-proof.jpg"
+>
+  <section class="wrap hero">
+    <h1>More proof: speed, trust and technical SEO</h1>
+    <p class="lead">
+      The home page shows how four AI assistants score SEO and GEO for
+      genai-wednesday.de. SEO is how well Google can find and read a site. GEO, short
+      for generative engine optimization, is how well AI assistants such as ChatGPT,
+      Perplexity or Gemini can read and quote it. Here is the rest: Google's PageSpeed
+      Insights for three sites built with Croftweaver, the E-E-A-T scores, and what none
+      of it shows. Every figure has a date, and where you can re-run a test, there is a
+      link.
+    </p>
+    <p class="aside">
+      All three sites belong to the maintainer of Croftweaver. Read them as worked
+      examples, not as a promise for yours.
+    </p>
+  </section>
+
+  <section class="wrap" id="speed">
+    <h2>Speed and technical SEO, measured on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time></h2>
+    <p>
+      The test is Google's PageSpeed Insights, on a simulated phone, for the home page
+      of each site: one run each. Scores run from 0 to 100 and vary a little from run
+      to run. Its SEO score checks technical basics such as titles, descriptions and
+      links a crawler can follow.
+    </p>
+    <ul class="grid proof-grid" role="list">
+      {PROOF.map((p) => (
+        <li class="card">
+          <h3><a href={p.url}>{p.site}</a></h3>
+          <dl class="scores">
+            <div><dt>Performance</dt><dd>{p.performance}</dd></div>
+            <div><dt>Accessibility</dt><dd>{p.accessibility}</dd></div>
+            <div><dt>Best practices</dt><dd>{p.bestPractices}</dd></div>
+            <div><dt>SEO</dt><dd>{p.seo}</dd></div>
+          </dl>
+          <a href={rerun(p.url)} aria-label={`Re-run the test for ${p.site}`}>Re-run the test</a>
+        </li>
+      ))}
+    </ul>
+    <p>
+      These scores cover speed, accessibility, good practice and search basics. They
+      say nothing about rankings, which depend on your content and your competition.
+      For one of these sites, <a href="/proof">the proof page</a> adds its clicks from
+      Google since the relaunch and a check of which AI assistants name it.
+    </p>
+  </section>
+
+  <section class="wrap" id="eeat">
+    <h2>E-E-A-T: how four AI assistants score trust</h2>
+    <p>
+      E-E-A-T stands for experience, expertise, authoritativeness and trustworthiness.
+      It is what Google's quality raters look for when they judge content. It is not a
+      score, and
+      <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content">Google says</a>
+      it is not a ranking factor by itself. The <a href={PANEL.lab}>Builder Lab</a> asks
+      four AI assistants to put a number on it anyway, with the same prompt as for SEO
+      and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
+      these numbers are AI opinions, not a Google metric.
+    </p>
+    <div class="table-wrap" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Assistant</th>
+            <th scope="col" class="num">SEO</th>
+            <th scope="col" class="num">GEO</th>
+            <th scope="col" class="num">E-E-A-T</th>
+          </tr>
+        </thead>
+        <tbody>
+          {PANEL.rows.map((row) => (
+            <tr>
+              <th scope="row">{row.assistant}</th>
+              <td class="num">{fmtScore(row.seo)}</td>
+              <td class="num">{fmtScore(row.geo)}</td>
+              <td class="num">{fmtScore(row.eeat)}</td>
+            </tr>
+          ))}
+          <tr class="avg">
+            <th scope="row">Panel average</th>
+            <td class="num">{fmtScore(PANEL.average.seo)}</td>
+            <td class="num">{fmtScore(PANEL.average.geo)}</td>
+            <td class="num">{fmtScore(PANEL.average.eeat)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
+      Gemini (Antigravity) answers out of 100 and the Lab shows it normalised to a scale
+      of 10; the others answer out of 10 directly. The Lab warns that scores are not
+      comparable between assistants, so read the average as a rough guide. The SEO
+      column here is an AI opinion of the whole site; the SEO score in the PageSpeed
+      cards above is an automatic check of technical basics. The Lab ran the same prompt
+      twice, on <time datetime={PANEL.firstRound.iso}>{PANEL.firstRound.label}</time> and on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>, and keeps both
+      rounds with a note for each assistant.
+    </p>
+    <h3>Try it on your own site</h3>
+    <p>This is the Lab's prompt. Paste it into your own AI assistant, then change the address to your own:</p>
+    <pre class="message"><code>{PANEL.labPrompt}</code></pre>
+    <h3>What the panel says is still missing</h3>
+    <p>
+      All four assistants name the same next step for genai-wednesday.de: citations and
+      links from outside its own domain. Croftweaver builds the signals a page can
+      carry. It cannot earn those for you.
+    </p>
+    <h3>What Croftweaver builds in</h3>
+    <p>
+      The skills build in structured data that names the organisation and links to
+      profiles that are really yours, a named author with a short bio where a page has
+      one, cited sources, an imprint, a privacy page and links that work. Tests cover
+      part of this: every page must carry structured data a machine can read, and
+      links inside the site that are written from the start of the address must work.
+      Outside links and profiles are not tested, and no test can tell whether a claim
+      is true.
+      <a href="/positioning#trust">Positioning first</a> says more.
+    </p>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>What this page does not show</h2>
+    <ul class="steps">
+      <li><strong>Rankings.</strong> A PageSpeed score and an AI opinion are not a ranking. Rankings depend on your content and your competition.</li>
+      <li><strong>That the AI scores repeat.</strong> It is one panel on one site, run twice, and the scores vary by run and by the state of the site.</li>
+      <li><strong>Recommendations.</strong> The AI scores are opinions. They do not show that an assistant would recommend the site.</li>
+      <li><strong>A comparison.</strong> Nothing here shows what these sites would have scored without Croftweaver.</li>
+    </ul>
+    <p>
+      <a href="/proof">One site in depth</a> has its clicks from Google and a count of
+      how often assistants name it. The <a href={PANEL.lab}>Builder Lab</a> keeps the
+      full scorecard.
+    </p>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note { font-size: 0.9rem; color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+  pre {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem;
+  }
+  pre.message { white-space: pre-wrap; overflow-wrap: anywhere; }
+  code { font-size: 0.95rem; }
+
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none;
+  }
+  .proof-grid .card { padding-left: 1.4rem; margin: 0; color: var(--ink); }
+  .scores { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem 1rem; margin: 0 0 1rem; }
+  .scores div { display: flex; flex-direction: column-reverse; }
+  .scores dt { font-size: 0.85rem; color: var(--muted); }
+  .scores dd { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
+
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  thead th { font-size: 0.9rem; color: var(--muted); }
+  tbody th { font-weight: 400; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.avg th, tr.avg td { font-weight: 700; }
+</style>

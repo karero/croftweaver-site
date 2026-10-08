@@ -1,6 +1,8 @@
-// Proof strip on the home page: Google PageSpeed Insights, mobile test, home page of
-// each site. Every figure is per named site and dated (CONTENT_GUIDE.md, honesty
-// rules). One run each, lab data. Re-measure all three before changing the date.
+// Proof data. PROOF is Google PageSpeed Insights, mobile test, home page of each site,
+// shown on /more-proof; PANEL is the AI panel shown on the home page and /more-proof;
+// SITE_PROOF is the one-site evidence on /proof. Every figure is per named site and
+// dated (CONTENT_GUIDE.md, honesty rules). PageSpeed is one run each, lab data:
+// re-measure all three before changing the date.
 import searchCsv from '../../public/data/genai-wednesday-de-search-console.csv?raw';
 import aiCsv from '../../public/data/genai-wednesday-de-ai-check.csv?raw';
 
@@ -11,6 +13,48 @@ export const PROOF = [
   { site: 'm-squad.com', url: 'https://m-squad.com/', performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   { site: 'apreet.com', url: 'https://apreet.com/', performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
 ] as const;
+
+// ── The AI panel, on the home page and on /more-proof ───────────────────────────
+// Four AI assistants were given the same prompt about genai-wednesday.de by the Builder
+// Lab (https://genai-wednesday.de/builder-lab, second round). Copied from that page on
+// 2026-10-08. They are opinions: GEO and E-E-A-T have no official scorer, and the Lab
+// says so on its own page, together with a second caveat: scores are not comparable
+// across assistants. Scores are stored in tenths so sums are exact; the averages are
+// rounded half up, as the Lab shows them.
+const panelRows = [
+  { assistant: 'ChatGPT', seo: 90, geo: 92, eeat: 91 },
+  { assistant: 'Gemini (Antigravity)', seo: 82, geo: 78, eeat: 84 },
+  { assistant: 'Codex', seo: 90, geo: 87, eeat: 91 },
+  { assistant: 'Perplexity', seo: 70, geo: 65, eeat: 75 },
+] as const;
+type Column = 'seo' | 'geo' | 'eeat';
+const meanOf = (column: Column) => Math.round(panelRows.reduce((n, r) => n + r[column], 0) / panelRows.length);
+const average = { seo: meanOf('seo'), geo: meanOf('geo'), eeat: meanOf('eeat') };
+// The averages the Lab showed on the day these rows were copied. This is a consistency
+// check, not a link to the Lab: the build never reads the Lab, so a later change there,
+// or a small slip in a single row, is not seen. A careless edit that moves an average
+// stops the build. Re-read the Lab before launch (README launch requirements).
+const LAB_AVERAGE = { seo: 83, geo: 81, eeat: 85 } as const;
+for (const column of ['seo', 'geo', 'eeat'] as const) {
+  if (average[column] !== LAB_AVERAGE[column]) {
+    throw new Error(`src/data/proof.ts: the ${column} rows average ${average[column]} but the Builder Lab showed ${LAB_AVERAGE[column]} when they were copied (both in tenths). Re-read the Lab page and update the rows and the averages together.`);
+  }
+}
+/** 82 becomes "8.2". */
+export const fmtScore = (tenths: number) => (tenths / 10).toFixed(1);
+
+export const PANEL = {
+  lab: 'https://genai-wednesday.de/builder-lab',
+  readOn: { iso: '2026-10-08', label: '8 October 2026' },
+  date: { iso: '2026-08-20', label: '20 August 2026' },
+  firstRound: { iso: '2026-06-19', label: '19 June 2026' },
+  rows: panelRows,
+  average,
+  geoLow: Math.min(...panelRows.map((r) => r.geo)),
+  geoHigh: Math.max(...panelRows.map((r) => r.geo)),
+  // The Lab's own wording of the prompt, so a visitor can reproduce the panel.
+  labPrompt: 'Score genai-wednesday.de for SEO, GEO and E-E-A-T and suggest improvements.',
+} as const;
 
 // ── /proof: one site with its full evidence (owner decision, 2026-10-04) ────────
 // Search figures are computed from the published file, so the page and the download

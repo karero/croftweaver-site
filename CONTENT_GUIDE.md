@@ -89,6 +89,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Skills | `/skills` | catalogue by lifecycle: Build, Verify, Launch, Grow | website skills | Website skills catalogue | [x] |
 | Start | `/start` | zero to a first site | quickstart | Quickstart: your first site | [x] |
 | Proof | `/proof` | one site built with it, measured; re-runnable where possible | built with Croftweaver | Built with Croftweaver: one site, measured | [x] |
+| More proof | `/more-proof` | PageSpeed and technical SEO for three sites; the AI panel's SEO, GEO and E-E-A-T scores; what none of it shows | more proof | More proof: speed, trust and technical SEO | [x] |
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [x] page; the PDF follows with the deck refresh |
 | Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Croftweaver and its alternatives | [x] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
