@@ -11,6 +11,7 @@
 // result claim, and /proof stays the one place for measured numbers.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
+import EmailLink from '../components/EmailLink.astro';
 
 const plan = [
   { title: 'Check', text: 'See where each target search ranks and what four AI assistants say about the business. Read-only, with no change to the site.' },
@@ -96,7 +97,7 @@ const limits = [
   { title: 'No import.', text: 'Bringing an existing site under the Croftweaver starter is planned, not built. The roadmap has the order.' },
   { title: 'The ready-made test suite needs the starter.', text: 'The test gate, the link audits and the share-card generator run on sites built with it. On another stack the guard method carries over, and the tests are written for that site’s own build checks.' },
   { title: 'One market at a time.', text: 'The AI check supports one country and one language per domain. Tracking each market separately is not built, and nothing compares the markets for you. Search Console data can be filtered by country, and the technical audit checks language and country tags (hreflang). Through OpenRouter, the web searches do not know the country, so results can lean towards the United States.' },
-  { title: 'No support contract.', text: 'The licence is MIT and the software comes as it is. Questions and issues go to the GitHub repository.' },
+  { title: 'No support contract.', text: 'The licence is MIT and the software comes as it is. The maintainer answers questions on a best-effort basis, by email or in the GitHub repository.' },
   { title: 'Built and tried on small sites.', text: 'Search Console pulls stop at 25,000 rows per request, and the weekly tracker is tuned for a short list of searches. The only site measured on this website is a small one. Read the numbers on a large site with that in mind.' },
   { title: 'No backlink campaigns.', text: 'Directory listings, profile links and requests for links from existing partners, sponsors and speakers are covered. Cold outreach and bought links are not.' },
   { title: 'No page generator.', text: 'It improves the pages a site has. It does not mass-produce new ones.' },
@@ -294,6 +295,32 @@ const weeks = [
     </ul>
   </section>
 
+  <section class="wrap" id="ambition">
+    <h2>Weave your website with AI</h2>
+    <p>
+      If your company wants to become AI-driven, the website belongs in that plan. AI
+      assistants answer questions about companies and read sites to do it, so a site
+      they can read and quote is part of how you are found. And your own team can use
+      an AI assistant to change the site, instead of waiting for the next ticket.
+    </p>
+    <p>
+      That is the ambition behind Croftweaver: weave the website with AI in both
+      directions. Let AI read it, and let AI help change it.
+    </p>
+  </section>
+
+  <section class="wrap" id="learn">
+    <h2>A good first AI project, alone or with your team</h2>
+    <p>
+      AI stops being abstract when it works on your own site. You know what it should
+      say, you see each change take shape, and you decide what stays. In my experience
+      it is a real learning curve, and a happy one. Questions along the way? I am glad
+      to help. Write to
+      <EmailLink address="hello@croftweaver.com" subject="A question about Croftweaver for established sites" />.
+    </p>
+    <p class="byline">Daniel Melter, maintainer of Croftweaver</p>
+  </section>
+
   <section class="wrap" id="limits">
     <h2>What it does not do yet</h2>
     <ul class="steps">
@@ -331,6 +358,7 @@ const weeks = [
   .loop-art .you { fill: var(--accent); }
   .loop-art .you-label { fill: var(--bg); font: 700 20px var(--font); }
   .note { color: var(--muted); }
+  .byline { color: var(--muted); font-size: 0.95rem; margin-top: 0.4rem; }
   /* role="list" in the markup: Safari drops list semantics when list-style is none. */
   .loop {
     display: grid; gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none; counter-reset: step;
