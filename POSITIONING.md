@@ -115,7 +115,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 - **Kicker (above the H1):** Website skills for search and AI visibility
 - **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
   rank.", the plain fallback if "weave" tests badly with strangers.)
-- **Subline:** Keep improving SEO and GEO, week by week.
+- **Subline:** retired from the home page on 2026-10-08. The one-liner and three short outcomes replace it, since it said SEO and GEO, which strangers do not know. Its words were "Keep improving SEO and GEO, week by week."
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
 - **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
 
@@ -215,3 +215,5 @@ is built.
 - **Keyword / SERP research:** `seo-audit` — positioning leads, keywords follow.
 - **AI / answer-engine phrasing (GEO):** `ai-seo`.
 - **Schema description + head metadata:** `website-seo-geo` (50-word boilerplate verbatim).
+- **The home page as the visitor's story:** `STORY.md`, derived from this file. This file
+  wins on any conflict.

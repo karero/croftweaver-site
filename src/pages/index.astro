@@ -1,13 +1,14 @@
 ---
-// Home page. Positioning spine (tests/positioning.spec.ts): the term
-// "website skills" is threaded through <title> (config titleHome), the meta
-// description (config description) and the kicker, which must stay the FIRST <p>
-// in <main> (the H1 does not carry the term). The kicker also carries the market
-// category "website skills for search and AI visibility".
-// Wording rule (POSITIONING.md): the hero may promise what the product is for; the
-// proof strip sits directly under it. Tone rules apply to all copy: no em dashes,
-// no contractions, no buzzwords.
+// Home page, told as the visitor's story (STORY.md; the seven sections in that order).
+// Positioning spine (tests/positioning.spec.ts): the term "website skills" is threaded
+// through <title> (config titleHome), the meta description (config description) and the
+// kicker, which must stay the FIRST <p> in <main> (the H1 does not carry the term). The
+// kicker also carries the market category "website skills for search and AI visibility".
+// Wording rule (POSITIONING.md): promises in the active voice, no guarantee; the proof
+// strip sits directly under the hero. Tone rules apply to all copy: no em dashes, no
+// contractions, no buzzwords. The direct call to action keeps one label everywhere.
 import Base from '../layouts/Base.astro';
+import EmailLink from '../components/EmailLink.astro';
 import { SITE } from '../config';
 import { SUITES, SUITE_GROUPS, SUITE_COUNT } from '../data/suites';
 import { PROOF, PROOF_MEASURED } from '../data/proof';
@@ -38,13 +39,17 @@ const softwareSchema = {
 <Base title={SITE.name} schemas={[softwareSchema]}>
   <section class="wrap hero">
     <p class="kicker">Website skills for search and AI visibility</p>
-    <h1>Build websites that rank.</h1>
-    <p class="subline">Keep improving SEO and GEO, week by week.</p>
+    <h1>Weave websites that rank.</h1>
     <p class="lead">
-      Croftweaver is a suite of open-source website skills for AI coding assistants.
-      Your brief becomes an Astro site you own, built to rank on Google and show up
-      in AI answers, with {SUITE_COUNT} test suites that check every change.
+      Stop waiting on someone else for every change. Build or rebuild your site with
+      your AI assistant and Croftweaver, so people can find it on Google and in AI
+      answers.
     </p>
+    <ul class="outcomes" role="list">
+      <li>You make the everyday changes yourself</li>
+      <li>Search and AI can read it from the first build</li>
+      <li>{SUITE_COUNT} test suites check every change by default</li>
+    </ul>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="#quickstart">Quickstart</a>
@@ -84,22 +89,85 @@ const softwareSchema = {
   </section>
 
   <section class="wrap" id="problem">
-    <h2>Capability is not the problem. Keeping it up is.</h2>
+    <h2>Every change waits on someone else</h2>
     <p>
-      A website builder gives you the controls for search optimization: titles,
-      descriptions, redirects, structured data. Using them stays your job, on every
-      page and after every edit.
+      Many sites start from an old page nobody dares to touch, or from nothing at all.
+      Every update means asking someone else: a brief, a wait, often a bill. So changes
+      pile up, and the site falls behind.
     </p>
     <p>
-      Unless something checks after each edit, a site slips. A description goes
-      missing, a link breaks, a share card shows the wrong picture, and nothing
-      tells you.
+      The work that gets a site found is the first to go. A description goes missing, a
+      link breaks, a share card shows the wrong picture, and nothing tells you.
     </p>
     <p>
-      Croftweaver takes the other route: do the work by default, then test it on every
-      change. <a href="/why">Why build for search and AI visibility</a> makes the
-      full case, for the person who decides.
+      Croftweaver takes the other route: you and your assistant make the changes, the
+      search and AI work is done by default, and the tests check it by default.
+      <a href="/why">Why build for search and AI visibility</a> makes the full case, for
+      the person who decides.
     </p>
+  </section>
+
+  <section class="wrap" id="plan">
+    <h2>Three steps to a site people can find</h2>
+    <ol class="flow" role="list">
+      <li><strong>Describe</strong><span>Say <em>new website</em> to your assistant and answer its questions. It works out what the site says before it writes a word.</span></li>
+      <li><strong>Build and check</strong><span>Your assistant builds the pages with the search and AI work done by default, and {SUITE_COUNT} test suites check every change by default.</span></li>
+      <li><strong>Publish and keep improving</strong><span>Publish on hosting you control, such as Cloudflare's free plan. Once you connect Google Search Console, your own data points to the next edit, week by week.</span></li>
+    </ol>
+    <p>
+      Rebuilding an old site? Tell your assistant what the old site says. There is no
+      automatic import yet; <a href="/roadmap">the roadmap</a> says what is missing.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="life">
+    <h2>What changes for you</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>You make the changes yourself</h3>
+        <p>Everyday updates (text, pages, images and layout) are a conversation with your assistant. No brief, and nobody to wait for. A stubborn problem can still need outside help. <a href="#yours">The site is yours</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Search and AI can read it from the first build</h3>
+        <p>Titles, structured data, a map for AI assistants, a sitemap and clean links are built into every site. <a href="#built-in">What ships with the first build</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Common slips get caught</h3>
+        <p>{SUITE_COUNT} test suites check every change by default, and your own search data points to the next edit. <a href="#checks">The test suites</a> and <a href="#loop">the weekly loop</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="guide">
+    <h2>What Croftweaver is, and what people ask</h2>
+    <p>
+      Croftweaver is a free, open-source suite of website skills for AI coding
+      assistants. It turns an assistant such as Claude Code into a careful website
+      builder: fast, accessible Astro sites, built to rank on Google and show up in AI
+      answers, in a repository you own.
+    </p>
+    <p>
+      The search and AI work is the part that gets skipped when a site has to go live
+      fast. Croftweaver does that work by default, and by default the tests check it. The proof is above and on
+      <a href="/proof">the proof page</a>, measured and dated.
+    </p>
+    <dl class="qa">
+      <div>
+        <dt>Do I need to code?</dt>
+        <dd>Not to start. You work with your assistant in plain language, and <a href="/start#prompt">the starter prompt</a> asks it to explain every command and to install a tool only when the site needs it.</dd>
+      </div>
+      <div>
+        <dt>Will it rank my site?</dt>
+        <dd>Croftweaver builds in the search and AI basics and, by default, tests them. It cannot promise a ranking: that depends on your content and your competition.</dd>
+      </div>
+      <div>
+        <dt>What does it cost?</dt>
+        <dd>Croftweaver itself is free and MIT-licensed, and a GitHub account and a Cloudflare account are free to open. Your domain, your hosting and your AI assistant can still cost money, and so can the optional weekly AI check.</dd>
+      </div>
+    </dl>
   </section>
 
   <section class="wrap" id="built-in">
@@ -177,7 +245,7 @@ const softwareSchema = {
     <p>
       Your code sits in your repository, your domain is in your name, and your
       pages are static files that any host can serve. Croftweaver is MIT-licensed.
-      There is no account and no subscription, and nothing runs on our servers.
+      It has no account and no subscription, and nothing runs on our servers.
     </p>
     <p>
       Install guides cover Claude Code, Codex and Antigravity.
@@ -188,6 +256,18 @@ const softwareSchema = {
       Croftweaver offers the same deal for the web, on ground you own. The weaver is
       your AI assistant. The plot stays yours.
     </p>
+  </section>
+
+  <section class="wrap" id="learn">
+    <h2>A good first AI project, alone or with your team</h2>
+    <p>
+      AI stops being abstract when it works on your own site. You know what it should
+      say, you see each change take shape, and you decide what stays. In my experience
+      it is a real learning curve, and a happy one. Questions along the way? I am glad
+      to help. Write to
+      <EmailLink address="hello@croftweaver.com" subject="A question about Croftweaver" />.
+    </p>
+    <p class="byline">Daniel Melter, maintainer of Croftweaver</p>
   </section>
 
   <section class="wrap" id="fit">
@@ -234,9 +314,9 @@ const softwareSchema = {
       <li>Say: <em>new website</em>. The interview and the pipeline take it from there.</li>
     </ol>
     <p>
-      <a href="/start">The full quickstart</a> has the one-prompt route, the
-      installers for Codex and Antigravity, and the six questions the assistant
-      asks.
+      <a href="/start">The full quickstart</a> has the one-prompt route (paste a
+      starter prompt and let your assistant do the typing), the installers for Codex
+      and Antigravity, and the six questions the assistant asks.
     </p>
   </section>
 
@@ -249,15 +329,27 @@ const softwareSchema = {
 <style>
   section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
   h2 { margin-bottom: 0.8rem; line-height: 1.25; }
-  /* Prose at full measure reads better unhyphenated; the narrow cards keep the
-     global hyphens: auto. */
+  /* Prose at full measure reads better unhyphenated, and so do the short cards and
+     answers below (hyphens: manual); the lists in the test-suite cards keep the global
+     hyphens: auto. */
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
 
   section.hero { padding-top: 3rem; }
   .kicker { margin: 0 0 0.6rem; color: var(--accent); font-weight: 600; }
   .hero h1 { font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1.08; margin: 0 0 0.6rem; }
-  .subline { font-size: clamp(1.2rem, 2.6vw, 1.5rem); font-weight: 600; line-height: 1.35; margin: 0 0 1.2rem; }
-  .lead { font-size: 1.15rem; color: var(--muted); }
+  .hero .lead {
+    font-size: clamp(1.2rem, 2.6vw, 1.5rem); font-weight: 600; line-height: 1.4;
+    color: var(--ink); max-width: 40rem; margin: 0 0 1.2rem;
+  }
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
+  .outcomes { list-style: none; padding: 0; margin: 0 0 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; color: var(--muted); }
+  .outcomes li { padding-left: 1.5rem; position: relative; }
+  .outcomes li::before { content: '✓'; position: absolute; left: 0; color: var(--pass); font-weight: 700; }
+  .qa { max-width: 46rem; margin: 1.2rem 0 0; }
+  .qa div { margin-bottom: 1rem; }
+  .qa dt { font-weight: 700; color: var(--ink); }
+  .qa dd { margin: 0.2rem 0 0; color: var(--muted); line-height: 1.6; hyphens: manual; }
+  .byline { color: var(--muted); font-size: 0.95rem; margin-top: 0.4rem; }
 
   /* role="list" in the markup: Safari drops list semantics when list-style is none. */
   .grid {
@@ -297,7 +389,7 @@ const softwareSchema = {
     padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.3rem;
   }
   .flow strong::before { content: counter(flow) '. '; color: var(--accent); }
-  .flow span { color: var(--muted); line-height: 1.5; }
+  .flow span { color: var(--muted); line-height: 1.5; hyphens: manual; }
   .flow-back { color: var(--muted); }
   .flow-back::before { content: '↩ '; color: var(--accent); font-weight: 700; }
 

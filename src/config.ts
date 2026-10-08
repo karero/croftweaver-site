@@ -14,7 +14,7 @@ export const SITE = {
   // 120–160 chars: default meta description + Organization/WebPage schema text.
   description:
     'Croftweaver is a suite of open-source website skills for AI coding assistants. ' +
-    'Build websites that rank, then keep improving SEO and GEO, week by week.',
+    'Weave websites that rank, then keep improving them week by week.',
   repo: 'https://github.com/karero/croftweaver',   // the toolkit; goes live with the repo rename
 } as const;
 

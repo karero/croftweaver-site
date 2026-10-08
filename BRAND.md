@@ -116,8 +116,8 @@ from the tokens below so `public/images/og/default.jpg` + the per-page cards sta
 1. Canvas 1200×630, deep-green to near-black gradient (24,54,40 → 14,19,16).
 2. No logo emblem yet (LOGO = None).
 3. Wordmark "Croftweaver", top-left, white.
-4. Headline per page; default card: "Build websites that rank.", with the subline and
-   the category line beneath.
+4. Headline per page; default card: "Weave websites that rank.", with the villain line
+   ("Stop waiting on someone else for every change.") and the category line beneath.
 5. Footer URL "croftweaver.com", muted.
 
 Per-page variants: change only the headline; keep everything else identical.

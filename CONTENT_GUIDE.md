@@ -18,7 +18,7 @@ page-level content that hangs off that positioning.
 
 - **Top 3 jobs-to-be-done (for copy):** understand in one screen what Croftweaver does for being found · judge the proof (dated results, links to re-run them) · get from zero to a first site (quickstart)
 - **Primary action we want:** visit the GitHub repo (star / clone).
-- **Two audiences:** the home page speaks to builders (developers and technically comfortable owners); `/why` makes the case for decision-makers.
+- **Two audiences:** the home page speaks to owners first (founders, organizers, experts and small teams) and to the people who build for them second; `/why` makes the case for decision-makers.
 
 ## Tone of voice
 
@@ -84,7 +84,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 
 | Page | URL | Purpose | Primary keyword | Target `<title>` (≤60 rendered) | Status |
 |---|---|---|---|---|---|
-| Home | `/` | the promise, the proof, the gate, the loop | website skills for search and AI visibility | Croftweaver: website skills for search and AI visibility | [x] |
+| Home | `/` | the promise and the villain, the proof, the plan, the gate, the loop, a short learning project | website skills for search and AI visibility | Croftweaver: website skills for search and AI visibility | [x] |
 | Checks | `/checks` | the test gate in detail, suite by suite | website test gate | The test gate in every Croftweaver site | [x] |
 | Skills | `/skills` | catalogue by lifecycle: Build, Verify, Launch, Grow | website skills | Website skills catalogue | [x] |
 | Start | `/start` | zero to a first site | quickstart | Quickstart: your first site | [x] |
@@ -132,7 +132,7 @@ starts with questions and not with a design.
 | 5 | How the test keeps it true | what the positioning suite checks (term in the title, the description, and the H1 or the first paragraph; on the home page also the category in the body), one failure message, when it runs | `tests/positioning.spec.ts`, `/checks` |
 | 6 | Limits | the test proves the term is present and consistent, not that the positioning is good; it is no keyword-density check; the judgment stays with the owner; the optional skill `website-positioning-check` gives a look from outside | honesty rules above |
 | 7 | Then make it believable: trust signals (EEAT) | what EEAT stands for, said once; that it is the framework Google's quality raters use, not a score and not a ranking factor by itself; the signals the skills build in (structured data for the organisation with profiles that resolve, a named author with a bio where there is one, sources cited, imprint, contact and privacy pages, links that resolve); which of these a test checks (structured data is present and parses; links inside the site resolve when they are written from the site root or with the full address; a link written relative to a page is checked only where it points to a section, by the anchors suite) and which a test does not check: other links written relative to a page, and whether a profile or another outside link still works. An outside link that appears as a link on a page is looked at by the link audit; a profile that appears only in the structured data is checked by hand. The facts themselves come from the owner. Short: the content guide owns this layer, not positioning | toolkit skill `website-content-guide`; "EEAT signals" above; Google Search Central, "Creating helpful, reliable, people-first content" (read 2026-10-04) |
-| 8 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site does not use it. "Inspired by Donald Miller's StoryBrand framework, in Croftweaver's own words." | toolkit skill `website-story` |
+| 8 | The story layer (optional) | `website-story`: the home page told as the visitor's story, in seven sections; optional, offered once after positioning; this site uses it for its home page (`STORY.md`). "Inspired by Donald Miller's StoryBrand framework, in Croftweaver's own words." | toolkit skill `website-story` |
 | 9 | Sources | the books, with links (below), and the no-endorsement sentence | owner, 2026-10-04 |
 | 10 | Next step | quickstart, GitHub | page template |
 

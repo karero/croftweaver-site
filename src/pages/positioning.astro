@@ -24,6 +24,7 @@ const failure = [
 ].join('\n');
 
 const ownFile = 'https://github.com/karero/croftweaver-site/blob/main/POSITIONING.md';
+const ownStory = 'https://github.com/karero/croftweaver-site/blob/main/STORY.md';
 
 // Plain links, no tag. Checked by hand when the page was built (CONTENT_GUIDE.md).
 const books = [
@@ -208,8 +209,9 @@ const books = [
       After positioning, the assistant offers one more step, once: the skill
       <code>website-story</code>. It tells the home page as the story of your
       visitor, in seven sections, and writes it down in a file called
-      <code>STORY.md</code>. It is optional and never runs unasked. This site does
-      not use it.
+      <code>STORY.md</code>. It is optional and never runs unasked. This site's home
+      page uses it: <a href={ownStory}>its story file</a> comes next to its
+      positioning file.
     </p>
     <p class="note">
       The skill is inspired by Donald Miller's StoryBrand framework and puts the
