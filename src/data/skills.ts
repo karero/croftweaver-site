@@ -2,9 +2,10 @@
 // stages as the diagram on the home page). One line each, in plain words, taken from
 // the skill's own description in the toolkit (skills/<name>/SKILL.md).
 // This list describes ONE toolkit release, plus any skills added since. When the toolkit
-// ships a new release, update RELEASE and the list together and empty ADDED_SINCE; the
-// site cannot check the toolkit at build time.
-export const RELEASE = { version: '0.29', iso: '2026-09-29', label: '29 September 2026' } as const;
+// ships a new release, update RELEASE (with the number of skills it had) and the list
+// together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
+// build stops when the list, the release's skill count and ADDED_SINCE do not add up.
+export const RELEASE = { version: '0.29', iso: '2026-09-29', label: '29 September 2026', skills: 31 } as const;
 // The skills on the toolkit's main branch that release 0.29 does not have, and the day the
 // list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
 export const ADDED_SINCE: readonly string[] = ['website-contact-form', 'website-scorecard'];
@@ -48,7 +49,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'seo-audit', stage: 'verify', does: 'Audits a site for technical and on-page SEO problems.' },
   { name: 'internal-link-audit', stage: 'verify', does: 'Finds pages that are orphaned, thinly linked or buried, and suggests where to link.' },
   { name: 'outgoing-link-audit', stage: 'verify', does: 'Checks every link to another site: alive, redirected, rebranded or dead.' },
-  { name: 'website-scorecard', stage: 'verify', optional: true, does: 'Publishes what the site\'s own tests checked as a dated section on one page. A failed run is never shown as passed.' },
+  { name: 'website-scorecard', stage: 'verify', optional: true, does: 'Publishes what the site\'s own tests checked as a dated section on one page. A run with a failing test writes nothing.' },
 
   { name: 'search-console-setup', stage: 'launch', does: 'Registers the live site with Google Search Console and Bing, submits the sitemap, turns on IndexNow.' },
   { name: 'business-listings-setup', stage: 'launch', optional: true, does: 'For a business with listings: claims Google Business Profile, Bing Places and directory entries, and checks that the profile links resolve.' },
@@ -62,6 +63,10 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
 const names = SKILLS.map((s) => s.name);
 if (new Set(names).size !== names.length) throw new Error('src/data/skills.ts lists a skill twice.');
 for (const n of ADDED_SINCE) if (!names.includes(n)) throw new Error(`src/data/skills.ts: ADDED_SINCE names ${n}, which is not in SKILLS.`);
+if (new Set(ADDED_SINCE).size !== ADDED_SINCE.length) throw new Error('src/data/skills.ts: ADDED_SINCE lists a skill twice.');
+if (SKILLS.length !== RELEASE.skills + ADDED_SINCE.length) {
+  throw new Error(`src/data/skills.ts: SKILLS has ${SKILLS.length} skills, but release ${RELEASE.version} had ${RELEASE.skills} and ADDED_SINCE names ${ADDED_SINCE.length}. Update RELEASE, the list and ADDED_SINCE together.`);
+}
 
 export const SKILL_COUNT = SKILLS.length;
 
