@@ -93,7 +93,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: 'How can we tell whether AI assistants name our company?',
-        a: '<p>Ask the same questions your customers ask every week, without naming the company, and count how often each assistant names it. The AI check does this for ChatGPT, Claude, Gemini and Perplexity, and optionally Google’s AI Mode and AI Overview. Where an assistant allows web search, the check also lists the sources it returned; Gemini is asked from memory only. A third question asks what each assistant knows about your company; it is read for accuracy, not counted. The check counts mentions. It does not tell you whether an assistant recommends you.</p>',
+        a: '<p>Every week, ask the same questions your customers ask, without naming the company, and count how often each assistant names it. The AI check does this for ChatGPT, Claude, Gemini and Perplexity, and optionally Google’s AI Mode and AI Overview. Where an assistant allows web search, the check also lists the sources it returned; Gemini is asked from memory only. A third question asks what each assistant knows about your company; it is read for accuracy, not counted. The check counts mentions. It does not tell you whether an assistant recommends you.</p>',
       },
       {
         q: 'What if assistants quote directories and review sites instead of our own pages?',
@@ -114,7 +114,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: 'Which data leaves our network?',
-        a: '<p>The questions of the AI check, the two your customers ask and the one about your company, go to the AI services you choose: straight to OpenAI, Anthropic, Google and Perplexity with their own keys, or through OpenRouter. If you use SerpApi for Google’s AI answers, those questions go there too, and the search phrases for the live top 10 go to Serper or SerpApi if you use one. If you use the optional outside review of plans and changes, the text under review goes to the reviewing services too. Your assistant sees what you give it. The Search Console sign-in, the history and the saved answers stay on the computer that runs the skills. Nothing goes to Croftweaver. Check each provider’s terms before confidential questions leave your network.</p>',
+        a: '<p>The questions of the AI check, two that your customers ask and one about your company, go to the AI services you choose: straight to OpenAI, Anthropic, Google and Perplexity with their own keys, or through OpenRouter. If you use SerpApi for Google’s AI answers, those questions go there too, and the search phrases for the live top 10 go to Serper or SerpApi if you use one. If you use the optional outside review of plans and changes, the text under review goes to the reviewing services too. Your assistant sees what you give it. The Search Console sign-in, the history and the saved answers stay on the computer that runs the skills. Nothing goes to Croftweaver. Check each provider’s terms before confidential questions leave your network.</p>',
       },
       {
         q: 'Does Croftweaver replace our SEO tools or our agency’s reports?',
