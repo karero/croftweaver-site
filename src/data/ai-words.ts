@@ -8,7 +8,7 @@ export const answers = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
 // reads the list of search results and nothing in the text, and through OpenRouter it reads the list of sources
 // and not the [n] marks in the text. One wording covers both routes: the sources it returned. The count is
 // independent of whether the answer names the site, so it can be higher than the "named" count. The toolkit's
-// geo_check.py has the same list (RESULTS_ONLY). The page says "among the sources it returned" for them and never
+// geo_check.py has the same list (its RESULTS_ONLY). The page says "among the sources it returned" for them and never
 // "cited". tests/a11y.spec.ts pins both.
 export const RESULTS_ONLY = ['perplexity'];
 
@@ -17,9 +17,15 @@ export const RESULTS_ONLY = ['perplexity'];
 export type Totals = { engine: string | undefined; answers: number; named: number; cited: number };
 
 export const sentence = (t: Totals, start: 'Named' | 'named') => {
+  // One assistant's totals only: whether "cited" counts citations or returned sources depends on the assistant, so
+  // the totals of several (engine undefined) cannot be worded. The page never builds them; this fails loud if it does.
+  if (t.engine === undefined) throw new Error('src/data/ai-words.ts: sentence() needs the totals of one assistant, not of several.');
+  if (t.named > t.answers || t.cited > t.answers) {
+    throw new Error(`src/data/ai-words.ts: ${t.named} named and ${t.cited} cited cannot be more than the ${t.answers} answers they come from (a hand edit of the CSV file?).`);
+  }
   const named = `${start} it in ${t.named} of ${answers(t.answers)}.`;
   if (t.cited === 0) return named;
-  if (t.engine !== undefined && RESULTS_ONLY.includes(t.engine)) {
+  if (RESULTS_ONLY.includes(t.engine)) {
     return `${named} The site was among the sources it returned in ${t.cited} of ${answers(t.answers)}.`;
   }
   // "Named and cited" says that the same answers did both. Two totals prove it only when each is all of the
