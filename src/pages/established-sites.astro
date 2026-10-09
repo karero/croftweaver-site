@@ -41,7 +41,7 @@ const steps = [
       'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
       'Needs no Search Console access. It needs a key for each assistant you ask, or one OpenRouter key for all four. On a large site, use each assistant’s own key: your market’s country is then sent with the searches of ChatGPT, Claude and Perplexity. The toolkit sends no country through OpenRouter today.',
     ],
-    say: 'Set up the weekly AI check for example.com with these three buyer questions.',
+    say: 'Set up the weekly AI check for example.com with these two buyer questions and one question about the company.',
   },
   {
     title: 'Diagnose',
@@ -109,7 +109,7 @@ const limits = [
 ];
 
 const weeks = [
-  { week: 'Week 1', text: 'Connect Search Console and pull 90 days. Write the three buyer questions and run the first AI check.' },
+  { week: 'Week 1', text: 'Connect Search Console and pull 90 days. Write two buyer questions and one about your company, and run the first AI check.' },
   { week: 'Week 2', text: 'Audit the 20 to 30 pages with the most impressions. Run the positioning check on the home page and the main offer pages.' },
   { week: 'Week 3', text: 'Write the guard tests, then fix titles, structured data and quotable facts on those pages.' },
   { week: 'Week 4', text: 'Review, ship, and book the grading run. The weekly AI check keeps running.' },
@@ -423,6 +423,6 @@ const weeks = [
   .faq-answer :global(th), .faq-answer :global(td) {
     text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line);
   }
-  .faq-answer :global(thead th) { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .faq-answer :global(thead th) { font-size: 0.85rem; color: var(--muted); }
   .faq-answer :global(tbody th) { font-weight: 600; }
 </style>
