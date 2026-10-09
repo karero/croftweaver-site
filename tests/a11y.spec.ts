@@ -391,7 +391,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
 
   // Nobody named the site from memory: the page says why, next to the number, and only while that is
   // true as written (owner, 2026-10-08): some answers came from memory, none named the site, and with
-  // web search some did. The check does not show why, so the text says so and calls the reason likely.
+  // web search some did. The check does not test why, so the text ends by saying so and calls the reason likely.
   // The date is the one the page gives in its section about the site.
   const sumOf = (mode: string, key: 'answers' | 'named') => today.filter((r) => r.mode === mode).reduce((n, r) => n + r[key], 0);
   const explainsZero = sumOf('without_search', 'answers') > 0 && sumOf('without_search', 'named') === 0 && sumOf('with_search', 'named') > 0;
@@ -399,11 +399,11 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   if (explainsZero) {
     const relaunched = (await page.locator('#site time').first().textContent())!.trim();
     await expect(why, 'the page does not say why the number from memory is zero').toHaveText(
-      'Why the second number is zero: the check does not show why, but the likely reason is how these assistants work. '
-      + 'An assistant recalls a name from memory mostly when it met that name often in the text it was trained on, '
+      'Why the second number is zero: an assistant recalls a name from memory mostly when it met that name often in the text it was trained on, '
       + 'and a name reaches that memory only when a new version of the model is trained. '
-      + `The present site dates from ${relaunched}, which is recent for that. The check also asks one model per assistant, not always the largest. `
-      + 'Web search does not rely on that memory, which is the likely reason the first number is higher.',
+      + `The present site dates from ${relaunched}, which is recent for that. `
+      + 'Web search does not rely on that memory, which is the likely reason the first number is higher. '
+      + 'The check only counts who names the site. It does not test why, and it asks one model per assistant, not always the largest.',
     );
   } else {
     await expect(why, 'the page explains a zero that is not there').toHaveCount(0);

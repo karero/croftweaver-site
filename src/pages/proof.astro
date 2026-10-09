@@ -188,14 +188,13 @@ const aiDesc =
     </p>
     {p.ai.explainZero && (
       <p>
-        Why the second number is zero: the check does not show why, but the likely
-        reason is how these assistants work. An assistant recalls a name from memory
-        mostly when it met that name often in the text it was trained on, and a name
-        reaches that memory only when a new version of the model is trained. The
-        present site dates from {p.relaunched.label}, which is recent for that. The
-        check also asks one model per assistant, not always the largest. Web search
-        does not rely on that memory, which is the likely reason the first number is
-        higher.
+        Why the second number is zero: an assistant recalls a name from memory
+        mostly when it met that name often in the text it was trained on, and a
+        name reaches that memory only when a new version of the model is trained.
+        The present site dates from {p.relaunched.label}, which is recent for that.
+        Web search does not rely on that memory, which is the likely reason the
+        first number is higher. The check only counts who names the site. It does
+        not test why, and it asks one model per assistant, not always the largest.
       </p>
     )}
     <p class="note">
