@@ -36,6 +36,12 @@ if [ -f tests/check_ship_push.sh ]; then
   bash tests/check_ship_push.sh
 fi
 
+# Likewise for the script that makes the published AI-check file: it may publish one site only.
+if [ -f tests/check_export_ai_check.sh ]; then
+  echo "▶ pre-push gate: AI check export…"
+  bash tests/check_export_ai_check.sh
+fi
+
 echo "▶ pre-push gate: building…"
 npm run build
 

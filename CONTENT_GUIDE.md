@@ -47,6 +47,12 @@ the body copy true:
   passed, nothing more.
 - **Figures are per named site and dated.** Tool, value, date and a link to re-run it.
   Re-check every figure against the live source before reuse.
+- **Charts say what they show, start their axis at zero and come with the figures behind
+  them,** as a table in the same section or as the file the section links to. A chart
+  shows the whole series or says which day it shows, and its text alternative gives the
+  numbers a reader needs. Nothing enforces this for a new chart. The two on `/proof` have
+  their own tests in `tests/a11y.spec.ts` (they read the drawing back against the CSV
+  files), and a new chart needs the same.
 - **AI panel scores are assessments** by assistants, not evidence that assistants
   recommend the site.
 - **"Twelve test suites" means twelve spec files**, each with several assertions. A
