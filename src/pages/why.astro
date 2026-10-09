@@ -54,12 +54,12 @@ const steps = [
   <section class="wrap" id="evidence">
     <h2>The evidence so far</h2>
     <p>
-      One site, measured: <a href={p.url}>{p.site}</a>, relaunched on
-      <time datetime={p.relaunched.iso}>{p.relaunched.label}</time>.
+      One site, measured: <a href={p.url}>{p.site}</a>, launched on
+      <time datetime={p.launched.iso}>{p.launched.label}</time>.
     </p>
     <ul class="steps">
       <li><strong>Speed and search basics.</strong> PageSpeed Insights on a simulated phone, {PROOF_MEASURED.label}: {speed.performance}, {speed.accessibility}, {speed.bestPractices} and {speed.seo} out of 100 for performance, accessibility, best practices and SEO.</li>
-      <li><strong>Clicks from Google.</strong> From {first.clicks} in the 28 days that include the relaunch ({first.from} to {first.to}) to a best 28 days of {peak.clicks} ({peak.from} to {peak.to}), and {latest.clicks} in the latest 28 days ({latest.from} to {latest.to}).</li>
+      <li><strong>Clicks from Google.</strong> From {first.clicks} in the 28 days that include the launch ({first.from} to {first.to}) to a best 28 days of {peak.clicks} ({peak.from} to {peak.to}), and {latest.clicks} in the latest 28 days ({latest.from} to {latest.to}).</li>
       <li><strong>AI assistants.</strong> On {p.ai.date.label}, {p.ai.withSearch.named} of {p.ai.withSearch.answers} answers given with web search named the site, and {p.ai.withoutSearch.named} of {p.ai.withoutSearch.answers} given from memory.{p.ai.notRun.length > 0 && ` ${nameList(p.ai.notRun)} ${p.ai.notRun.length === 1 ? 'was' : 'were'} not run that day.`}{p.ai.explainZero && <> <a href="/proof#ai">The proof page</a> says why the second number is zero.</>}</li>
     </ul>
     <p class="aside">

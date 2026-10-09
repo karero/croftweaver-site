@@ -397,11 +397,11 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const explainsZero = sumOf('without_search', 'answers') > 0 && sumOf('without_search', 'named') === 0 && sumOf('with_search', 'named') > 0;
   const why = page.locator('#ai p').filter({ hasText: 'Why the second number is zero' });
   if (explainsZero) {
-    const relaunched = (await page.locator('#site time').first().textContent())!.trim();
+    const launched = (await page.locator('#site time').first().textContent())!.trim();
     await expect(why, 'the page does not say why the number from memory is zero').toHaveText(
       'Why the second number is zero: an assistant recalls a name from memory mostly when it met that name often in the text it was trained on, '
       + 'and a name reaches that memory only when a new version of the model is trained. '
-      + `The present site dates from ${relaunched}, which is recent for that. `
+      + `The site launched on ${launched}, which is recent for that. `
       + 'Web search does not rely on that memory, which is the likely reason the first number is higher. '
       + 'The check only counts who names the site. It does not test why, and it asks one model per assistant, not always the largest.',
     );
@@ -484,6 +484,29 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const whyPoint = page.locator('li', { hasText: 'AI assistants.' });
   if (explainsZero) await expect(whyPoint, '/why does not point to the explanation').toContainText('The proof page says why the second number is zero.');
   else await expect(whyPoint, '/why points to an explanation that is not there').not.toContainText('says why the second number is zero');
+});
+
+// genai-wednesday.de launched on 27 March 2026; it was not relaunched (owner, 2026-10-09). The pages said
+// "relaunched" until then, and that wording is one paste away from POSITIONING.md or an older note, so the
+// pages that describe the site are checked for the word, in their text and in their descriptions.
+test('proof — the pages about genai-wednesday.de say it launched, and none says it was relaunched', async ({ page }) => {
+  const relaunch = /re-?launch/i;
+  await page.goto('/proof');
+  const launched = (await page.locator('#site time').first().textContent())!.trim();
+  const siteSays = (await page.locator('#site p:has(time)').first().textContent())!.replace(/\s+/g, ' ');
+  expect(siteSays, 'the section about the site does not say that the site launched on that date').toContain(`The site launched on ${launched}`);
+  for (const path of ['/proof', '/why', '/more-proof']) {
+    await page.goto(path);
+    expect(await page.locator('body').textContent(), `${path} calls the launch a relaunch`).not.toMatch(relaunch);
+    expect(await page.locator('meta[name="description"]').getAttribute('content'), `the description of ${path} calls the launch a relaunch`).not.toMatch(relaunch);
+  }
+  // /why says it in one line. The space before "launched" is what keeps "relaunched on" from matching.
+  await page.goto('/why');
+  const evidence = (await page.locator('#evidence p', { hasText: 'One site, measured' }).textContent())!.replace(/\s+/g, ' ');
+  expect(evidence, '/why does not say that the site launched on that date').toContain(` launched on ${launched}`);
+  // llms.txt is read by assistants; its line about this site is checked too.
+  const llms = readFileSync(new URL('../public/llms.txt', import.meta.url), 'utf8');
+  expect(llms.split('\n').filter((l) => l.includes('genai-wednesday.de')).join('\n'), 'public/llms.txt calls the launch a relaunch').not.toMatch(relaunch);
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG
