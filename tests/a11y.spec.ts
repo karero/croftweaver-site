@@ -533,7 +533,8 @@ test('proof — the pages about genai-wednesday.de say it launched, and none say
 // naming count, so a rule that used one for the other would print the same cells. These cases separate the two. For an
 // assistant in RESULTS_ONLY (the toolkit's geo_check.py has the same list) the tracker's "cited" is how often the site
 // was among the search results it returned. That is independent of whether the answer names the site, so it can be
-// higher, equal or lower than "named", and it is never worded as a citation. For the others it is a citation count.
+// higher, equal or lower than "named", and it is never worded as a citation. For the others the page words it as a
+// citation, as the toolkit does (it calls the lists of Claude through OpenRouter and of the Google surfaces unverified).
 test('proof — the words for a result: Perplexity counts search results, the others citations', () => {
   expect(RESULTS_ONLY, 'RESULTS_ONLY in src/data/ai-words.ts is the toolkit\'s list (geo_check.py): Perplexity only. Change it when the toolkit does').toEqual(['perplexity']);
   type Counts = { answers: number; named: number; cited: number };
@@ -567,10 +568,25 @@ test('proof — the words for a result: Perplexity counts search results, the ot
 test('proof — Perplexity\'s count is results, not citations, on /proof and on /established-sites', async ({ page }) => {
   // Every place that words a result passes the assistant. The type allows any string, and the paths for an assistant
   // that was not run, or whose every call failed, show the last result with the same words: no day of the file has
-  // Perplexity there, so a wrong argument would show nowhere else.
-  const calls = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8').match(/\bsentence\([^)]*\)/g) ?? [];
+  // Perplexity there, so a wrong argument would show nowhere else. The arguments of each call are read by counting
+  // brackets, so a nested call or a trailing comma is no problem; a call through another name is not seen, and a
+  // bracket or a comma inside a string argument would confuse the count (none of the calls has one).
+  const argumentsOfCalls = (code: string) => [...code.matchAll(/\bsentence\(/g)].map((m) => {
+    const args: string[] = [];
+    let depth = 1, from = m.index! + m[0].length, i = from;
+    for (; depth > 0 && i < code.length; i++) {
+      if ('([{'.includes(code[i]!)) depth++;
+      else if (')]}'.includes(code[i]!)) depth--;
+      else if (code[i] === ',' && depth === 1) { args.push(code.slice(from, i).trim()); from = i + 1; }
+    }
+    args.push(code.slice(from, i - 1).trim());
+    return args.filter((a) => a !== '');   // a trailing comma leaves an empty last argument
+  });
+  expect(argumentsOfCalls("x = sentence(on(a, b), 'Named', engine,) + sentence(c, 'named', mode)"), 'the reader of the arguments is wrong')
+    .toEqual([['on(a, b)', "'Named'", 'engine'], ['c', "'named'", 'mode']]);
+  const calls = argumentsOfCalls(readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8'));
   expect(calls.length, 'src/data/proof.ts no longer calls sentence(): update this test').toBeGreaterThan(0);
-  for (const call of calls) expect(call, 'a call of sentence() in src/data/proof.ts does not pass the assistant (engine)').toMatch(/, engine\)$/);
+  for (const args of calls) expect(args[2], `sentence(${args.join(', ')}) in src/data/proof.ts does not pass the assistant (engine) as its third argument`).toBe('engine');
   await page.goto('/proof');
   const row = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: /^Perplexity/ }) });
   await expect(row, 'no Perplexity row in the table').toHaveCount(1);
