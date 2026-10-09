@@ -104,6 +104,16 @@ for (let start = 1; start + 28 <= days.length; start++) {
   const w = sum(days.slice(start, start + 28));
   if (w.clicks > peak.clicks) peak = w;
 }
+// The clicks in the 28 days up to each date, from the first date with a full 28 days.
+// This is the line in the chart on /proof: its last point is the latest block and its
+// highest is the peak. tests/a11y.spec.ts recomputes it from the CSV and compares.
+const rolling = days.slice(27).map((d, i) => ({
+  iso: d.date,
+  clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0),
+}));
+// The first day with an impression: the chart caption says the file has none before it.
+const firstSeen = days.find((d) => d.impressions > 0);
+if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no impressions at all.');
 
 // ── The weekly AI check, from the published export ───────────────────────────────
 // One row per assistant, mode and question: how many calls answered, how many of the
@@ -148,10 +158,20 @@ const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'na
   t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
+// An assistant can have no rows in a mode on purpose: Google's two assistants are search
+// products, so they have no "without web search" mode, and the check does not ask Gemini
+// with web search. Any other gap means rows are missing from the export, and the page must
+// not explain it away as a property of the assistant.
+const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
+const NOT_ASKED_WITH_SEARCH = ['gemini'];
+const absent = (engine: string, mode: Mode): 'search-only' | 'not-asked' => {
+  if (mode === 'without_search' && SEARCH_ONLY.includes(engine)) return 'search-only';
+  if (mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(engine)) return 'not-asked';
+  throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${engine} on ${checkDate}. If the check does not ask it that way, add it to SEARCH_ONLY or NOT_ASKED_WITH_SEARCH in src/data/proof.ts; otherwise the export is missing rows.`);
+};
 const cell = (engine: string, mode: Mode) => {
   const now = on(checkDate, mode, engine);
-  // No row at all: the assistant is not asked in this mode.
-  if (!now) return mode === 'without_search' ? 'Always searches.' : 'Not asked with web search.';
+  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   if (now.answers === 0) {
     const before = earlierDate ? on(earlierDate, mode, engine) : null;
     return before && before.answers > 0
@@ -163,8 +183,25 @@ const cell = (engine: string, mode: Mode) => {
 const overall = (mode: Mode) => {
   const t = on(checkDate, mode);
   if (!t) throw new Error(`genai-wednesday-de-ai-check.csv has no ${mode} rows for ${checkDate}.`);
-  return { named: t.named, answers: t.answers };
+  return { named: t.named, answers: t.answers, failed: t.failed };
 };
+// The same counts as the table, for the chart: one mark per answer that named the site,
+// one per answer that did not, one per failed call. A string where the assistant is not
+// asked in this mode (the same two cases as `cell`, through `absent`).
+const marks = (engine: string, mode: Mode) => {
+  const now = on(checkDate, mode, engine);
+  if (!now) return absent(engine, mode) === 'search-only' ? 'Always searches' : 'Not asked';
+  if (now.named > now.answers) {
+    throw new Error(`genai-wednesday-de-ai-check.csv: ${engine} (${mode}) names the site in more answers than it gave.`);
+  }
+  return { named: now.named, unnamed: now.answers - now.named, failed: now.failed };
+};
+// Assistants whose every call failed that day: the chart shows only dashes for them, and the
+// page says so, because a row of dashes must not be read as a verdict on the site.
+const allFailed = ENGINES.filter(([engine]) => {
+  const cells = (['with_search', 'without_search'] as const).map((mode) => on(checkDate, mode, engine)).filter((c) => c !== null);
+  return cells.length > 0 && cells.every((c) => c.answers === 0 && c.failed > 0);
+}).map(([, assistant]) => assistant);
 
 // /proof and /why both say the relaunch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
@@ -190,6 +227,10 @@ export const SITE_PROOF = {
     blocks,
     latest: blocks.at(-1)!,
     peak,
+    rolling,
+    rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
+    fileFrom: { iso: days[0]!.date, label: label(days[0]!.date) },
+    firstImpression: { iso: firstSeen.date, label: label(firstSeen.date) },
     // Average positions from Search Console's query report for exactly this period
     // (whole site, all countries; pulled 2026-10-04). Checked against `latest` below.
     positionsPeriod: POSITIONS_PERIOD,
@@ -211,6 +252,13 @@ export const SITE_PROOF = {
       withSearch: cell(engine, 'with_search'),
       withoutSearch: cell(engine, 'without_search'),
     })),
+    chart: ENGINES.map(([engine, assistant]) => ({
+      engine,
+      assistant,
+      withSearch: marks(engine, 'with_search'),
+      withoutSearch: marks(engine, 'without_search'),
+    })),
+    allFailed,
     withSearch: overall('with_search'),
     withoutSearch: overall('without_search'),
   },

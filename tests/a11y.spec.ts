@@ -121,3 +121,403 @@ test('a11y — header logo copy matches the design file', () => {
     .replaceAll('#1a1f1b', 'currentColor');
   expect(brandFile('lockup-horizontal-theme.svg').trim()).toBe(made.trim());
 });
+
+// Site-specific (not in the shipped suite): the two charts on /proof are inline SVG that
+// the build draws from the CSV files a visitor can download (src/components/ClicksChart.astro
+// and AiCheckChart.astro). Axe cannot read a picture, and a chart can mislead while every
+// other test stays green: a line drawn from other numbers than the file holds, an axis that
+// hides the low end, a month label under the wrong day. So these tests read the drawing back
+// and compare it with the files, then check its colours per theme and its size on a phone.
+const csvRows = (file: string) =>
+  readFileSync(new URL(`../public/data/${file}`, import.meta.url), 'utf8').trim().split(/\r?\n/).slice(1).map((line) => line.split(','));
+const longDate = (iso: string) =>
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// A whole-word match, so "50" is not found inside "150".
+const word = (text: string) => new RegExp(`\\b${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+
+test('a11y — the clicks chart on /proof draws the published CSV', async ({ page }) => {
+  const days = csvRows('genai-wednesday-de-search-console.csv').map(([date, clicks]) => ({ date: date!, clicks: Number(clicks) }));
+  // The clicks in the 28 days up to each date, from the first date with a full 28 days.
+  const expected = days.slice(27).map((d, i) => ({ date: d.date, clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0) }));
+  const high = Math.max(...expected.map((e) => e.clicks));
+  const peak = expected.find((e) => e.clicks === high)!;
+  const [start, last] = [expected[0]!, expected.at(-1)!];
+
+  await page.goto('/proof');
+  const svg = page.locator('svg[data-chart="clicks"]');
+  await expect(svg, 'no clicks chart on /proof').toHaveCount(1);
+
+  // A name and a description that say what the picture shows, with the numbers of the data.
+  await expect(svg).toHaveAttribute('role', 'img');
+  await expect(svg, 'the chart has no accessible name').toHaveAccessibleName(/\S/);
+  // Each phrase pins a number to what it is, so a value that also occurs elsewhere in the
+  // text (28, 13, 2026) cannot pass for the wrong one.
+  for (const part of [`starts at ${start.clicks} clicks`, `${peak.clicks} on ${longDate(peak.date)}`, `ends at ${last.clicks}`, `from ${longDate(start.date)} to ${longDate(last.date)}`]) {
+    await expect(svg, `the chart's description does not say "${part}"`).toHaveAccessibleDescription(word(part));
+  }
+  await expect(svg.locator('.axis-title'), 'the chart does not say what its numbers are').toHaveText(/28 days/);
+  await expect(page.locator('#search p strong').first(), 'the clicks in the text and the end of the line differ').toHaveText(`${last.clicks} clicks`);
+  await expect(page.locator('#search table'), 'the same clicks must also be in a table').toHaveCount(1);
+
+  const c = await svg.evaluate((el) => {
+    const num = (node: Element, name: string) => Number(node.getAttribute(name));
+    const line = el.querySelector('polyline.line');
+    return {
+      from: line?.getAttribute('data-from'), to: line?.getAttribute('data-to'),
+      points: (line?.getAttribute('points') ?? '').trim().split(/\s+/).map((p) => p.split(',').map(Number) as [number, number]),
+      ticks: [...el.querySelectorAll('line[data-tick]')].map((l) => ({ value: num(l, 'data-tick'), x1: num(l, 'x1'), x2: num(l, 'x2'), y: num(l, 'y1') })),
+      markers: [...el.querySelectorAll('circle[data-marker]')].map((m) => ({ kind: m.getAttribute('data-marker'), date: m.getAttribute('data-date'), clicks: num(m, 'data-clicks'), cx: num(m, 'cx'), cy: num(m, 'cy') })),
+      months: [...el.querySelectorAll('text[data-date]')].map((t) => ({ date: t.getAttribute('data-date')!, name: t.textContent!.trim(), x: num(t, 'x') })),
+      tickLabels: [...el.querySelectorAll('text[data-tick-label]')].map((t) => ({ value: num(t, 'data-tick-label'), text: t.textContent!.trim(), y: num(t, 'y') })),
+      valueLabels: [...el.querySelectorAll('text[data-for]')].map((t) => ({ kind: t.getAttribute('data-for'), text: t.textContent!.trim() })),
+    };
+  });
+
+  // One point per date of the series, from the first date to the last.
+  expect(c.points.length, 'the line has a different number of points than the CSV gives').toBe(expected.length);
+  expect([c.from, c.to]).toEqual([start.date, last.date]);
+
+  // The axis starts at zero, rises in equal steps and reaches the highest value without
+  // leaving the line squashed into its lower half.
+  const ticks = [...c.ticks].sort((a, b) => a.value - b.value);
+  expect(ticks.length, 'the axis has fewer than two gridlines').toBeGreaterThan(1);
+  expect(ticks[0]!.value, 'the axis must start at zero').toBe(0);
+  const valueStep = ticks[1]!.value - ticks[0]!.value;
+  const pixelStep = ticks[0]!.y - ticks[1]!.y;
+  ticks.forEach((t, i) => {
+    expect(t.value, 'the axis labels rise in unequal steps').toBe(i * valueStep);
+    expect(Math.abs(ticks[0]!.y - t.y - i * pixelStep), 'the gridlines are unequally spaced').toBeLessThan(0.05);
+  });
+  const ceiling = ticks.at(-1)!.value;
+  expect(ceiling, 'the axis stops below the highest value').toBeGreaterThanOrEqual(high);
+  expect(ceiling - high, 'the axis reaches more than a step above the highest value').toBeLessThanOrEqual(valueStep);
+
+  // What the reader sees: each gridline has one label that says its value, at its height.
+  expect(c.tickLabels.length, 'an axis label has no gridline, or a gridline has none').toBe(ticks.length);
+  for (const t of ticks) {
+    const labels = c.tickLabels.filter((l) => l.value === t.value);
+    expect(labels.length, `the gridline at ${t.value} has ${labels.length} labels`).toBe(1);
+    expect(labels[0]!.text, `the label at the ${t.value} gridline reads "${labels[0]!.text}"`).toBe(String(t.value));
+    expect(Math.abs(labels[0]!.y - t.y), `the ${t.value} label is not at its gridline`).toBeLessThan(0.05);
+  }
+
+  // Every point sits at the height its clicks have on the axis, and the points are evenly
+  // spaced from one end of the axis to the other.
+  const perClick = pixelStep / valueStep;
+  const [first, end] = [c.points[0]!, c.points.at(-1)!];
+  expect([first[0], end[0]], 'the line does not run the width of the axis').toEqual([ticks[0]!.x1, ticks[0]!.x2]);
+  const xStep = (end[0] - first[0]) / (expected.length - 1);
+  c.points.forEach(([x, y], i) => {
+    const clicks = (ticks[0]!.y - y) / perClick;
+    expect(Math.abs(clicks - expected[i]!.clicks), `${expected[i]!.date} is drawn at ${clicks.toFixed(2)} clicks, the CSV gives ${expected[i]!.clicks}`).toBeLessThan(0.05);
+    expect(Math.abs(x - (first[0] + i * xStep)), `${expected[i]!.date} is drawn out of place sideways`).toBeLessThan(0.05);
+  });
+
+  // The month labels sit under the first day of their month. The two numbers on the line
+  // belong to the highest and to the last point, and their markers sit on the line.
+  expect(c.months.map((m) => m.date), 'a first of the month has no label, or a label has no date').toEqual(expected.filter((e) => e.date.endsWith('-01')).map((e) => e.date));
+  for (const m of c.months) {
+    const i = expected.findIndex((e) => e.date === m.date);
+    expect(Math.abs(m.x - c.points[i]![0]), `the label ${m.name} is not under ${m.date}`).toBeLessThan(0.05);
+    expect(m.name).toBe(new Date(`${m.date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }));
+  }
+  for (const [kind, want] of [['peak', peak], ['latest', last]] as const) {
+    const m = c.markers.find((x) => x.kind === kind);
+    expect(m, `the ${kind} marker is missing`).toBeDefined();
+    expect([m!.date, m!.clicks], `the ${kind} marker is for the wrong point`).toEqual([want.date, want.clicks]);
+    expect([m!.cx, m!.cy], `the ${kind} marker is not on the line`).toEqual(c.points[expected.findIndex((e) => e.date === want.date)]);
+    expect(c.valueLabels.filter((l) => l.kind === kind).map((l) => l.text), `the number shown for the ${kind} point`).toEqual([String(want.clicks)]);
+  }
+});
+
+test('a11y — the AI check chart on /proof draws the published CSV', async ({ page }) => {
+  const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, , failed]) =>
+    ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), failed: Number(failed) }));
+  const latest = rows.map((r) => r.date).sort().at(-1)!;
+  const today = rows.filter((r) => r.date === latest);
+  const counts = (engine: string, mode: string) => {
+    const rs = today.filter((r) => r.engine === engine && r.mode === mode);
+    if (rs.length === 0) return null;
+    const answers = rs.reduce((n, r) => n + r.answers, 0);
+    const named = rs.reduce((n, r) => n + r.named, 0);
+    return { named, unnamed: answers - named, failed: rs.reduce((n, r) => n + r.failed, 0) };
+  };
+  const total = (mode: string) => {
+    const rs = today.filter((r) => r.mode === mode);
+    return `${rs.reduce((n, r) => n + r.named, 0)} of ${rs.reduce((n, r) => n + r.answers, 0)}`;
+  };
+  const failedCalls = (mode: string) => {
+    const n = today.filter((r) => r.mode === mode).reduce((sum, r) => sum + r.failed, 0);
+    return `${n} ${n === 1 ? 'call' : 'calls'} failed`;
+  };
+
+  await page.goto('/proof');
+  const svg = page.locator('svg[data-chart="ai"]');
+  await expect(svg, 'no AI check chart on /proof').toHaveCount(1);
+  await expect(svg).toHaveAttribute('role', 'img');
+  await expect(svg, 'the chart has no accessible name').toHaveAccessibleName(/\S/);
+  for (const part of [longDate(latest), `${total('with_search')} answers named the site, and ${failedCalls('with_search')}`, `${total('without_search')} did, and ${failedCalls('without_search')}`]) {
+    await expect(svg, `the chart's description does not say "${part}"`).toHaveAccessibleDescription(word(part));
+  }
+  await expect(page.locator('#ai table'), 'the same results must also be in a table').toHaveCount(1);
+
+  // Colour alone must not tell the marks apart (WCAG 1.4.1): the three kinds differ in shape
+  // or fill, in the legend and in the chart, and a mark in the chart looks like its legend entry.
+  const KINDS = ['named', 'unnamed', 'failed'];
+  const look = (scope: string, kind: string) => page.locator(`${scope} .${kind}`).first().evaluate((el) => {
+    // The shape (box and outline length), the fill, and the stroke that draws it.
+    const shape = el as SVGGeometryElement;
+    const box = shape.getBBox();
+    const cs = getComputedStyle(el);
+    return [el.tagName, cs.fill === 'none' ? 'hollow' : 'filled', `${box.width.toFixed(1)} x ${box.height.toFixed(1)}`, `outline ${shape.getTotalLength().toFixed(1)}`,
+      cs.stroke === 'none' ? 'no stroke' : `stroke ${cs.strokeWidth} ${cs.strokeLinecap} ${cs.strokeLinejoin} dashes ${cs.strokeDasharray} ${cs.strokeDashoffset}`].join(', ');
+  });
+  // The words next to each legend mark, so a swapped legend cannot misname a mark.
+  const SAYS = { named: /^\s*Named the site\s*$/, unnamed: /^\s*Answered, did not name it\s*$/, failed: /^\s*Call failed\s*$/ };
+  for (const kind of KINDS) {
+    await expect(page.locator('.legend li').filter({ has: page.locator(`.${kind}`) }), `the legend entry for the ${kind} mark says something else`).toHaveText(SAYS[kind as keyof typeof SAYS]);
+  }
+  const legend = await Promise.all(KINDS.map((kind) => look('.legend', kind)));
+  expect(new Set(legend).size, `the legend marks look alike apart from colour: ${legend.join(', ')}`).toBe(KINDS.length);
+  for (const [i, kind] of KINDS.entries()) {
+    if ((await svg.locator(`[data-mark="${kind}"]`).count()) > 0) {
+      expect(await look('svg[data-chart="ai"]', kind), `a ${kind} mark in the chart does not look like its legend entry`).toBe(legend[i]);
+    }
+  }
+
+  const { cells, labels, heads } = await svg.evaluate((el) => {
+    const inCell = (g: Element, kind: string) => g.querySelectorAll(`[data-mark="${kind}"]`).length;
+    // Where a mark is drawn, not what it says about itself: its box and the centre of it.
+    // A stroke and its round caps reach half a stroke width beyond the box, so a dash (a box of
+    // no height) still has a size and two dashes drawn on one spot still overlap.
+    const box = (m: Element) => {
+      const b = (m as SVGGraphicsElement).getBBox();
+      const cs = getComputedStyle(m);
+      const half = cs.stroke === 'none' ? 0 : parseFloat(cs.strokeWidth) / 2;
+      return [b.x - half, b.y - half, b.x + b.width + half, b.y + b.height + half];
+    };
+    return {
+      cells: [...el.querySelectorAll('g[data-engine]')].map((g) => ({
+        engine: g.getAttribute('data-engine')!, mode: g.getAttribute('data-mode')!,
+        named: inCell(g, 'named'), unnamed: inCell(g, 'unnamed'), failed: inCell(g, 'failed'),
+        words: g.querySelector('text')?.textContent?.trim() ?? '',
+        marks: [...g.querySelectorAll('[data-mark]')].map((m) => box(m)),
+      })),
+      labels: [...el.querySelectorAll('text.label')].map((t) => ({ engine: t.getAttribute('data-engine')!, text: t.textContent!.trim(), y: Number(t.getAttribute('y')) })),
+      heads: [...el.querySelectorAll('text.head')].map((t) => ({ text: t.textContent!.trim(), x: Number(t.getAttribute('x')) })),
+    };
+  });
+
+  // The names and the column headings are the table's: the same words, in the same order.
+  expect(labels.map((l) => l.text), 'the assistants in the chart and in the table differ').toEqual((await page.locator('#ai tbody th').allTextContents()).map((t) => t.trim()));
+  expect([`${heads[0]!.text} ${heads[1]!.text}`, `${heads[2]!.text} ${heads[3]!.text}`], 'the column headings in the chart and in the table differ')
+    .toEqual((await page.locator('#ai thead th').allTextContents()).slice(1).map((t) => t.trim()));
+
+  // An assistant whose every call failed is named in the description and in the caption: a
+  // row of dashes must not be read as a verdict on the site.
+  const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
+    const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
+    return modes.every((m) => {
+      const rs = today.filter((r) => r.engine === e && r.mode === m);
+      return rs.reduce((n, r) => n + r.answers, 0) === 0 && rs.reduce((n, r) => n + r.failed, 0) > 0;
+    });
+  });
+  if (failedAll.length > 0) {
+    const said = `Every call to ${failedAll.map((e) => labels.find((l) => l.engine === e)!.text).join(' and ')} failed`;
+    await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
+    await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
+  }
+
+  // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
+  // for one mode and none for the other would leave the count right and the chart wrong).
+  const engines = [...new Set(cells.map((x) => x.engine))];
+  for (const engine of engines) {
+    for (const mode of ['with_search', 'without_search']) {
+      expect(cells.filter((x) => x.engine === engine && x.mode === mode).length, `${engine} needs exactly one ${mode} cell`).toBe(1);
+    }
+  }
+  for (const engine of new Set(today.map((r) => r.engine))) {
+    expect(engines, `${engine} is in the CSV but not in the chart`).toContain(engine);
+  }
+  // Every cell shows the CSV's counts: marks where the assistant was asked, words where it was not.
+  for (const cell of cells) {
+    const want = counts(cell.engine, cell.mode);
+    const shown = { named: cell.named, unnamed: cell.unnamed, failed: cell.failed };
+    if (want) {
+      expect(shown, `${cell.engine}, ${cell.mode}: the marks differ from the CSV`).toEqual(want);
+      expect(cell.words, `${cell.engine}, ${cell.mode}: words and marks in one cell`).toBe('');
+    } else {
+      expect(shown, `${cell.engine}, ${cell.mode}: the CSV has no rows, so no marks`).toEqual({ named: 0, unnamed: 0, failed: 0 });
+      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a mode the check does not run`).toBe(cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
+    }
+  }
+
+  // Where the marks sit: each assistant's marks on its own row, next to its name; the rows
+  // differ; the marks of one mode start in one column; and no two marks overlap, which
+  // also shows a cell with more marks than the layout has room for.
+  expect(new Set(labels.map((l) => l.engine)).size, 'an assistant is named twice').toBe(labels.length);
+  expect(new Set(labels.map((l) => l.y)).size, 'two assistants share a row').toBe(labels.length);
+  for (const cell of cells) {
+    const label = labels.find((l) => l.engine === cell.engine);
+    expect(label, `${cell.engine} has no name in the chart`).toBeDefined();
+    for (const b of cell.marks) expect(Math.abs((b[1]! + b[3]!) / 2 - label!.y), `a mark of ${cell.engine} is not on its row`).toBeLessThan(0.05);
+  }
+  for (const mode of ['with_search', 'without_search']) {
+    const starts = new Set(cells.filter((x) => x.mode === mode && x.marks.length > 0).map((x) => Math.min(...x.marks.map((b) => (b[0]! + b[2]!) / 2)).toFixed(1)));
+    expect(starts.size, `the ${mode} marks do not start in one column`).toBe(1);
+  }
+  // Each column's marks start under its own heading (within one mark's width of where the
+  // heading starts), and the with-search marks end before the other heading: swapped columns
+  // would reverse which result belongs to which kind of question.
+  const headAt: Record<string, number> = { with_search: heads[0]!.x, without_search: heads[2]!.x };
+  for (const cell of cells.filter((x) => x.marks.length > 0)) {
+    const start = Math.min(...cell.marks.map((b) => (b[0]! + b[2]!) / 2)) - headAt[cell.mode]!;
+    expect(start, `the ${cell.mode} marks of ${cell.engine} do not start under their heading`).toBeGreaterThanOrEqual(0);
+    expect(start, `the ${cell.mode} marks of ${cell.engine} start far from their heading`).toBeLessThanOrEqual(12);
+    if (cell.mode === 'with_search') {
+      expect(Math.max(...cell.marks.map((b) => b[2]!)), `the with_search marks of ${cell.engine} run into the next column`).toBeLessThan(headAt.without_search!);
+    }
+  }
+  const all = cells.flatMap((x) => x.marks.map((b) => ({ box: b, who: `${x.engine} ${x.mode}` })));
+  const clashes = all.flatMap((a, i) => all.slice(i + 1)
+    .filter((b) => a.box[0]! < b.box[2]! && b.box[0]! < a.box[2]! && a.box[1]! < b.box[3]! && b.box[1]! < a.box[3]!)
+    .map((b) => `${a.who} and ${b.who}`));
+  expect(clashes, 'marks overlap').toEqual([]);
+});
+
+// Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG
+// 1.4.11 and 1.4.3). The checked elements are the ones that carry information; the
+// gridlines are not among them.
+const contrast = (a: string, b: string) => {
+  const lum = (c: string) => {
+    const [r, g, bl] = (c.match(/[\d.]+/g) || []).slice(0, 3).map((v) => {
+      const s = Number(v) / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r! + 0.7152 * g! + 0.0722 * bl!;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi! + 0.05) / (lo! + 0.05);
+};
+const CHART_INK: [selector: string, property: 'fill' | 'stroke', minimum: number, what: string][] = [
+  ['svg[data-chart="clicks"] .line', 'stroke', 3, 'the clicks line'],
+  ['svg[data-chart="clicks"] .dot', 'fill', 3, 'a marker on the clicks line'],
+  ['svg[data-chart="clicks"] .base', 'stroke', 3, 'the zero line'],
+  ['svg[data-chart="clicks"] text', 'fill', 4.5, 'text in the clicks chart'],
+  ['svg[data-chart="ai"] .named', 'fill', 3, 'a mark for an answer that named the site'],
+  ['svg[data-chart="ai"] .unnamed', 'stroke', 3, 'a mark for an answer that did not'],
+  ['svg[data-chart="ai"] .failed', 'stroke', 3, 'a mark for a failed call'],
+  ['svg[data-chart="ai"] text', 'fill', 4.5, 'text in the AI check chart'],
+  ['.legend .named', 'fill', 3, 'the legend mark for a named answer'],
+  ['.legend .unnamed', 'stroke', 3, 'the legend mark for an answer that did not'],
+  ['.legend .failed', 'stroke', 3, 'the legend mark for a failed call'],
+];
+for (const theme of THEMES) {
+  test(`a11y — the charts on /proof are readable [${theme}]`, async ({ page }) => {
+    await page.addInitScript((t) => {
+      try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
+    }, theme);
+    await page.goto('/proof');
+    const { applied, seen } = await page.evaluate((specs) => {
+      // Opacity does not inherit, so multiply it up the whole chain: a faded wrapper hides a
+      // chart as surely as a transparent line.
+      const faded = (el: Element | null) => { let product = 1; for (; el; el = el.parentElement) product *= Number(getComputedStyle(el).opacity); return product; };
+      return {
+        applied: document.documentElement.dataset.theme,
+        seen: specs.map(([selector, property]) => [...document.querySelectorAll(selector)].map((el) => {
+          const cs = getComputedStyle(el);
+          const card = el.closest('figure');
+          return {
+            paint: cs[property],
+            opacity: Number(property === 'fill' ? cs.fillOpacity : cs.strokeOpacity) * faded(el),
+            shown: cs.display !== 'none' && cs.visibility === 'visible',
+            card: card ? getComputedStyle(card).backgroundColor : '',
+          };
+        })),
+      };
+    }, CHART_INK);
+    expect(applied, 'the requested theme was not applied').toBe(theme);
+    seen.forEach((found, i) => {
+      const [, , minimum, what] = CHART_INK[i]!;
+      expect(found.length, `nothing matches ${what}`).toBeGreaterThan(0);
+      for (const el of found) {
+        expect(el.shown && el.opacity === 1, `${what} is hidden or see-through`).toBe(true);
+        expect(el.paint, `${what} has no colour of its own (${el.paint})`).toMatch(/^rgb\(/);
+        expect(el.card, `${what} sits on a card with no opaque colour`).toMatch(/^rgb\(/);
+        expect(contrast(el.paint, el.card), `${what} against the card (${theme})`).toBeGreaterThanOrEqual(minimum);
+      }
+    });
+  });
+}
+
+// The chart text is set in the drawing's own units, so it shrinks with the screen. The aim is
+// 11 px on a 360 px phone (about 10 px at 320 px, the width that WCAG 1.4.10 asks content to
+// reflow to), and the page must not scroll sideways at either width.
+for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
+  test(`a11y — the charts on /proof fit a ${width} px phone and keep their text readable`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    await page.goto('/proof');
+    const phone = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+      smallest: ['clicks', 'ai'].map((id) => {
+        const svg = document.querySelector<SVGSVGElement>(`svg[data-chart="${id}"]`)!;
+        const scale = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width;
+        return { id, px: Math.min(...[...svg.querySelectorAll('text')].map((t) => parseFloat(getComputedStyle(t).fontSize) * scale)) };
+      }),
+    }));
+    expect(phone.overflow, `/proof scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+    for (const { id, px } of phone.smallest) {
+      expect(px, `the ${id} chart's smallest text is ${px.toFixed(1)} px at ${width} px`).toBeGreaterThanOrEqual(floor);
+    }
+  });
+}
+
+// Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider than
+// the one the layout was drawn in. So set the chart text in Verdana (macOS and Windows) or
+// DejaVu Sans (Linux), the widest common system fonts, and check that no text or mark leaves
+// the drawing and no two texts touch. Verdana is about as wide as a sans-serif system font gets;
+// a wider one is not tried. (Letter-spacing on top of the machine's own font was
+// tried first and gave a different test on each machine: this one failed on the Linux CI
+// image, whose default font is already wide.) A longer series of months fails here first:
+// see MAX_MONTH_LABELS in ClicksChart.astro.
+test('a11y — text in the /proof charts stays inside its drawing and clear of other text', async ({ page }) => {
+  await page.goto('/proof');
+  await expect(page.locator('svg[data-chart]'), 'the charts are missing').toHaveCount(2);
+  await page.addStyleTag({ content: 'svg[data-chart] text { font-family: Verdana, "DejaVu Sans", sans-serif !important; }' });
+  // The test proves nothing in a font as narrow as the one the layout was drawn in. At 17 px
+  // "Google AI Overview" takes 149 units in the system font of macOS (the font in global.css
+  // there) and about 1.13 times that in Verdana; DejaVu Sans on the Linux CI image passes this
+  // bar too. If the font stack in global.css changes, measure the label again and update 149.
+  const widest = await page.evaluate(() => [...document.querySelectorAll<SVGTextElement>('svg[data-chart="ai"] text.label')]
+    .find((t) => t.textContent?.trim() === 'Google AI Overview')?.getBBox().width ?? 0);
+  expect(widest, 'no font wider than the design font took effect: install Verdana or DejaVu Sans').toBeGreaterThan(149 * 1.05);
+  const problems = await page.evaluate(() => [...document.querySelectorAll<SVGSVGElement>('svg[data-chart]')].flatMap((svg) => {
+    const { width, height } = svg.viewBox.baseVal;
+    const name = (el: Element) => `${svg.dataset.chart}: "${el.textContent?.trim() || el.getAttribute('data-mark') || el.tagName}"`;
+    // A mark is measured with its stroke (and round caps), as in the AI chart test; text as it is.
+    const grow = (el: SVGGraphicsElement) => {
+      const b = el.getBBox();
+      const cs = getComputedStyle(el);
+      const half = el.tagName === 'text' || cs.stroke === 'none' ? 0 : parseFloat(cs.strokeWidth) / 2;
+      return { x: b.x - half, y: b.y - half, width: b.width + 2 * half, height: b.height + 2 * half };
+    };
+    const boxes = [...svg.querySelectorAll<SVGGraphicsElement>('text, circle, path')].map((el) => ({ el, b: grow(el) }));
+    const outside = boxes.filter(({ b }) => b.x < 0 || b.y < 0 || b.x + b.width > width || b.y + b.height > height)
+      .map(({ el, b }) => `${name(el)} spans ${Math.round(b.x)} to ${Math.round(b.x + b.width)} of ${width}`);
+    // A text box is taller than its letters (it includes the line spacing), so two boxes
+    // may share a few units without the letters touching.
+    const overlap = (a0: number, a1: number, b0: number, b1: number) => Math.min(a1, b1) - Math.max(a0, b0);
+    const texts = boxes.filter(({ el }) => el.tagName === 'text');
+    const touching = texts.flatMap(({ el, b }, i) => texts.slice(i + 1)
+      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > 4)
+      .map(({ el: other }) => `${name(el)} touches ${name(other)}`));
+    // A word or a name must not run into a mark either: the dots on the clicks line and the marks
+    // of the AI chart. A mark has to overlap by half its own height at most (a dash is 2.4 units high).
+    const marks = boxes.filter(({ el }) => el.hasAttribute('data-mark') || el.hasAttribute('data-marker'));
+    const crossing = texts.flatMap(({ el, b }) => marks
+      .filter(({ b: o }) => overlap(b.x, b.x + b.width, o.x, o.x + o.width) > 0 && overlap(b.y, b.y + b.height, o.y, o.y + o.height) > Math.min(4, o.height / 2))
+      .map(({ el: mark }) => `${name(el)} crosses a ${mark.getAttribute('data-mark') ?? mark.getAttribute('data-marker')} mark`));
+    return [...outside, ...touching, ...crossing];
+  }));
+  expect(problems, 'a chart has text that is cut off or runs into other text').toEqual([]);
+});

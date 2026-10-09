@@ -5,14 +5,31 @@
 // Honesty rules (CONTENT_GUIDE.md): every figure is dated and names its tool; the
 // search table is computed from the published file (src/data/proof.ts).
 import Base from '../layouts/Base.astro';
+import ClicksChart from '../components/ClicksChart.astro';
+import AiCheckChart from '../components/AiCheckChart.astro';
 import { SITE } from '../config';
 import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 
 const p = SITE_PROOF;
 const speed = PROOF.find((entry) => entry.site === p.site)!;
 const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
-const { latest, peak, blocks, positionsPeriod } = p.search;
+const { latest, peak, blocks, positionsPeriod, rolling, rollingFrom, fileFrom, firstImpression } = p.search;
+const { allFailed } = p.ai;
 const google = (query: string) => `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+// The text alternative of each chart says what the picture shows, with the same numbers.
+const first = rolling[0]!;
+const clicksDesc =
+  `Line chart of Google Search Console clicks in the 28 days up to each date, from ${rollingFrom.label} to ${latest.to}. ` +
+  `It starts at ${first.clicks} clicks, reaches ${peak.clicks} on ${peak.to}, and ends at ${latest.clicks}. ` +
+  'The table in this section gives the clicks in separate 28-day blocks, and the daily figures are in the CSV file linked after it.';
+const calls = (n: number) => `${n} ${n === 1 ? 'call' : 'calls'}`;
+const everyCallFailed = `Every call to ${allFailed.join(' and ')} failed`;
+const aiDesc =
+  `One mark for each call in the AI check of ${p.ai.date.label}: filled for an answer that named the site, hollow for an answer that did not, a dash for a call that failed. ` +
+  `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site, and ${calls(p.ai.withSearch.failed)} failed. ` +
+  `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did, and ${calls(p.ai.withoutSearch.failed)} failed. ` +
+  (allFailed.length > 0 ? `${everyCallFailed}. ` : '') +
+  'The table in this section gives the result for each assistant.';
 ---
 <Base
   title="Built with Croftweaver: one site, measured"
@@ -67,9 +84,27 @@ const google = (query: string) => `https://www.google.com/search?q=${encodeURICo
       In the 28 days from {latest.from} to {latest.to}, Google sent
       <strong>{latest.clicks} clicks</strong> to the site, from
       {latest.impressions.toLocaleString('en-GB')} appearances in search results.
-      The table counts back from that day in 28-day blocks. The relaunch on
-      {p.relaunched.label} falls inside the first one.
+      The chart shows how that number moved. The table gives the clicks in separate
+      28-day blocks, counted back from that day. The relaunch on
+      {p.relaunched.label} falls inside the first block.
     </p>
+    <figure class="card chart">
+      <ClicksChart
+        id="clicks"
+        points={rolling}
+        peakIso={peak.toIso}
+        title="Clicks from Google in the 28 days up to each date"
+        unit="Clicks in the 28 days up to each date"
+        desc={clicksDesc}
+      />
+      <figcaption>
+        Each point is the total for the 28 days up to that date. The file starts on
+        {fileFrom.label}, so the line begins on {rollingFrom.label}; the relaunch was
+        on {p.relaunched.label}, and the file shows no impressions before
+        {firstImpression.label}. The scale starts at zero. Source: Google Search
+        Console, whole site, all countries.
+      </figcaption>
+    </figure>
     <div class="table-wrap" role="region" aria-label="Clicks from Google in 28-day blocks" tabindex="0">
       <table>
         <thead>
@@ -117,6 +152,14 @@ const google = (query: string) => `https://www.google.com/search?q=${encodeURICo
     <ol class="steps">
       {p.ai.questions.map((question) => <li><q>{question}</q></li>)}
     </ol>
+    <figure class="card chart">
+      <AiCheckChart id="ai" rows={p.ai.chart} title="Which answers named the site, by assistant" desc={aiDesc} />
+      <figcaption>
+        Each mark is one call to an assistant on {p.ai.date.label}. A call that failed
+        gave no answer.{allFailed.length > 0 && ` ${everyCallFailed} that day.`} The
+        table below gives the counts in words.
+      </figcaption>
+    </figure>
     <div class="table-wrap" role="region" aria-label="Results of the AI check" tabindex="0">
       <table>
         <thead>
@@ -176,6 +219,11 @@ const google = (query: string) => `https://www.google.com/search?q=${encodeURICo
   code { font-size: 0.9em; }
   .steps { padding-left: 1.3rem; }
   .steps li { margin-bottom: 0.5rem; }
+
+  /* A chart sits in a card, as wide as its text allows, and shrinks with the screen. */
+  figure.chart { margin: 1.2rem 0; max-width: 34rem; padding: 1rem 1.1rem 0.9rem; }
+  figure.chart figcaption { margin-top: 0.7rem; font-size: 0.9rem; line-height: 1.5; color: var(--muted); }
+  @media (max-width: 30rem) { figure.chart { padding: 0.6rem 0.5rem 0.7rem; } }
 
   .scores { display: flex; flex-wrap: wrap; gap: 0.8rem 2.5rem; margin: 0 0 1rem; }
   .scores div { display: flex; flex-direction: column-reverse; }
