@@ -177,8 +177,8 @@ is a trademark of its owner."
 - Add a header link. The header takes no more links until it has a compact phone menu.
 
 **Where it is linked from.** `/skills` (the `website-positioning` entry and the
-credits), `/checks` (the positioning suite), the home page (the group "It says what you
-mean"). The same pull request adds the credit for both methods to `/skills`, which named
+credits), `/checks` (the positioning suite), the home page (the note on the positioning
+test, in the section on what is built in and checked). The same pull request adds the credit for both methods to `/skills`, which named
 neither before.
 
 **Scenarios it has to pass.**

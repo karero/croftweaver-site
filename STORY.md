@@ -119,13 +119,13 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, three short outcomes (one per §7 line), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
+| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three short outcomes (one per §7 line), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
 | 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
-| 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail | no |
+| 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
-| 7 | Junk drawer | the detail sections (built in, the test suites, the weekly loop, "The site is yours", fit, quickstart), the learning section below, then the sign-off | yes |
+| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), then the sign-off | yes |
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
@@ -144,6 +144,20 @@ The owner approved the passage on 2026-10-08, in the first person, with a byline
 
 `src/data/suites.ts` counts the spec files its glob matches under `tests/` (`.spec` and
 `.test` files ending in `.ts`, `.js` or `.mjs`) and fails the build when one has no
-description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would put a thirteenth suite on the home page
-and on `/checks` that most sites do not have, while POSITIONING.md §2 says 12. The direct
+description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would make the count on the home page and the list on
+`/checks` 13, with a suite that most sites do not have, while POSITIONING.md §2 says 12. The direct
 CTA, the one-liner and the plan are guarded by review instead.
+
+## Changes after a fresh-eyes check (owner, 2026-10-09)
+
+A fresh reader (a model that saw only the page text) named three things: the first real step
+looked like a command-line install although the page says no coding is needed; the audience
+appeared only in "Where it fits", near the end; and the long lists of what ships and which suites
+check it were hard to take in. That is one model's reading, not a measurement. The owner approved
+three fixes: (1) the quickstart leads with the one-prompt route, with the clone steps as the
+alternative; (2) the hero says who it is for and that no coding is needed to start; (3) "life
+after, and length": "What changes for you" gets one concrete scene that claims nothing new, and
+the two detail sections about what is built in and what checks it become one short section that
+links to `/checks`. The audience line says "communities" where §1 and POSITIONING.md §4 say
+"community organizers": the owner approved that wording. The direct call to action keeps its
+label (§5).

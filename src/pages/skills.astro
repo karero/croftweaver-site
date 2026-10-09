@@ -5,7 +5,7 @@
 // release; the page says which.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { SKILLS, STAGES, SKILL_COUNT, RELEASE, RECENT } from '../data/skills';
+import { SKILLS, STAGES, SKILL_COUNT, RELEASE, RECENT, ADDED_SINCE, AS_OF } from '../data/skills';
 
 const description =
   `The ${SKILL_COUNT} website skills in Croftweaver, by stage: build, verify, launch and grow. ` +
@@ -21,8 +21,21 @@ const description =
       stage of a site's life they serve.
     </p>
     <p class="note">
-      As of toolkit release {RELEASE.version},
-      <time datetime={RELEASE.iso}>{RELEASE.label}</time>.
+      {ADDED_SINCE.length > 0 ? (
+        <>
+          As of <time datetime={AS_OF.iso}>{AS_OF.label}</time>: toolkit release {RELEASE.version}
+          (<time datetime={RELEASE.iso}>{RELEASE.label}</time>) and {ADDED_SINCE.length}
+          {ADDED_SINCE.length === 1 ? ' skill' : ' skills'} added since,
+          {ADDED_SINCE.map((n, i) => (
+            <>{i === 0 ? ' ' : i === ADDED_SINCE.length - 1 ? ' and ' : ', '}<code>{n}</code></>
+          ))}.
+        </>
+      ) : (
+        <>
+          As of toolkit release {RELEASE.version},
+          <time datetime={RELEASE.iso}>{RELEASE.label}</time>.
+        </>
+      )}
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>

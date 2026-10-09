@@ -10,15 +10,11 @@
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
 import { SITE } from '../config';
-import { SUITES, SUITE_GROUPS, SUITE_COUNT } from '../data/suites';
+import { SUITE_COUNT } from '../data/suites';
 import { PANEL, fmtScore } from '../data/proof';
 
 const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of reason for each score. Then do the same for [your site\'s address].';
 
-// What a failing check looks like: the message format of the title rule in
-// tests/seo.spec.ts, with an example title of 63 characters.
-const failure =
-  '<title> "Opening hours, prices and how to find our studio | Harbour Yoga" is 63 chars > 60';
 const install = `git clone ${SITE.repo}.git\ncd croftweaver && ./scripts/install.sh`;
 
 // Different schema type than the Builder Lab page on purpose (it owns FAQPage):
@@ -43,6 +39,7 @@ const softwareSchema = {
       your AI assistant and Croftweaver, so people can find it on Google and in AI
       answers.
     </p>
+    <p class="for">For founders, communities, experts and small teams.</p>
     <ul class="outcomes" role="list">
       <li>You make the everyday changes yourself</li>
       <li>Search and AI can read it from the first build</li>
@@ -52,6 +49,7 @@ const softwareSchema = {
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="#quickstart">Quickstart</a>
     </div>
+    <p class="fineprint">No coding needed to start: you work with your assistant in plain language.</p>
   </section>
 
   <section class="wrap" id="proof">
@@ -142,13 +140,19 @@ const softwareSchema = {
       </div>
       <div class="card">
         <h3>Search and AI can read it from the first build</h3>
-        <p>Titles, structured data, a map for AI assistants, a sitemap and clean links are built into every site. <a href="#built-in">What ships with the first build</a>.</p>
+        <p>Titles, structured data, a map for AI assistants, a sitemap and clean links are built into every site. <a href="#checks">What ships with the first build</a>.</p>
       </div>
       <div class="card">
         <h3>Common slips get caught</h3>
-        <p>{SUITE_COUNT} test suites check every change by default, and your own search data points to the next edit. <a href="#checks">The test suites</a> and <a href="#loop">the weekly loop</a>.</p>
+        <p>{SUITE_COUNT} test suites check every change by default, and your own search data points to the next edit. <a href="/checks">The test suites</a> and <a href="#loop">the weekly loop</a>.</p>
       </div>
     </div>
+    <p class="scene">
+      <strong>A change, start to finish.</strong> You tell your assistant: <em>make the
+      opening line of the About page shorter</em>. It edits the page, the test suites
+      check the change, and you publish it yourself. There is no brief to write and no
+      one to wait for.
+    </p>
   </section>
 
   <section class="wrap" id="guide">
@@ -181,8 +185,8 @@ const softwareSchema = {
     </dl>
   </section>
 
-  <section class="wrap" id="built-in">
-    <h2>The search and AI work ships with the first build</h2>
+  <section class="wrap" id="checks">
+    <h2>Built in from the first build, checked on every change</h2>
     <p>You do not switch any of this on. The skills build it into every page:</p>
     <ul class="steps">
       <li>Titles and descriptions kept within set length limits.</li>
@@ -192,35 +196,18 @@ const softwareSchema = {
       <li>A share card for every page, sized so messengers show a proper preview.</li>
       <li>Accessible markup and colours, in light and dark.</li>
     </ul>
-  </section>
-
-  <section class="wrap" id="checks">
-    <h2>{SUITE_COUNT} test suites check every change</h2>
     <p>
-      Every Croftweaver site carries its own tests. By default they run before every
-      push, and again on GitHub for every pull request. A change that breaks a rule
-      fails there, before it reaches your visitors.
+      Every Croftweaver site also carries its own tests: {SUITE_COUNT} test suites. By
+      default they run before every push, and again on GitHub for every pull request. A
+      change that breaks a rule fails there, so by default it does not reach your visitors.
     </p>
-    <div class="grid">
-      {SUITE_GROUPS.map((group) => (
-        <div class="card">
-          <h3>{group.title}</h3>
-          <ul class="checks" role="list">
-            {SUITES.filter((s) => s.group === group.id).map((s) => (
-              <li><strong>{s.name}.</strong> {s.checks}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-    <p>A page title that runs too long, for example, fails with a message like this:</p>
-    <pre class="message"><code>{failure}</code></pre>
     <p class="aside">
-      A green run proves that these checks passed, nothing more. The positioning
-      test proves the term is there, not that the positioning is good.
-      <a href="/checks">The test gate, suite by suite</a>, says for each one what a
-      pass does not prove. How the positioning itself is worked out, before any
-      copy: <a href="/positioning">Positioning first</a>.
+      A green run proves that the tests passed, nothing more. The positioning test, for
+      example, proves that this page carries its key term in its title, description and
+      opening, not that the positioning is good.
+      <a href="/checks">The test gate, suite by suite</a>, says what each suite checks
+      and what a pass does not prove. How the positioning itself is worked out, before
+      any copy: <a href="/positioning">Positioning first</a>.
     </p>
   </section>
 
@@ -311,6 +298,16 @@ const softwareSchema = {
 
   <section class="wrap" id="quickstart">
     <h2>Quickstart</h2>
+    <p>
+      The easy way is one prompt. The starter prompt asks your assistant to do the
+      typing, explain every command and install a tool only when the site needs it.
+    </p>
+    <ol class="steps">
+      <li>Install an AI coding assistant, such as Claude Code, and open it. You also need a free GitHub account and a computer (<a href="/start#need">what you need</a>).</li>
+      <li>Paste <a href="/start#prompt">the starter prompt</a> and send it.</li>
+      <li>Answer its questions. It builds the site from your answers.</li>
+    </ol>
+    <h3>Or install by hand</h3>
     <ol class="steps">
       <li>Clone the repository and run the installer. This one is for Claude Code:</li>
     </ol>
@@ -320,9 +317,8 @@ const softwareSchema = {
       <li>Say: <em>new website</em>. The interview and the pipeline take it from there.</li>
     </ol>
     <p>
-      <a href="/start">The full quickstart</a> has the one-prompt route (paste a
-      starter prompt and let your assistant do the typing), the installers for Codex
-      and Antigravity, and the six questions the assistant asks.
+      <a href="/start">The full quickstart</a> has the starter prompt in full, the
+      installers for Codex and Antigravity, and the six questions the assistant asks.
     </p>
   </section>
 
@@ -336,7 +332,7 @@ const softwareSchema = {
   section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
   h2 { margin-bottom: 0.8rem; line-height: 1.25; }
   /* Prose at full measure reads better unhyphenated, and so do the short cards and
-     answers below (hyphens: manual); the lists in the test-suite cards keep the global
+     answers below (hyphens: manual); the lists in the fit cards keep the global
      hyphens: auto. */
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
 
@@ -345,8 +341,11 @@ const softwareSchema = {
   .hero h1 { font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1.08; margin: 0 0 0.6rem; }
   .hero .lead {
     font-size: clamp(1.2rem, 2.6vw, 1.5rem); font-weight: 600; line-height: 1.4;
-    color: var(--ink); max-width: 40rem; margin: 0 0 1.2rem;
+    color: var(--ink); max-width: 40rem; margin: 0 0 0.6rem;
   }
+  .hero .for { margin: 0 0 1.2rem; color: var(--muted); }
+  .hero .fineprint { margin: 0.8rem 0 0; color: var(--muted); font-size: 0.95rem; }
+  .scene { margin-top: 1.4rem; }
   /* role="list" in the markup: Safari drops list semantics when list-style is none. */
   .outcomes { list-style: none; padding: 0; margin: 0 0 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; color: var(--muted); }
   .outcomes li { padding-left: 1.5rem; position: relative; }
@@ -364,7 +363,6 @@ const softwareSchema = {
   }
   .card ul { margin: 0; padding: 0; list-style: none; line-height: 1.6; }
   .card li { margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; color: var(--muted); }
-  .card li strong { color: var(--ink); }
   .checks li::before { content: '✓'; position: absolute; left: 0; color: var(--pass); font-weight: 700; }
   .plain li::before { content: '·'; position: absolute; left: 0.4rem; font-weight: 700; }
 

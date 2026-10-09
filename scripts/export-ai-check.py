@@ -15,11 +15,13 @@ already published (all 37 lines identical):
   slot    broad -> question 1, narrow -> question 2 (branded is skipped)
   answers = ok, named = named, cited = cited_own (empty counts as 0),
   failed  = X in the status "X of Y failed" (0 when the status is "ok")
+named and cited are counted apart, answer by answer (geo_check.py): an answer can list the site among its
+sources without naming it, so cited may be higher than named. Neither can be higher than answers.
 Several runs on one day are merged. Each assistant, mode and question must come from exactly
 one run. The script stops, and leaves the --out file as it was, on two runs for one key, on a
 column the history lacks, on any row that is cut short (whatever site or slot it names), on a mode, slot, status, engine or a date
-that is not a real day, and on counts that cannot be true (not whole numbers, named above
-answers, cited above named, answers and failed calls not adding up to the calls asked).
+that is not a real day, and on counts that cannot be true (not whole numbers, named or cited
+above answers, answers and failed calls not adding up to the calls asked).
 
 The tracker records no skipped run. When the check was not run for an assistant on the latest
 day, say so in NOT_RUN in src/data/proof.ts.
@@ -96,7 +98,7 @@ for row in reader:
         'cited': count(row['cited_own'], 'cited_own', where, True),
         'failed': int(failed.group(1)) if failed else 0,
     }
-    if v['named'] > v['answers'] or v['cited'] > v['named']:
+    if v['named'] > v['answers'] or v['cited'] > v['answers']:
         sys.exit(f'{key}: counts that cannot be true (answers {v["answers"]}, named {v["named"]}, cited {v["cited"]})')
     if failed and v['answers'] + v['failed'] != int(failed.group(2)):
         sys.exit(f'{key}: {v["answers"]} answers and {v["failed"]} failed calls do not add up to the {failed.group(2)} calls in {row["status"]!r}')
