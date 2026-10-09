@@ -1,8 +1,10 @@
 // The questions and answers at the bottom of /established-sites, in four groups.
 // Source: the reviewed FAQ the owner supplied on 9 October 2026. Deliberate edits: no dollar figure in the
 // cost answer; the AI check "returns" sources where it cannot say they are citations; the answers on
-// several audiences and on facts say only what the toolkit's skills document; six questions added so each
-// of the four groups holds six (the owner's rule: six ideally, eight at most).
+// several audiences and on facts say only what the toolkit's skills document (the assistant drafts the AI
+// check's questions and the owner confirms them; the check is set up once per site address, so the answer
+// promises no "separate setups"); six questions added so each of the four groups holds six (the owner's
+// rule: six ideally, eight at most).
 // Answers are HTML written here, so the same text feeds the page and the FAQPage structured data.
 // Status as of 9 October 2026: the facts check and the positioning check of live pages are built and in
 // review (toolkit pull request 230), not merged. The answers on several audiences, facts and "what can
@@ -83,7 +85,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: 'How does that work on a corporate site with several audiences?',
-        a: '<p>A large company often speaks to several groups at once, for example buyers, job applicants and investors. Each group gets its own positioning: what it would use instead, what you offer it, and why it should believe you. What stays the same for every group is the company itself: one name, one category, one set of facts.</p><p>Every page then belongs to one audience and carries that audience’s term in its title, its description and its main heading or opening paragraph. In most CMSs this is one field per page. A check reads the published pages, on staging or on the live site, and lists every page your rules cover that has lost its term. Pages you exempt, such as legal pages, and pages it cannot read are not checked. Your team decides whether the page or the term needs to change.</p><p>The weekly AI check asks two buyer questions per site today. Word them for the audience you care about most, and read the answers for that audience; checking several audiences side by side is not built yet.</p><p>Croftweaver ships the positioning method, and the test for sites built with its starter. The check of the published pages on any other system is in review.</p>',
+        a: '<p>A large company often speaks to several groups at once, for example buyers, job applicants and investors. Each group gets its own positioning: what it would use instead, what you offer it, and why it should believe you. What stays the same for every group is the company itself: one name, one category, one set of facts.</p><p>Every page then belongs to one audience and carries that audience’s term in its title, its description and its main heading or opening paragraph. In most CMSs this is one field per page. A check reads the published pages, on staging or on the live site, and lists every page your rules cover that has lost its term. Pages you exempt, such as legal pages, and pages it cannot read are not checked. Your team decides whether the page or the term needs to change.</p><p>The weekly AI check asks two questions per site today, plus one about your company. Your assistant drafts them from your homepage and, if you have one, your positioning, and you confirm or change the wording. If you are unsure which audience to start with, ask it to suggest one from your pages and the groups you serve. After you switch to another audience, the new weeks cannot be compared with the old ones, and checking several audiences side by side is not built yet.</p><p>Croftweaver ships the positioning method, and the test for sites built with its starter. The check of the published pages on any other system is in review.</p>',
       },
       {
         q: 'How can AI keep our facts consistent?',
