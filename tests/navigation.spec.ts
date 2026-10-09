@@ -286,7 +286,7 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
     const seconds = (name: string, required = false) => {
       const found = directives.filter((d) => d.startsWith(name));
       if (required || found.length > 0) {
-        expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name} (two rules joined with a comma?)`).toBe(1);
+        expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name}${found.length > 1 ? ' (two rules joined with a comma?)' : ''}`).toBe(1);
       }
       if (found.length === 0) return 0;
       const match = /^([a-z-]+)=(\d+)$/.exec(found[0]!);
@@ -295,9 +295,9 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
     };
     const maxAge = seconds('max-age', true);
     expect(maxAge, `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
-    // A conservative bound, not an exact maximum: the freshness (a shared cache uses s-maxage instead of max-age) plus
-    // both stale windows of RFC 5861 in full, though a real cache may overlap them. Nothing the test accepts can stay
-    // cached for more than a week, which would be too late for a corrected file to reach partners.
+    // A conservative count, not a claim about what a real cache does: the freshness (a shared cache uses s-maxage instead
+    // of max-age) plus both stale windows of RFC 5861 in full, though a real cache may overlap them. The test limits the
+    // count to a week, because a longer one would let a corrected file reach partners late.
     const worst = Math.max(maxAge, seconds('s-maxage')) + seconds('stale-while-revalidate') + seconds('stale-if-error');
     expect(worst, `${path}: by this count (the stale windows added in full) a corrected file could stay cached for ${worst} seconds, more than a week`).toBeLessThanOrEqual(7 * 86400);
     expect(directives, `${path}: not public`).toContain('public');

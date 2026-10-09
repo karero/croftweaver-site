@@ -127,7 +127,7 @@ Launch requirements that no test enforces:
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
   links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
   after step 7 and record its dated result in the table.
-- The cache rule for `/brand/` in `public/_headers` is tested from the file, because
+- The cache rule for `/brand/*` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
   expect the `cache-control` value that the `/brand/*` rule in `public/_headers` sets.
