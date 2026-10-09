@@ -97,7 +97,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: 'What if assistants quote directories and review sites instead of our own pages?',
-        a: '<p>Then those profiles are the next job. With web search on, the AI check lists the sources each assistant returned, so you can see which sites they are. Gemini is asked from memory only; the check does not request web search from it. If they are directories, review sites or press pages, make sure your profile there states the same facts as your site and links to it. Croftweaver covers directory and profile links, and requests for links from existing partners, sponsors and speakers. It does not do cold outreach or bought links.</p>',
+        a: '<p>Then those profiles are the next job. With web search on, the AI check lists the sources each assistant returned, so you can see which sites they are (Gemini is asked from memory only; the check does not request web search from it). If the sources are directories, review sites or press pages, make sure your profile there states the same facts as your site and links to it. Croftweaver covers directory and profile links, and requests for links from existing partners, sponsors and speakers. It does not do cold outreach or bought links.</p>',
       },
     ],
   },
