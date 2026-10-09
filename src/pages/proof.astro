@@ -35,14 +35,14 @@ const aiDesc =
 ---
 <Base
   title="Built with Croftweaver: one site, measured"
-  description="Built with Croftweaver: genai-wednesday.de, with its PageSpeed scores, its Google clicks since the relaunch, and a check of which AI assistants name it."
+  description="Built with Croftweaver: genai-wednesday.de, with its PageSpeed scores, its Google clicks since its launch, and a check of which AI assistants name it."
   image="/images/og/proof.jpg"
 >
   <section class="wrap hero">
     <h1>Built with Croftweaver: one site, measured</h1>
     <p class="lead">
       <a href={p.url}>{p.site}</a> is the site Croftweaver grew out of. This page shows
-      what can be measured about it: speed, clicks from Google since its relaunch,
+      what can be measured about it: speed, clicks from Google since its launch,
       and whether AI assistants name it. Every figure has a date. Where you can
       re-run a test, there is a link.
     </p>
@@ -56,8 +56,8 @@ const aiDesc =
     <h2>The site</h2>
     <p>
       {p.site} is the home of GenAI Wednesday, a generative AI community in Munich:
-      events, an archive of talks and a set of resource pages. It was relaunched on
-      <time datetime={p.relaunched.iso}>{p.relaunched.label}</time> with these
+      events, an archive of talks and a set of resource pages. The site launched on
+      <time datetime={p.launched.iso}>{p.launched.label}</time> with these
       skills. The copy of the skills and tests in its repository is stamped with
       toolkit commit <code>{p.toolkit.commit}</code>, taken on
       <time datetime={p.toolkit.copied.iso}>{p.toolkit.copied.label}</time>.
@@ -81,14 +81,14 @@ const aiDesc =
   </section>
 
   <section class="wrap" id="search">
-    <h2>Clicks from Google since the relaunch</h2>
+    <h2>Clicks from Google since the launch</h2>
     <p>
       In the 28 days from {latest.from} to {latest.to}, Google sent
       <strong>{latest.clicks} clicks</strong> to the site, from
       {latest.impressions.toLocaleString('en-GB')} appearances in search results.
       The chart shows how that number moved. The table gives the clicks in separate
-      28-day blocks, counted back from that day. The relaunch on
-      {p.relaunched.label} falls inside the first block.
+      28-day blocks, counted back from that day. The launch on
+      {p.launched.label} falls inside the first block.
     </p>
     <figure class="card chart">
       <ClicksChart
@@ -101,8 +101,8 @@ const aiDesc =
       />
       <figcaption>
         Each point is the total for the 28 days up to that date. The file starts on
-        {fileFrom.label}, so the line begins on {rollingFrom.label}; the relaunch was
-        on {p.relaunched.label}, and the file shows no impressions before
+        {fileFrom.label}, so the line begins on {rollingFrom.label}; the launch was
+        on {p.launched.label}, and the file shows no impressions before
         {firstImpression.label}. The scale starts at zero. Source: Google Search
         Console, whole site, all countries.
       </figcaption>
@@ -191,7 +191,7 @@ const aiDesc =
         Why the second number is zero: an assistant recalls a name from memory
         mostly when it met that name often in the text it was trained on, and a
         name reaches that memory only when a new version of the model is trained.
-        The present site dates from {p.relaunched.label}, which is recent for that.
+        The site launched on {p.launched.label}, which is recent for that.
         Web search does not rely on that memory, which is the likely reason the
         first number is higher. The check only counts who names the site. It does
         not test why, and it asks one model per assistant, not always the largest.

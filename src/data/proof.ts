@@ -274,11 +274,12 @@ const notRun = ENGINES.filter(([engine]) => skipped.includes(engine)).map(([, as
 /** Names in a sentence: "A", "A and B", "A, B and C". */
 export const nameList = (names: readonly string[]) => (names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
 
-// /proof and /why both say the relaunch falls inside the first block. The blocks are
+// /proof and /why both say the site's launch falls inside the first block. The blocks are
 // counted back from the last day in the file, so a new export can shift them.
-const RELAUNCHED = '2026-03-27';
-if (!(blocks[0]!.fromIso <= RELAUNCHED && RELAUNCHED <= blocks[0]!.toIso)) {
-  throw new Error(`The first 28-day block (${blocks[0]!.fromIso} to ${blocks[0]!.toIso}) no longer contains the relaunch on ${RELAUNCHED}. Change the first day of the search export, or reword /proof and /why.`);
+// The site launched on 27 March 2026 (owner, 2026-10-09; the pages called it a relaunch until then).
+const LAUNCHED = '2026-03-27';
+if (!(blocks[0]!.fromIso <= LAUNCHED && LAUNCHED <= blocks[0]!.toIso)) {
+  throw new Error(`The first 28-day block (${blocks[0]!.fromIso} to ${blocks[0]!.toIso}) no longer contains the site's launch on ${LAUNCHED}. Change the first day of the search export, or reword /proof and /why.`);
 }
 
 const POSITIONS_PERIOD = { from: '2 September 2026', to: '29 September 2026' };
@@ -290,7 +291,7 @@ export const SITE_PROOF = {
   site: 'genai-wednesday.de',
   url: 'https://genai-wednesday.de/',
   lab: 'https://genai-wednesday.de/builder-lab',
-  relaunched: { iso: RELAUNCHED, label: label(RELAUNCHED) },
+  launched: { iso: LAUNCHED, label: label(LAUNCHED) },
   // Stamp in the site's repository (.claude/skills/SUITE-VERSION).
   toolkit: { commit: '41cc760', copied: { iso: '2026-07-09', label: '9 July 2026' } },
   search: {

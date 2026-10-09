@@ -9,7 +9,7 @@
 ## Key pages
 - [Home](https://croftweaver.com/): the promise (stop waiting on someone else for every change; build or rebuild your site with your AI assistant), the SEO and GEO scores four AI assistants gave genai-wednesday.de and how to try it on your own site, the three-step plan, the test suites every site carries, the weekly loop from search data, quickstart.
 - [Checks](https://croftweaver.com/checks): the test gate in every Croftweaver site, suite by suite: what each one checks, an example of a failure, and what a pass does not prove.
-- [Proof](https://croftweaver.com/proof): one site built with Croftweaver, genai-wednesday.de, with its PageSpeed scores, its clicks from Google since the relaunch, and a check of which AI assistants name it.
+- [Proof](https://croftweaver.com/proof): one site built with Croftweaver, genai-wednesday.de, with its PageSpeed scores, its clicks from Google since its launch, and a check of which AI assistants name it.
 - [More proof](https://croftweaver.com/more-proof): Google's PageSpeed Insights for three sites built with Croftweaver, the E-E-A-T scores from four AI assistants, and what none of it shows.
 - [Skills](https://croftweaver.com/skills): the website skills catalogue by stage (build, verify, launch, grow), one line per skill, with the toolkit release it describes.
 - [Positioning](https://croftweaver.com/positioning): how Croftweaver works out a site's positioning before any copy (April Dunford's five parts), the file it writes, the test that keeps each page on its term, what that test does not prove, and the trust signals (EEAT) that the content guide adds after it.

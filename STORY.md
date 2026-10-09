@@ -54,8 +54,8 @@
   Builder Lab, labelled as AI opinions), with a prompt a visitor can run on their own
   site. `/more-proof` has Google's PageSpeed Insights for three sites built with
   Croftweaver (99 to 100, measured 4 October 2026) and the E-E-A-T scores. `/proof` shows
-  one site, genai-wednesday.de, relaunched on 27 March 2026: clicks from Google per 28
-  days went from 3 around the relaunch to a best 99 (16 June to 13 July 2026) and stood
+  one site, genai-wednesday.de, launched on 27 March 2026: clicks from Google per 28
+  days went from 3 around the launch to a best 99 (16 June to 13 July 2026) and stood
   at 50 in the 28 days to 29 September, with the limits that page states about itself.
 
 ## 4. Plan
