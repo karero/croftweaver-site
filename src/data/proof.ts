@@ -119,7 +119,7 @@ if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no im
 // ── The weekly AI check, from the published export ───────────────────────────────
 // One row per assistant, mode and question: how many calls answered, how many of the
 // answers named the site, how many listed it among their sources ("cited"; for Perplexity
-// those are its search results, see ai-words.ts), how many calls failed. The table on
+// those are the sources it returned, see ai-words.ts), how many calls failed. The table on
 // /proof is computed from this file, so its cells cannot drift from the download.
 // Make the file with scripts/export-ai-check.py: it keeps this one site and nothing else.
 // The check is not always run for every assistant. When it was not run for one on a day,
