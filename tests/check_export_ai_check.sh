@@ -52,7 +52,7 @@ if [ "$(export_to_stdout merged)" = "$want" ]; then pass "reads failed calls, me
 
 # 2b. named and cited are counted apart, answer by answer: an answer can list the site among its sources
 #     without naming it, so cited may be higher than named, for any assistant. (For Perplexity the count is
-#     its search results, whatever the text says.) Only answers bound them.
+#     the sources it returned, whatever the text says.) Only answers bound them.
 {
   row 2026-10-08 r1 $SITE perplexity finds broad 3 0 2 ok
   row 2026-10-08 r1 $SITE openai finds broad 3 1 3 ok

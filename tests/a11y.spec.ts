@@ -328,6 +328,17 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // The three lists about who was asked or run, which the page reads in src/data/proof.ts, read here as text.
   const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
   const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
+  // "Named and cited" says that the same answers did both. The file's totals show it only when each is all of the
+  // answers; equal totals short of that could come from different answers. So a result says it if and only if the
+  // totals prove it, and never for an assistant in RESULTS_ONLY (its count is not a citation count). Said of text that
+  // sentence() built from the file's counts, stated here from the numbers and not from the text's own: a rule that
+  // merges on equal totals, or never merges, fails here whatever it prints.
+  const mergedIffProved = (text: string, what: string, engine: string, t: { answers: number; named: number; cited: number }) => {
+    const proved = !RESULTS_ONLY.includes(engine) && t.answers > 0 && t.named === t.answers && t.cited === t.answers;
+    expect(/and cited the site/i.test(text), proved
+      ? `${what}: every answer named and cited the site, so the text should say so`
+      : `${what}: the text says "named and cited", but the file's totals (${t.named} named, ${t.cited} cited, of ${t.answers} answers) do not show that every answer did both`).toBe(proved);
+  };
   // The last result of an assistant in a mode as the table gives it: the most recent earlier day on
   // which it answered, and whether the answers also cited the site and whether calls failed.
   const lastResult = (engine: string, mode: string) => {
@@ -338,7 +349,10 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const rs = earlier.filter((r) => r.date === day);
     const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
     const failed = sum('failed');
-    return ` On ${longDate(day)} it ${sentence({ engine, answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'named')}${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
+    const counts = { answers: sum('answers'), named: sum('named'), cited: sum('cited') };
+    const said = sentence({ engine, ...counts }, 'named');
+    mergedIffProved(said, `${engine}, ${mode}, last result`, engine, counts);
+    return ` On ${longDate(day)} it ${said}${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
   };
   const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
     const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
@@ -370,9 +384,11 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
       const failed = sum('failed');
       if (rs.length === 0 || sum('answers') === 0) continue;
+      const counts = { answers: sum('answers'), named: sum('named'), cited: sum('cited') };
+      const said = sentence({ engine, ...counts }, 'Named');
+      mergedIffProved(said, `${engine}, ${mode}`, engine, counts);
       await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell does not say what the file says`)
-        .toHaveText(sentence({ engine, answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'Named')
-          + (failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''));
+        .toHaveText(said + (failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''));
     }
   }
 
@@ -534,49 +550,72 @@ test('proof — the pages about genai-wednesday.de say it launched, and none say
 // (src/data/ai-words.ts). The published file cannot pin them: on every day of it Perplexity's results count equals its
 // naming count, so a rule that used one for the other would print the same cells. These cases separate the two. For an
 // assistant in RESULTS_ONLY (the toolkit's geo_check.py has the same list) the tracker's "cited" is how often the site
-// was among the search results it returned. That is independent of whether the answer names the site, so it can be
+// was among the sources it returned. That is independent of whether the answer names the site, so it can be
 // higher, equal or lower than "named", and it is never worded as a citation. For the others the page words it as a
-// citation, as the toolkit does (it calls the lists of Claude through OpenRouter and of the Google surfaces unverified).
-test('proof — the words for a result: Perplexity counts search results, the others citations', () => {
+// citation, as the toolkit does (it calls the lists of Claude through OpenRouter and of the Google surfaces unverified),
+// and it says "named and cited" only where the totals prove that the same answers did both: each total is all of the
+// answers. Equal totals short of that could come from different answers (one only named, one only cited, one both
+// also gives 2 and 2), so the two counts are stated apart.
+test('proof — the words for a result: Perplexity counts the sources it returned, the others count citations', () => {
   expect(RESULTS_ONLY, 'RESULTS_ONLY in src/data/ai-words.ts is the toolkit\'s list (geo_check.py): Perplexity only. Change it when the toolkit does').toEqual(['perplexity']);
   type Counts = { answers: number; named: number; cited: number };
   const results: [string, Counts, string][] = [
-    ['named, and among the results every time', { answers: 6, named: 5, cited: 5 }, 'Named it in 5 of 6 answers. The site was among its search results in 5 of 6 answers.'],
-    ['among the results, never named', { answers: 3, named: 0, cited: 2 }, 'Named it in 0 of 3 answers. The site was among its search results in 2 of 3 answers.'],
-    ['among the results more often than named', { answers: 5, named: 2, cited: 4 }, 'Named it in 2 of 5 answers. The site was among its search results in 4 of 5 answers.'],
-    ['named more often than among the results', { answers: 5, named: 4, cited: 1 }, 'Named it in 4 of 5 answers. The site was among its search results in 1 of 5 answers.'],
-    ['named, among none of the results', { answers: 3, named: 2, cited: 0 }, 'Named it in 2 of 3 answers.'],
-    ['one answer', { answers: 1, named: 1, cited: 1 }, 'Named it in 1 of 1 answer. The site was among its search results in 1 of 1 answer.'],
+    ['named, and among the sources every time', { answers: 6, named: 5, cited: 5 }, 'Named it in 5 of 6 answers. The site was among the sources it returned in 5 of 6 answers.'],
+    ['among the sources, never named', { answers: 3, named: 0, cited: 2 }, 'Named it in 0 of 3 answers. The site was among the sources it returned in 2 of 3 answers.'],
+    ['among the sources more often than named', { answers: 5, named: 2, cited: 4 }, 'Named it in 2 of 5 answers. The site was among the sources it returned in 4 of 5 answers.'],
+    ['named more often than among the sources', { answers: 5, named: 4, cited: 1 }, 'Named it in 4 of 5 answers. The site was among the sources it returned in 1 of 5 answers.'],
+    ['named, among none of the sources', { answers: 3, named: 2, cited: 0 }, 'Named it in 2 of 3 answers.'],
+    ['one answer', { answers: 1, named: 1, cited: 1 }, 'Named it in 1 of 1 answer. The site was among the sources it returned in 1 of 1 answer.'],
   ];
   for (const [what, counts, said] of results) {
     expect(sentence({ engine: 'perplexity', ...counts }, 'Named'), `Perplexity, ${what}`).toBe(said);
     expect(sentence({ engine: 'perplexity', ...counts }, 'Named'), `Perplexity, ${what}: the sentence says cited`).not.toMatch(/cited/i);
   }
   expect(sentence({ engine: 'perplexity', answers: 3, named: 0, cited: 2 }, 'named'), 'the form after "On <day> it"')
-    .toBe('named it in 0 of 3 answers. The site was among its search results in 2 of 3 answers.');
+    .toBe('named it in 0 of 3 answers. The site was among the sources it returned in 2 of 3 answers.');
   const others: [string, Counts, string][] = [
-    ['every naming also cited', { answers: 3, named: 2, cited: 2 }, 'Named and cited the site in 2 of 3 answers.'],
-    ['cited in fewer answers than named', { answers: 3, named: 2, cited: 1 }, 'Named it in 2 of 3 answers.'],
-    ['cited in answers that do not name the site', { answers: 3, named: 1, cited: 2 }, 'Named it in 1 of 3 answers.'],
+    ['every answer named and cited', { answers: 3, named: 3, cited: 3 }, 'Named and cited the site in 3 of 3 answers.'],
+    ['one answer, named and cited', { answers: 1, named: 1, cited: 1 }, 'Named and cited the site in 1 of 1 answer.'],
+    ['equal totals short of every answer', { answers: 6, named: 5, cited: 5 }, 'Named it in 5 of 6 answers. Cited the site in 5 of 6 answers.'],
+    ['every answer named, cited in fewer', { answers: 3, named: 3, cited: 2 }, 'Named it in 3 of 3 answers. Cited the site in 2 of 3 answers.'],
+    ['every answer cited, named in fewer', { answers: 3, named: 2, cited: 3 }, 'Named it in 2 of 3 answers. Cited the site in 3 of 3 answers.'],
+    ['cited in fewer answers than named', { answers: 3, named: 2, cited: 1 }, 'Named it in 2 of 3 answers. Cited the site in 1 of 3 answers.'],
+    ['cited in answers that do not name the site', { answers: 3, named: 1, cited: 2 }, 'Named it in 1 of 3 answers. Cited the site in 2 of 3 answers.'],
+    ['cited, never named', { answers: 3, named: 0, cited: 2 }, 'Named it in 0 of 3 answers. Cited the site in 2 of 3 answers.'],
+    ['named, never cited', { answers: 3, named: 2, cited: 0 }, 'Named it in 2 of 3 answers.'],
     ['neither named nor cited', { answers: 3, named: 0, cited: 0 }, 'Named it in 0 of 3 answers.'],
   ];
   for (const [what, counts, said] of others) expect(sentence({ engine: 'openai', ...counts }, 'Named'), `an assistant with citations, ${what}`).toBe(said);
+  // The form after "On <day> it": the second sentence needs a subject of its own, the merged form needs none.
+  expect(sentence({ engine: 'google-ai-mode', answers: 2, named: 1, cited: 1 }, 'named'), 'the form after "On <day> it", totals short of every answer')
+    .toBe('named it in 1 of 2 answers. It cited the site in 1 of 2 answers.');
+  expect(sentence({ engine: 'google-ai-mode', answers: 2, named: 2, cited: 2 }, 'named'), 'the form after "On <day> it", every answer')
+    .toBe('named and cited the site in 2 of 2 answers.');
+  // The edges: no answers, nothing cited in the form after "On <day> it", and the totals of several assistants, which
+  // the page never builds and which cannot be worded (whether "cited" counts citations depends on the assistant).
+  expect(sentence({ engine: 'openai', answers: 0, named: 0, cited: 0 }, 'Named'), 'no answers').toBe('Named it in 0 of 0 answers.');
+  expect(sentence({ engine: 'openai', answers: 3, named: 2, cited: 0 }, 'named'), 'the form after "On <day> it", nothing cited').toBe('named it in 2 of 3 answers.');
+  expect(sentence({ engine: 'perplexity', answers: 3, named: 2, cited: 0 }, 'named'), 'Perplexity, the form after "On <day> it", among none of the sources').toBe('named it in 2 of 3 answers.');
+  expect(() => sentence({ engine: undefined, answers: 3, named: 1, cited: 2 }, 'Named'), 'the totals of several assistants').toThrow(/one assistant/);
+  expect(() => sentence({ engine: 'openai', answers: 6, named: 1, cited: 7 }, 'Named'), 'cited above the answers').toThrow(/cannot be more than/);
+  expect(() => sentence({ engine: 'openai', answers: 6, named: 7, cited: 1 }, 'Named'), 'named above the answers').toThrow(/cannot be more than/);
 });
 
 // Site-specific (not in the shipped suite): nothing on /proof or /established-sites calls Perplexity's count a citation,
 // and /proof says what the file's column called cited holds. Said as a citation, the count would claim more than the
-// check measures: through Perplexity's own API the check reads the list of results and nothing in the text, and through
-// OpenRouter it reads the list of sources and not the [n] marks in the text, so it cannot tell which results the answer quotes.
-test('proof — Perplexity\'s count is results, not citations, on /proof and on /established-sites', async ({ page }) => {
+// check measures: through Perplexity's own API the check reads the list of search results and nothing in the text, and
+// through OpenRouter it reads the list of sources and not the [n] marks in the text, so it cannot tell which sources the
+// answer quotes. The pages say "the sources it returned" for both routes.
+test('proof — Perplexity\'s count is the sources it returned, not citations, on /proof and on /established-sites', async ({ page }) => {
   await page.goto('/proof');
   const row = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: /^Perplexity/ }) });
   await expect(row, 'no Perplexity row in the table').toHaveCount(1);
   for (const cell of await row.locator('td').allTextContents()) expect(cell, 'a Perplexity cell says cited').not.toMatch(/cited/i);
   await expect(page.locator('#ai p.note').filter({ hasText: 'The counts behind the table' }), 'the page does not say what the cited column holds')
-    .toContainText('cited counts the answers that listed the site among their sources, whether or not the answer names it. For Perplexity those sources are its search results, and the check does not tell which of them the answer quotes.');
+    .toContainText('cited counts the answers that listed the site among their sources, whether or not the answer names it. For Perplexity those sources are the ones it returned, and the check does not tell which of them the answer quotes.');
   await page.goto('/established-sites');
   const bullet = page.locator('li:not(:has(li))').filter({ hasText: 'Where an engine allows it' });   // the bullet itself, not the step around it
-  await expect(bullet, 'the check is not described as counting results for Perplexity').toContainText('among its search results, not how often it was cited');
+  await expect(bullet, 'the check is not described as counting the sources it returned for Perplexity').toContainText('among the sources it returned, not how often it was cited');
   await expect(bullet, 'the old wording is back').not.toContainText('sources cited in its text');
   await expect(page.locator('#success'), 'the page promises which sites the assistants cite, which the check cannot say for Perplexity').not.toContainText('which sites they cite');
 });
