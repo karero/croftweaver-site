@@ -143,6 +143,30 @@ for (const path of PAGES) {
   });
 }
 
+// FAQPage markup must state what the page shows: that is Google's rule for FAQ markup, and the reason
+// a machine can trust it. Every question in the markup is a heading on the page, and its answer text
+// sits in the element right after that heading (the answer may show more than the markup carries, such
+// as a table). A page without FAQPage markup passes.
+for (const path of PAGES) {
+  test(`seo — FAQPage markup matches the visible questions on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const faqs = blocks.map((b) => JSON.parse(b)).filter((o) => o['@type'] === 'FAQPage');
+    for (const faq of faqs) {
+      expect(faq.mainEntity.length, 'FAQPage markup should hold at least one question').toBeGreaterThan(0);
+      for (const q of faq.mainEntity) {
+        const shown = await page.evaluate((name: string) => {
+          const h = [...document.querySelectorAll('h2, h3, h4, h5, h6')].find((el) => el.textContent?.trim() === name);
+          if (!h) return null;
+          return ((h.nextElementSibling as HTMLElement | null)?.innerText ?? '').replace(/\s+/g, ' ').trim();
+        }, q.name);
+        expect(shown, `question "${q.name}" must be a heading on ${path}`).not.toBeNull();
+        expect(shown, `the answer to "${q.name}" in the markup must be on the page, right after its heading`).toContain(q.acceptedAnswer.text);
+      }
+    }
+  });
+}
+
 // "Its own" means DISTINCT: two non-exempt pages pointing at the same card is a wiring
 // copy-paste error (the share preview would misrepresent one of them). No-op until the
 // scaffold grows past its exempt starter pages.

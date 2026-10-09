@@ -12,6 +12,7 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 import EmailLink from '../components/EmailLink.astro';
+import { FAQ_GROUPS, faqSchema } from '../data/established-faq';
 
 const plan = [
   { title: 'Check', text: 'See where each target search ranks and what four AI assistants say about the business. Read-only, with no change to the site.' },
@@ -118,6 +119,7 @@ const weeks = [
   title="Croftweaver for established sites"
   description="Croftweaver for established sites: open-source skills that check what search and AI say about a live site, fix its most-seen pages and measure what changed."
   image="/images/og/established-sites.jpg"
+  schemas={[faqSchema]}
 >
   <section class="wrap hero">
     <h1>Another SEO meeting, a lot of words, and still no way to say what changed?</h1>
@@ -343,6 +345,21 @@ const weeks = [
       Please do your own research: check current provider terms, pricing and country
       support before you set anything up.
     </p>
+  </section>
+
+  <section class="wrap faq" id="faq">
+    <h2>Questions and answers</h2>
+    {FAQ_GROUPS.map((group) => (
+      <div class="faq-group">
+        <h3>{group.title}</h3>
+        {group.items.map((item) => (
+          <div class="faq-item">
+            <h4>{item.q}</h4>
+            <div class="faq-answer" set:html={item.a} />
+          </div>
+        ))}
+      </div>
+    ))}
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
@@ -392,4 +409,20 @@ const weeks = [
   table { width: 100%; max-width: 52rem; border-collapse: collapse; }
   th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); }
   tbody th { font-weight: 600; }
+  /* The FAQ answers are HTML from src/data/established-faq.ts, so their elements carry no scope
+     attribute: :global() reaches them. */
+  .faq-group { margin-top: 2rem; }
+  .faq-group h3 { margin: 0 0 0.3rem; font-size: 1.2rem; }
+  .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+  .faq-item h4 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
+  .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .faq-answer :global(ul) { margin: 0 0 0.7rem; padding-left: 1.3rem; max-width: 46rem; }
+  .faq-answer :global(li) { margin-bottom: 0.4rem; line-height: 1.6; }
+  .faq-answer :global(.table-wrap) { overflow-x: auto; margin: 0.4rem 0 0.9rem; }
+  .faq-answer :global(table) { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.95rem; }
+  .faq-answer :global(th), .faq-answer :global(td) {
+    text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line);
+  }
+  .faq-answer :global(thead th) { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .faq-answer :global(tbody th) { font-weight: 600; }
 </style>
