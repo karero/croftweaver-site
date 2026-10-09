@@ -238,16 +238,18 @@ test('partner assets: each HTML snippet shows its badge under the security rules
 // Site-specific (not in the shipped suite): the Cache-Control that Cloudflare Pages sends for a file under /brand/.
 // `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
 // documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
-// a splat matching any run of characters; a header set by several rules joined with a comma; "! Name" taking the
-// header away. Syntax the test does not model (a second splat, a placeholder, a host, an unindented header) fails it,
-// so a rule it cannot read never passes by being ignored. The files keep their names when they change, and the
+// a splat matching any run of characters; a header set by several rules joined with a comma. What it cannot model it
+// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host, an unindented
+// header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
+// measured yet; the README's launch check is where it is). The files keep their names when they change, and the
 // Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
 // while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
-// the server before it reuses a file.
+// the server before it reuses a file. Directive names follow RFC 9111 (max-age, s-maxage, private, no-store,
+// no-cache), RFC 8246 (immutable) and RFC 5861 (stale-while-revalidate, stale-if-error).
 test('headers — the partner kit under /brand/ is cacheable for between an hour and a week, and never immutable', () => {
   const rules = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8');
   const headerFor = (path: string, name: string) => {
-    let values: string[] = [];
+    const values: string[] = [];
     let applies = false;
     for (const raw of rules.split('\n')) {
       const line = raw.trim();
@@ -260,7 +262,10 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
         continue;
       }
       if (!applies) continue;
-      if (line.startsWith('!')) { if (line.slice(1).trim().toLowerCase() === name) values = []; continue; }
+      if (line.startsWith('!')) {
+        expect(line.slice(1).trim().toLowerCase(), `public/_headers: "${line}" takes ${name} away for ${path}; this test does not model how Pages orders "! Name" against other rules, so measure Pages and extend the test`).not.toBe(name);
+        continue;
+      }
       const colon = line.indexOf(':');
       if (line.slice(0, colon).trim().toLowerCase() === name) values.push(line.slice(colon + 1).trim());
     }
@@ -274,17 +279,22 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
   expect(kit.length, 'public/brand is empty').toBeGreaterThan(0);
   for (const path of kit) {
     const sent = headerFor(path, 'cache-control');
-    const directives = sent.split(',').map((d) => d.trim().toLowerCase()).filter(Boolean);
-    const maxAge = directives.filter((d) => d.startsWith('max-age'));
-    expect(maxAge.length, `${path}: Pages would send "${sent}", which is not exactly one max-age`).toBe(1);
-    expect(maxAge[0], `${path}: the max-age is not a whole number of seconds`).toMatch(/^max-age=\d+$/);
-    expect(Number(maxAge[0]!.slice('max-age='.length)), `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
-    // No lifetime of any kind above a week (max-age, the shared-cache s-maxage, stale-while-revalidate, stale-if-error):
-    // a corrected file would reach partners late.
-    for (const d of directives.filter((x) => /^(max-age|s-maxage|stale-while-revalidate|stale-if-error)=/.test(x))) {
-      expect(d, `${path}: "${d}" is not a whole number of seconds`).toMatch(/^[a-z-]+=\d+$/);
-      expect(Number(d.split('=')[1]), `${path}: "${d}" is more than a week, so a corrected file would reach partners late`).toBeLessThanOrEqual(7 * 86400);
-    }
+    const directives = sent.split(',').map((d) => d.trim().toLowerCase().replace(/\s*=\s*/, '=')).filter(Boolean);
+    // The seconds of one lifetime directive: none is 0 (or a failure for max-age, which must be there), twice is a failure.
+    const seconds = (name: string, required = false) => {
+      const found = directives.filter((d) => d.startsWith(name));
+      expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name}`).toBe(required ? 1 : Math.min(found.length, 1));
+      if (found.length === 0) return 0;
+      const [key, value] = found[0]!.split('=');
+      expect(key === name && /^\d+$/.test(value ?? ''), `${path}: "${found[0]}" is not ${name}=<whole seconds>`).toBe(true);
+      return Number(value);
+    };
+    const maxAge = seconds('max-age', true);
+    expect(maxAge, `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
+    // The longest a corrected file can stay in a cache: its freshness (a shared cache uses s-maxage instead of max-age)
+    // plus the stale windows of RFC 5861. Above a week it would reach partners late.
+    const worst = Math.max(maxAge, seconds('s-maxage')) + seconds('stale-while-revalidate') + seconds('stale-if-error');
+    expect(worst, `${path}: a corrected file could stay cached for ${worst} seconds, more than a week, so it would reach partners late`).toBeLessThanOrEqual(7 * 86400);
     expect(directives, `${path}: not public`).toContain('public');
     expect(directives.filter((d) => ['immutable', 'no-store', 'no-cache', 'private'].includes(d.split('=')[0]!)),
       `${path}: a directive that does not suit a file that keeps its name when it changes`).toEqual([]);
