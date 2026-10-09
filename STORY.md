@@ -125,7 +125,7 @@ at the end of section 1.
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
-| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; quickstart, which leads with the one-prompt route), the learning section below, then the sign-off | yes |
+| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), then the sign-off | yes |
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
