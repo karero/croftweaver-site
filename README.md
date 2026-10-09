@@ -58,7 +58,14 @@ npm test             # a11y / seo / navigation / anchors / orphans / images /
                      # tone / positioning / email / links / llms-coverage /
                      # middleware (preview handling)
 npm run og           # regenerate OG share cards after brand/copy changes
+npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
 ```
+
+The slide deck is a frozen copy of `/why` and `/checks`: its figures and its test-suite
+count are read from the built pages, never typed. When `/why`, `/checks`, the slides in
+`scripts/deck-slides.mjs`, the logo or the site address change, `npm test` fails until
+you run `npm run deck` and commit the new `public/croftweaver-why.pdf` and
+`scripts/deck.lock.json`. It needs Python 3 with `pypdf` for the PDF's title.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
@@ -126,7 +133,9 @@ Launch requirements that no test enforces:
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
   links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
-  after step 7 and record its dated result in the table.
+  after step 7 and record its dated result in the table. The slide deck PDF carries the
+  same link and the audit does not read PDFs; the deck takes the address from
+  `SITE.repo`, so once that link resolves, the deck's link resolves too.
 - The cache rule for `/brand/*` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
