@@ -267,6 +267,7 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
         continue;
       }
       const colon = line.indexOf(':');
+      expect(colon > 0, `public/_headers: "${line}" is neither "Name: value" nor "! Name", so this test cannot read it`).toBe(true);
       if (line.slice(0, colon).trim().toLowerCase() === name) values.push(line.slice(colon + 1).trim());
     }
     return values.join(', ');
@@ -280,21 +281,25 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
   for (const path of kit) {
     const sent = headerFor(path, 'cache-control');
     const directives = sent.split(',').map((d) => d.trim().toLowerCase().replace(/\s*=\s*/, '=')).filter(Boolean);
-    // The seconds of one lifetime directive: none is 0 (or a failure for max-age, which must be there), twice is a failure.
+    // The seconds of one lifetime directive: absent is 0 (a failure for max-age, which must be there), a second one is a
+    // failure (two rules joined with a comma would send two), and the whole directive must be name=<digits>.
     const seconds = (name: string, required = false) => {
       const found = directives.filter((d) => d.startsWith(name));
-      expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name}`).toBe(required ? 1 : Math.min(found.length, 1));
+      if (required || found.length > 0) {
+        expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name} (two rules joined with a comma?)`).toBe(1);
+      }
       if (found.length === 0) return 0;
-      const [key, value] = found[0]!.split('=');
-      expect(key === name && /^\d+$/.test(value ?? ''), `${path}: "${found[0]}" is not ${name}=<whole seconds>`).toBe(true);
-      return Number(value);
+      const match = /^([a-z-]+)=(\d+)$/.exec(found[0]!);
+      expect(match?.[1], `${path}: "${found[0]}" is not ${name}=<whole seconds>`).toBe(name);
+      return Number(match![2]);
     };
     const maxAge = seconds('max-age', true);
     expect(maxAge, `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
-    // The longest a corrected file can stay in a cache: its freshness (a shared cache uses s-maxage instead of max-age)
-    // plus the stale windows of RFC 5861. Above a week it would reach partners late.
+    // A conservative bound, not an exact maximum: the freshness (a shared cache uses s-maxage instead of max-age) plus
+    // both stale windows of RFC 5861 in full, though a real cache may overlap them. Nothing the test accepts can stay
+    // cached for more than a week, which would be too late for a corrected file to reach partners.
     const worst = Math.max(maxAge, seconds('s-maxage')) + seconds('stale-while-revalidate') + seconds('stale-if-error');
-    expect(worst, `${path}: a corrected file could stay cached for ${worst} seconds, more than a week, so it would reach partners late`).toBeLessThanOrEqual(7 * 86400);
+    expect(worst, `${path}: by this count (the stale windows added in full) a corrected file could stay cached for ${worst} seconds, more than a week`).toBeLessThanOrEqual(7 * 86400);
     expect(directives, `${path}: not public`).toContain('public');
     expect(directives.filter((d) => ['immutable', 'no-store', 'no-cache', 'private'].includes(d.split('=')[0]!)),
       `${path}: a directive that does not suit a file that keeps its name when it changes`).toEqual([]);

@@ -130,5 +130,6 @@ Launch requirements that no test enforces:
 - The cache rule for `/brand/` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
-  expect `cache-control: public, max-age=86400`. A Cloudflare Cache Rule or Browser
-  Cache TTL on the zone could change what visitors get; record the date here.
+  expect the `cache-control` value that the `/brand/*` rule in `public/_headers` sets.
+  A Cloudflare Cache Rule or Browser Cache TTL on the zone could change what visitors
+  get; record the date here.
