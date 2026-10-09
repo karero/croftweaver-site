@@ -5,6 +5,7 @@
 // re-measure all three before changing the date.
 import searchCsv from '../../public/data/genai-wednesday-de-search-console.csv?raw';
 import aiCsv from '../../public/data/genai-wednesday-de-ai-check.csv?raw';
+import { sentence } from './ai-words';
 
 export const PROOF_MEASURED = { iso: '2026-10-04', label: '4 October 2026' } as const;
 
@@ -117,7 +118,8 @@ if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no im
 
 // ── The weekly AI check, from the published export ───────────────────────────────
 // One row per assistant, mode and question: how many calls answered, how many of the
-// answers named the site, how many cited it, how many calls failed. The table on
+// answers named the site, how many listed it among their sources ("cited"; for Perplexity
+// those are its search results, see ai-words.ts), how many calls failed. The table on
 // /proof is computed from this file, so its cells cannot drift from the download.
 // Make the file with scripts/export-ai-check.py: it keeps this one site and nothing else.
 // The check is not always run for every assistant. When it was not run for one on a day,
@@ -167,24 +169,8 @@ const total = (rows: Check[]) =>
       );
 const on = (date: string, mode: Mode, engine?: string) =>
   total(checks.filter((c) => c.date === date && c.mode === mode && (!engine || c.engine === engine)));
-const answers = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
 // Failed calls, as a clause after a result sentence.
 const failedClause = (t: NonNullable<ReturnType<typeof total>>) => (t.failed ? ` ${t.failed} ${t.failed === 1 ? 'call' : 'calls'} failed.` : '');
-// Assistants that return the search results they used but not which of them the answer quotes. For them the
-// tracker's "cited" count is how often the site was among the results, not how often it was cited (the
-// toolkit's geo_check.py says the same: RESULTS_ONLY, checked against captured answers: Perplexity's own
-// API has no marker or annotation in the text, and through OpenRouter the check does not read the marks).
-// The page says "among its search results" for them and never "cited". tests/a11y.spec.ts pins both.
-const RESULTS_ONLY = ['perplexity'];
-const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'named', engine: string) => {
-  if (RESULTS_ONLY.includes(engine)) {
-    const among = t.cited > 0 ? ` The site was among its search results in ${t.cited} of ${answers(t.answers)}.` : '';
-    return `${start} it in ${t.named} of ${answers(t.answers)}.${among}`;
-  }
-  return t.named > 0 && t.cited === t.named
-    ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
-    : `${start} it in ${t.named} of ${answers(t.answers)}.`;
-};
 // The assistants the check was not run for on a day, declared by hand when the file is made (the
 // tracker records no skipped run). Whole assistants only: one that has rows on that day in one mode
 // and not in another is a gap in the export, not a skipped run. The page names who was not run on the

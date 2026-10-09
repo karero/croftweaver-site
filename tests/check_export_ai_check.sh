@@ -50,6 +50,16 @@ if [ "$(export_to_stdout one-site)" = "$want" ]; then pass "keeps one site, drop
 want=$'date,engine,mode,question,answers,named,cited,failed\n2026-10-05,anthropic,with_search,1,1,0,0,2\n2026-10-05,gemini,without_search,1,3,0,0,0'
 if [ "$(export_to_stdout merged)" = "$want" ]; then pass "reads failed calls, merges runs of one day"; else fail "failed calls or merged runs are read wrongly"; fi
 
+# 2b. named and cited are counted apart, answer by answer: an answer can list the site among its sources
+#     without naming it, so cited may be higher than named, for any assistant. (For Perplexity the count is
+#     its search results, whatever the text says.) Only answers bound them.
+{
+  row 2026-10-08 r1 $SITE perplexity finds broad 3 0 2 ok
+  row 2026-10-08 r1 $SITE openai finds broad 3 1 3 ok
+} | history apart
+want=$'date,engine,mode,question,answers,named,cited,failed\n2026-10-08,openai,with_search,1,3,1,3,0\n2026-10-08,perplexity,with_search,1,3,0,2,0'
+if [ "$(export_to_stdout apart)" = "$want" ]; then pass "cited above named is a valid count"; else fail "cited above named was refused or written wrongly"; fi
+
 # 3. Each of these must stop the script: a non-zero exit, nothing on standard output, and a message
 #    that says why (a Python traceback is not a message) and says the right why: it must contain
 #    PHRASE, or a history could stop for another reason (a file with nothing left has "no rows")
@@ -73,7 +83,7 @@ row 8-Oct a $SITE openai finds broad 3 3 3 ok | history s-date;                 
 row 2026-02-31 a $SITE openai finds broad 3 3 3 ok | history s-day;             stops s-day "a date that is not a real day" "unexpected date"
 row 2026-10-08 a $SITE 'Open AI' finds broad 3 3 3 ok | history s-name;         stops s-name "an assistant name with a space and capitals" "unexpected assistant name"
 row 2026-10-08 a $SITE openai finds broad 3 4 3 ok | history s-named;           stops s-named "named above answers" "cannot be true"
-row 2026-10-08 a $SITE openai finds broad 3 2 3 ok | history s-cited;           stops s-cited "cited above named" "cannot be true"
+row 2026-10-08 a $SITE openai finds broad 3 2 4 ok | history s-cited;           stops s-cited "cited above answers" "cannot be true"
 row 2026-10-08 a $SITE openai finds broad 3 -1 -2 ok | history s-negative;      stops s-negative "counts below zero" "is not a count"
 row 2026-10-08 a $SITE openai finds broad '' 3 3 ok | history s-empty;          stops s-empty "an empty count of answers" "is not a count"
 row 2026-10-08 a $SITE openai finds broad 2 2 2 '2 of 3 failed' | history s-sum; stops s-sum "answers and failed calls that do not add up" "do not add up"
