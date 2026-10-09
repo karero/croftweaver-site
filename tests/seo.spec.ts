@@ -184,12 +184,14 @@ test('seo — plain() keeps line breaks apart and decodes each entity once', () 
 
 // The check above passes for a page with no FAQ markup, so a deleted schema would quietly drop the
 // coverage. /established-sites carries its questions in markup: the same questions as the visible ones,
-// in the same order, so a duplicate or a missing one fails here.
+// in the same order, each once, so a missing question fails here, and so does one copied into the data twice
+// (the markup and the page would repeat it together, and the comparison alone would pass).
 test('seo — /established-sites keeps its FAQPage markup, the same questions as the visible ones', async ({ page }) => {
   await page.goto('/established-sites');
   const [faq] = await faqMarkup(page);
   expect(faq, '/established-sites must carry FAQPage markup').toBeTruthy();
   const visible = (await page.locator('#faq h4').allTextContents()).map((q) => q.trim());
+  expect(new Set(visible).size, 'a question appears twice in the FAQ').toBe(visible.length);
   expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual(visible);
 });
 
