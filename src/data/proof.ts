@@ -170,10 +170,21 @@ const on = (date: string, mode: Mode, engine?: string) =>
 const answers = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
 // Failed calls, as a clause after a result sentence.
 const failedClause = (t: NonNullable<ReturnType<typeof total>>) => (t.failed ? ` ${t.failed} ${t.failed === 1 ? 'call' : 'calls'} failed.` : '');
-const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'named') =>
-  t.named > 0 && t.cited === t.named
+// Assistants that return the search results they used but not which of them the answer quotes. For them the
+// tracker's "cited" count is how often the site was among the results, not how often it was cited (the
+// toolkit's geo_check.py says the same: RESULTS_ONLY, checked against captured answers: Perplexity's own
+// API has no marker or annotation in the text, and through OpenRouter the check does not read the marks).
+// The page says "among its search results" for them and never "cited". tests/a11y.spec.ts pins both.
+const RESULTS_ONLY = ['perplexity'];
+const sentence = (t: NonNullable<ReturnType<typeof total>>, start: 'Named' | 'named', engine: string) => {
+  if (RESULTS_ONLY.includes(engine)) {
+    const among = t.cited > 0 ? ` The site was among its search results in ${t.cited} of ${answers(t.answers)}.` : '';
+    return `${start} it in ${t.named} of ${answers(t.answers)}.${among}`;
+  }
+  return t.named > 0 && t.cited === t.named
     ? `${start} and cited the site in ${t.named} of ${answers(t.answers)}.`
     : `${start} it in ${t.named} of ${answers(t.answers)}.`;
+};
 // The assistants the check was not run for on a day, declared by hand when the file is made (the
 // tracker records no skipped run). Whole assistants only: one that has rows on that day in one mode
 // and not in another is a gap in the export, not a skipped run. The page names who was not run on the
@@ -228,17 +239,17 @@ const cell = (engine: string, mode: Mode) => {
     const why = absent(engine, mode);
     if (why === 'not-run') {
       const last = lastAnswered(engine, mode);
-      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}` : 'Not run that day.';
+      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named', engine)}${failedClause(last.t)}` : 'Not run that day.';
     }
     return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
     return last
-      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}`
+      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named', engine)}${failedClause(last.t)}`
       : 'No result: every call failed that day.';
   }
-  return sentence(now, 'Named') + failedClause(now);
+  return sentence(now, 'Named', engine) + failedClause(now);
 };
 const overall = (mode: Mode) => {
   const t = on(checkDate, mode);

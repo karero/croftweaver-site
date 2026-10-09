@@ -200,7 +200,9 @@ const aiDesc =
     <p class="note">
       The counts behind the table are published:
       <a href={p.ai.csv}>download the file</a> (CSV, one row per day, assistant, mode
-      and question).
+      and question). In the file, <code>cited</code> counts the answers that cited the
+      site. For Perplexity it counts the answers whose search results included the
+      site, because the check does not tell which of those results the answer quotes.
     </p>
     <p class="note">
       This is a different thing from the panel in the

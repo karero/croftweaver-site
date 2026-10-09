@@ -321,6 +321,12 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const tableCellOf = (engine: string, mode: string) => page.locator('#ai tbody tr')
     .filter({ has: page.locator('th', { hasText: new RegExp(`^${labels.find((l) => l.engine === engine)!.text.replace(/[()]/g, '\\$&')}$`) }) })
     .locator('td').nth(mode === 'with_search' ? 0 : 1);
+  // Lists the page reads in src/data/proof.ts, read here as text: the assistants whose tracker count is how often
+  // the site was among their search results (not a citation count), and the three lists about who was asked or run.
+  const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
+  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
+  const resultsOnly = listIn('const RESULTS_ONLY = \\[([^\\]]*)\\]');
+  const plural = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
   // The last result of an assistant in a mode as the table gives it: the most recent earlier day on
   // which it answered, and whether the answers also cited the site and whether calls failed.
   const lastResult = (engine: string, mode: string) => {
@@ -331,7 +337,10 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const rs = earlier.filter((r) => r.date === day);
     const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
     const [gave, named, cited, failed] = [sum('answers'), sum('named'), sum('cited'), sum('failed')];
-    return ` On ${longDate(day)} it ${named > 0 && cited === named ? 'named and cited the site' : 'named it'} in ${named} of ${gave} ${gave === 1 ? 'answer' : 'answers'}.${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
+    const said = resultsOnly.includes(engine)
+      ? `named it in ${named} of ${plural(gave)}.${cited > 0 ? ` The site was among its search results in ${cited} of ${plural(gave)}.` : ''}`
+      : `${named > 0 && cited === named ? 'named and cited the site' : 'named it'} in ${named} of ${plural(gave)}.`;
+    return ` On ${longDate(day)} it ${said}${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
   };
   const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
     const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
@@ -353,6 +362,23 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     }
   }
 
+  // Every table cell that has answers says what the file says, in the words the page uses. "Named and cited" only
+  // where the tracker's count is a real citation count; for an assistant that only lists the search results it used
+  // (RESULTS_ONLY: Perplexity) the count is how often the site was among them, and the cell says that, never "cited".
+  for (const { engine } of labels) {
+    for (const mode of ['with_search', 'without_search']) {
+      const rs = today.filter((r) => r.engine === engine && r.mode === mode);
+      const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
+      const [gave, named, cited, failed] = [sum('answers'), sum('named'), sum('cited'), sum('failed')];
+      if (rs.length === 0 || gave === 0) continue;   // not asked, not run, or every call failed: read below and above
+      const said = resultsOnly.includes(engine)
+        ? `Named it in ${named} of ${plural(gave)}.${cited > 0 ? ` The site was among its search results in ${cited} of ${plural(gave)}.` : ''}`
+        : named > 0 && cited === named ? `Named and cited the site in ${named} of ${plural(gave)}.` : `Named it in ${named} of ${plural(gave)}.`;
+      await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell does not say what the file says`)
+        .toHaveText(said + (failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''));
+    }
+  }
+
   // An assistant with rows on earlier days and none on the latest was not run that day: the
   // description and the page say so, and its table cell gives its last result with the day it
   // comes from. (Not the same as one the check never asks in that mode.)
@@ -363,8 +389,6 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // The three lists the page reads in src/data/proof.ts, read here as text: the search products (no
   // mode without web search), the assistants the check does not ask with web search, and the
   // assistants declared not run on the latest day. The last must be exactly those with no rows.
-  const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
-  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
   const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
   const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
   const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
@@ -507,6 +531,28 @@ test('proof — the pages about genai-wednesday.de say it launched, and none say
   // llms.txt is read by assistants; its line about this site is checked too.
   const llms = readFileSync(new URL('../public/llms.txt', import.meta.url), 'utf8');
   expect(llms.split('\n').filter((l) => l.includes('genai-wednesday.de')).join('\n'), 'public/llms.txt calls the launch a relaunch').not.toMatch(relaunch);
+});
+
+// Site-specific (not in the shipped suite): the AI check counts, for Perplexity, how often the site was among its search
+// results, not how often it was cited (the toolkit's geo_check.py, RESULTS_ONLY, after captured answers: nothing in the
+// answer says which results it quotes). Said as a citation on /proof or in the description of the check on
+// /established-sites, it would claim more than the check measures. The file's column is still called cited, so /proof
+// says what it holds for Perplexity.
+test('proof — Perplexity\'s count is results, not citations, on /proof and on /established-sites', async ({ page }) => {
+  const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
+  const resultsOnly = (source.match(/const RESULTS_ONLY = \[([^\]]*)\]/)?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
+  expect(resultsOnly, 'RESULTS_ONLY in src/data/proof.ts is the toolkit\'s list (geo_check.py): Perplexity only. Change it when the toolkit does').toEqual(['perplexity']);
+  await page.goto('/proof');
+  const row = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: /^Perplexity$/ }) });
+  await expect(row, 'no Perplexity row in the table').toHaveCount(1);
+  for (const cell of await row.locator('td').allTextContents()) expect(cell, 'a Perplexity cell says cited').not.toMatch(/cited/i);
+  await expect(row.locator('td').first(), 'the Perplexity cell with web search does not say that the site was among its search results').toContainText('among its search results');
+  await expect(page.locator('#ai p.note').filter({ hasText: 'The counts behind the table' }), 'the page does not say what the cited column holds for Perplexity')
+    .toContainText('For Perplexity it counts the answers whose search results included the site');
+  await page.goto('/established-sites');
+  const bullet = page.locator('li:not(:has(li))').filter({ hasText: 'Where an engine allows it' });   // the bullet itself, not the step around it
+  await expect(bullet, 'the check is not described as counting results for Perplexity').toContainText('among its search results, not how often it was cited');
+  await expect(bullet, 'the old wording is back').not.toContainText('sources cited in its text');
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG
