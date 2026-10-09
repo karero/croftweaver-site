@@ -138,7 +138,13 @@ const checks: Check[] = aiLines.slice(1).map((line, i) => {
   if (!m || !realDay(m[1]!)) throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
   const group = `${m[1]},${m[2]},${m[3]}`;
   questionsOf.set(group, [...(questionsOf.get(group) ?? []), m[4]!]);
-  return { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[5]), named: Number(m[6]), cited: Number(m[7]), failed: Number(m[8]) };
+  const row = { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[5]), named: Number(m[6]), cited: Number(m[7]), failed: Number(m[8]) };
+  // Counts the words cannot carry. The export script refuses them too; this is the page's own guard against a hand edit,
+  // on every row, so a question that is out of bounds is not hidden in a total that is not.
+  if (row.named > row.answers || row.cited > row.answers) {
+    throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2}: ${row.named} named and ${row.cited} cited cannot be more than the ${row.answers} answers: "${line}".`);
+  }
+  return row;
 });
 // Each assistant, mode and day has question 1 and question 2, once each: a missing or a repeated row
 // would change a total without anyone noticing.
