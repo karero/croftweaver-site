@@ -42,6 +42,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/why': { term: 'search and AI visibility' },
   '/compare': { term: 'alternatives' },
   '/roadmap': { term: 'roadmap' },
+  '/established-sites': { term: 'established sites' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,

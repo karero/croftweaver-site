@@ -74,6 +74,7 @@ PAGES: list[tuple[str, str, list[str]]] = [
     ("why", "Why build for search and AI visibility", ["The case, for the person", "who decides."]),
     ("compare", "Croftweaver and its alternatives", ["When to choose which,", "sourced and dated."]),
     ("roadmap", "Roadmap", ["What is missing, what comes next,", "and what stays out on purpose."]),
+    ("established-sites", "Croftweaver for established sites", ["Know what to fix.", "Check what changed."]),
     ("positioning", "Positioning first", ["What your site says,", "decided before the copy."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
