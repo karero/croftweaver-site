@@ -234,3 +234,42 @@ test('partner assets: each HTML snippet shows its badge under the security rules
     }
   }
 });
+
+// Site-specific (not in the shipped suite): the Cache-Control that Cloudflare Pages sends for a file under /brand/.
+// `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
+// documents it: every rule whose path matches, and where several rules set one header, their values joined with a
+// comma (developers.cloudflare.com/pages/configuration/headers). The files keep their names when they change, and the
+// Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
+// while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", a check on every use.
+test('headers — the partner kit under /brand/ is cached for a day and never immutable', () => {
+  const rules = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8');
+  const sentFor = (path: string, name: string) => {
+    const values: string[] = [];
+    let applies = false;
+    for (const line of rules.split('\n')) {
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      if (!/^\s/.test(line)) {   // a path starts a rule; a trailing * matches any run of characters
+        const p = line.trim();
+        applies = p.endsWith('*') ? path.startsWith(p.slice(0, -1)) : path === p;
+        continue;
+      }
+      const [key, ...rest] = line.split(':');
+      if (applies && key!.trim().toLowerCase() === name) values.push(rest.join(':').trim());
+    }
+    return values.join(', ');
+  };
+  const filesIn = (dir: string): string[] =>
+    readdirSync(new URL(`../public/${dir}`, import.meta.url), { withFileTypes: true })
+      .flatMap((e) => (e.isDirectory() ? filesIn(`${dir}/${e.name}`) : [`/${dir}/${e.name}`]));
+  const kit = filesIn('brand');
+  expect(kit.length, 'public/brand is empty').toBeGreaterThan(0);
+  for (const path of kit) {
+    const sent = sentFor(path, 'cache-control');
+    const maxAge = [...sent.matchAll(/max-age=(\d+)/g)].map((m) => Number(m[1]));
+    expect(maxAge.length, `${path}: Pages would send "${sent}", which is not exactly one max-age`).toBe(1);
+    expect(maxAge[0], `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
+    expect(maxAge[0], `${path}: cached for more than a week, so a corrected file would reach partners late`).toBeLessThanOrEqual(7 * 86400);
+    expect(sent, `${path}: not public`).toMatch(/\bpublic\b/);
+    expect(sent, `${path}: the file keeps its name when it changes`).not.toMatch(/immutable|no-store|no-cache|private/);
+  }
+});

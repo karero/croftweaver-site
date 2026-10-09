@@ -7,3 +7,11 @@
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), camera=(), microphone=()
   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# Files under /brand/ keep their names when they change, and the Markdown snippets on /partner-assets
+# hotlink the badges from partners' READMEs: cache them for a day, never mark them immutable. Pages'
+# default is "public, max-age=0, must-revalidate", a check with the server on every use. Pages joins
+# the values of one header set by several rules with a comma, so no other rule may set Cache-Control
+# for these files; tests/navigation.spec.ts reads the result.
+/brand/*
+  Cache-Control: public, max-age=86400
