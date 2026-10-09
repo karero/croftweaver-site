@@ -1,4 +1,5 @@
-# Cloudflare Pages security headers. CSP allows the inlined stylesheet
+# Cloudflare Pages headers: the security headers for every page, then a cache rule for /brand/ (below).
+# CSP allows the inlined stylesheet
 # (astro.config `inlineStylesheets: 'always'`) via style-src 'unsafe-inline' and
 # the inline theme/analytics scripts. Widen script-src/connect-src only as needed.
 /*
@@ -10,8 +11,8 @@
 
 # Files under /brand/ keep their names when they change, and the Markdown snippets on /partner-assets
 # hotlink the badges from partners' READMEs: cache them for a day, never mark them immutable. Pages'
-# default is "public, max-age=0, must-revalidate", a check with the server on every use. Pages joins
-# the values of one header set by several rules with a comma, so no other rule may set Cache-Control
-# for these files; tests/navigation.spec.ts reads the result.
+# default is "public, max-age=0, must-revalidate", which makes a cache ask the server before it reuses
+# a file. Pages joins the values of one header set by several rules with a comma, so no other rule may
+# set Cache-Control for these files; tests/navigation.spec.ts reads the result.
 /brand/*
   Cache-Control: public, max-age=86400

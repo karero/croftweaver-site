@@ -81,7 +81,7 @@ requests.
 | 2b | Dependency: sharp 0.35.5, to clear an npm audit advisory | PR | done | karero/croftweaver-site#28, merged 2026-10-09 (`03992f3`); dependabot's pull request for the same bump (karero/croftweaver-site#29) was closed |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | done | karero/croftweaver-site#18, merged 2026-10-08 (`48b1738`) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
-| 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | done; a StoryBrand check then led to three fixes: the Quickstart leads with the one-prompt route, the hero names the reader, one scene shows life after, and two long sections became one | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); `STORY.md` and the page: karero/croftweaver-site#20, merged 2026-10-08 (`bfe7b0b`); the three fixes: karero/croftweaver-site#31, merged 2026-10-09 (`4f3f604`) |
+| 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | done; a fresh-eyes check of the page then led to three fixes: the Quickstart leads with the one-prompt route; the hero says who the site is for; one scene shows life after, and two long sections became one | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); `STORY.md` and the page: karero/croftweaver-site#20, merged 2026-10-08 (`bfe7b0b`); the three fixes: karero/croftweaver-site#31, merged 2026-10-09 (`4f3f604`) |
 | 4b | Home proof strip: the AI panel's SEO and GEO scores first, a try-it prompt, and a `/more-proof` page for PageSpeed and E-E-A-T | PR | done | karero/croftweaver-site#21, merged 2026-10-08 (`24b3738`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
 | 5a | Deck refresh and PDF export | owner + assistant | open | — |
@@ -91,7 +91,7 @@ requests.
 | 5e | Page `/partner-assets`: the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it and the request to credit Croftweaver; the badge in every footer | PR | done | karero/croftweaver-site#26, merged 2026-10-09 (`60fcbf4`) |
 | 5f | Charts on `/proof`: Search Console clicks as a rolling 28-day total, and the AI check as one mark per call | PR | done | karero/croftweaver-site#23, merged 2026-10-09 (`fd45b44`) |
 | 5g | The AI check of 8 October 2026 on `/proof` and as a published CSV file, for genai-wednesday.de only (`scripts/export-ai-check.py` makes the file) | PR | done | karero/croftweaver-site#24, merged 2026-10-09 (`904b69a`) |
-| 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | page done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
+| 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
 | 5i | Launch wording: genai-wednesday.de launched on 27 March 2026 and was not relaunched (`/proof`, `/more-proof`, `/why`, `STORY.md`, `public/llms.txt`) | PR | done | karero/croftweaver-site#27, merged 2026-10-09 (`c48b39e`) |
 | 5j | Perplexity's count in the AI check is worded as what it measures, not as a citation; the export script no longer stops on a valid row | PR | done | karero/croftweaver-site#30, merged 2026-10-09 (`fb2b415`) |
 | 5k | `/skills` lists 33 skills: 31 in toolkit release 0.29 and two added since. At release 0.30, update `RELEASE` and `SKILLS` in `src/data/skills.ts` and clear `ADDED_SINCE` | PR | done | karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`) |
@@ -127,3 +127,8 @@ Launch requirements that no test enforces:
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
   links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
   after step 7 and record its dated result in the table.
+- The cache rule for `/brand/` in `public/_headers` is tested from the file, because
+  `astro preview` does not apply `_headers`. After launch run
+  `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
+  expect `cache-control: public, max-age=86400`. A Cloudflare Cache Rule or Browser
+  Cache TTL on the zone could change what visitors get; record the date here.

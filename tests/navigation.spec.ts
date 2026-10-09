@@ -237,39 +237,60 @@ test('partner assets: each HTML snippet shows its badge under the security rules
 
 // Site-specific (not in the shipped suite): the Cache-Control that Cloudflare Pages sends for a file under /brand/.
 // `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
-// documents it: every rule whose path matches, and where several rules set one header, their values joined with a
-// comma (developers.cloudflare.com/pages/configuration/headers). The files keep their names when they change, and the
+// documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
+// a splat matching any run of characters; a header set by several rules joined with a comma; "! Name" taking the
+// header away. Syntax the test does not model (a second splat, a placeholder, a host, an unindented header) fails it,
+// so a rule it cannot read never passes by being ignored. The files keep their names when they change, and the
 // Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
-// while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", a check on every use.
-test('headers — the partner kit under /brand/ is cached for a day and never immutable', () => {
+// while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
+// the server before it reuses a file.
+test('headers — the partner kit under /brand/ is cacheable for between an hour and a week, and never immutable', () => {
   const rules = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8');
-  const sentFor = (path: string, name: string) => {
-    const values: string[] = [];
+  const headerFor = (path: string, name: string) => {
+    let values: string[] = [];
     let applies = false;
-    for (const line of rules.split('\n')) {
-      if (!line.trim() || line.trim().startsWith('#')) continue;
-      if (!/^\s/.test(line)) {   // a path starts a rule; a trailing * matches any run of characters
-        const p = line.trim();
-        applies = p.endsWith('*') ? path.startsWith(p.slice(0, -1)) : path === p;
+    for (const raw of rules.split('\n')) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      if (!/^\s/.test(raw)) {   // a path line starts a rule
+        expect(line.startsWith('/') && line.split('*').length <= 2 && !/:\w/.test(line),
+          `public/_headers: "${line}" is not a path or header this test models (a second splat, a placeholder, a host or an unindented header); extend the test`).toBe(true);
+        const [before, after] = line.split('*');
+        applies = after === undefined ? path === before : path.length >= before!.length + after.length && path.startsWith(before!) && path.endsWith(after);
         continue;
       }
-      const [key, ...rest] = line.split(':');
-      if (applies && key!.trim().toLowerCase() === name) values.push(rest.join(':').trim());
+      if (!applies) continue;
+      if (line.startsWith('!')) { if (line.slice(1).trim().toLowerCase() === name) values = []; continue; }
+      const colon = line.indexOf(':');
+      if (line.slice(0, colon).trim().toLowerCase() === name) values.push(line.slice(colon + 1).trim());
     }
     return values.join(', ');
   };
   const filesIn = (dir: string): string[] =>
     readdirSync(new URL(`../public/${dir}`, import.meta.url), { withFileTypes: true })
+      .filter((e) => !e.name.startsWith('.'))   // a .DS_Store from Finder is not part of the kit
       .flatMap((e) => (e.isDirectory() ? filesIn(`${dir}/${e.name}`) : [`/${dir}/${e.name}`]));
   const kit = filesIn('brand');
   expect(kit.length, 'public/brand is empty').toBeGreaterThan(0);
   for (const path of kit) {
-    const sent = sentFor(path, 'cache-control');
-    const maxAge = [...sent.matchAll(/max-age=(\d+)/g)].map((m) => Number(m[1]));
+    const sent = headerFor(path, 'cache-control');
+    const directives = sent.split(',').map((d) => d.trim().toLowerCase()).filter(Boolean);
+    const maxAge = directives.filter((d) => d.startsWith('max-age'));
     expect(maxAge.length, `${path}: Pages would send "${sent}", which is not exactly one max-age`).toBe(1);
-    expect(maxAge[0], `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
-    expect(maxAge[0], `${path}: cached for more than a week, so a corrected file would reach partners late`).toBeLessThanOrEqual(7 * 86400);
-    expect(sent, `${path}: not public`).toMatch(/\bpublic\b/);
-    expect(sent, `${path}: the file keeps its name when it changes`).not.toMatch(/immutable|no-store|no-cache|private/);
+    expect(maxAge[0], `${path}: the max-age is not a whole number of seconds`).toMatch(/^max-age=\d+$/);
+    expect(Number(maxAge[0]!.slice('max-age='.length)), `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
+    // No lifetime of any kind above a week (max-age, the shared-cache s-maxage, stale-while-revalidate, stale-if-error):
+    // a corrected file would reach partners late.
+    for (const d of directives.filter((x) => /^(max-age|s-maxage|stale-while-revalidate|stale-if-error)=/.test(x))) {
+      expect(d, `${path}: "${d}" is not a whole number of seconds`).toMatch(/^[a-z-]+=\d+$/);
+      expect(Number(d.split('=')[1]), `${path}: "${d}" is more than a week, so a corrected file would reach partners late`).toBeLessThanOrEqual(7 * 86400);
+    }
+    expect(directives, `${path}: not public`).toContain('public');
+    expect(directives.filter((d) => ['immutable', 'no-store', 'no-cache', 'private'].includes(d.split('=')[0]!)),
+      `${path}: a directive that does not suit a file that keeps its name when it changes`).toEqual([]);
+    // Other headers that set how long the kit is kept would change the lifetime without showing in the Cache-Control above.
+    for (const other of ['cdn-cache-control', 'cloudflare-cdn-cache-control', 'surrogate-control', 'expires', 'pragma']) {
+      expect(headerFor(path, other), `${path}: ${other} is set, which this test does not model`).toBe('');
+    }
   }
 });
