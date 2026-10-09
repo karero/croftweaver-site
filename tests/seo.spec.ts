@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, ogLocaleFor } from '../src/config';
+import { plain } from '../src/data/established-faq';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -142,6 +143,57 @@ for (const path of PAGES) {
     for (const b of blocks) expect(() => JSON.parse(b), 'JSON-LD must parse').not.toThrow();
   });
 }
+
+// FAQPage markup must state what the page shows: that is Google's rule for FAQ markup, and the reason
+// a machine can trust it. Every question in the markup is a heading on the page, and its answer text is
+// the text of the element right after that heading, word for word. A page without FAQPage markup passes.
+async function faqMarkup(page: import('@playwright/test').Page) {
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  return blocks.map((b) => JSON.parse(b)).filter((o) => o['@type'] === 'FAQPage');
+}
+
+for (const path of PAGES) {
+  test(`seo — FAQPage markup matches the visible questions on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const faqs = await faqMarkup(page);
+    expect(faqs.length, 'a page may carry only one FAQPage').toBeLessThanOrEqual(1);
+    for (const faq of faqs) {
+      expect(faq.mainEntity.length, 'FAQPage markup should hold at least one question').toBeGreaterThan(0);
+      for (const q of faq.mainEntity) {
+        const shown = await page.evaluate((name: string) => {
+          const h = [...document.querySelectorAll('h2, h3, h4, h5, h6')].find((el) => el.textContent?.trim() === name);
+          if (!h) return null;
+          return ((h.nextElementSibling as HTMLElement | null)?.innerText ?? '').replace(/\s+/g, ' ').trim();
+        }, q.name);
+        expect(shown, `question "${q.name}" must be a heading on ${path}`).not.toBeNull();
+        expect(q.acceptedAnswer.text.length, `the markup answer to "${q.name}" must not be empty`).toBeGreaterThan(0);
+        expect(q.acceptedAnswer.text, `the markup answer to "${q.name}" must be the answer shown right after its heading`).toBe(shown);
+      }
+    }
+  });
+}
+
+// plain() turns an answer's HTML into the text of the FAQPage markup. The cases below are ones that
+// went wrong: a line break joined two words, and entities were left encoded or decoded twice.
+test('seo — plain() keeps line breaks apart and decodes each entity once', () => {
+  expect(plain('<p>A<br>B</p>')).toBe('A B');
+  expect(plain('<p>One</p><ul><li>Two</li><li>Three</li></ul>')).toBe('One Two Three');
+  expect(plain('Q&amp;A, it&#39;s &quot;fine&quot; &copy; 2026&nbsp;ok')).toBe('Q&A, it\'s "fine" © 2026 ok');
+  expect(plain('&#38;quot; stays text, &#x41; is A')).toBe('&quot; stays text, A is A');
+});
+
+// The check above passes for a page with no FAQ markup, so a deleted schema would quietly drop the
+// coverage. /established-sites carries its questions in markup: the same questions as the visible ones,
+// in the same order, each once, so a missing question fails here, and so does one copied into the data twice
+// (the markup and the page would repeat it together, and the comparison alone would pass).
+test('seo — /established-sites keeps its FAQPage markup, the same questions as the visible ones', async ({ page }) => {
+  await page.goto('/established-sites');
+  const [faq] = await faqMarkup(page);
+  expect(faq, '/established-sites must carry FAQPage markup').toBeTruthy();
+  const visible = (await page.locator('#faq h4').allTextContents()).map((q) => q.trim());
+  expect(new Set(visible).size, 'a question appears twice in the FAQ').toBe(visible.length);
+  expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual(visible);
+});
 
 // "Its own" means DISTINCT: two non-exempt pages pointing at the same card is a wiring
 // copy-paste error (the share preview would misrepresent one of them). No-op until the

@@ -12,6 +12,7 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 import EmailLink from '../components/EmailLink.astro';
+import { FAQ_GROUPS, faqSchema } from '../data/established-faq';
 
 const plan = [
   { title: 'Check', text: 'See where each target search ranks and what four AI assistants say about the business. Read-only, with no change to the site.' },
@@ -35,12 +36,12 @@ const steps = [
     title: 'AI visibility: does an AI assistant name the business?',
     skills: ['search-console-insights: geo_check.py'],
     points: [
-      'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your buyer’s own questions, without naming the business.',
+      'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your customer’s own questions, without naming the business.',
       'Where an engine allows it, two answers: “knows you” from memory, and “finds you” with web search on, which lists the sources the engine returned. Gemini gives the first only. Perplexity through OpenRouter and Google’s own AI answers give the second only. For Perplexity, the AI check reports how often your site was among the sources it returned, not how often it was cited, because the check does not tell which of those sources the answer quotes.',
       'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
       'Needs no Search Console access. It needs a key for each assistant you ask, or one OpenRouter key for all four. On a large site, use each assistant’s own key: your market’s country is then sent with the searches of ChatGPT, Claude and Perplexity. The toolkit sends no country through OpenRouter today.',
     ],
-    say: 'Set up the weekly AI check for example.com with these three buyer questions.',
+    say: 'Set up the weekly AI check for example.com with these two customer questions and one question about the company.',
   },
   {
     title: 'Diagnose',
@@ -108,7 +109,7 @@ const limits = [
 ];
 
 const weeks = [
-  { week: 'Week 1', text: 'Connect Search Console and pull 90 days. Write the three buyer questions and run the first AI check.' },
+  { week: 'Week 1', text: 'Connect Search Console and pull 90 days. Write two questions your customers ask and one about your company, and run the first AI check.' },
   { week: 'Week 2', text: 'Audit the 20 to 30 pages with the most impressions. Run the positioning check on the home page and the main offer pages.' },
   { week: 'Week 3', text: 'Write the guard tests, then fix titles, structured data and quotable facts on those pages.' },
   { week: 'Week 4', text: 'Review, ship, and book the grading run. The weekly AI check keeps running.' },
@@ -118,6 +119,7 @@ const weeks = [
   title="Croftweaver for established sites"
   description="Croftweaver for established sites: open-source skills that check what search and AI say about a live site, fix its most-seen pages and measure what changed."
   image="/images/og/established-sites.jpg"
+  schemas={[faqSchema]}
 >
   <section class="wrap hero">
     <h1>Another SEO meeting, a lot of words, and still no way to say what changed?</h1>
@@ -156,7 +158,7 @@ const weeks = [
     <h2>What stays wrong if nothing changes</h2>
     <ul class="steps">
       <li>Small fixes can wait weeks, so the pages Google already shows stay as they are.</li>
-      <li>Often nobody on your side can say what an AI assistant tells a buyer about the company today.</li>
+      <li>Often nobody on your side can say what an AI assistant tells a customer about the company today.</li>
       <li>Money goes to work that is hard to compare with its result, so the next decision is made on trust.</li>
     </ul>
   </section>
@@ -265,8 +267,8 @@ const weeks = [
     <h2>Where your data goes</h2>
     <ul class="steps">
       <li><strong>Stays on the computer that runs the skills.</strong> The Search Console sign-in token, the history of search results, and the saved AI answers.</li>
-      <li><strong>Goes straight to the AI providers, if you use their own keys.</strong> The buyer questions go to OpenAI, Anthropic, Google and Perplexity. Check that your account and its search features are covered by your agreement with each.</li>
-      <li><strong>Goes to OpenRouter first, if you use it.</strong> OpenRouter passes the buyer questions on to the providers it chooses to serve each model. Check its terms.</li>
+      <li><strong>Goes straight to the AI providers, if you use their own keys.</strong> The questions of the AI check go to OpenAI, Anthropic, Google and Perplexity. Check that your account and its search features are covered by your agreement with each.</li>
+      <li><strong>Goes to OpenRouter first, if you use it.</strong> OpenRouter passes the questions of the AI check on to the providers it chooses to serve each model. Check its terms.</li>
       <li><strong>Goes to SerpApi, if you use it.</strong> The questions for Google AI Mode and AI Overview go to SerpApi, which collects Google’s answers. If you choose SerpApi over Serper for the live top 10, those search phrases go there too.</li>
       <li><strong>Goes to Serper,</strong> if you use it: the search phrases whose live top 10 you want to see.</li>
       <li><strong>Goes to your AI coding assistant.</strong> It sees what you give it, and the page changes it makes. An optional outside review sends the text under review to the outside reviewers.</li>
@@ -343,6 +345,21 @@ const weeks = [
       Please do your own research: check current provider terms, pricing and country
       support before you set anything up.
     </p>
+  </section>
+
+  <section class="wrap faq" id="faq">
+    <h2>Questions and answers</h2>
+    {FAQ_GROUPS.map((group) => (
+      <div class="faq-group">
+        <h3>{group.title}</h3>
+        {group.items.map((item) => (
+          <div class="faq-item">
+            <h4>{item.q}</h4>
+            <div class="faq-answer" set:html={item.a} />
+          </div>
+        ))}
+      </div>
+    ))}
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="/start">Quickstart</a>
@@ -392,4 +409,20 @@ const weeks = [
   table { width: 100%; max-width: 52rem; border-collapse: collapse; }
   th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); }
   tbody th { font-weight: 600; }
+  /* The FAQ answers are HTML from src/data/established-faq.ts, so their elements carry no scope
+     attribute: :global() reaches them. */
+  .faq-group { margin-top: 2rem; }
+  .faq-group h3 { margin: 0 0 0.3rem; font-size: 1.2rem; }
+  .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+  .faq-item h4 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
+  .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .faq-answer :global(ul) { margin: 0 0 0.7rem; padding-left: 1.3rem; max-width: 46rem; }
+  .faq-answer :global(li) { margin-bottom: 0.4rem; line-height: 1.6; }
+  .faq-answer :global(.table-wrap) { overflow-x: auto; margin: 0.4rem 0 0.9rem; }
+  .faq-answer :global(table) { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.95rem; }
+  .faq-answer :global(th), .faq-answer :global(td) {
+    text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line);
+  }
+  .faq-answer :global(thead th) { font-size: 0.85rem; color: var(--muted); }
+  .faq-answer :global(tbody th) { font-weight: 600; }
 </style>
