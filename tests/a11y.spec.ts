@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+// Site-specific (not in the shipped suite): the skills catalogue's data, which the /skills test at the end of this file reads.
+import { SKILLS, RELEASE, ADDED_SINCE, AS_OF } from '../src/data/skills';
 import { PAGES, THEMES } from './_helpers';
 // Site-specific (not in the shipped suite): the words /proof uses for an AI-check result, called here with numbers of our own.
 import { RESULTS_ONLY, sentence } from '../src/data/ai-words';
@@ -717,4 +719,22 @@ test('a11y — text in the /proof charts stays inside its drawing and clear of o
     return [...outside, ...touching, ...crossing];
   }));
   expect(problems, 'a chart has text that is cut off or runs into other text').toEqual([]);
+});
+
+// Site-specific (not in the shipped suite): /skills states how many skills there are, and says which toolkit release its
+// list describes and which skills were added since (src/data/skills.ts: RELEASE, ADDED_SINCE, AS_OF). The page counts
+// the list it is given, so a skill whose stage is not on the page would be counted in the lead and in the description
+// and shown nowhere; and a list that goes past its release without saying so would claim a release it does not match.
+test('skills — the catalogue lists every skill it counts and says what it is as of', async ({ page }) => {
+  await page.goto('/skills');
+  await expect(page.locator('main'), `the lead does not say there are ${SKILLS.length} skills`).toContainText(`Croftweaver is ${SKILLS.length} website skills`);
+  await expect(page.locator('meta[name="description"]'), 'the description does not say how many skills there are')
+    .toHaveAttribute('content', new RegExp(`^The ${SKILLS.length} website skills`));
+  const shown = await page.locator('#build dt, #verify dt, #launch dt, #grow dt').evaluateAll((els) => els.map((e) => e.querySelector('code')?.textContent));
+  expect(shown.sort(), 'the skills the page lists are not the skills it counts').toEqual(SKILLS.map((s) => s.name).sort());
+  const asOf = ADDED_SINCE.length === 0
+    ? `As of toolkit release ${RELEASE.version}, ${RELEASE.label}.`
+    : `As of ${AS_OF.label}: toolkit release ${RELEASE.version} (${RELEASE.label}) and ${ADDED_SINCE.length} ${ADDED_SINCE.length === 1 ? 'skill' : 'skills'} added since, ${list([...ADDED_SINCE])}.`;
+  await expect(page.locator('p.note').first(), 'the page does not say which release the list describes and what was added since')
+    .toHaveText(asOf);
 });
