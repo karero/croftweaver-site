@@ -36,7 +36,7 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
 - The partner kit (the owner's package, received 2026-10-08) is in `public/brand/` (badge, icon, logo),
   unchanged and offered for download on `/partner-assets`; `tests/navigation.spec.ts` checks that every
   file is offered. Its dark logo is the same drawing as `src/assets/brand/lockup-horizontal-dark-ink.svg`,
-  so when the logo changes, replace both. The footer badge is the kit's light and dark badge
+  so when the logo changes, replace both. The files carry a cache lifetime that `public/_headers` sets (a day when this was written; a test keeps it between an hour and a week). It is a request: how long a browser, or the cache that a README's image goes through, keeps a replaced file is not bounded by `public/_headers`, and a purge in the Cloudflare dashboard clears only Cloudflare's copy. The footer badge is the kit's light and dark badge
   (`public/brand/badge/`), one of them shown per theme (`global.css`).
 - The light-ink SVGs are for dark backgrounds the site theme does not cover, such as a
   logo on the share cards (see "Logo on a dark card needs a light variant" under the OG

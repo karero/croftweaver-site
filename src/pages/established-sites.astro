@@ -37,7 +37,7 @@ const steps = [
     skills: ['search-console-insights: geo_check.py'],
     points: [
       'Asks ChatGPT, Claude, Gemini and Perplexity, and optionally Google AI Mode and AI Overview, your customer’s own questions, without naming the business.',
-      'Where an engine allows it, two answers: “knows you” from memory, and “finds you” with web search on, which lists the sources the engine returned. Gemini gives the first only. Perplexity through OpenRouter and Google’s own AI answers give the second only. For Perplexity, the AI check reports how often your site was among its search results, not how often it was cited, because the check does not tell which of those results the answer quotes.',
+      'Where an engine allows it, two answers: “knows you” from memory, and “finds you” with web search on, which lists the sources the engine returned. Gemini gives the first only. Perplexity through OpenRouter and Google’s own AI answers give the second only. For Perplexity, the AI check reports how often your site was among the sources it returned, not how often it was cited, because the check does not tell which of those sources the answer quotes.',
       'Three question slots: broad, narrow and branded. The branded answer is read for accuracy and is not scored.',
       'Needs no Search Console access. It needs a key for each assistant you ask, or one OpenRouter key for all four. On a large site, use each assistant’s own key: your market’s country is then sent with the searches of ChatGPT, Claude and Perplexity. The toolkit sends no country through OpenRouter today.',
     ],
