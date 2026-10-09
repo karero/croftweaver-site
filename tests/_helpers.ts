@@ -13,6 +13,7 @@ export const PAGES = [
   '/compare',
   '/roadmap',
   '/established-sites',
+  '/partner-assets',
   '/privacy',
   '/imprint',
 ] as const;

@@ -140,11 +140,17 @@ const ogLocale = ogLocaleFor(lang);
     <main id="main"><slot /></main>
     <!-- Every page links the legal pages (GDPR: reachable from anywhere). -->
     <footer class="site-footer">
-      <span>Built with Croftweaver</span>
+      <!-- The badge from the partner kit (public/brand/badge, unchanged); /partner-assets says how to use it.
+           The one that matches the theme is shown (global.css). -->
+      <a class="badge" href="/partner-assets">
+        <img class="badge-light" src="/brand/badge/built-with-croftweaver-light.svg" alt="Built with Croftweaver" width="179" height="32" loading="lazy" decoding="async" />
+        <img class="badge-dark" src="/brand/badge/built-with-croftweaver-dark.svg" alt="Built with Croftweaver" width="179" height="32" loading="lazy" decoding="async" />
+      </a>
       <a href="https://github.com/karero/croftweaver">GitHub</a>
       <a href="/why">Why</a>
       <a href="/compare">Alternatives</a>
       <a href="/roadmap">Roadmap</a>
+      <a href="/partner-assets">Partner assets</a>
       <a href="/imprint">Imprint</a>
       <a href="/privacy">Privacy Policy</a>
     </footer>

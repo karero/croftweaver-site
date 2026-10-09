@@ -1,0 +1,280 @@
+---
+// /partner-assets: the Croftweaver partner kit (badge, logo, icon) and the request for a credit.
+// Positioning term (tests/positioning.spec.ts): "partner assets", in the title, the description and the H1.
+// The files are the owner's partner kit, copied unchanged into public/brand/ (2026-10-09). The rules for
+// using them come from the kit's README (the owner's folder assets/partner-kit, not in this repository,
+// and it names a placeholder domain); this page is their source now. The code on this page uses SITE.url.
+// tests/navigation.spec.ts checks that every file in public/brand is offered as a download, that every
+// address in the code works, and that the HTML code works under the default security rules of a Croftweaver
+// site (the template's Content-Security-Policy allows images from the site itself only, so the HTML code
+// points at files the partner saves on their own site; only the Markdown for a README links to this site).
+// The credit is a request, never a condition: MIT asks only that the copyright and licence notice stay
+// with copies of the software (owner, 2026-10-09: "can we ask people for attribution?").
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+const alt = 'Built with Croftweaver';
+const hosted = `${SITE.url}/brand`;
+const back = `${SITE.url}/partner-assets?ref=badge`;
+// Where the HTML code expects the badge files on the partner's own site (public/brand/badge/ in Astro).
+const dir = '/brand/badge';
+
+// Standard badges are 32 px tall, small ones 24 px; "on" is the background a variant is made for.
+const badges = [
+  { name: 'Light', file: 'built-with-croftweaver-light', width: 179, height: 32, on: 'light', use: 'For a light page.' },
+  { name: 'Dark', file: 'built-with-croftweaver-dark', width: 179, height: 32, on: 'dark', use: 'For a dark page.' },
+  { name: 'Small, light', file: 'built-with-croftweaver-small-light', width: 156, height: 24, on: 'light', use: 'For a tight footer, on a light page.' },
+  { name: 'Small, dark', file: 'built-with-croftweaver-small-dark', width: 156, height: 24, on: 'dark', use: 'For a tight footer, on a dark page.' },
+] as const;
+
+const inks = [
+  { id: 'dark', name: 'Dark ink', on: 'light', hex: '#1a1f1b', use: 'For light backgrounds.' },
+  { id: 'moss', name: 'Moss', on: 'light', hex: '#2e6e4e', use: 'For light backgrounds only.' },
+  { id: 'light', name: 'Light ink', on: 'dark', hex: '#e3e8e1', use: 'For dark backgrounds.' },
+] as const;
+const logoWidths = [480, 960, 1920];
+const iconSizes = [64, 256, 512];
+
+// One link per file: the label a visitor sees, and a longer name for assistive technology.
+const file = (title: string, label: string, href: string) => ({ label, href, name: `${title}, ${label}` });
+
+// The code to paste. Every snippet links back to this page; the image carries what the checks of a
+// Croftweaver site ask of an image: a description, a size and a loading setting.
+// One attribute group per line, so that the code reads without scrolling; `indent` is where the tag starts.
+const image = (name: string, w: number, h: number, indent: string) =>
+  `${indent}<img src="${dir}/${name}.svg"\n${indent}     alt="${alt}"\n${indent}     width="${w}" height="${h}"\n${indent}     loading="lazy" decoding="async">`;
+// The files a snippet needs on the partner's own site, said in its note.
+const needs = (names: string[]) => (names.length ? ` Needs ${names.length === 1 ? 'the file' : 'the files'} ${names.map((n) => `${n}.svg`).join(' and ')}.` : '');
+const linked = (name: string, w: number, h: number) => `<a href="${back}" title="${alt}">\n${image(name, w, h, '  ')}\n</a>`;
+const snippets = [
+  {
+    title: 'Follows light and dark',
+    note: 'The badge changes with the visitor\'s own setting. A good choice if you are not sure.' + needs(['built-with-croftweaver-light', 'built-with-croftweaver-dark']),
+    code:
+      `<a href="${back}" title="${alt}">\n  <picture>\n    <source srcset="${dir}/built-with-croftweaver-dark.svg"\n            media="(prefers-color-scheme: dark)">\n` +
+      `${image('built-with-croftweaver-light', 179, 32, '    ')}\n  </picture>\n</a>`,
+  },
+  { title: 'Light badge', note: 'For a page with a light background.' + needs(['built-with-croftweaver-light']), code: linked('built-with-croftweaver-light', 179, 32) },
+  { title: 'Dark badge', note: 'For a page with a dark background.' + needs(['built-with-croftweaver-dark']), code: linked('built-with-croftweaver-dark', 179, 32) },
+  {
+    title: 'Small badge',
+    note: 'Swap light for dark in the file name to get the dark one.' + needs(['built-with-croftweaver-small-light']),
+    code: linked('built-with-croftweaver-small-light', 156, 24),
+  },
+  {
+    title: 'Markdown',
+    note: 'For a README, or any page that may show an image from another site. It links to the file on this site. Where images must come from your own site, save the file and use the HTML above.',
+    code: `[![${alt}](${hosted}/badge/built-with-croftweaver-light.svg)](${back})`,
+  },
+  { title: 'Text only', note: 'If a badge does not suit your design.', code: `Built with <a href="${back}">Croftweaver</a>` },
+];
+---
+<Base
+  title="Partner assets: badge, logo and icon"
+  description="Partner assets for Croftweaver: the Built with Croftweaver badge, the logo and icon to download, with the code for your footer and the rules for using them."
+  image="/images/og/partner-assets.jpg"
+>
+  <section class="wrap hero">
+    <h1>Partner assets: badge, logo and icon</h1>
+    <p class="lead">
+      Built a site with Croftweaver, or writing about it? Here are the badge, the logo
+      and the icon to download, and the code to paste the badge into your footer.
+    </p>
+    <p class="aside">
+      You do not have to credit Croftweaver. A credit is a request, never a condition of
+      using it. If you do add the badge, a link back to this page helps the next person
+      find Croftweaver. <a href="#credit">More on crediting</a>.
+    </p>
+    <p>
+      New here? A badge like this on another site means it was built with Croftweaver, a
+      set of skills that lets an AI coding assistant build and test a website. The
+      <a href="/">home page</a> explains how.
+    </p>
+  </section>
+
+  <section class="wrap" id="badge">
+    <h2>The Built with Croftweaver badge</h2>
+    <p>
+      The badge says in three words that a site was built with Croftweaver. It comes in
+      two sizes and two looks: light for a light page, dark for a dark one. Use the SVG
+      where you can, because it stays sharp at every size and is small. The PNG is for
+      places where SVG does not work, such as an email.
+    </p>
+    <div class="grid">
+      {badges.map((b) => (
+        <article class="card asset">
+          <h3>{b.name}</h3>
+          <div class={`preview on-${b.on}`}>
+            <img src={`/brand/badge/${b.file}.svg`} alt={alt} width={b.width} height={b.height} loading="lazy" decoding="async" />
+          </div>
+          <p class="use">{b.use} {b.width} by {b.height} px.</p>
+          <ul class="files">
+            {[
+              file(`${b.name} badge`, 'SVG', `/brand/badge/${b.file}.svg`),
+              file(`${b.name} badge`, 'PNG', `/brand/badge/${b.file}.png`),
+              file(`${b.name} badge`, 'PNG at 2x', `/brand/badge/${b.file}-2x.png`),
+            ].map((f) => <li><a href={f.href} download aria-label={f.name}>{f.label}</a></li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap" id="footer-code">
+    <h2>Put the badge in your footer</h2>
+    <p>
+      Two steps. First save the badge files you want in the <code>public/brand/badge/</code>
+      folder of your own site: the files are in the section above. Then paste one of these
+      into your footer. Your site then serves the badge itself, so no visitor's browser
+      contacts another site. That also keeps the security rules of a Croftweaver site as
+      they are: they allow images from the site itself and from no other site, so an
+      image served from croftweaver.com would be blocked.
+    </p>
+    <p>
+      The HTML versions already have what the Croftweaver checks ask of an image: a
+      description, a size and a loading setting. Each one links back to this page.
+    </p>
+    {snippets.map((s) => (
+      <div class="snippet">
+        <h3>{s.title}</h3>
+        <p class="use">{s.note}</p>
+        <pre class="message"><code>{s.code}</code></pre>
+      </div>
+    ))}
+  </section>
+
+  <section class="wrap" id="logo">
+    <h2>Logo and icon</h2>
+    <p>
+      The logo is the mark with the name beside it. The icon is the mark alone. Both come
+      as SVG and as PNG with a transparent background. Prefer the SVG. Choose the colour
+      by the background it will sit on.
+    </p>
+    <p>
+      In the file names of the logo and the icon, light and dark describe the ink, not the
+      page: light ink is for dark backgrounds. The badges are the other way round: the
+      light badge is for a light page.
+    </p>
+    <h3>Logo</h3>
+    <div class="grid">
+      {inks.map((ink) => (
+        <article class="card asset">
+          <h4>{ink.name}</h4>
+          <div class={`preview on-${ink.on}`}>
+            <img src={`/brand/logo/croftweaver-logo-${ink.id}.svg`} alt="Croftweaver" width="280" height="35" loading="lazy" decoding="async" />
+          </div>
+          <p class="use">{ink.use}</p>
+          <ul class="files">
+            {[
+              file(`${ink.name} logo`, 'SVG', `/brand/logo/croftweaver-logo-${ink.id}.svg`),
+              ...logoWidths.map((w) => file(`${ink.name} logo`, `PNG ${w} px`, `/brand/logo/croftweaver-logo-${ink.id}-${w}w.png`)),
+            ].map((f) => <li><a href={f.href} download aria-label={f.name}>{f.label}</a></li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <h3>Icon</h3>
+    <div class="grid">
+      {inks.map((ink) => (
+        <article class="card asset">
+          <h4>{ink.name}</h4>
+          <div class={`preview on-${ink.on}`}>
+            <img src={`/brand/icon/croftweaver-icon-${ink.id}.svg`} alt="Croftweaver" width="64" height="64" loading="lazy" decoding="async" />
+          </div>
+          <p class="use">{ink.use}</p>
+          <ul class="files">
+            {[
+              file(`${ink.name} icon`, 'SVG', `/brand/icon/croftweaver-icon-${ink.id}.svg`),
+              ...iconSizes.map((s) => file(`${ink.name} icon`, `PNG ${s} px`, `/brand/icon/croftweaver-icon-${ink.id}-${s}.png`)),
+            ].map((f) => <li><a href={f.href} download aria-label={f.name}>{f.label}</a></li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <h3>The colours</h3>
+    <dl class="colours">
+      {inks.map((ink) => (
+        <div>
+          <dt><span class="swatch" style={`background: ${ink.hex}`} aria-hidden="true"></span>{ink.name} <code>{ink.hex}</code></dt>
+          <dd>{ink.use}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="wrap" id="rules">
+    <h2>Using the kit</h2>
+    <p>We ask you to follow these, so that the logo and the badge stay recognisable.</p>
+    <ul class="steps">
+      <li>Use the badge only on a site that was built with Croftweaver.</li>
+      <li>Write the name as Croftweaver: a capital C, one word.</li>
+      <li>Leave clear space around the mark and the logo: a quarter of the mark's height on every side.</li>
+      <li>Keep the files at least this size: icon 16 px, logo 20 px tall, badge 32 px tall (24 px for the small badge).</li>
+      <li>Use the logo and the icon in one colour only, and the badge as it is. Do not recolour, stretch, rotate or outline any of them, add effects, or rearrange them.</li>
+      <li>Keep the alt text, the written description of the image: Croftweaver for the logo, Built with Croftweaver for the badge.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="credit">
+    <h2>Crediting Croftweaver</h2>
+    <p>
+      Croftweaver is free and MIT-licensed. The licence asks one thing of you: keep its
+      copyright and licence notice, the text in the <a href={`${SITE.repo}/blob/main/LICENSE`}>LICENSE file</a>
+      of its repository, with any copy or substantial part of Croftweaver. Seven of its skills
+      are derived from another MIT-licensed project, and their notice, in
+      <a href={`${SITE.repo}/blob/main/THIRD-PARTY-LICENSES.md`}>THIRD-PARTY-LICENSES.md</a>,
+      goes with them. The licence does not ask you to credit Croftweaver on the sites you
+      build, and we do not make a credit a condition. This is a short summary: the licence
+      files are the text that counts.
+    </p>
+    <p>
+      We would still be glad of one. If your site was built with Croftweaver, the badge in
+      your footer, linking back to this page, helps the next person find it. If a badge does
+      not suit your design, a plain text link works too.
+    </p>
+    <p class="note">This is a request, not a rule. Leaving the badge out breaks no term of the Croftweaver licence.</p>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.5rem; }
+  .note, .use { color: var(--muted); }
+  pre {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem; margin: 0.6rem 0;
+  }
+  /* The code is pasted, not run, so long lines wrap instead of scrolling (and need no tab stop). */
+  pre.message { white-space: pre-wrap; overflow-wrap: anywhere; hyphens: none; }
+  code { font-size: 0.95rem; }
+  .snippet { margin-top: 1.4rem; }
+  .snippet h3 { margin: 0 0 0.2rem; font-size: 1.05rem; }
+  .snippet p { margin: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+  .asset { display: flex; flex-direction: column; gap: 0.7rem; }
+  .asset h3, .asset h4 { margin: 0; font-size: 1.05rem; line-height: 1.3; }
+  .asset .use { margin: 0; font-size: 0.95rem; }
+  /* A swatch in the colour the variant is made for, the same in both themes: the dark ink would vanish on a
+     dark card. Brand colours, fixed (BRAND.md). */
+  .preview {
+    display: flex; align-items: center; justify-content: center; min-height: 5.5rem;
+    padding: 1rem; border-radius: var(--radius); border: 1px solid var(--line);
+  }
+  .preview.on-light { background: #ffffff; }
+  .preview.on-dark { background: #1a1f1b; border-color: #1a1f1b; }
+  .preview img { max-width: 100%; height: auto; }
+  .files { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1.1rem; }
+  /* 44px minimum tap target on every link (BRAND.md, mobile rules). */
+  .files a { display: inline-flex; align-items: center; min-height: 44px; }
+  .colours { max-width: 46rem; margin: 0.8rem 0 0; }
+  .colours > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.9rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
+  .colours dt { font-weight: 600; }
+  .colours dd { margin: 0; color: var(--muted); }
+  .swatch { display: inline-block; width: 0.9rem; height: 0.9rem; margin-right: 0.45rem; border-radius: 50%; border: 1px solid var(--line); vertical-align: -0.1rem; }
+</style>
