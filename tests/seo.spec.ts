@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, ogLocaleFor } from '../src/config';
+import { plain } from '../src/data/established-faq';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -154,7 +155,9 @@ async function faqMarkup(page: import('@playwright/test').Page) {
 for (const path of PAGES) {
   test(`seo — FAQPage markup matches the visible questions on ${path}`, async ({ page }) => {
     await page.goto(path);
-    for (const faq of await faqMarkup(page)) {
+    const faqs = await faqMarkup(page);
+    expect(faqs.length, 'a page may carry only one FAQPage').toBeLessThanOrEqual(1);
+    for (const faq of faqs) {
       expect(faq.mainEntity.length, 'FAQPage markup should hold at least one question').toBeGreaterThan(0);
       for (const q of faq.mainEntity) {
         const shown = await page.evaluate((name: string) => {
@@ -170,13 +173,24 @@ for (const path of PAGES) {
   });
 }
 
+// plain() turns an answer's HTML into the text of the FAQPage markup. The cases below are ones that
+// went wrong: a line break joined two words, and entities were left encoded or decoded twice.
+test('seo — plain() keeps line breaks apart and decodes each entity once', () => {
+  expect(plain('<p>A<br>B</p>')).toBe('A B');
+  expect(plain('<p>One</p><ul><li>Two</li><li>Three</li></ul>')).toBe('One Two Three');
+  expect(plain('Q&amp;A, it&#39;s &quot;fine&quot; &copy; 2026&nbsp;ok')).toBe('Q&A, it\'s "fine" © 2026 ok');
+  expect(plain('&#38;quot; stays text, &#x41; is A')).toBe('&quot; stays text, A is A');
+});
+
 // The check above passes for a page with no FAQ markup, so a deleted schema would quietly drop the
-// coverage. /established-sites carries its questions in markup: one per visible question.
-test('seo — /established-sites keeps its FAQPage markup, one question per visible question', async ({ page }) => {
+// coverage. /established-sites carries its questions in markup: the same questions as the visible ones,
+// in the same order, so a duplicate or a missing one fails here.
+test('seo — /established-sites keeps its FAQPage markup, the same questions as the visible ones', async ({ page }) => {
   await page.goto('/established-sites');
   const [faq] = await faqMarkup(page);
   expect(faq, '/established-sites must carry FAQPage markup').toBeTruthy();
-  expect(faq.mainEntity.length).toBe(await page.locator('#faq h4').count());
+  const visible = (await page.locator('#faq h4').allTextContents()).map((q) => q.trim());
+  expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual(visible);
 });
 
 // "Its own" means DISTINCT: two non-exempt pages pointing at the same card is a wiring
