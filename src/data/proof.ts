@@ -5,7 +5,7 @@
 // re-measure all three before changing the date.
 import searchCsv from '../../public/data/genai-wednesday-de-search-console.csv?raw';
 import aiCsv from '../../public/data/genai-wednesday-de-ai-check.csv?raw';
-import { sentence } from './ai-words';
+import { answers as answersWord, sentence } from './ai-words';
 
 export const PROOF_MEASURED = { iso: '2026-10-04', label: '4 October 2026' } as const;
 
@@ -139,10 +139,14 @@ const checks: Check[] = aiLines.slice(1).map((line, i) => {
   const group = `${m[1]},${m[2]},${m[3]}`;
   questionsOf.set(group, [...(questionsOf.get(group) ?? []), m[4]!]);
   const row = { date: m[1]!, engine: m[2]!, mode: m[3] as Mode, answers: Number(m[5]), named: Number(m[6]), cited: Number(m[7]), failed: Number(m[8]) };
-  // Counts the words cannot carry. The export script refuses them too; this is the page's own guard against a hand edit,
-  // on every row, so a question that is out of bounds is not hidden in a total that is not.
+  // Counts the words cannot carry: too large to compare exactly (two huge numbers can round to one), or named or cited
+  // above the answers. The export script refuses the second too; this is the page's own guard against a hand edit, on
+  // every row, so a question that is out of bounds is not hidden in a total that is not.
+  if (![row.answers, row.named, row.cited, row.failed].every(Number.isSafeInteger)) {
+    throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2}: a count is too large to compare exactly: "${line}".`);
+  }
   if (row.named > row.answers || row.cited > row.answers) {
-    throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2}: ${row.named} named and ${row.cited} cited cannot be more than the ${row.answers} answers: "${line}".`);
+    throw new Error(`genai-wednesday-de-ai-check.csv, line ${i + 2}: ${row.named} named and ${row.cited} cited cannot be more than ${answersWord(row.answers)}: "${line}".`);
   }
   return row;
 });
