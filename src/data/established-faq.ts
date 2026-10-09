@@ -1,6 +1,8 @@
 // The questions and answers at the bottom of /established-sites, in four groups.
-// Source: the reviewed FAQ the owner supplied on 9 October 2026 (two deliberate edits: no dollar
-// figure in the cost answer, and the AI check "returns" sources where it cannot say they are citations).
+// Source: the reviewed FAQ the owner supplied on 9 October 2026. Deliberate edits: no dollar figure in the
+// cost answer; the AI check "returns" sources where it cannot say they are citations; the answers on
+// several audiences and on facts say only what the toolkit's skills document; six questions added so each
+// of the four groups holds six (the owner's rule: six ideally, eight at most).
 // Answers are HTML written here, so the same text feeds the page and the FAQPage structured data.
 // Status as of 9 October 2026: the facts check and the positioning check of live pages are built and in
 // review (toolkit pull request 230), not merged. The answers on several audiences, facts and "what can
@@ -14,12 +16,20 @@ export const FAQ_GROUPS: FaqGroup[] = [
     title: 'Getting started',
     items: [
       {
+        q: 'Is SEO still worth it with AI?',
+        a: '<p>Our view: yes, as the base. AI assistants that search the web list the pages they returned, so a site that is correct, well structured and easy to find serves both search and AI answers. What changes is how you are found: by link in a list, and by name in an answer. The AI check shows the second one for your own company.</p>',
+      },
+      {
         q: 'Where should I start?',
         a: '<p>With the pages Google already shows. Connect Search Console, pull the last 90 days and list the pages with the most impressions. Write three questions your buyers ask and run the first AI check. Then work on the top 10 pages before you plan new ones.</p>',
       },
       {
         q: 'How do we pick the first 10, 25 or 50 pages?',
         a: '<p>Your assistant sorts the Search Console data: pages with many impressions, searches at positions 8 to 20, and pages that are seen often but rarely clicked. Your team adds what the data cannot know: which pages sell, and which are about to change. Start with 10, and widen to 25 and then 50 once the first changes are measured.</p>',
+      },
+      {
+        q: 'What do we need before we start?',
+        a: '<p>Three things: access to the site’s Search Console, which needs a one-time setup with a Google Cloud project and a read-only sign-in; an AI coding assistant; and keys for the AI services the weekly check asks. On a large site, use each assistant’s own key, because only those send your market’s country with the search. One OpenRouter key is the simpler start. Optional keys add Bing, the live top 10 and Google’s own AI answers. Write access to the code is needed only when changes are made.</p>',
       },
       {
         q: 'Do we need a new site or CMS first?',
@@ -37,6 +47,10 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         q: 'Can AI replace my SEO agency?',
         a: '<p>AI will take over much of the repeatable agency work, but not all of it, and Croftweaver does not try to replace the rest. AI does the repeatable work well: audits, structured data, drafts, checks and reports. On a corporate site it can do much of that work with people in charge. People still set the direction, decide which markets are worth pursuing, approve what the brand and legal team can say, build relationships and answer for the result. What changes is what you can check yourself: where the site stands, and what moved.</p>',
+      },
+      {
+        q: 'Can AI do SEO for a corporate site?',
+        a: '<p>It can do much of the work, with people in charge. Croftweaver gives your assistant the steps: check the live site, find the pages Google already shows, add structured data, write guard tests and measure the result. It cannot decide which markets are worth pursuing, check a claim against your legal rules or earn trust for your brand. Those stay with your team and your partners.</p>',
       },
       {
         q: 'Which work stays in-house?',
@@ -70,15 +84,19 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: 'How does that work on a corporate site with several audiences?',
-        a: '<p>A large company often speaks to several groups at once, for example buyers, job applicants and investors. Each group gets its own positioning: what it would use instead, what you offer it, and why it should believe you. What stays the same for every group is the company itself: one name, one category, one set of facts.</p><p>Every page then belongs to one audience and carries that audience’s term in its title, its description and its main heading. In most CMSs this is one field per page. A check reads the published pages, on staging or on the live site, and lists every page that has lost its term. Your team decides whether the page or the term needs to change.</p><p>The weekly AI check asks the questions each audience would ask, so you can see which audience the assistants already understand.</p><p>Croftweaver ships the positioning method, and the test for sites built with its starter. The check of the published pages on any other system is in review.</p>',
+        a: '<p>A large company often speaks to several groups at once, for example buyers, job applicants and investors. Each group gets its own positioning: what it would use instead, what you offer it, and why it should believe you. What stays the same for every group is the company itself: one name, one category, one set of facts.</p><p>Every page then belongs to one audience and carries that audience’s term in its title, its description and its main heading. In most CMSs this is one field per page. A check reads the published pages, on staging or on the live site, and lists every page that has lost its term. Your team decides whether the page or the term needs to change.</p><p>The weekly AI check asks two buyer questions per site today. Word them for the audience you care about most, and read the answers for that audience; checking several audiences side by side is not built yet.</p><p>Croftweaver ships the positioning method, and the test for sites built with its starter. The check of the published pages on any other system is in review.</p>',
       },
       {
         q: 'How can AI keep our facts consistent?',
-        a: '<p>Your team keeps one list of approved facts, each with a source and an owner. The facts check (in review) reads every page and compares each figure with that list, then reports every mismatch with the page and the sentence it is in. It does the same for your profiles on review sites and directories, and reads what AI assistants say about you, to see which wrong figure has already spread. After the cleanup, the check runs again with every change.</p>',
+        a: '<p>Your team keeps one list of approved facts, each with a source and an owner. The facts check (in review) reads every page and compares each figure with that list, then reports every mismatch with the page and the sentence it is in. It does the same for your profiles on review sites and directories. The weekly AI check’s question about your company, read for accuracy, shows which wrong figure has already spread to the assistants. After the cleanup, run the check weekly, and again after any change to a fact.</p>',
       },
       {
         q: 'How can we tell whether AI assistants name our company?',
         a: '<p>Ask the same buyer questions every week, without naming the company, and count how often each assistant names it. The AI check does this for ChatGPT, Claude, Gemini and Perplexity, and optionally Google’s AI Mode and AI Overview, and, with web search on, lists the sources each one returned. A third question asks what each assistant knows about your company; it is read for accuracy, not counted. The check counts mentions. It does not tell you whether an assistant recommends you.</p>',
+      },
+      {
+        q: 'What if assistants quote directories and review sites instead of our own pages?',
+        a: '<p>Then those profiles are the next job. The AI check lists the sources each assistant returned, so you can see which sites an answer draws on. If they are directories, review sites or press pages, make sure your profile there states the same facts as your site and links to it. Croftweaver covers directory and profile links, and requests for links from existing partners, sponsors and speakers. It does not do cold outreach or bought links.</p>',
       },
     ],
   },
@@ -88,6 +106,14 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         q: 'Is it safe to let an AI assistant change a corporate site?',
         a: '<p>Treat it like any other contributor. The assistant proposes a change, your team reviews it, and it goes through your own staging, approval and rollback. Have your security team approve the assistant first, and check each provider’s terms before confidential questions leave your network. The scripts make no call to a Croftweaver server, and the Search Console sign-in stays on your own computer.</p>',
+      },
+      {
+        q: 'Who inside the company needs to be involved?',
+        a: '<p>Four roles matter. Your security team approves the AI assistant and checks the providers’ terms. The owner of the site or CMS gives access and runs staging and rollback. Brand and legal approve what the pages may say. And one person approves each change. In a four-week pilot on one section of the site, that can be a small group.</p>',
+      },
+      {
+        q: 'Which data leaves our network?',
+        a: '<p>The buyer questions of the AI check go to the AI services you choose: straight to OpenAI, Anthropic, Google and Perplexity with their own keys, or through OpenRouter. If you use SerpApi for Google’s AI answers, those questions go there too, and the search phrases for the live top 10 go to Serper or SerpApi if you use one. Your assistant sees what you give it. The Search Console sign-in, the history and the saved answers stay on the computer that runs the skills. Nothing goes to Croftweaver. Check each provider’s terms before confidential questions leave your network.</p>',
       },
       {
         q: 'Does Croftweaver replace our SEO tools or our agency’s reports?',
