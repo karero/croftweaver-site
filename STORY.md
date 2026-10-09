@@ -119,13 +119,13 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, three short outcomes (one per §7 line), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
+| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (§1: "For founders, communities, experts and small teams."), three short outcomes (one per §7 line), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
 | 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
-| 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail | no |
+| 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
-| 7 | Junk drawer | the detail sections (built in, the test suites, the weekly loop, "The site is yours", fit, quickstart), the learning section below, then the sign-off | yes |
+| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; quickstart, which leads with the one-prompt route), the learning section below, then the sign-off | yes |
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
@@ -147,3 +147,14 @@ The owner approved the passage on 2026-10-08, in the first person, with a byline
 description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would put a thirteenth suite on the home page
 and on `/checks` that most sites do not have, while POSITIONING.md §2 says 12. The direct
 CTA, the one-liner and the plan are guarded by review instead.
+
+## Changes after a fresh-eyes check (owner, 2026-10-09)
+
+A fresh reader (a model that saw only the page text) understood the offer in five seconds and
+named three things: the first real step looked like a command-line install although the page says
+no coding is needed; the audience appeared only in "Where it fits", near the end; and attention
+dropped in the long lists of what ships and which suites check it. The owner approved three changes:
+the quickstart leads with the one-prompt route, and the hero says who it is for and that no coding
+is needed to start; "What changes for you" gets one concrete scene; and the two detail sections
+about what is built in and what checks it become one short section that links to `/checks`. The
+direct call to action keeps its label (§5).
