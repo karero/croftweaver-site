@@ -179,6 +179,7 @@ is built.
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
 | Positioning | `/positioning` | positioning | — | live |
+| Partner assets | `/partner-assets` | partner assets | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 

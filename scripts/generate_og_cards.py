@@ -76,6 +76,7 @@ PAGES: list[tuple[str, str, list[str]]] = [
     ("roadmap", "Roadmap", ["What is missing, what comes next,", "and what stays out on purpose."]),
     ("established-sites", "Croftweaver for established sites", ["Know what to fix.", "Check what changed."]),
     ("positioning", "Positioning first", ["What your site says,", "decided before the copy."]),
+    ("partner-assets", "Partner assets", ["Badge, logo and icon", "for sites built with Croftweaver."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
 ]

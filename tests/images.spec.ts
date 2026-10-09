@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { PAGES } from './_helpers';
+import { PAGES, THEMES } from './_helpers';
 
 // Enforces the image rules on every rendered <img> AND every <picture><source>:
 // a non-empty alt (or an intentional empty alt), explicit width+height (no layout
@@ -72,5 +72,65 @@ for (const path of PAGES) {
       }
     }
     expect(problems, `image issues on ${path}:\n${problems.map((p) => '  • ' + p).join('\n')}`).toEqual([]);
+  });
+}
+
+// Site-specific (not in the shipped suite): the "Built with Croftweaver" badge in the footer (public/brand/badge, the
+// partner kit) is on every page and links to /partner-assets, next to a plain text link to the same page. Each
+// variant is a pill with its own background; the one that matches the theme is shown, and only that one. (A rule
+// that outranked the one hiding the dark badge once showed both.) A visitor's stored theme beats their system
+// setting, so all four combinations are tested: a stored light theme under a dark system setting must show the
+// light badge, which is what the :not([data-theme]) in the media rules of global.css is for.
+test('footer badge: every page carries it, linked to /partner-assets, with the kit\'s description and size', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const badge = page.locator('.site-footer a.badge');
+    await expect(badge, `${path}: the footer has no badge`).toHaveCount(1);
+    await expect(badge, `${path}: the badge does not link to /partner-assets`).toHaveAttribute('href', '/partner-assets');
+    for (const variant of ['light', 'dark']) {
+      const img = badge.locator(`img.badge-${variant}`);
+      await expect(img, `${path}: the ${variant} badge file`).toHaveAttribute('src', `/brand/badge/built-with-croftweaver-${variant}.svg`);
+      await expect(img, `${path}: the ${variant} badge description`).toHaveAttribute('alt', 'Built with Croftweaver');
+      await expect(img, `${path}: the ${variant} badge width`).toHaveAttribute('width', '179');
+      await expect(img, `${path}: the ${variant} badge height`).toHaveAttribute('height', '32');
+    }
+    await expect(page.locator('.site-footer a:not(.badge)[href="/partner-assets"]'), `${path}: no text link to the partner assets in the footer`)
+      .toHaveText('Partner assets');
+  }
+});
+
+const shownBadges = (page: import('@playwright/test').Page) =>
+  page.locator('.site-footer a.badge img').evaluateAll((imgs) =>
+    imgs.filter((i) => (i as HTMLElement).checkVisibility()).map((i) => i.className));
+
+for (const system of ['light', 'dark'] as const) {
+  test.describe(`footer badge under a ${system} system setting`, () => {
+    test.use({ colorScheme: system });
+    for (const theme of THEMES) {
+      test(`footer badge: a stored ${theme} theme shows the ${theme} variant and no other, and its file loads`, async ({ page }) => {
+        await page.addInitScript((t) => {
+          try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
+        }, theme);
+        await page.goto('/');
+        await page.locator('.site-footer').scrollIntoViewIfNeeded();
+        expect(await shownBadges(page), `a stored ${theme} theme under a ${system} system setting should show exactly the ${theme} badge`).toEqual([`badge-${theme}`]);
+        const img = page.locator(`.site-footer img.badge-${theme}`);
+        await expect.poll(() => img.evaluate((i) => (i as HTMLImageElement).naturalWidth), { message: 'the badge file did not load' }).toBe(179);
+        const box = await page.locator('.site-footer a.badge').boundingBox();
+        expect(box, 'the badge link is not rendered').not.toBeNull();
+        expect(box!.height, 'the badge link is shorter than the 44px tap target (BRAND.md)').toBeGreaterThanOrEqual(44);
+      });
+    }
+  });
+}
+
+// Without JavaScript nothing sets the theme, so the visitor's own setting decides (global.css).
+for (const system of ['light', 'dark'] as const) {
+  test.describe(`footer badge without JavaScript, ${system} system setting`, () => {
+    test.use({ javaScriptEnabled: false, colorScheme: system });
+    test(`footer badge: a ${system} system setting shows the ${system} variant`, async ({ page }) => {
+      await page.goto('/');
+      expect(await shownBadges(page)).toEqual([`badge-${system}`]);
+    });
   });
 }

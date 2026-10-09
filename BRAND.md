@@ -33,6 +33,11 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
   `tests/a11y.spec.ts` checks that the copy still matches the dark-ink file with exactly
   these edits, and in both themes that every drawing element of the header logo is
   visible and renders in the header colour, at 3:1 against the background.
+- The partner kit (the owner's package, received 2026-10-08) is in `public/brand/` (badge, icon, logo),
+  unchanged and offered for download on `/partner-assets`; `tests/navigation.spec.ts` checks that every
+  file is offered. Its dark logo is the same drawing as `src/assets/brand/lockup-horizontal-dark-ink.svg`,
+  so when the logo changes, replace both. The footer badge is the kit's light and dark badge
+  (`public/brand/badge/`), one of them shown per theme (`global.css`).
 - The light-ink SVGs are for dark backgrounds the site theme does not cover, such as a
   logo on the share cards (see "Logo on a dark card needs a light variant" under the OG
   spec; the card script needs a PNG made from one).

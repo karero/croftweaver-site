@@ -109,5 +109,17 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 .site-footer {
   max-width: var(--maxw); margin-inline: auto; padding: 1.5rem 1.25rem;
   border-top: 1px solid var(--line); font-size: 0.9rem;
-  display: flex; flex-wrap: wrap; gap: 1rem;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+}
+/* The "Built with Croftweaver" badge (public/brand/badge, the partner kit). Each variant is a pill with its
+   own background, so either reads on either theme; the one that matches the theme is shown. The link is
+   44px tall like the header links (BRAND.md, mobile rules). */
+.site-footer .badge { display: inline-flex; align-items: center; min-height: 44px; }
+.site-footer .badge-light { display: block; }
+.site-footer .badge-dark { display: none; }
+:root[data-theme="dark"] .site-footer .badge-light { display: none; }
+:root[data-theme="dark"] .site-footer .badge-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .site-footer .badge-light { display: none; }
+  :root:not([data-theme]) .site-footer .badge-dark { display: block; }
 }
