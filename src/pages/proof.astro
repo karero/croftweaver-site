@@ -8,13 +8,13 @@ import Base from '../layouts/Base.astro';
 import ClicksChart from '../components/ClicksChart.astro';
 import AiCheckChart from '../components/AiCheckChart.astro';
 import { SITE } from '../config';
-import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
+import { PROOF, PROOF_MEASURED, SITE_PROOF, nameList } from '../data/proof';
 
 const p = SITE_PROOF;
 const speed = PROOF.find((entry) => entry.site === p.site)!;
 const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
 const { latest, peak, blocks, positionsPeriod, rolling, rollingFrom, fileFrom, firstImpression } = p.search;
-const { allFailed } = p.ai;
+const { allFailed, notRun } = p.ai;
 const google = (query: string) => `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 // The text alternative of each chart says what the picture shows, with the same numbers.
 const first = rolling[0]!;
@@ -22,13 +22,15 @@ const clicksDesc =
   `Line chart of Google Search Console clicks in the 28 days up to each date, from ${rollingFrom.label} to ${latest.to}. ` +
   `It starts at ${first.clicks} clicks, reaches ${peak.clicks} on ${peak.to}, and ends at ${latest.clicks}. ` +
   'The table in this section gives the clicks in separate 28-day blocks, and the daily figures are in the CSV file linked after it.';
-const calls = (n: number) => `${n} ${n === 1 ? 'call' : 'calls'}`;
-const everyCallFailed = `Every call to ${allFailed.join(' and ')} failed`;
+const failedCalls = (n: number) => (n === 0 ? 'no call failed' : `${n} ${n === 1 ? 'call' : 'calls'} failed`);
+const everyCallFailed = `Every call to ${nameList(allFailed)} failed`;
+const wereNotRun = `${nameList(notRun)} ${notRun.length === 1 ? 'was' : 'were'} not run that day`;
 const aiDesc =
   `One mark for each call in the AI check of ${p.ai.date.label}: filled for an answer that named the site, hollow for an answer that did not, a dash for a call that failed. ` +
-  `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site, and ${calls(p.ai.withSearch.failed)} failed. ` +
-  `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did, and ${calls(p.ai.withoutSearch.failed)} failed. ` +
+  `With web search, ${p.ai.withSearch.named} of ${p.ai.withSearch.answers} answers named the site, and ${failedCalls(p.ai.withSearch.failed)}. ` +
+  `Without web search, ${p.ai.withoutSearch.named} of ${p.ai.withoutSearch.answers} did, and ${failedCalls(p.ai.withoutSearch.failed)}. ` +
   (allFailed.length > 0 ? `${everyCallFailed}. ` : '') +
+  (notRun.length > 0 ? `${wereNotRun}. ` : '') +
   'The table in this section gives the result for each assistant.';
 ---
 <Base
@@ -146,12 +148,17 @@ const aiDesc =
   <section class="wrap" id="ai">
     <h2>Do AI assistants name it?</h2>
     <p>
-      On <time datetime={p.ai.date.iso}>{p.ai.date.label}</time> the weekly check
-      asked each assistant two questions, up to three times each:
+      On <time datetime={p.ai.date.iso}>{p.ai.date.label}</time> the AI check
+      asked {notRun.length > 0 ? 'the assistants it ran' : 'each assistant'} two questions, up to three times each:
     </p>
     <ol class="steps">
       {p.ai.questions.map((question) => <li><q>{question}</q></li>)}
     </ol>
+    {notRun.length > 0 && (
+      <p>
+        {wereNotRun}. The table shows {notRun.length === 1 ? 'its last result, if it has one' : 'their last results, where they have any'}.
+      </p>
+    )}
     <figure class="card chart">
       <AiCheckChart id="ai" rows={p.ai.chart} title="Which answers named the site, by assistant" desc={aiDesc} />
       <figcaption>
@@ -179,10 +186,21 @@ const aiDesc =
       questions on one day, and answers change from run to run. It talks to each
       assistant through its API, which can answer differently from the app.
     </p>
+    {p.ai.explainZero && (
+      <p>
+        Why the second number is zero: an assistant recalls a name from memory
+        mostly when it met that name often in the text it was trained on, and a
+        name reaches that memory only when a new version of the model is trained.
+        The present site dates from {p.relaunched.label}, which is recent for that.
+        Web search does not rely on that memory, which is the likely reason the
+        first number is higher. The check only counts who names the site. It does
+        not test why, and it asks one model per assistant, not always the largest.
+      </p>
+    )}
     <p class="note">
       The counts behind the table are published:
-      <a href={p.ai.csv}>download the file</a> (CSV, one row per assistant, mode and
-      question).
+      <a href={p.ai.csv}>download the file</a> (CSV, one row per day, assistant, mode
+      and question).
     </p>
     <p class="note">
       This is a different thing from the panel in the

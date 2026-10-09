@@ -132,6 +132,8 @@ const csvRows = (file: string) =>
   readFileSync(new URL(`../public/data/${file}`, import.meta.url), 'utf8').trim().split(/\r?\n/).slice(1).map((line) => line.split(','));
 const longDate = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// Names in a sentence, as the page writes them: "A", "A and B", "A, B and C".
+const list = (names: string[]) => (names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`);
 // A whole-word match, so "50" is not found inside "150".
 const word = (text: string) => new RegExp(`\\b${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
 
@@ -231,8 +233,8 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
 });
 
 test('a11y — the AI check chart on /proof draws the published CSV', async ({ page }) => {
-  const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, , failed]) =>
-    ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), failed: Number(failed) }));
+  const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, cited, failed]) =>
+    ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), cited: Number(cited), failed: Number(failed) }));
   const latest = rows.map((r) => r.date).sort().at(-1)!;
   const today = rows.filter((r) => r.date === latest);
   const counts = (engine: string, mode: string) => {
@@ -248,7 +250,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   };
   const failedCalls = (mode: string) => {
     const n = today.filter((r) => r.mode === mode).reduce((sum, r) => sum + r.failed, 0);
-    return `${n} ${n === 1 ? 'call' : 'calls'} failed`;
+    return n === 0 ? 'no call failed' : `${n} ${n === 1 ? 'call' : 'calls'} failed`;
   };
 
   await page.goto('/proof');
@@ -315,6 +317,22 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
 
   // An assistant whose every call failed is named in the description and in the caption: a
   // row of dashes must not be read as a verdict on the site.
+  // The cell of an assistant in a mode, found by the assistant's name in the table.
+  const tableCellOf = (engine: string, mode: string) => page.locator('#ai tbody tr')
+    .filter({ has: page.locator('th', { hasText: new RegExp(`^${labels.find((l) => l.engine === engine)!.text.replace(/[()]/g, '\\$&')}$`) }) })
+    .locator('td').nth(mode === 'with_search' ? 0 : 1);
+  // The last result of an assistant in a mode as the table gives it: the most recent earlier day on
+  // which it answered, and whether the answers also cited the site and whether calls failed.
+  const lastResult = (engine: string, mode: string) => {
+    const earlier = rows.filter((r) => r.engine === engine && r.mode === mode && r.date < latest);
+    const day = [...new Set(earlier.map((r) => r.date))].sort().reverse()
+      .find((d) => earlier.filter((r) => r.date === d).reduce((n, r) => n + r.answers, 0) > 0);
+    if (!day) return '';
+    const rs = earlier.filter((r) => r.date === day);
+    const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
+    const [gave, named, cited, failed] = [sum('answers'), sum('named'), sum('cited'), sum('failed')];
+    return ` On ${longDate(day)} it ${named > 0 && cited === named ? 'named and cited the site' : 'named it'} in ${named} of ${gave} ${gave === 1 ? 'answer' : 'answers'}.${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
+  };
   const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
     const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
     return modes.every((m) => {
@@ -323,10 +341,77 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     });
   });
   if (failedAll.length > 0) {
-    const said = `Every call to ${failedAll.map((e) => labels.find((l) => l.engine === e)!.text).join(' and ')} failed`;
+    const said = `Every call to ${list(labels.filter((l) => failedAll.includes(l.engine)).map((l) => l.text))} failed`;
     await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
     await expect(page.locator('#ai figcaption'), `the caption does not say "${said}"`).toContainText(said);
+    for (const engine of failedAll) {
+      for (const mode of ['with_search', 'without_search']) {
+        if (!today.some((r) => r.engine === engine && r.mode === mode)) continue;
+        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell of an assistant whose every call failed`)
+          .toHaveText(`No result: every call failed that day.${lastResult(engine, mode)}`);
+      }
+    }
   }
+
+  // An assistant with rows on earlier days and none on the latest was not run that day: the
+  // description and the page say so, and its table cell gives its last result with the day it
+  // comes from. (Not the same as one the check never asks in that mode.)
+  const ranOnLatest = new Set(today.map((r) => r.engine));
+  // Every assistant in the chart with no rows on the latest day was declared not run (the build stops
+  // otherwise), one that has no earlier rows either included.
+  const notRunEngines = labels.map((l) => l.engine).filter((e) => !ranOnLatest.has(e));
+  // The three lists the page reads in src/data/proof.ts, read here as text: the search products (no
+  // mode without web search), the assistants the check does not ask with web search, and the
+  // assistants declared not run on the latest day. The last must be exactly those with no rows.
+  const source = readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8');
+  const listIn = (pattern: string) => (source.match(new RegExp(pattern))?.[1]?.match(/['"][a-z-]+['"]/g) ?? []).map((s) => s.slice(1, -1));
+  const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
+  const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
+  const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
+  expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
+  let notRunSaid = '';
+  if (notRunEngines.length > 0) {
+    // In the order of the chart's rows, which is the order the page uses.
+    const names = labels.filter((l) => notRunEngines.includes(l.engine)).map((l) => l.text);
+    const said = `${list(names)} ${names.length === 1 ? 'was' : 'were'} not run that day`;
+    notRunSaid = said;
+    await expect(svg, `the chart's description does not say "${said}"`).toHaveAccessibleDescription(word(said));
+    // A paragraph of the page, not the section's text: the chart's hidden description says it too.
+    await expect(page.locator('#ai p').filter({ hasText: said }), `the paragraph about the assistants not run reads otherwise`)
+      .toHaveText(`${said}. The table shows ${names.length === 1 ? 'its last result, if it has one' : 'their last results, where they have any'}.`);
+    for (const engine of notRunEngines) {
+      for (const mode of ['with_search', 'without_search']) {
+        const expectedCell = mode === 'without_search' && searchOnly.includes(engine) ? 'Always searches.'
+          : mode === 'with_search' && notAsked.includes(engine) ? 'Not asked with web search.'
+          : `Not run that day.${lastResult(engine, mode)}`;
+        await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell of an assistant that was not run`).toHaveText(expectedCell);
+      }
+    }
+  }
+
+  // Nobody named the site from memory: the page says why, next to the number, and only while that is
+  // true as written (owner, 2026-10-08): some answers came from memory, none named the site, and with
+  // web search some did. The check does not test why, so the text ends by saying so and calls the reason likely.
+  // The date is the one the page gives in its section about the site.
+  const sumOf = (mode: string, key: 'answers' | 'named') => today.filter((r) => r.mode === mode).reduce((n, r) => n + r[key], 0);
+  const explainsZero = sumOf('without_search', 'answers') > 0 && sumOf('without_search', 'named') === 0 && sumOf('with_search', 'named') > 0;
+  const why = page.locator('#ai p').filter({ hasText: 'Why the second number is zero' });
+  if (explainsZero) {
+    const relaunched = (await page.locator('#site time').first().textContent())!.trim();
+    await expect(why, 'the page does not say why the number from memory is zero').toHaveText(
+      'Why the second number is zero: an assistant recalls a name from memory mostly when it met that name often in the text it was trained on, '
+      + 'and a name reaches that memory only when a new version of the model is trained. '
+      + `The present site dates from ${relaunched}, which is recent for that. `
+      + 'Web search does not rely on that memory, which is the likely reason the first number is higher. '
+      + 'The check only counts who names the site. It does not test why, and it asks one model per assistant, not always the largest.',
+    );
+  } else {
+    await expect(why, 'the page explains a zero that is not there').toHaveCount(0);
+  }
+
+  // The sentence that introduces the questions names who was asked.
+  await expect(page.locator('#ai > p').first(), 'the sentence that introduces the questions names the wrong assistants')
+    .toContainText(notRunEngines.length > 0 ? 'the assistants it ran' : 'each assistant');
 
   // Every assistant in the CSV is drawn, with exactly one cell for each mode (a second cell
   // for one mode and none for the other would leave the count right and the chart wrong).
@@ -348,7 +433,12 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       expect(cell.words, `${cell.engine}, ${cell.mode}: words and marks in one cell`).toBe('');
     } else {
       expect(shown, `${cell.engine}, ${cell.mode}: the CSV has no rows, so no marks`).toEqual({ named: 0, unnamed: 0, failed: 0 });
-      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a mode the check does not run`).toBe(cell.mode === 'without_search' ? 'Always searches' : 'Not asked');
+      // No rows on the latest day: by design (a search product has no mode without web search, one
+      // assistant is not asked with it) or because the assistant was declared not run.
+      const byDesign = cell.mode === 'without_search' && searchOnly.includes(cell.engine) ? 'Always searches'
+        : cell.mode === 'with_search' && notAsked.includes(cell.engine) ? 'Not asked'
+        : declared.includes(cell.engine) ? 'Not run' : null;
+      expect(cell.words, `${cell.engine}, ${cell.mode}: the words for a cell with no rows`).toBe(byDesign);
     }
   }
 
@@ -383,6 +473,17 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     .filter((b) => a.box[0]! < b.box[2]! && b.box[0]! < a.box[2]! && a.box[1]! < b.box[3]! && b.box[1]! < a.box[3]!)
     .map((b) => `${a.who} and ${b.who}`));
   expect(clashes, 'marks overlap').toEqual([]);
+
+  // /why carries the same fact in one clause, after its figures.
+  if (notRunSaid) {
+    await page.goto('/why');
+    await expect(page.locator('li', { hasText: 'AI assistants.' }), 'the summary on /why leaves out who was not run').toContainText(`${notRunSaid}.`);
+  }
+  // ... and points to the explanation while there is one.
+  await page.goto('/why');
+  const whyPoint = page.locator('li', { hasText: 'AI assistants.' });
+  if (explainsZero) await expect(whyPoint, '/why does not point to the explanation').toContainText('The proof page says why the second number is zero.');
+  else await expect(whyPoint, '/why points to an explanation that is not there').not.toContainText('says why the second number is zero');
 });
 
 // Colours per theme. Graphics must stand out from the card at 3:1 and text at 4.5:1 (WCAG
@@ -399,14 +500,16 @@ const contrast = (a: string, b: string) => {
   const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
   return (hi! + 0.05) / (lo! + 0.05);
 };
-const CHART_INK: [selector: string, property: 'fill' | 'stroke', minimum: number, what: string][] = [
+// A mark of a kind that the day's data does not have is not in the chart (there may be no failed
+// call), so those entries are optional; the legend always shows all three kinds and is not.
+const CHART_INK: [selector: string, property: 'fill' | 'stroke', minimum: number, what: string, optional?: true][] = [
   ['svg[data-chart="clicks"] .line', 'stroke', 3, 'the clicks line'],
   ['svg[data-chart="clicks"] .dot', 'fill', 3, 'a marker on the clicks line'],
   ['svg[data-chart="clicks"] .base', 'stroke', 3, 'the zero line'],
   ['svg[data-chart="clicks"] text', 'fill', 4.5, 'text in the clicks chart'],
-  ['svg[data-chart="ai"] .named', 'fill', 3, 'a mark for an answer that named the site'],
-  ['svg[data-chart="ai"] .unnamed', 'stroke', 3, 'a mark for an answer that did not'],
-  ['svg[data-chart="ai"] .failed', 'stroke', 3, 'a mark for a failed call'],
+  ['svg[data-chart="ai"] .named', 'fill', 3, 'a mark for an answer that named the site', true],
+  ['svg[data-chart="ai"] .unnamed', 'stroke', 3, 'a mark for an answer that did not', true],
+  ['svg[data-chart="ai"] .failed', 'stroke', 3, 'a mark for a failed call', true],
   ['svg[data-chart="ai"] text', 'fill', 4.5, 'text in the AI check chart'],
   ['.legend .named', 'fill', 3, 'the legend mark for a named answer'],
   ['.legend .unnamed', 'stroke', 3, 'the legend mark for an answer that did not'],
@@ -438,7 +541,8 @@ for (const theme of THEMES) {
     }, CHART_INK);
     expect(applied, 'the requested theme was not applied').toBe(theme);
     seen.forEach((found, i) => {
-      const [, , minimum, what] = CHART_INK[i]!;
+      const [, , minimum, what, optional] = CHART_INK[i]!;
+      if (optional && found.length === 0) return;
       expect(found.length, `nothing matches ${what}`).toBeGreaterThan(0);
       for (const el of found) {
         expect(el.shown && el.opacity === 1, `${what} is hidden or see-through`).toBe(true);

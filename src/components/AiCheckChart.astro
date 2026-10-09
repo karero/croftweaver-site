@@ -12,7 +12,8 @@
 // longest word cell, "Always searches", 126 and 140; a semibold heading line, "web search",
 // 91 and 109.
 type Counts = { named: number; unnamed: number; failed: number };
-// A string where the assistant is not asked in that mode: shown as words instead of marks.
+// A string where there is nothing to count (the assistant is not asked in that mode, or was not
+// run that day): shown as words instead of marks.
 type Cell = Counts | string;
 interface Props {
   /** Unique on the page: names the ids that the SVG's title and description use. */
