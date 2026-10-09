@@ -13,9 +13,9 @@ export const SUITE_GROUPS = [
 
 type GroupId = (typeof SUITE_GROUPS)[number]['id'];
 
-// `file` is the test file's path under tests/ without its suffix (".spec.ts"). `checks`
-// is shown on the home page and on /checks; `example` (a failure) and `limit` (what a
-// pass does not prove) on /checks only. Each must say what the spec asserts and no more.
+// `file` is the test file's path under tests/ without its suffix (".spec.ts"). `checks`,
+// `example` (a failure) and `limit` (what a pass does not prove) are shown on /checks;
+// the home page shows only the number of suites. Each must say what the spec asserts and no more.
 export const SUITES: {
   file: string; group: GroupId; name: string; checks: string; example: string; limit: string;
 }[] = [
