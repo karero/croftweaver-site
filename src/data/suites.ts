@@ -64,7 +64,7 @@ export const SUITES: {
   {
     file: 'positioning', group: 'message', name: 'Positioning',
     checks: 'The term a page stands for appears where the page’s rule says it must, normally in its title, its description and its opening.',
-    example: 'A rewrite that drops the term from the page title fails.',
+    example: 'A rewrite that drops a required term from the page title fails.',
     limit: 'It proves the term is present, not that the positioning is good. A page with no declared term only raises a warning.',
   },
   {
