@@ -11,8 +11,12 @@ export const answers = (n: number) => `${n} ${n === 1 ? 'answer' : 'answers'}`;
 // "among its search results" for them and never "cited". tests/a11y.spec.ts pins both.
 export const RESULTS_ONLY = ['perplexity'];
 
-export const sentence = (t: { answers: number; named: number; cited: number }, start: 'Named' | 'named', engine: string) => {
-  if (RESULTS_ONLY.includes(engine)) {
+// The totals of one assistant carry its id (undefined for rows of several assistants), so the words always follow
+// the assistant whose rows were counted: there is no separate argument to get wrong.
+export type Totals = { engine: string | undefined; answers: number; named: number; cited: number };
+
+export const sentence = (t: Totals, start: 'Named' | 'named') => {
+  if (t.engine !== undefined && RESULTS_ONLY.includes(t.engine)) {
     const among = t.cited > 0 ? ` The site was among its search results in ${t.cited} of ${answers(t.answers)}.` : '';
     return `${start} it in ${t.named} of ${answers(t.answers)}.${among}`;
   }

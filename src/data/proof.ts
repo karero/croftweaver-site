@@ -164,8 +164,9 @@ const total = (rows: Check[]) =>
   rows.length === 0
     ? null
     : rows.reduce(
-        (t, c) => ({ answers: t.answers + c.answers, named: t.named + c.named, cited: t.cited + c.cited, failed: t.failed + c.failed }),
-        { answers: 0, named: 0, cited: 0, failed: 0 },
+        (t, c) => ({ ...t, answers: t.answers + c.answers, named: t.named + c.named, cited: t.cited + c.cited, failed: t.failed + c.failed }),
+        // The assistant when all the rows are one assistant's: sentence() words the counts by it.
+        { engine: rows.every((c) => c.engine === rows[0]!.engine) ? rows[0]!.engine : undefined, answers: 0, named: 0, cited: 0, failed: 0 },
       );
 const on = (date: string, mode: Mode, engine?: string) =>
   total(checks.filter((c) => c.date === date && c.mode === mode && (!engine || c.engine === engine)));
@@ -225,17 +226,17 @@ const cell = (engine: string, mode: Mode) => {
     const why = absent(engine, mode);
     if (why === 'not-run') {
       const last = lastAnswered(engine, mode);
-      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named', engine)}${failedClause(last.t)}` : 'Not run that day.';
+      return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}` : 'Not run that day.';
     }
     return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
     return last
-      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named', engine)}${failedClause(last.t)}`
+      ? `No result: every call failed that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}`
       : 'No result: every call failed that day.';
   }
-  return sentence(now, 'Named', engine) + failedClause(now);
+  return sentence(now, 'Named') + failedClause(now);
 };
 const overall = (mode: Mode) => {
   const t = on(checkDate, mode);

@@ -336,7 +336,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     const rs = earlier.filter((r) => r.date === day);
     const sum = (key: 'answers' | 'named' | 'cited' | 'failed') => rs.reduce((n, r) => n + r[key], 0);
     const failed = sum('failed');
-    return ` On ${longDate(day)} it ${sentence({ answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'named', engine)}${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
+    return ` On ${longDate(day)} it ${sentence({ engine, answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'named')}${failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''}`;
   };
   const failedAll = [...new Set(today.map((r) => r.engine))].filter((e) => {
     const modes = [...new Set(today.filter((r) => r.engine === e).map((r) => r.mode))];
@@ -369,7 +369,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       const failed = sum('failed');
       if (rs.length === 0 || sum('answers') === 0) continue;
       await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell does not say what the file says`)
-        .toHaveText(sentence({ answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'Named', engine)
+        .toHaveText(sentence({ engine, answers: sum('answers'), named: sum('named'), cited: sum('cited') }, 'Named')
           + (failed ? ` ${failed} ${failed === 1 ? 'call' : 'calls'} failed.` : ''));
     }
   }
@@ -547,10 +547,10 @@ test('proof — the words for a result: Perplexity counts search results, the ot
     ['one answer', { answers: 1, named: 1, cited: 1 }, 'Named it in 1 of 1 answer. The site was among its search results in 1 of 1 answer.'],
   ];
   for (const [what, counts, said] of results) {
-    expect(sentence(counts, 'Named', 'perplexity'), `Perplexity, ${what}`).toBe(said);
-    expect(sentence(counts, 'Named', 'perplexity'), `Perplexity, ${what}: the sentence says cited`).not.toMatch(/cited/i);
+    expect(sentence({ engine: 'perplexity', ...counts }, 'Named'), `Perplexity, ${what}`).toBe(said);
+    expect(sentence({ engine: 'perplexity', ...counts }, 'Named'), `Perplexity, ${what}: the sentence says cited`).not.toMatch(/cited/i);
   }
-  expect(sentence({ answers: 3, named: 0, cited: 2 }, 'named', 'perplexity'), 'the form after "On <day> it"')
+  expect(sentence({ engine: 'perplexity', answers: 3, named: 0, cited: 2 }, 'named'), 'the form after "On <day> it"')
     .toBe('named it in 0 of 3 answers. The site was among its search results in 2 of 3 answers.');
   const others: [string, Counts, string][] = [
     ['every naming also cited', { answers: 3, named: 2, cited: 2 }, 'Named and cited the site in 2 of 3 answers.'],
@@ -558,7 +558,7 @@ test('proof — the words for a result: Perplexity counts search results, the ot
     ['cited in answers that do not name the site', { answers: 3, named: 1, cited: 2 }, 'Named it in 1 of 3 answers.'],
     ['neither named nor cited', { answers: 3, named: 0, cited: 0 }, 'Named it in 0 of 3 answers.'],
   ];
-  for (const [what, counts, said] of others) expect(sentence(counts, 'Named', 'openai'), `an assistant with citations, ${what}`).toBe(said);
+  for (const [what, counts, said] of others) expect(sentence({ engine: 'openai', ...counts }, 'Named'), `an assistant with citations, ${what}`).toBe(said);
 });
 
 // Site-specific (not in the shipped suite): nothing on /proof or /established-sites calls Perplexity's count a citation,
@@ -566,27 +566,6 @@ test('proof — the words for a result: Perplexity counts search results, the ot
 // check measures: through Perplexity's own API the check reads the list of results and nothing in the text, and through
 // OpenRouter it reads the list of sources and not the [n] marks in the text, so it cannot tell which results the answer quotes.
 test('proof — Perplexity\'s count is results, not citations, on /proof and on /established-sites', async ({ page }) => {
-  // Every place that words a result passes the assistant. The type allows any string, and the paths for an assistant
-  // that was not run, or whose every call failed, show the last result with the same words: no day of the file has
-  // Perplexity there, so a wrong argument would show nowhere else. The arguments of each call are read by counting
-  // brackets, so a nested call or a trailing comma is no problem; a call through another name is not seen, and a
-  // bracket or a comma inside a string argument would confuse the count (none of the calls has one).
-  const argumentsOfCalls = (code: string) => [...code.matchAll(/\bsentence\(/g)].map((m) => {
-    const args: string[] = [];
-    let depth = 1, from = m.index! + m[0].length, i = from;
-    for (; depth > 0 && i < code.length; i++) {
-      if ('([{'.includes(code[i]!)) depth++;
-      else if (')]}'.includes(code[i]!)) depth--;
-      else if (code[i] === ',' && depth === 1) { args.push(code.slice(from, i).trim()); from = i + 1; }
-    }
-    args.push(code.slice(from, i - 1).trim());
-    return args.filter((a) => a !== '');   // a trailing comma leaves an empty last argument
-  });
-  expect(argumentsOfCalls("x = sentence(on(a, b), 'Named', engine,) + sentence(c, 'named', mode)"), 'the reader of the arguments is wrong')
-    .toEqual([['on(a, b)', "'Named'", 'engine'], ['c', "'named'", 'mode']]);
-  const calls = argumentsOfCalls(readFileSync(new URL('../src/data/proof.ts', import.meta.url), 'utf8'));
-  expect(calls.length, 'src/data/proof.ts no longer calls sentence(): update this test').toBeGreaterThan(0);
-  for (const args of calls) expect(args[2], `sentence(${args.join(', ')}) in src/data/proof.ts does not pass the assistant (engine) as its third argument`).toBe('engine');
   await page.goto('/proof');
   const row = page.locator('#ai tbody tr').filter({ has: page.locator('th', { hasText: /^Perplexity/ }) });
   await expect(row, 'no Perplexity row in the table').toHaveCount(1);
