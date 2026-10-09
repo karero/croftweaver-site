@@ -234,3 +234,78 @@ test('partner assets: each HTML snippet shows its badge under the security rules
     }
   }
 });
+
+// Site-specific (not in the shipped suite): the Cache-Control that Cloudflare Pages sends for a file under /brand/.
+// `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
+// documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
+// a splat matching any run of characters; a header set by several rules joined with a comma. What it cannot model it
+// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host, an unindented
+// header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
+// measured yet; the README's launch check is where it is). The files keep their names when they change, and the
+// Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
+// while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
+// the server before it reuses a file. Directive names follow RFC 9111 (max-age, s-maxage, private, no-store,
+// no-cache), RFC 8246 (immutable) and RFC 5861 (stale-while-revalidate, stale-if-error).
+test('headers — the partner kit under /brand/ is cacheable for between an hour and a week, and never immutable', () => {
+  const rules = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8');
+  const headerFor = (path: string, name: string) => {
+    const values: string[] = [];
+    let applies = false;
+    for (const raw of rules.split('\n')) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      if (!/^\s/.test(raw)) {   // a path line starts a rule
+        expect(line.startsWith('/') && line.split('*').length <= 2 && !/:\w/.test(line),
+          `public/_headers: "${line}" is not a path or header this test models (a second splat, a placeholder, a host or an unindented header); extend the test`).toBe(true);
+        const [before, after] = line.split('*');
+        applies = after === undefined ? path === before : path.length >= before!.length + after.length && path.startsWith(before!) && path.endsWith(after);
+        continue;
+      }
+      if (!applies) continue;
+      if (line.startsWith('!')) {
+        expect(line.slice(1).trim().toLowerCase(), `public/_headers: "${line}" takes ${name} away for ${path}; this test does not model how Pages orders "! Name" against other rules, so measure Pages and extend the test`).not.toBe(name);
+        continue;
+      }
+      const colon = line.indexOf(':');
+      expect(colon > 0, `public/_headers: "${line}" is neither "Name: value" nor "! Name", so this test cannot read it`).toBe(true);
+      if (line.slice(0, colon).trim().toLowerCase() === name) values.push(line.slice(colon + 1).trim());
+    }
+    return values.join(', ');
+  };
+  const filesIn = (dir: string): string[] =>
+    readdirSync(new URL(`../public/${dir}`, import.meta.url), { withFileTypes: true })
+      .filter((e) => !e.name.startsWith('.'))   // a .DS_Store from Finder is not part of the kit
+      .flatMap((e) => (e.isDirectory() ? filesIn(`${dir}/${e.name}`) : [`/${dir}/${e.name}`]));
+  const kit = filesIn('brand');
+  expect(kit.length, 'public/brand is empty').toBeGreaterThan(0);
+  for (const path of kit) {
+    const sent = headerFor(path, 'cache-control');
+    const directives = sent.split(',').map((d) => d.trim().toLowerCase().replace(/\s*=\s*/, '=')).filter(Boolean);
+    // The seconds of one lifetime directive: absent is 0 (a failure for max-age, which must be there), a second one is a
+    // failure (two rules joined with a comma would send two), and the whole directive must be name=<digits>.
+    const seconds = (name: string, required = false) => {
+      const found = directives.filter((d) => d.startsWith(name));
+      if (required || found.length > 0) {
+        expect(found.length, `${path}: Pages would send "${sent}", which has ${found.length} ${name}${found.length > 1 ? ' (two rules joined with a comma?)' : ''}`).toBe(1);
+      }
+      if (found.length === 0) return 0;
+      const match = /^([a-z-]+)=(\d+)$/.exec(found[0]!);
+      expect(match?.[1], `${path}: "${found[0]}" is not ${name}=<whole seconds>`).toBe(name);
+      return Number(match![2]);
+    };
+    const maxAge = seconds('max-age', true);
+    expect(maxAge, `${path}: cached for less than an hour`).toBeGreaterThanOrEqual(3600);
+    // A conservative count, not a claim about what a real cache does: the freshness (a shared cache uses s-maxage instead
+    // of max-age) plus both stale windows of RFC 5861 in full, though a real cache may overlap them. The test limits the
+    // count to a week, because a longer one would let a corrected file reach partners late.
+    const worst = Math.max(maxAge, seconds('s-maxage')) + seconds('stale-while-revalidate') + seconds('stale-if-error');
+    expect(worst, `${path}: by this count (the stale windows added in full) a corrected file could stay cached for ${worst} seconds, more than a week`).toBeLessThanOrEqual(7 * 86400);
+    expect(directives, `${path}: not public`).toContain('public');
+    expect(directives.filter((d) => ['immutable', 'no-store', 'no-cache', 'private'].includes(d.split('=')[0]!)),
+      `${path}: a directive that does not suit a file that keeps its name when it changes`).toEqual([]);
+    // Other headers that set how long the kit is kept would change the lifetime without showing in the Cache-Control above.
+    for (const other of ['cdn-cache-control', 'cloudflare-cdn-cache-control', 'surrogate-control', 'expires', 'pragma']) {
+      expect(headerFor(path, other), `${path}: ${other} is set, which this test does not model`).toBe('');
+    }
+  }
+});
