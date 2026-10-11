@@ -8,7 +8,7 @@
 export const RELEASE = { version: '0.29', iso: '2026-09-29', label: '29 September 2026', skills: 31 } as const;
 // The skills on the toolkit's main branch that release 0.29 does not have, and the day the
 // list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
-export const ADDED_SINCE: readonly string[] = ['website-contact-form', 'website-scorecard'];
+export const ADDED_SINCE: readonly string[] = ['website-contact-form', 'website-scorecard', 'facts-check'];
 export const AS_OF = { iso: '2026-10-09', label: '9 October 2026' } as const;
 
 export const STAGES = [
@@ -49,6 +49,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'seo-audit', stage: 'verify', does: 'Audits a site for technical and on-page SEO problems.' },
   { name: 'internal-link-audit', stage: 'verify', does: 'Finds pages that are orphaned, thinly linked or buried, and suggests where to link.' },
   { name: 'outgoing-link-audit', stage: 'verify', does: 'Checks every link to another site: alive, redirected, rebranded or dead.' },
+  { name: 'facts-check', stage: 'verify', does: 'Compares the figures on every page of a live site with the facts you approved, and lists the pages that have lost the term their audience gives them.' },
   { name: 'website-scorecard', stage: 'verify', optional: true, does: 'Publishes what the site\'s own tests checked as a dated section on one page. A run with a failing test writes nothing.' },
 
   { name: 'search-console-setup', stage: 'launch', does: 'Registers the live site with Google Search Console and Bing, submits the sitemap, turns on IndexNow.' },
