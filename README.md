@@ -109,9 +109,12 @@ Launch requirements that no test enforces:
 - The privacy page names M-Squad GmbH as controller and calls Cloudflare "our
   processor". That holds while the Cloudflare account that serves the site is the
   company's: the owner confirmed on 2026-10-11 that it is M-Squad GmbH's. If the site
-  moves to another account, read that sentence again. Two more points from the review
+  moves to another account, read that sentence again. Four more points from the review
   of karero/croftweaver-site#39 were answered the same day: the imprint has a phone
-  number as a second contact channel, and the privacy page does not name the mail host.
+  number as a second contact channel; the number stays in plain text in the source, as
+  the email address does, and is hidden in the served HTML; the privacy page does not
+  name the mail host; and the Organization structured data keeps "M-Squad GmbH" as its
+  name.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record

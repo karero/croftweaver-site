@@ -75,7 +75,7 @@ export const SUITES: {
   },
   {
     file: 'email', group: 'publish', name: 'Email',
-    checks: 'No plaintext email address in the served HTML, and no plaintext phone number on the imprint.',
+    checks: 'No plaintext email address in the served HTML.',
     example: 'An address typed straight into a page fails. It has to go through the component that hides it.',
     limit: 'It reads the HTML the way a simple scraper does. A scraper that runs the scripts of a page can still recover the address.',
   },

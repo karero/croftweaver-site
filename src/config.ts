@@ -41,10 +41,13 @@ export function ogLocaleFor(lang: string): string | undefined {
   return region && region.length === 2 ? `${base}_${region.toUpperCase()}` : OG_LOCALES[base];
 }
 
-// The operator. The imprint and the privacy page print this name and the structured
-// data carries it, so the three cannot disagree.
+// The operator. The imprint and the privacy page print these facts and the structured
+// data carries the name, so the three cannot disagree.
 export const COMPANY = {
   legalName: SITE.legalName,
+  street: 'Schellingstr. 141 Rgb.',
+  postcodeCity: '80798 Munich, Germany',
+  managingDirector: 'Daniel Melter',
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 

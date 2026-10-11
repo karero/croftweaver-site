@@ -22,7 +22,7 @@ import { SITE, COMPANY } from '../config';
   <section class="wrap">
     <h1>Privacy Policy</h1>
     <p>
-      Last updated: 9 October 2026. This page explains which personal data this
+      Last updated: 11 October 2026. This page explains which personal data this
       website processes, on what legal basis under the GDPR (EU 2016/679), and
       which rights you have.
     </p>
@@ -31,9 +31,9 @@ import { SITE, COMPANY } from '../config';
     <p>Responsible for data processing on this website:</p>
     <p>
       {COMPANY.legalName}<br />
-      Schellingstr. 141 Rgb.<br />
-      80798 Munich, Germany<br />
-      Managing director: Daniel Melter<br />
+      {COMPANY.street}<br />
+      {COMPANY.postcodeCity}<br />
+      Managing director: {COMPANY.managingDirector}<br />
       Contact: <EmailLink address="hello@croftweaver.com" subject="Privacy request" />
     </p>
 
@@ -58,14 +58,15 @@ import { SITE, COMPANY } from '../config';
       script of any kind.
     </p>
 
-    <h2>4. Contact by email</h2>
+    <h2>4. Contact by email or phone</h2>
     <p>
-      If you contact us, we process the data you provide (name, email address,
-      and the content of your message) to handle the request and possible
-      follow-up questions. The legal basis is Art. 6(1)(b) GDPR where the request
-      relates to a contract, otherwise our legitimate interest in answering
-      enquiries (Art. 6(1)(f) GDPR). We keep the correspondence only as long as
-      needed for this purpose and for any statutory retention duties.
+      If you contact us by email or phone, we process the data you provide (name,
+      email address or phone number, and the content of your message or call) to
+      handle the request and possible follow-up questions. The legal basis is
+      Art. 6(1)(b) GDPR where the request relates to a contract, otherwise our
+      legitimate interest in answering enquiries (Art. 6(1)(f) GDPR). We keep the
+      correspondence, and any note we make of a call, only as long as needed for
+      this purpose and for any statutory retention duties.
     </p>
 
     <h2>5. Your rights</h2>

@@ -22,10 +22,10 @@ import { COMPANY } from '../config';
     <h2>Site operator</h2>
     <p>
       {COMPANY.legalName}<br />
-      Schellingstr. 141 Rgb.<br />
-      80798 Munich, Germany
+      {COMPANY.street}<br />
+      {COMPANY.postcodeCity}
     </p>
-    <p>Managing director: Daniel Melter</p>
+    <p>Managing director: {COMPANY.managingDirector}</p>
     <p>
       Commercial register: Munich local court (Amtsgericht München), HRB 138 365<br />
       VAT identification number: DE218182722

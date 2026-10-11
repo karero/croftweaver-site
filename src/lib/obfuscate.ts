@@ -28,19 +28,28 @@ export function emailHint(address: string, lang = 'en'): string {
 
 // The same scheme for a phone number in international form ("+49 30 1234567"):
 // reversed + base64-encoded at build, decoded by the script in PhoneNumber.astro.
-export function encodePhone(number: string): string {
+function assertPhone(number: string, caller: string): void {
   if (!/^\+[0-9]+( [0-9]+)*$/.test(number)) {
-    throw new Error(`encodePhone: "${number}" is not a phone number in international form, such as "+49 30 1234567"`);
+    throw new Error(`${caller}: "${number}" is not a phone number in international form, such as "+49 30 1234567"`);
   }
+}
+export function encodePhone(number: string): string {
+  assertPhone(number, 'encodePhone');
   return Buffer.from(number.split('').reverse().join(''), 'utf-8').toString('base64');
 }
 
 // Human-readable no-JS fallback: the digits as words, group by group
-// ("plus four nine, three zero, ..."), so the number still reads without a digit in the HTML.
-const DIGIT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-export function phoneHint(number: string): string {
+// ("plus four nine, three zero, ..."), so the number still reads without a digit in the
+// HTML. Localized like emailHint; an unknown language reads in English.
+const DIGIT_WORDS: Record<string, string[]> = {
+  en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'],
+  de: ['null', 'eins', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun'],
+};
+export function phoneHint(number: string, lang = 'en'): string {
+  assertPhone(number, 'phoneHint');
+  const words = DIGIT_WORDS[lang.toLowerCase().split('-')[0]] ?? DIGIT_WORDS.en;
   return number
     .split(' ')
-    .map((group) => group.split('').map((c) => (c === '+' ? 'plus' : DIGIT_WORDS[Number(c)])).join(' '))
+    .map((group) => group.split('').map((c) => (c === '+' ? 'plus' : words[Number(c)])).join(' '))
     .join(', ');
 }
