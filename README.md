@@ -106,15 +106,12 @@ Launch requirements that no test enforces:
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` were filled in
   karero/croftweaver-site#39 (step 2a). CI only catches `[MISSING:`.
-- One point about the legal pages waits for the owner (from the review of
-  karero/croftweaver-site#39): which legal entity holds the Cloudflare account that
-  serves the site. The privacy page names M-Squad GmbH as controller and calls
-  Cloudflare "our processor", which is right only if the account is the company's.
-  croftweaver.com and m-squad.com use the same pair of Cloudflare nameservers (seen
-  2026-10-11), which suggests one account and does not prove whose it is. Record the
-  answer and its date here. Two more points from that review are answered (owner,
-  2026-10-11): the imprint gets a phone number as a second contact channel, and the
-  privacy page does not name the mail host.
+- The privacy page names M-Squad GmbH as controller and calls Cloudflare "our
+  processor". That holds while the Cloudflare account that serves the site is the
+  company's: the owner confirmed on 2026-10-11 that it is M-Squad GmbH's. If the site
+  moves to another account, read that sentence again. Two more points from the review
+  of karero/croftweaver-site#39 were answered the same day: the imprint has a phone
+  number as a second contact channel, and the privacy page does not name the mail host.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
