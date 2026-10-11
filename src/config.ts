@@ -5,7 +5,7 @@
 export const SITE = {
   url: 'https://croftweaver.com',         // production origin, no trailing slash
   name: 'Croftweaver',
-  legalName: 'Daniel Melter',
+  legalName: 'M-Squad GmbH',
   locale: 'en',
   themeColor: '#2e6e4e',               // croft moss-green; matches brand primary + manifest
   // Home <title> is special-cased (NOT "Example | Example"). Keep ≤ 60 chars.
@@ -41,8 +41,10 @@ export function ogLocaleFor(lang: string): string | undefined {
   return region && region.length === 2 ? `${base}_${region.toUpperCase()}` : OG_LOCALES[base];
 }
 
+// The operator named in the imprint and the privacy page (src/pages/imprint.astro,
+// src/pages/privacy.astro); keep the three equal.
 export const COMPANY = {
-  legalName: 'Daniel Melter',
+  legalName: 'M-Squad GmbH',
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 
