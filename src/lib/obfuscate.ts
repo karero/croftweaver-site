@@ -25,3 +25,22 @@ export function emailHint(address: string, lang = 'en'): string {
   const dot = DOT_WORD[lang.toLowerCase().split('-')[0]] ?? 'dot';
   return `${user} [at] ${domain.replace(/\./g, ` [${dot}] `)}`;
 }
+
+// The same scheme for a phone number in international form ("+49 30 1234567"):
+// reversed + base64-encoded at build, decoded by the script in PhoneNumber.astro.
+export function encodePhone(number: string): string {
+  if (!/^\+[0-9]+( [0-9]+)*$/.test(number)) {
+    throw new Error(`encodePhone: "${number}" is not a phone number in international form, such as "+49 30 1234567"`);
+  }
+  return Buffer.from(number.split('').reverse().join(''), 'utf-8').toString('base64');
+}
+
+// Human-readable no-JS fallback: the digits as words, group by group
+// ("plus four nine, three zero, ..."), so the number still reads without a digit in the HTML.
+const DIGIT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+export function phoneHint(number: string): string {
+  return number
+    .split(' ')
+    .map((group) => group.split('').map((c) => (c === '+' ? 'plus' : DIGIT_WORDS[Number(c)])).join(' '))
+    .join(', ');
+}

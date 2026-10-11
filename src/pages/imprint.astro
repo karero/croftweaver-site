@@ -5,9 +5,11 @@
 // imprint at https://m-squad.com/imprint: name, street, postcode, managing director,
 // register court, register number and VAT number are the same there. A postal address,
 // the managing director, the register entry and the VAT identification number are all
-// part of what the law expects here.
+// part of what the law expects here. The phone number is a second, direct contact
+// channel beside email; the owner gave it on 11 October 2026.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
+import PhoneNumber from '../components/PhoneNumber.astro';
 import { COMPANY } from '../config';
 ---
 <Base
@@ -28,7 +30,10 @@ import { COMPANY } from '../config';
       Commercial register: Munich local court (Amtsgericht München), HRB 138 365<br />
       VAT identification number: DE218182722
     </p>
-    <p>Contact: <EmailLink address="hello@croftweaver.com" subject="Croftweaver" /></p>
+    <p>
+      Contact: <EmailLink address="hello@croftweaver.com" subject="Croftweaver" /><br />
+      Phone: <PhoneNumber number="+49 179 6913629" />
+    </p>
 
     <h2>Responsible for content</h2>
     <p>Daniel Melter (address as above).</p>

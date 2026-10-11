@@ -19,3 +19,23 @@ for (const path of PAGES) {
     expect(m?.[0] ?? null, `${path} ships a plaintext email "${m?.[0]}" — use <EmailLink>`).toBeNull();
   });
 }
+
+// The imprint's phone number goes through <PhoneNumber>, which hides it the same way.
+// The imprint must still show the number to a person (it is a legal contact channel), so
+// both halves are checked: a scraper reading the HTML finds no digits, a browser shows
+// them. The test never holds the number: it decodes what the page carries, as the browser does.
+test('email — /imprint ships no harvestable phone number, and a browser shows it', async ({ page, request, baseURL }) => {
+  const html = await (await request.get(new URL('/imprint', baseURL!).href)).text();
+  const encoded = html.match(/data-phone="([^"]+)"/)?.[1];
+  expect(encoded, '/imprint has no <PhoneNumber>; its phone number must go through that component').toBeTruthy();
+  const number = Buffer.from(encoded!, 'base64').toString('utf-8').split('').reverse().join('');
+  const digits = number.replace(/\D/g, '');
+  expect(digits.length, `"${number}" does not decode to a phone number`).toBeGreaterThanOrEqual(8);
+  // A scraper can drop the spaces, dots, dashes and brackets a number is written with.
+  const flat = html.replace(/[\s().\/-]/g, '');
+  expect(flat.includes(digits.slice(-8)), '/imprint ships its phone number in plaintext — use <PhoneNumber> only').toBe(false);
+
+  await page.goto('/imprint');
+  await expect(page.locator('.phone-number')).toHaveText(number);
+  await expect(page.locator('.phone-number[data-phone]')).toHaveCount(0);
+});
