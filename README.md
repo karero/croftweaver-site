@@ -61,11 +61,15 @@ npm run og           # regenerate OG share cards after brand/copy changes
 npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
 ```
 
-The slide deck is a frozen copy of `/why` and `/checks`: its figures and its test-suite
-count are read from the built pages, never typed. When `/why`, `/checks`, the slides in
-`scripts/deck-slides.mjs`, the logo or the site address change, `npm test` fails until
+The slide deck reads three things from the built pages, so they are never typed: the
+evidence section of `/why`, the sentence with the test-suite count in its "Check" step,
+and the suite groups and names on `/checks`. When one of those, the slides in
+`scripts/deck-slides.mjs`, the logo or the site address changes, `npm test` fails until
 you run `npm run deck` and commit the new `public/croftweaver-why.pdf` and
-`scripts/deck.lock.json`. It needs Python 3 with `pypdf` for the PDF's title.
+`scripts/deck.lock.json`. The rest of the slides is copy written for the deck, and no
+test compares it with the pages: after changing an argument on `/why` or a description
+on `/checks`, read `scripts/deck-slides.mjs` and change it by hand. The deck needs Node
+22.18 or newer, and making it needs Python 3 with `pypdf` for the PDF's title.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in

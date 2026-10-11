@@ -453,7 +453,7 @@ test('seo — a changed figure on /why changes the slide deck, which is what mak
   const why = distFile('why.html');
   expect(deckFrom().html, 'the deck is not deterministic').toBe(deckFrom().html);
   const changed = why.replace('out of 100 for performance', 'out of 100 for speed');
-  expect(changed, 'the PageSpeed sentence on /why changed; update this test').not.toBe(why);
+  expect(changed, '/why no longer says "out of 100 for performance"; update this test').not.toBe(why);
   expect(deckFrom(changed).html).not.toBe(deckFrom().html);
   // Astro stamps every element with a hash of its page's styles; the deck keeps text and links only.
   const restyled = why.replace(/data-astro-cid-[a-z0-9]+/g, 'data-astro-cid-restyled');

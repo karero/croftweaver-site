@@ -40,8 +40,10 @@ export function readWhyFacts(whyHtml, base) {
   const items = evidence.querySelectorAll('ul li').map((li) => {
     const label = squash(need(li, 'strong', 'evidence label').text);
     const all = squash(inline(li, base));
-    if (!all.startsWith(label)) throw new Error(`deck: an evidence item does not start with its label "${label}".`);
-    return { label, body: all.slice(label.length).trim() };
+    // `all` is escaped HTML and `label` is decoded text: compare like with like.
+    const head = esc(label);
+    if (!all.startsWith(head)) throw new Error(`deck: an evidence item does not start with its label "${label}".`);
+    return { label, body: all.slice(head.length).trim() };
   });
   if (items.length !== 3) throw new Error(`deck: the /why evidence list has ${items.length} items, expected 3. Update scripts/deck-slides.mjs.`);
   const caveat = squash(inline(need(evidence, '.aside', 'evidence caveat'), base));
@@ -147,7 +149,7 @@ function slideList(f, s, logo) {
     { kicker: 'The recommendation', title: 'Choose a tool built for being found, not one that merely permits it.', body: `
       <ol class="cards three" role="list">
         ${card('1. Built in from the first build', 'Search basics, trust signals and readability for AI assistants are part of every page. Tests check what a machine can check.')}
-        ${card('2. Improved after launch', 'Real search data replaces guesswork about keywords and points to two or three edits a week to look into.')}
+        ${card('2. Improved after launch', 'Real search data replaces guesswork about keywords. When there is enough of it, it helps pick two or three edits a week to look into.')}
         ${card('3. Owned, with no platform fee', 'A static site in your repository, on your domain. Croftweaver is MIT-licensed and charges nothing.')}
       </ol>` },
     // 4. What the tool is for
@@ -212,7 +214,7 @@ function slideList(f, s, logo) {
         <li>Verify the site in Search Console on the first day. It collects no history before that.</li>
         <li>Read the first weekly report together, then decide whether to continue.</li>
       </ol>
-      <p class="note" style="border-color:#dcebe2;color:#dcebe2">Open source under the MIT licence: <a href="${s.repo}">${s.repo.replace(/^https?:\/\//, '')}</a>. The evidence in full: ${link('/proof')}.</p>` },
+      <p class="note" style="border-color:var(--mint);color:var(--mint)">Open source under the MIT licence: <a href="${s.repo}">${s.repo.replace(/^https?:\/\//, '')}</a>. The evidence in full: ${link('/proof')}.</p>` },
   ];
 }
 

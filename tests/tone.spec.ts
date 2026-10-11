@@ -179,7 +179,7 @@ for (const path of PAGES) {
 }
 
 // The /why slide deck is copy too (public/croftweaver-why.pdf, made by `npm run deck`). Its text
-// comes from scripts/deck-slides.mjs and the built /why and /checks pages, and tests/deck.spec.ts
+// comes from scripts/deck-slides.mjs and the built /why and /checks pages, and tests/seo.spec.ts
 // keeps the PDF equal to that source, so these are the words a reader of the PDF sees.
 test('tone — no banned phrasing in the /why slide deck', () => {
   const read = (...parts: string[]) => readFileSync(join(process.cwd(), ...parts), 'utf8');

@@ -8,15 +8,15 @@
 // The slides come from scripts/deck-slides.mjs and the built /why page (dist/why.html), so a
 // figure on the page is a figure in the deck. The lock file holds two hashes: the slides' HTML
 // (it changes when a figure, a line of copy, the logo or the site address changes) and the PDF's
-// bytes (it changes when someone edits the file by hand). tests/deck.spec.ts runs --check, so a
-// stale deck cannot reach main. Needs Node 22.18 or newer (it imports src/config.ts) and, to make
-// the PDF, Python 3 with pypdf for the doc-title (the same tool as scripts/set_pdf_title.py).
+// bytes (it changes when someone edits the file by hand). tests/seo.spec.ts runs --check, so a
+// run turns red when either hash no longer matches. The check compares hashes; it does not open
+// the PDF. Needs Node 22.18 or newer (it imports src/config.ts) and, to make the PDF, Python 3
+// with pypdf for the doc-title (the same tool as scripts/set_pdf_title.py).
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SITE } from '../src/config.ts';
 import { makeDeck } from './deck-slides.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,6 +27,11 @@ const pdfPath = join(root, 'public', 'croftweaver-why.pdf');
 const lockPath = join(root, 'scripts', 'deck.lock.json');
 const sha = (data) => createHash('sha256').update(data).digest('hex');
 const fail = (message) => { console.error(`deck: ${message}`); process.exit(1); };
+
+// src/config.ts is TypeScript. package.json allows a Node from 22.12 on, and one that cannot
+// run a .ts file unaided would stop here with "unknown file extension"; say what is needed.
+if (!process.features.typescript) fail(`this script imports src/config.ts, so it needs a Node that runs TypeScript files unaided (22.18 or newer). This is Node ${process.versions.node}.`);
+const { SITE } = await import('../src/config.ts');
 
 if (!existsSync(whyPath) || !existsSync(checksPath)) fail('dist/why.html or dist/checks.html is missing. Run `npm run build` first (`npm run deck` does).');
 const { html, title, slideCount } = makeDeck({
@@ -51,6 +56,8 @@ const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await page.setContent(html, { waitUntil: 'load' });
+  // Measure the layout that gets printed: page.pdf() renders with print media.
+  await page.emulateMedia({ media: 'print' });
   // Text that runs past its slide is the layout bug nothing else would catch.
   const overflowing = await page.evaluate(() =>
     [...document.querySelectorAll('.slide')]
@@ -74,4 +81,7 @@ for (const [cmd, pre] of [['python3', []], ['py', ['-3']], ['python', []]]) {
 if (!titled) fail('no Python interpreter found (tried python3, py -3, python); the PDF needs its doc-title.');
 
 writeFileSync(lockPath, JSON.stringify({ source, pdf: sha(readFileSync(pdfPath)) }, null, 2) + '\n');
+// `npm run deck` builds the site first, so dist/ holds the PDF from before this run (or none).
+// Replace it, so a preview or a publish of this dist/ serves the deck just made.
+copyFileSync(pdfPath, join(root, 'dist', 'croftweaver-why.pdf'));
 console.log(`deck: wrote ${pdfPath} (${slideCount} slides) and ${lockPath}.`);
