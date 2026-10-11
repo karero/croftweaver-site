@@ -41,10 +41,10 @@ export function ogLocaleFor(lang: string): string | undefined {
   return region && region.length === 2 ? `${base}_${region.toUpperCase()}` : OG_LOCALES[base];
 }
 
-// The operator named in the imprint and the privacy page (src/pages/imprint.astro,
-// src/pages/privacy.astro); keep the three equal.
+// The operator. The imprint and the privacy page print this name and the structured
+// data carries it, so the three cannot disagree.
 export const COMPANY = {
-  legalName: 'M-Squad GmbH',
+  legalName: SITE.legalName,
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 

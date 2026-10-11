@@ -8,6 +8,7 @@
 // part of what the law expects here.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
+import { COMPANY } from '../config';
 ---
 <Base
   title="Imprint"
@@ -18,7 +19,7 @@ import EmailLink from '../components/EmailLink.astro';
 
     <h2>Site operator</h2>
     <p>
-      M-Squad GmbH<br />
+      {COMPANY.legalName}<br />
       Schellingstr. 141 Rgb.<br />
       80798 Munich, Germany
     </p>

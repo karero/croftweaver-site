@@ -106,6 +106,12 @@ Launch requirements that no test enforces:
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` were filled in
   karero/croftweaver-site#39 (step 2a). CI only catches `[MISSING:`.
+- Three points about the legal pages wait for the owner (from the review of
+  karero/croftweaver-site#39). Which legal entity holds the Cloudflare account that
+  serves the site: the privacy page names M-Squad GmbH as controller and calls
+  Cloudflare "our processor". Whether the imprint needs a second contact channel beside
+  email. Whether the privacy page should name the mail host. Record each answer and its
+  date here.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
