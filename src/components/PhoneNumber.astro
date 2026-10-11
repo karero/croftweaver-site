@@ -2,7 +2,7 @@
 // Crawler-resistant phone number, hidden the way EmailLink hides an address. The digits
 // NEVER appear in the HTML source: the number is reversed + base64-encoded at build time
 // and put back in the browser, as a link that a phone can call. No-JS visitors read the
-// digits as words.
+// digits as words; for them the link goes nowhere (href="#"), as EmailLink's does.
 //
 //   <PhoneNumber number="+49 30 1234567" />
 import { encodePhone, phoneHint } from '../lib/obfuscate';
