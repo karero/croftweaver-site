@@ -367,7 +367,7 @@ test('header — Escape closes the open menu without taking focus from the page'
   await expect(link, 'Escape moved focus away from where the visitor was').toBeFocused();
 });
 
-// '/' has no claim under the logo and '/skills' has one, which wraps at 320 px: both must fit.
+// The home page and an inner page: both must fit with the claim under the logo.
 for (const width of [360, 320]) {
   for (const path of ['/', '/skills']) {
     test(`header — the open menu does not make a ${width} px phone scroll sideways on ${path}`, async ({ page }) => {
@@ -404,12 +404,12 @@ test('header — without JavaScript a phone still shows every link', async ({ br
   await context.close();
 });
 
-// The line under the logo says what Croftweaver is to someone who lands on an inner page.
-// The home page says it in the kicker above its headline, so it must not say it twice.
-test('header — the claim shows under the logo on an inner page, and not on the home page', async ({ page }) => {
-  await page.goto('/skills');
-  await expect(page.locator('.site-header .claim')).toHaveText(SITE.claim);
-  await page.goto('/');
-  await expect(page.locator('.site-header .claim')).toHaveCount(0);
-  await expect(page.locator('main p.kicker')).toContainText(SITE.claim);
-});
+// The line under the logo says what Croftweaver is for, on every page a visitor can land on.
+// It is the line that opens the toolkit's README (POSITIONING.md, header line).
+for (const path of ['/', '/skills', '/established-sites']) {
+  test(`header — the claim shows under the logo on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.locator('.site-header .claim')).toHaveText('Build for search and AI.');
+    await expect(page.locator('.site-header .claim')).toHaveText(SITE.claim);
+  });
+}

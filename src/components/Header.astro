@@ -15,14 +15,12 @@ import lockup from '../assets/brand/lockup-horizontal-theme.svg?raw';
 const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '') || '/';
 // Only a page link can be the current page; an anchor on the home page is not one.
 const isCurrent = (href: string) => !href.includes('#') && href === path;
-// The home page says what Croftweaver is in the kicker above its headline.
-const showClaim = path !== '/';
 ---
 <header class="site-header">
   <script is:inline>document.documentElement.classList.add('js');</script>
   <div class="identity">
     <a class="brand" href="/" aria-label={SITE.name}><Fragment set:html={lockup} /></a>
-    {showClaim && <p class="claim">{SITE.claim}</p>}
+    <p class="claim">{SITE.claim}</p>
   </div>
   <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
   <nav id="main-nav" aria-label="Main">
