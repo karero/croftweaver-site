@@ -81,7 +81,8 @@ export const PROD_BRANCH = 'production';
 // measurements (outbound links, file downloads, form submissions) are switched in the
 // instance, not here, and section 3 of the privacy page mirrors them. Changing scriptHost
 // means changing script-src and connect-src in public/_headers too, or the browser blocks
-// the script; tests/check_analytics_gate.sh checks both against this file and pins the script address. Base.astro
+// the script; tests/check_analytics_gate.sh checks both against this file and pins the
+// script address. Base.astro
 // writes two tags: the script, and the short stub that calls plausible.init(); without
 // the stub the script never starts.
 export const ANALYTICS = {
