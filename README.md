@@ -10,8 +10,7 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
    `/start`, `/proof`, `/why`, `/compare`, `/roadmap`) plus a 404. Inventory:
    `CONTENT_GUIDE.md`.
 2. **Dynamic:** Tier 1, fully static pages, no forms. One Cloudflare Pages middleware
-   (`functions/_middleware.ts`) sets noindex on previews and redirects the production
-   alias to the live domain.
+   (`functions/_middleware.ts`) sets noindex on previews and and, once CANONICAL_URL is set in Cloudflare, redirects the production alias to the live domain.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
 5. **Analytics:** Google Search Console, and (configured 2026-10-12) cookieless Plausible
@@ -167,29 +166,25 @@ Launch requirements that no test enforces:
   - Where the instance runs: on a server of M-Squad GmbH, in the EU or EEA (name the
     hosting provider if it is rented, and add it to section 3 as a recipient). Its web
     server or reverse proxy keeps no IP addresses in access logs. The Cloudflare zone in
-    front of analytics.m-squad.com is in the account confirmed for the site above (section 3
-    calls Cloudflare a processor). Cloudflare Web Analytics is off for this project (it would
+    front of analytics.m-squad.com is in the account confirmed for the site above (section 2, which section 3 points to, calls Cloudflare a processor). Cloudflare Web Analytics is off for this project (it would
     inject a beacon that section 3 does not describe).
   - What the instance does, from the instance itself and not from Plausible's hosted data
     policy: its version, that its event and session tables hold no IP address or raw
     user-agent column, and how its daily salt is handled. If any of that differs, change
-    the sentences in section 3 that say it.
+    the sentences in section 3 that say it. The `deploy/plausible-m-squad` folder of the
+    m-squad-website repository names Community Edition v3.2.1 with ClickHouse 24.12 and sets no
+    retention or purge; confirm that is what runs.
   - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
     ticked, "Form submissions" unticked (the site has no form). Section 3 has one sentence
     for each of the two ticked ones; when the ticks change, change the sentences.
   - What deletes old records in the instance (a retention setting, a table TTL or a job
-    you run), and the period it enforces. State only that period in the `[MISSING:` slot
-    in section 3; CI stays red until it is filled.
+    you run), and the period it enforces. State only that period in the `[MISSING:` slot in section 3 (the slot asks for the period, not the mechanism); CI stays red until it is filled.
   - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
-    names who read it and accepted it, and when, the position is not accepted. If it is
-    rejected, the script must not load before consent, or analytics comes out
-    (`ANALYTICS.enabled` false in `src/config.ts`).
+    names who read it and accepted it, and when, the position is not accepted. If it is rejected, the script must not load before consent, or analytics comes out: set `ANALYTICS.enabled` false in `src/config.ts`, and in the same change remove the "Analytics gate" step in `.github/workflows/ci.yml` and `tests/check_analytics_gate.sh` (or change them to match), and rewrite section 3.
   - After the first ship: `curl -sI https://croftweaver.com/ | grep -i content-security-policy`
     shows analytics.m-squad.com in script-src and connect-src, and the installer's
     "Verify" step passes. `astro preview` does not apply `_headers`, so no test sees it.
-    The gate test pins the script address; when the installer gives another one, change the
-    pin in `tests/check_analytics_gate.sh` after Verify passes.
+    The gate test pins the script address; when the installer gives another one, change the pin in `tests/check_analytics_gate.sh` in the same change as `src/config.ts`, ship, run Verify, and revert both if it fails.
   - Exclude your own browser: run `localStorage.plausible_ignore = 'true'` in the console,
-    once per address you visit: croftweaver.com, and each deployment URL
-    (`<hash>.<project>.pages.dev`) you open, because the production build is served there
+    once per address you visit: croftweaver.com, the production alias (`<project>.pages.dev`, not redirected until CANONICAL_URL is set), and each deployment URL (`<hash>.<project>.pages.dev`) you open, because the production build is served there
     too and a visit counts as a visit to croftweaver.com (the flag is stored per address).
