@@ -200,9 +200,12 @@ Launch requirements that no test enforces:
     the server and, as of 2026-10-12, is NOT yet applied: write the date here, with the output of
     `SHOW CREATE TABLE` for both tables, when it is in place, and do not ship before it is. Rows
     older than the period go at the next background merge, which can be hours or days later.
-    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04);
-    if it is extended to, its archives must not outlive the 24 months, or the page needs a
-    second sentence about backups.
+    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
+    If it is extended to, an archive holds records up to 24 months old, so a record can outlive
+    the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
+    are longer): keep that short and say so in a second sentence on the page. The m-squad-website
+    README (section "Retention") has the statements, a scratch-table probe that proves the
+    mechanism on this ClickHouse, and the re-check after upgrades.
   - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
     names who read it and accepted it, and when, the position is not accepted. If it is
     rejected, the script must not load before consent, or analytics comes out. Then set

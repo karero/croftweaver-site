@@ -33,3 +33,17 @@ Notes:
 - Rounds 5–7 ran Codex alone (the gate script only); the second seat had hit quota limits. Fresh-eyes ran in rounds 1–4 and its findings are folded into the rows above.
 - Checks on `0b36840`: the gate (4 builds, 30 fixtures, 16 policies) passed; `npm run check` 0 errors; `npm test` 203 passed.
 - Data check: no credentials. The repo is the owner's; the instance address is already public in the page's CSP.
+
+## Addendum 2026-10-12 (later): the retention sentence fills the storage-period slot
+
+Heads `8a59690` (round 1) and `dd25cb7` (round 2), High depth. Round 1: codex 237 s / 48,031 (0/1/0), ollama glm-5.3 263 s (0/2/3; melious timed out), fresh-eyes (Sonnet, one pass over three sites). Round 2: codex only, 381 s / 74,692 (1/2/0).
+
+| id | Sev | Source | Round | Finding — one line | Status | Evidence |
+|---|---|---|---|---|---|---|
+| S12 | RISK | all | 1 | "kept for 24 months and then deleted" overstates a lazy TTL | fixed `dd25cb7` | "deleted from the measurement server after 24 months"; lag in the README |
+| S13 | RISK | all | 1–2 | backups unaccounted for; archive age can exceed the period | OPEN — owner | README: script gap (2026-10-04), by-hand backups, keep archive retention short and add a sentence |
+| S14 | RISK | glm, fresh-eyes | 1 | nothing pins the sentence | fixed `dd25cb7` | a test inside `tests/a11y.spec.ts` reads section 3 only (a new spec file would be a 13th suite) |
+| S15 | BUG | codex | 2 | the new test comment called the TTL "enforced" while the README says "NOT yet applied" | fixed after round 2 | comment reworded; closing edit not re-verified |
+| S16 | RISK | codex | 1–2 | the TTL's effect unverified from here | OPEN — owner | the m-squad README has the probe and the re-check |
+
+The storage-period slot is filled; CI no longer fails on `[MISSING:`. The owner confirmations in the README are still empty, and the table TTL is not applied: nothing ships before it is.

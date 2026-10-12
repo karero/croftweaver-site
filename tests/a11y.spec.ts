@@ -779,7 +779,7 @@ test('skills — the catalogue lists every skill it counts and says what it is a
 });
 
 // Site-specific (not in the shipped suite): section 3 of /privacy says how long the analytics records are kept
-// (24 months, the owner's decision of 2026-10-12, enforced as a table TTL on the instance). The CI placeholder grep
+// (24 months, the owner's decision of 2026-10-12; the table TTL on the instance is still to be applied by the owner). The CI placeholder grep
 // only notices a missing slot, so without this a later edit that weakens or drops the period passes every check.
 test('privacy — section 3 says the analytics records are deleted after 24 months', async ({ page }) => {
   await page.goto('/privacy');
