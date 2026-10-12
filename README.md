@@ -149,7 +149,11 @@ Launch requirements that no test enforces:
   which needs the tracker's history on the owner's machine and publishes that one site and
   nothing else (`tests/check_export_ai_check.sh` keeps that true). An assistant the check
   was not run for on a day is declared in `NOT_RUN` in `src/data/proof.ts`; the page
-  build stops on any other gap in the file.
+  build stops on any other gap in the file. When the Search Console file is refreshed,
+  read the event pages on genai-wednesday.de again and update `EVENTS` in the same file:
+  the page says which events fall inside the best 28 days and that none followed, and
+  the build stops if the new file no longer fits that. The two Gemini answers asked by
+  hand (`byHand`) are dated and stay as they are; a new one is the owner's to add.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The

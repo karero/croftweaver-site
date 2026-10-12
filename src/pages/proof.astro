@@ -126,13 +126,13 @@ const aiDesc =
     <p>
       Clicks rose from almost nothing to a best 28 days of {peak.clicks}
       ({peak.from} to {peak.to}), and have fallen since. The cause of the fall is
-      not established. One thing is known about that time: GenAI Wednesday held events on
+      not established. This much is known: GenAI Wednesday held events on
       {p.search.events.days.map((d, i) => (
         <>{i > 0 && ' and '}<time datetime={d.iso}>{d.label}</time></>
       ))}, both inside the best 28 days, and <a href={p.url}>its site</a> lists none after
       that up to {latest.to}, the last day of these figures (event pages read on
       <time datetime={p.search.events.readOn.iso}>{p.search.events.readOn.label}</time>).
-      Whether that explains the fall was not tested.
+      Whether the gap explains the fall was not tested.
     </p>
     <p>
       For its two main local searches, Search Console reports these average
@@ -204,20 +204,21 @@ const aiDesc =
       </p>
     )}
     <p>
-      The check does not ask Gemini with web search. As Croftweaver reads
-      <a href={p.ai.byHand.terms}>Google's terms for the Gemini API</a> (read on
-      <time datetime={p.ai.byHand.termsRead.iso}>{p.ai.byHand.termsRead.label}</time>), they
-      forbid analysing its search-based answers, and counting is analysing. So the maintainer
-      of the site asked the Gemini app by hand, signed in and on a phone:
-      <q lang="de">{p.ai.byHand.question}</q>. On
-      <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time> the answer
-      (model shown: {p.ai.byHand.model}) listed four conferences first, then named GenAI
-      Wednesday first among the communities. Six of its passages carried a source labelled
-      <q>GenAI Wednesday</q>; which address is behind that label was not checked. Asked again on
-      <time datetime={p.ai.byHand.again.iso}>{p.ai.byHand.again.label}</time>, the answer named
-      GenAI Wednesday too, and no more of it was recorded. These are two answers to a question
-      the check does not ask. They are not in the counts above or in the file, and they show
-      what one account got on two days, nothing more.
+      The check does not ask Gemini with web search.
+      <a href={`${SITE.repo}/blob/v0.31/skills/search-console-insights/references/geo-check.md`}>The toolkit's guide to the check</a>
+      gives the reason, which lies in Google's terms for the Gemini API. The Gemini app is
+      not part of the check, so the maintainer of the site asked it by hand. On
+      <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time>, signed in and on
+      a phone, the question was <q lang="de">{p.ai.byHand.question}</q>. The answer (model
+      shown: {p.ai.byHand.model}) listed four events first, then named GenAI Wednesday first
+      among the communities. Six of its passages, four of them about other communities and
+      platforms, carried a source labelled <q>GenAI Wednesday</q>; which address is behind
+      that label was not checked. These details come from the maintainer's screenshot, which
+      is not published, and the date from the maintainer. The maintainer reports that a second
+      asking on <time datetime={p.ai.byHand.again.iso}>{p.ai.byHand.again.label}</time> also
+      named GenAI Wednesday; nothing else of it was recorded. Neither answer is in the counts
+      above or in the file, and the first was to a question the check does not ask. They show
+      what one person got on two days, nothing more.
     </p>
     <p class="note">
       The counts behind the table are published:
