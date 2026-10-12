@@ -200,7 +200,7 @@ Launch requirements that no test enforces:
     the server. APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
     the owner; `SHOW CREATE TABLE` shows `TTL timestamp + toIntervalMonth(24)` on `events_v2` and
     `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
-    events), so the TTL had nothing to delete (the sessions table was not queried on its own; the
+    events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
     instance's first event is that day). Rows older than the period go at the next background
     merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
     The same output also shows that neither table has an IP address or a raw user-agent column
