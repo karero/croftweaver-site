@@ -123,7 +123,7 @@ at the end of section 1.
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
 | 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three short outcomes (one per §7 line), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
-| 2 | Stakes | §6, then a short pivot to the guide: positioning first and the optional story layer (both from `/positioning`), then the plan in one sentence, and a link to `/why` | no |
+| 2 | Stakes | §6, then a short pivot to the guide: positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
@@ -175,8 +175,8 @@ name; it still stands in POSITIONING.md §4 and opens `/why`, and the owner has 
 those. "Sees last year's version of you" names age only, and a site can also be vague, slow,
 hard to use on a phone or at odds with itself. The third outcome in the hero and the third card
 now have the visitor as their subject ("You catch common slips"); the second line stays as it
-was. The pivot now answers the first job as well: it says that the assistant works out what you
-offer and for whom before anything else, and that it can tell the home page as your customer's
-story, with a link to `/positioning`. The story layer is optional, so the sentence says "can".
-These are methods, not a measured result: the site has no conversion figure, and the pivot
-claims none.
+was. The pivot now answers the first job as well: it says that the assistant first works out
+what you offer and for whom, and that it can tell the home page as your customer's story, with
+a link to `/positioning`. The story layer is optional, so the sentence says "can". These are
+methods, not a measured result: the site shows no conversion figure (`/roadmap` says that
+nothing sets up a conversion to count), and the pivot claims none.
