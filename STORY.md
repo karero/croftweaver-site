@@ -115,6 +115,11 @@ active voice. "Build or rebuild" covers a new site and an old one.
 Owner-approved 2026-10-08. It pairs the two channels (search and AI), not a person and a
 machine, and narrows the core term "website skills".
 
+**Shorthand, on every page:** "Build for search and AI." It stands under the logo in the
+header (`SITE.claim`; POSITIONING.md, header line) and is the short form of the controlling
+idea, not a second idea. Owner decision, 2026-10-12. The full sentence above is not printed
+on the home page; the one-liner and the shorthand carry it.
+
 ## Home page map (seven sections → src/pages/index.astro)
 
 POSITIONING.md's wording rule 2 keeps the proof strip directly under the hero, so it sits
@@ -134,7 +139,7 @@ Deviation from the skill's rule that objections use only facts already in POSITI
 what you need, the starter prompt and the free accounts come from `/start`, a page the
 owner reviewed. The cost answer also draws on `/why` ("Hosting on Cloudflare's free plan costs nothing.
 Your domain costs money, and your AI assistant can"; until 2026-10-12 it listed hosting
-among the costs) and on the home page's own block "Hosting it costs nothing" and on the price the 0.29 release note on `/skills`
+among the costs) and on the home page's own block "You pay nothing for hosting" and on the price the 0.29 release note on `/skills`
 gives for the optional weekly AI check. None of these are positioning claims.
 
 ## Beyond the seven sections: the learning section
