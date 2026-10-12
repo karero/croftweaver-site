@@ -15,8 +15,7 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 5. **Analytics:** none — Google Search Console only. No cookies, no banner.
 6. **Publish model:** two-stage. `main` = noindexed preview
    (https://main.croftweaver-site.pages.dev), `production` = live at
-   https://croftweaver.com. Publish with `npm run ship`; step 8 in the table below says
-   why that does not work yet and what to run meanwhile.
+   https://croftweaver.com. Publish with `npm run ship`.
 
 ## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
 
@@ -107,10 +106,10 @@ requests.
 | 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
 | 5i | Launch wording: genai-wednesday.de launched on 27 March 2026 and was not relaunched (`/proof`, `/more-proof`, `/why`, `STORY.md`, `public/llms.txt`) | PR | done | karero/croftweaver-site#27, merged 2026-10-09 (`c48b39e`) |
 | 5j | Perplexity's count in the AI check is worded as what it measures, not as a citation; the export script no longer stops on a valid row | PR | done | karero/croftweaver-site#30, merged 2026-10-09 (`fb2b415`) |
-| 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS` and `RECENT` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done; the move to release 0.31 is in review | 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
+| 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS` and `RECENT` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done; the move to release 0.31 is in review | release 0.31: karero/croftweaver-site#41 (open); 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
 | 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a has no result recorded | releases `v0.30` and `v0.31` of karero/croftweaver |
-| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. Until the owner repairs that connection, `npm run ship` cannot publish and pull requests get no preview; a publish is then, from a clean copy of `production`: `CF_PAGES_BRANCH=production npm run build`, then `npx wrangler pages deploy dist --project-name croftweaver-site --branch production` (the same with `--branch main` for the preview). Open: the GitHub connection, Search Console, the test mail | `https://croftweaver.com/build.txt` served `59a8983` on 2026-10-12 |
+| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` has not been run yet. Open: Search Console, the test mail | `https://croftweaver.com/build.txt` served `59a8983` on 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 
