@@ -100,6 +100,12 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 - **Why they care most:** a site nobody finds earns nothing, and the search and AI work
   is exactly what gets skipped when a site is built fast. Many start from an old site, or
   none, where every change waits on someone else, so that work never gets done.
+- **The site's two jobs (owner, 2026-10-12):** first, people who already know your name
+  look you up, from a business card, an email footer or a LinkedIn link, and the site
+  helps to win them. Second, the site attracts people who do not know you yet: prospects,
+  partners, employees. Serving existing customers is a minor third job for a small site.
+  On the home page, copy about what is at stake names both jobs, not only being found;
+  `/why` and `/established-sites` keep their own wording.
 - **Secondary reason to start:** rebuilding a site you know is a good project for
   learning to work with an AI assistant, alone or with a team. Never the lead (see the
   value table).

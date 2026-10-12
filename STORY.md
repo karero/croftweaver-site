@@ -88,13 +88,16 @@
   waits on someone else, so changes pile up and the site falls behind (§1, §4).
 - The work that gets a site found is the first to go, and without a check after each edit
   a site slips: a description goes missing, a link breaks, and nothing tells you (§1, §4).
+- Both of a site's jobs suffer (POSITIONING.md §4, the site's two jobs): someone who already
+  knows your name looks you up and the site makes a weaker case than you would yourself, and
+  the people who do not know you yet have a harder time finding you.
 
 ## 7. Success (life after)
 
 - **You make the changes yourself.** Everyday updates are a conversation with your
   assistant (§3, independence row).
 - **Search and AI can read it from the first build** (§3 rows 1 and 2).
-- **Common slips get caught.** The test suites check every change by default, and your
+- **You catch common slips.** The test suites check every change by default, and your
   own search data points to the next edit (§3 rows 3 and 4).
 
 ## One-liner (30 words)
@@ -119,8 +122,8 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three short outcomes (one per §7 line), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
-| 2 | Stakes | §6, then a short pivot to the guide and a link to `/why` | no |
+| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
+| 2 | Stakes | §6, then a short pivot to the guide: positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
@@ -161,3 +164,21 @@ the two detail sections about what is built in and what checks it become one sho
 links to `/checks`. The audience line says "communities" where §1 and POSITIONING.md §4 say
 "community organizers": the owner approved that wording. The direct call to action keeps its
 label (§5).
+
+## Changes after a story check (owner, 2026-10-12)
+
+The stakes said what goes wrong on a site, not what it costs. The owner's rule: a site has two
+jobs (POSITIONING.md §4), and on the home page the cost names both. The rule is for the home
+page: `/why` and `/established-sites` keep their own wording. Section 2 of the home page now has
+one sentence for each job, after the two paragraphs from §6 and before the pivot. Two wordings
+were turned down as the stakes line. "A site nobody finds earns nothing" leaves out the people
+who already know your name; it still stands in POSITIONING.md §4 and opens `/why`, and the owner
+has not decided on those. "Sees last year's version of you" names age only, and a site can also
+be vague, slow, hard to use on a phone or at odds with itself. The third outcome in the hero and
+the third card now have the visitor as their subject ("You catch common slips"); the second line
+stays as it was. The pivot now answers the first job as well: it says that the assistant first
+works out what you offer and for whom, and that it can tell the home page as your visitor's
+story, with a link to `/positioning`. The story layer is optional, so the sentence says "can".
+The owner chose "visitor", the word `/positioning` and the skills list use, over "customer".
+These are methods, not a measured result: the site shows no conversion figure (`/roadmap` says
+that nothing sets up a conversion to count), and the pivot claims none.
