@@ -128,12 +128,13 @@ at the end of section 1.
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
-| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), then the sign-off | yes |
+| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; what hosting costs; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), then the sign-off | yes |
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
-owner reviewed. The cost answer also draws on `/why` ("Your domain, your hosting and your
-AI assistant can still cost money") and on the price the 0.29 release note on `/skills`
+owner reviewed. The cost answer also draws on `/why` ("Hosting on Cloudflare's free plan costs nothing.
+Your domain costs money, and your AI assistant can"; until 2026-10-12 it listed hosting
+among the costs) and on the home page's own block "Hosting it costs nothing" and on the price the 0.29 release note on `/skills`
 gives for the optional weekly AI check. None of these are positioning claims.
 
 ## Beyond the seven sections: the learning section

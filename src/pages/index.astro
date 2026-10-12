@@ -314,16 +314,18 @@ const softwareSchema = {
     </ul>
     <p class="aside">
       Rebuilding a site you already have? Before you cancel the old hosting plan, check
-      two things. Is your domain registered through it? Then keep the domain there, or
+      three things. Is your domain registered through it? Then keep the domain there, or
       move it to another registrar first. Do your mailboxes run on it? Then keep the
-      plan, or move your email first. Mail at a separate provider, such as Google
-      Workspace or Proton, is not affected.
+      plan, or move your email first. Does your domain's DNS move to Cloudflare? Then
+      copy its mail records there first: without them mail stops, wherever your
+      mailboxes are, also at a separate provider such as Google Workspace or Proton.
     </p>
     <p>
-      The free plans and Cloudflare's figure as read on
-      <time datetime="2026-10-12">12 October 2026</time>:
-      <a href="https://github.com/pricing">GitHub's plans</a> and
-      <a href="https://developers.cloudflare.com/pages/platform/limits/">the limits of Cloudflare's free plan</a>.
+      Cloudflare's free plan has limits, and
+      <a href="https://developers.cloudflare.com/pages/platform/limits/">its own page lists them</a>.
+      GitHub's free plan is on <a href="https://github.com/pricing">GitHub's plans</a>.
+      Both pages and Cloudflare's 20% figure were read on
+      <time datetime="2026-10-12">12 October 2026</time>.
     </p>
   </section>
 
