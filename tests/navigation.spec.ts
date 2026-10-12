@@ -462,3 +462,20 @@ test('cost — the rebuild note on the home page leads to the three checks on /s
   await expect(checks.nth(1)).toContainText('mailboxes');
   await expect(checks.nth(2)).toContainText('mail records');
 });
+
+// Croftweaver grew out of the first site built this way, genai-wednesday.de, in March 2026
+// (owner, 2026-10-12). Every page says so in its footer and links to that site, so the
+// credit cannot drop off one page, lose its link, or point somewhere else unnoticed.
+test('footer credit: every page names GenAI Wednesday as the origin and links to its site', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const credit = page.locator('.site-footer .credit');
+    await expect(credit, `${path}: the footer has no credit line`).toHaveCount(1);
+    await expect(credit, `${path}: the credit line is hidden`).toBeVisible();
+    await expect(credit, `${path}: the credit line`).toHaveText('Croftweaver grew out of building the GenAI Wednesday website in March 2026.');
+    const link = credit.locator('a');
+    await expect(link, `${path}: the credit line needs exactly one link`).toHaveCount(1);
+    await expect(link, `${path}: the credit link`).toHaveText('GenAI Wednesday');
+    await expect(link, `${path}: the credit does not link to genai-wednesday.de`).toHaveAttribute('href', 'https://genai-wednesday.de/');
+  }
+});
