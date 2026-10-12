@@ -6,8 +6,8 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 ## Decision record (new-website interview, 2026-07-02)
 
 1. **Pages:** 14 flat pages and a 404, no collections. The site started with three
-   (`/`, `/privacy`, `/imprint`) and grew from 2026-10-03. Inventory:
-   `CONTENT_GUIDE.md`.
+   (`/`, `/privacy`, `/imprint`); more were planned on 2026-10-03 and built from
+   2026-10-04. Inventory: `CONTENT_GUIDE.md`.
 2. **Dynamic:** Tier 1, fully static. No functions, no forms.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).

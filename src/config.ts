@@ -49,7 +49,8 @@ export const COMPANY = {
   street: 'Schellingstr. 141 Rgb.',
   postcodeCity: '80798 Munich, Germany',
   managingDirector: 'Daniel Melter',
-  email: 'hello@croftweaver.com',      // the contact both legal pages publish, through EmailLink
+  email: 'hello@croftweaver.com',      // every page that shows it reads it here, through EmailLink
+  phone: '+49 179 6913629',            // the imprint shows it, through PhoneNumber
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 
