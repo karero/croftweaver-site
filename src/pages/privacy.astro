@@ -1,5 +1,7 @@
 ---
-// Privacy page. The visible text cites no articles or statutes, in plain words like
+// Privacy page. Section 3 also says the site counts clicks on its email address (event
+// "Email Tap", src/components/EmailLink.astro; a goal of that name is set in the
+// instance). The visible text cites no articles or statutes, in plain words like
 // m-squad.com/privacy (owner, 2026-10-12); tests/a11y.spec.ts holds that. Decided:
 //   1. The controller is whoever legally runs the site: M-Squad GmbH (filled in on
 //      9 October 2026; name, address and managing director as in the imprint).
@@ -102,7 +104,9 @@ import { SITE, COMPANY } from '../config';
       you scrolled and how long the page was visible and in focus. It also
       counts clicks on links to other websites and sends the address of the link
       you clicked. It counts clicks on links to files, such as the slide deck,
-      and sends the address of the file.
+      and sends the address of the file. We also count how often an email
+      address on this site is clicked, together with the page it was on; the
+      address itself is not sent.
     </p>
     <p>
       The tool derives your approximate location from the IP address and does not keep the IP address in its own records. From your IP address, your browser data

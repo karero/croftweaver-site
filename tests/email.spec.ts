@@ -84,3 +84,31 @@ for (const theme of THEMES) {
     await expect(page.locator('.phone-number[data-phone]')).toHaveCount(0);
   });
 }
+
+// Site-specific: a click on an email address reports one "Email Tap" event, and the address is never part of
+// it. window.plausible is the live build's stub, so the test stands one in. A page without it must not break.
+type Tapped = Window & { __tap?: unknown[][]; plausible?: (...args: unknown[]) => void };
+test('email — a click on an email address reports one "Email Tap" event and no address', async ({ page }) => {
+  await page.addInitScript(() => {
+    const w = window as Tapped;
+    w.__tap = [];
+    w.plausible = (...args: unknown[]) => { w.__tap!.push(args); };
+  });
+  await page.goto('/privacy');
+  await page.evaluate(() => document.addEventListener('click', (e) => e.preventDefault(), true));
+  const link = page.locator('a.email-link').first();
+  await expect(link, 'the link is not assembled into a mailto').toHaveAttribute('href', /^mailto:/);
+  await link.click();
+  const calls = await page.evaluate(() => (window as Tapped).__tap);
+  expect(calls).toEqual([['Email Tap']]);
+  expect(JSON.stringify(calls), 'the event carries an address').not.toContain('@');
+});
+
+test('email — a click on an email address does nothing and breaks nothing without the stub', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/privacy');
+  await page.evaluate(() => document.addEventListener('click', (e) => e.preventDefault(), true));
+  await page.locator('a.email-link').first().click();
+  expect(errors).toEqual([]);
+});
