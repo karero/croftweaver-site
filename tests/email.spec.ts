@@ -6,7 +6,7 @@ import { PAGES, THEMES } from './_helpers';
 // Anti-harvest guardrail: the SERVED HTML of every page must contain no plaintext
 // email address and no `mailto:` link. Addresses go through <EmailLink>, which
 // obfuscates at build time and reassembles the mailto in the browser (the decode
-// logic lives in an external bundle, not the page HTML). Catches an accidental raw
+// script is inline in the page; it carries no address). Catches an accidental raw
 // address before scrapers do. Fetches the raw HTML (no JS), which is what a bot sees.
 // The bare string "mailto:" from EmailLink's reassembly script is fine — it carries
 // no address; we flag a harvestable ADDRESS (including one inside a mailto: link).

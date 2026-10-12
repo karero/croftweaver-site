@@ -9,7 +9,7 @@
 // contractions, no buzzwords. The direct call to action keeps one label everywhere.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
-import { SITE } from '../config';
+import { SITE, COMPANY } from '../config';
 import { SUITE_COUNT } from '../data/suites';
 import { PANEL, fmtScore } from '../data/proof';
 
@@ -258,7 +258,7 @@ const softwareSchema = {
       say, you see each change take shape, and you decide what stays. In my experience
       it is a real learning curve, and a happy one. Questions along the way? I am glad
       to help. Write to
-      <EmailLink address="hello@croftweaver.com" subject="A question about Croftweaver" />.
+      <EmailLink address={COMPANY.email} subject="A question about Croftweaver" />.
     </p>
     <p class="byline">Daniel Melter, maintainer of Croftweaver</p>
   </section>

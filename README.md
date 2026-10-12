@@ -5,10 +5,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 
 ## Decision record (new-website interview, 2026-07-02)
 
-1. **Pages:** three flat pages (`/`, `/privacy`, `/imprint`) — no collections.
-   Extended 2026-10-03: seven more flat pages are planned (`/checks`, `/skills`,
-   `/start`, `/proof`, `/why`, `/compare`, `/roadmap`) plus a 404. Inventory:
-   `CONTENT_GUIDE.md`.
+1. **Pages:** 14 flat pages and a 404, no collections. The site started with three
+   (`/`, `/privacy`, `/imprint`); more were planned on 2026-10-03 and built from
+   2026-10-04. Inventory: `CONTENT_GUIDE.md`.
 2. **Dynamic:** Tier 1, fully static. No functions, no forms.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
@@ -110,7 +109,7 @@ requests.
 | 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done | release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
 | 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a, which this step was to wait for, has no result recorded and stays open | releases `v0.30` and `v0.31` of karero/croftweaver |
-| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` has not been run yet. Open: Search Console, the test mail | `https://croftweaver.com/build.txt` served `59a8983` on 2026-10-12 |
+| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). Open: the sitemap in Search Console (the Domain property exists; no sitemap was submitted when last looked, 2026-10-12) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 
@@ -131,7 +130,7 @@ Launch requirements that no test enforces:
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
-  the date here.
+  the date here. A test mail arrived (owner, 2026-10-12).
 - The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
   2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
   `src/data/proof.ts` if its numbers changed, and the caveat sentences in
