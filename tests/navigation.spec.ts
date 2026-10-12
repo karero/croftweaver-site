@@ -425,7 +425,7 @@ test('cost — the home page says hosting is free, above the Quickstart, with it
   expect(ids.indexOf('cost'), 'no #cost section on the home page').toBeGreaterThanOrEqual(0);
   expect(ids.indexOf('cost'), '#cost does not stand directly above #quickstart').toBe(ids.indexOf('quickstart') - 1);
   const cost = page.locator('#cost');
-  for (const href of ['https://github.com/why-github', 'https://www.cloudflare.com/what-is-cloudflare/',
+  for (const href of ['https://github.com/about', 'https://www.cloudflare.com/what-is-cloudflare/',
     'https://github.com/pricing', 'https://developers.cloudflare.com/pages/platform/limits/']) {
     await expect(cost.locator(`a[href="${href}"]`), `#cost does not link ${href}`).toHaveCount(1);
   }
@@ -446,4 +446,19 @@ test('cost — the Plausible price on /start has its source and the day it was r
   await expect(note.locator('a[href="https://plausible.io"]')).toHaveCount(1);
   await expect(note.locator('a[href="https://plausible.io/#pricing"]'), 'the price has no source').toHaveCount(1);
   await expect(note.locator('time[datetime]'), 'the price has no date').toHaveCount(1);
+});
+
+// Someone who rebuilds an existing site may cancel the old hosting plan and lose the domain
+// or the mail with it. The home page says so in one sentence and sends them to the three
+// checks on /start: the domain's registration, the mailboxes, and the mail records when the
+// domain's DNS moves. The sentence without the checks, or a link to nowhere, helps nobody.
+test('cost — the rebuild note on the home page leads to the three checks on /start', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#cost a[href="/start#rebuild"]'), 'the rebuild note links no checks').toHaveCount(1);
+  await page.goto('/start');
+  const checks = page.locator('#rebuild li');
+  await expect(checks).toHaveCount(3);
+  await expect(checks.nth(0)).toContainText('domain registered');
+  await expect(checks.nth(1)).toContainText('mailboxes');
+  await expect(checks.nth(2)).toContainText('mail records');
 });
