@@ -62,6 +62,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Four builds with CF_PAGES_BRANCH set four ways: the Plausible script is on the live
+      # build only. The Playwright run below builds once and cannot see a wrong switch.
+      - name: Analytics gate (src/config.ts)
+        run: bash tests/check_analytics_gate.sh
       - run: npm run check
       - run: npx playwright install --with-deps chromium
       - run: npm test

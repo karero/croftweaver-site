@@ -79,10 +79,17 @@ export const KNOWS_ABOUT: string[] = [
 // A mismatch means analytics silently never loads — no error, no data.
 export const PROD_BRANCH = 'production';
 
-// Decision (interview Q5): Google Search Console only — no analytics script,
-// no consent banner. Flip `enabled` to the CF_PAGES_BRANCH check if that changes.
+// The instance is M-Squad's own. scriptId is the per-site script its installer hands out
+// (Settings > General > Tracking, next to "Site installation"): the domain and the optional
+// measurements (outbound links, file downloads, form submissions) are switched in the
+// instance, not here, and section 3 of the privacy page mirrors them. Changing scriptHost
+// means changing script-src and connect-src in public/_headers too, or the browser blocks
+// the script; tests/check_analytics_gate.sh checks both against this file and pins the
+// script address. Base.astro
+// writes two tags: the script, and the short stub that calls plausible.init(); without
+// the stub the script never starts.
 export const ANALYTICS = {
-  enabled: false,
-  domain: 'croftweaver.com',
-  scriptHost: 'https://plausible.io',
+  enabled: process.env.CF_PAGES_BRANCH === PROD_BRANCH,
+  scriptHost: 'https://analytics.m-squad.com',
+  scriptId: 'pa--pMhz1-dKjwaTf3D6ArFS',
 } as const;

@@ -8,10 +8,16 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 1. **Pages:** 14 flat pages and a 404, no collections. The site started with three
    (`/`, `/privacy`, `/imprint`); more were planned on 2026-10-03 and built from
    2026-10-04. Inventory: `CONTENT_GUIDE.md`.
-2. **Dynamic:** Tier 1, fully static. No functions, no forms.
+2. **Dynamic:** Tier 1, fully static pages, no forms. One Cloudflare Pages middleware
+   (`functions/_middleware.ts`) sets noindex on previews and, once CANONICAL_URL is set in
+   Cloudflare, redirects the production alias to the live domain.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
-5. **Analytics:** none — Google Search Console only. No cookies, no banner.
+5. **Analytics:** Google Search Console, and (configured 2026-10-12) cookieless Plausible
+   on M-Squad's own instance, analytics.m-squad.com. The script loads on the live build
+   only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner
+   (a position to have confirmed; see "Launch requirements" and the header of
+   `src/pages/privacy.astro`).
 6. **Publish model:** two-stage. `main` = noindexed preview
    (https://main.croftweaver-site.pages.dev), `production` = live at
    https://croftweaver.com. Publish with `npm run ship`.
@@ -160,3 +166,69 @@ Launch requirements that no test enforces:
   A Cloudflare Cache Rule or Browser Cache TTL on the zone could change what visitors
   get; record the date here. Seen on 2026-10-12: `cache-control: public, max-age=86400`,
   the value the rule sets.
+- Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
+  states things that only the owner can confirm. Nothing here is recorded yet; write
+  each line with its date when it is true:
+  - Where the instance runs: on a server of M-Squad GmbH, in the EU or EEA (name the
+    hosting provider if it is rented, and add it to section 3 as a recipient). Its web
+    server or reverse proxy keeps no IP addresses in access logs. The Cloudflare zone in
+    front of analytics.m-squad.com is in the account confirmed for the site above (section
+    2, which section 3 points to, calls Cloudflare a processor). Cloudflare Web Analytics
+    is off for this project (it would inject a beacon that section 3 does not describe).
+  - What the instance does, from the instance itself and not from Plausible's hosted data
+    policy: its version, that its event and session tables hold no IP address or raw
+    user-agent column, and how its daily salt is handled. If any of that differs, change
+    the sentences in section 3 that say it. The `deploy/plausible-m-squad` folder of the
+    m-squad-website repository names Community Edition v3.2.1 with ClickHouse 24.12 and
+    sets no retention or purge. The box's copy differs: ClickHouse was moved to 26.8.16.41 on
+    2026-10-04 (apreet-stack, docs/CHANGES.md) and the stack sits in
+    /home/prixi2/plausible-m-squad. Confirm that Plausible is still v3.2.1 and that nothing
+    but the TTL below deletes records.
+  - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
+    ticked, "Form submissions" unticked (the site has no form). Section 3 has one sentence
+    for each of the two ticked ones; when the ticks change, change the sentences. After the
+    first click on an outbound link and on a download on the live site, the instance's
+    reports must list the address: section 3 says it is sent and stored.
+  - What deletes old records in the instance (a retention setting, a table TTL or a job
+    you run), and the period it enforces. If nothing deletes, set a table TTL or a job
+    first, then state its period (Art. 13(2)(a) GDPR wants the period or the criteria).
+    State only that period in section 3 (the page asks for the period, not the mechanism).
+    The slot is filled; the CI placeholder grep no longer fails on it.
+    Decided 2026-10-12 (owner): 24 months for the whole instance. The same sentence is to appear
+    on the croftweaver.com, m-squad.com and apreet.com pages (the other two are separate pull
+    requests); this repository's section 3 says it now, and a test in `tests/a11y.spec.ts`
+    holds it. The table TTL on `events_v2` and `sessions_v2` is to be applied by the owner on
+    the server. APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
+    the owner; `SHOW CREATE TABLE` shows `TTL timestamp + toIntervalMonth(24)` on `events_v2` and
+    `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
+    events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
+    instance's first event is that day). Rows older than the period go at the next background
+    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
+    The same output also shows that neither table has an IP address or a raw user-agent column
+    (ClickHouse 26.8; Plausible's version and the daily salt are still to be confirmed).
+    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
+    If it is extended to, an archive holds records up to 24 months old, so a record can outlive
+    the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
+    are longer): keep that short and say so in a second sentence on the page. The m-squad-website
+    README (section "Retention") has the statements, a scratch-table probe that proves the
+    mechanism on this ClickHouse, and the re-check after upgrades.
+  - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
+    names who read it and accepted it, and when, the position is not accepted. If it is
+    rejected, the script must not load before consent, or analytics comes out. Then set
+    `ANALYTICS.enabled` false in `src/config.ts` and, in the same change, remove the
+    "Analytics gate" step in `.github/workflows/ci.yml` and `tests/check_analytics_gate.sh`
+    (or change them to match), rewrite section 3, and take out the host in the CSP of
+    `public/_headers`, README decision 5, this bullet block and the comments in
+    `src/config.ts` and `public/_headers` that name the gate.
+  - After the first ship: `curl -sI https://croftweaver.com/ | grep -i content-security-policy`
+    shows analytics.m-squad.com in script-src and connect-src, and the installer's
+    "Verify" step passes. `astro preview` does not apply `_headers`, so no test sees it.
+    The gate test pins the script address; when the installer gives another one, change the
+    pin in `tests/check_analytics_gate.sh` in the same change as `src/config.ts`, ship, run
+    Verify, and revert both if it fails.
+  - Exclude your own browser: run `localStorage.plausible_ignore = 'true'` in the console,
+    once per address you visit: croftweaver.com, each production deployment's hash URL
+    (`<hash>.<project>.pages.dev`; a preview deployment's carries no script) you open, and the production alias (`<project>.pages.dev`,
+    not redirected until CANONICAL_URL is set). The production build is served at all of
+    them with the domain written into the script, so a visit counts as a visit to
+    croftweaver.com. The flag is stored per address.

@@ -777,3 +777,16 @@ test('skills — the catalogue lists every skill it counts and says what it is a
   await expect(page.locator('p.note').first(), 'the page does not say which release the list describes and what was added since')
     .toHaveText(asOf);
 });
+
+// Site-specific (not in the shipped suite): section 3 of /privacy says how long the analytics records are kept
+// (24 months, the owner's decision of 2026-10-12; the table TTL on the instance is still to be applied by the owner). The CI placeholder grep
+// only notices a missing slot, so without this a later edit that weakens or drops the period passes every check.
+test('privacy — section 3 says the analytics records are deleted after 24 months', async ({ page }) => {
+  await page.goto('/privacy');
+  const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
+  const from = text.indexOf('3. Cookies and analytics'), to = text.indexOf('4. Contact by email or phone');
+  expect(from, 'the section 3 heading').toBeGreaterThan(-1);
+  expect(to, 'the section 4 heading, after section 3').toBeGreaterThan(from);
+  expect(text.slice(from, to), 'section 3 lost the retention sentence').toContain(
+    'The individual events and session records are deleted from the measurement server after 24 months.');
+});
