@@ -790,3 +790,15 @@ test('privacy — section 3 says the analytics records are deleted after 24 mont
   expect(text.slice(from, to), 'section 3 lost the retention sentence').toContain(
     'The individual events and session records are deleted from the measurement server after 24 months.');
 });
+
+// Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
+// numbers, statutes or law names (owner, 2026-10-12: like m-squad.com/privacy). The sources for the
+// analytics position stay in the page's source comment, which is not rendered.
+test('privacy — the page cites no articles, statutes or law names', async ({ page }) => {
+  await page.goto('/privacy');
+  const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
+  // Article numbers (Art. 6, art 6, Articles 15-21), the section sign, law names and their long forms, and statute numbers.
+  const cited = text.match(/\bArt(?:icles?|s?\.?)\s*\d+|§|\bGDPR\b|General Data Protection Regulation|\bDSGVO\b|Datenschutz-?Grundverordnung|\bTDDDG\b|\bTTDSG\b|\bBDSG\b|\bBayDSG\b|\bePrivacy\b|\b2016\s*\/\s*679\b/gi);
+  expect(cited, `/privacy cites ${JSON.stringify(cited)}: say it in words`).toBeNull();
+});
+
