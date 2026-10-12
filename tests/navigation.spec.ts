@@ -390,7 +390,7 @@ test('header — on a wide screen every link shows, the established-sites page a
   await expect(page.locator('.site-header nav a[href="/established-sites"]'), 'the page for established sites is not in the menu').toBeVisible();
   // On that page its own link is the marked one, and only it.
   await page.goto('/established-sites');
-  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Established sites']);
+  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Existing Sites']);
 });
 
 test('header — without JavaScript a phone still shows every link', async ({ browser, baseURL }) => {
