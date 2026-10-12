@@ -5,7 +5,10 @@
 // fresh for this page and keeps to the wording rule (POSITIONING.md) and the honesty
 // rules (CONTENT_GUIDE.md): no guarantee, and every figure comes from the same data
 // as /proof (src/data/proof.ts), never typed here.
-// The deck as a PDF download is added when the deck is refreshed (README, step 5a).
+// The deck as a PDF download (public/croftweaver-why.pdf) is made from this page and
+// /checks by `npm run deck`, so its figures are this page's figures; tests/seo.spec.ts
+// fails when the PDF is out of date. The page's own text and the deck's slides are
+// separate copy: a changed argument here needs a look at scripts/deck-slides.mjs.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 import { SUITE_COUNT } from '../data/suites';
@@ -48,6 +51,7 @@ const steps = [
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+      <a class="btn" href="/croftweaver-why.pdf">Download this case as slides (PDF)</a>
     </div>
   </section>
 

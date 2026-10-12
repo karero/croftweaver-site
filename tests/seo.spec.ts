@@ -3,7 +3,9 @@ import { PAGES } from './_helpers';
 import { SITE, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { readdirSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
+import { makeDeck } from '../scripts/deck-slides.mjs';
 
 // SEO contract + tag-consistency guardrail. Base.astro derives <title>, OG,
 // Twitter, canonical and the WebPage schema from a single (title, description)
@@ -413,4 +415,66 @@ test('seo — hosted PDFs carry a descriptive doc-title', () => {
       expect(t.length, `${file}: doc-title too short ("${t}", ${t.length} chars, need ≥${PDF_TITLE_MIN})`).toBeGreaterThanOrEqual(PDF_TITLE_MIN);
     }
   }
+});
+
+// ── The /why slide deck: public/croftweaver-why.pdf (README step 5a) ───────────
+// Made by `npm run deck` from the built /why and /checks pages. A PDF is a frozen copy, and
+// /why promises that its figures come from the same data as /proof, so a stale copy must be a
+// red run: the first test asks the real script (the command the owner runs) whether the PDF
+// still matches its source; the others pin what that check depends on. Files in dist/ are read
+// inside the tests, not at load: Playwright loads this file before its web server has built the site.
+const distFile = (name: string) => readFileSync(join(process.cwd(), 'dist', name), 'utf8');
+const deckFrom = (whyHtml = distFile('why.html'), checksHtml = distFile('checks.html')) =>
+  makeDeck({ whyHtml, checksHtml, site: SITE, logoSvg: readFileSync(join(process.cwd(), 'src', 'assets', 'brand', 'lockup-horizontal-theme.svg'), 'utf8') });
+
+test('seo — the /why slide deck still matches the /why and /checks pages it was made from', () => {
+  let output = '';
+  try {
+    output = execFileSync(process.execPath, ['scripts/build-deck.mjs', '--check'], { encoding: 'utf8', stdio: 'pipe' });
+  } catch (error) {
+    const e = error as { stderr?: string; message: string };
+    throw new Error(e.stderr || e.message);
+  }
+  expect(output).toContain('current');
+});
+
+test('seo — /why offers the slide deck and the site serves it', async ({ page, request }) => {
+  await page.goto('/why');
+  await expect(page.locator('a[href="/croftweaver-why.pdf"]'), '/why has no download link to the deck').toHaveCount(1);
+  const response = await request.get('/croftweaver-why.pdf');
+  expect(response.status()).toBe(200);
+  expect(response.headers()['content-type']).toContain('application/pdf');
+  const body = await response.body();
+  expect(body.subarray(0, 5).toString('latin1'), 'the file is not a PDF').toBe('%PDF-');
+  expect(body.length, 'the deck is too big to download comfortably').toBeLessThan(2_000_000);
+});
+
+test('seo — a changed figure on /why changes the slide deck, which is what makes the PDF check fail', () => {
+  const why = distFile('why.html');
+  expect(deckFrom().html, 'the deck is not deterministic').toBe(deckFrom().html);
+  const changed = why.replace('out of 100 for performance', 'out of 100 for speed');
+  expect(changed, '/why no longer says "out of 100 for performance"; update this test').not.toBe(why);
+  expect(deckFrom(changed).html).not.toBe(deckFrom().html);
+  // Astro stamps every element with a hash of its page's styles; the deck keeps text and links only.
+  const restyled = why.replace(/data-astro-cid-[a-z0-9]+/g, 'data-astro-cid-restyled');
+  expect(restyled).not.toBe(why);
+  expect(deckFrom(restyled).html).toBe(deckFrom().html);
+});
+
+test('seo — the slide deck refuses to build when /why or /checks change shape or disagree', () => {
+  const why = distFile('why.html');
+  const checks = distFile('checks.html');
+  expect(() => deckFrom(why.replace('id="evidence"', 'id="gone"'))).toThrow(/evidence section/);
+  // Hide the first group of suites on /checks: it then lists fewer than /why claims.
+  expect(checks, 'the suites on /checks changed shape; update this test').toContain('class="suites"');
+  expect(() => deckFrom(why, checks.replace('class="suites"', 'class="hidden"'))).toThrow(/\/checks lists \d+/);
+});
+
+test('seo — every link in the slide deck to this site points at a page that exists', () => {
+  const hrefs = [...deckFrom().html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const own = hrefs.filter((h) => h.startsWith(SITE.url));
+  expect(own.length, 'the deck links to no page of this site').toBeGreaterThan(0);
+  const known = new Set<string>(PAGES);
+  const dead = own.map((h) => h.slice(SITE.url.length).split('#')[0] || '/').filter((p) => !known.has(p));
+  expect(dead, `the deck links to pages that are not routes: ${dead.join(', ')}`).toEqual([]);
 });

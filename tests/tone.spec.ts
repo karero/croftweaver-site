@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { PAGES, germanFunctionWordDensity } from './_helpers';
+import { SITE } from '../src/config';
+import { makeDeck } from '../scripts/deck-slides.mjs';
 
 // Tone-of-voice guardrail (see the website-content-guide skill + CONTENT_GUIDE.md).
 // Hard rules across all user-facing copy AND metadata. Genuinely quoted human/customer
@@ -173,3 +177,29 @@ for (const path of PAGES) {
     }
   });
 }
+
+// The /why slide deck is copy too (public/croftweaver-why.pdf, made by `npm run deck`). Its text
+// comes from scripts/deck-slides.mjs and the built /why and /checks pages, and tests/seo.spec.ts
+// keeps the PDF equal to that source, so these are the words a reader of the PDF sees.
+test('tone — no banned phrasing in the /why slide deck', () => {
+  const read = (...parts: string[]) => readFileSync(join(process.cwd(), ...parts), 'utf8');
+  const { text, title } = makeDeck({
+    whyHtml: read('dist', 'why.html'),
+    checksHtml: read('dist', 'checks.html'),
+    site: SITE,
+    logoSvg: read('src', 'assets', 'brand', 'lockup-horizontal-theme.svg'),
+  });
+  const all = `${title}\n${text}`;
+  const violations: string[] = [];
+  for (const { label, re } of [...UNIVERSAL_RULES, ...ENGLISH_RULES]) {
+    for (const m of all.matchAll(re)) {
+      if (ALLOWLIST.has(m[0].toLowerCase().replace(/’/g, "'"))) continue;
+      const i = m.index ?? 0;
+      violations.push(`"${label}" → …${all.slice(Math.max(0, i - 25), i + 25).replace(/\s+/g, ' ').trim()}…`);
+    }
+  }
+  expect(
+    violations,
+    `the /why slide deck breaks the tone rules (scripts/deck-slides.mjs):\n` + violations.map((v) => '  • ' + v).join('\n'),
+  ).toEqual([]);
+});

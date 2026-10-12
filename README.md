@@ -58,7 +58,18 @@ npm test             # a11y / seo / navigation / anchors / orphans / images /
                      # tone / positioning / email / links / llms-coverage /
                      # middleware (preview handling)
 npm run og           # regenerate OG share cards after brand/copy changes
+npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
 ```
+
+The slide deck reads three things from the built pages, so they are never typed: the
+evidence section of `/why`, the sentence with the test-suite count in its "Check" step,
+and the suite groups and names on `/checks`. When one of those, the slides in
+`scripts/deck-slides.mjs`, the logo or the site address changes, `npm test` fails until
+you run `npm run deck` and commit the new `public/croftweaver-why.pdf` and
+`scripts/deck.lock.json`. The rest of the slides is copy written for the deck, and no
+test compares it with the pages: after changing an argument on `/why` or a description
+on `/checks`, read `scripts/deck-slides.mjs` and change it by hand. The deck needs Node
+22.18 or newer, and making it needs Python 3 with `pypdf` for the PDF's title.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
@@ -84,8 +95,8 @@ requests.
 | 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | done; a fresh-eyes check of the page then led to three fixes: the Quickstart leads with the one-prompt route; the hero says who the site is for; one scene shows life after, and two long sections became one | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); `STORY.md` and the page: karero/croftweaver-site#20, merged 2026-10-08 (`bfe7b0b`); the three fixes: karero/croftweaver-site#31, merged 2026-10-09 (`4f3f604`) |
 | 4b | Home proof strip: the AI panel's SEO and GEO scores first, a try-it prompt, and a `/more-proof` page for PageSpeed and E-E-A-T | PR | done | karero/croftweaver-site#21, merged 2026-10-08 (`24b3738`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
-| 5a | Deck refresh and PDF export | owner + assistant | open | — |
-| 5b | Page `/why` with the PDF | PR | page done; the PDF waits for the deck refresh (5a) | karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`), page only |
+| 5a | Deck refresh and PDF export | owner + assistant | in review: the deck is made in this repository (`npm run deck`), 11 slides as `public/croftweaver-why.pdf`. The owner has not read the slide wording yet. The Google Slides decks are not part of this and are not refreshed | karero/croftweaver-site#40 (open) |
+| 5b | Page `/why` with the PDF | PR | page done; the download button and the PDF are in review | page: karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`); PDF: karero/croftweaver-site#40 (open) |
 | 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/croftweaver-site#9, merged 2026-10-04 (`fe7a5dc`) |
 | 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | done | spec: karero/croftweaver-site#14, merged 2026-10-04 (`268fbe4`); page: karero/croftweaver-site#15, merged 2026-10-04 (`98f30be`) |
 | 5e | Page `/partner-assets`: the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it and the request to credit Croftweaver; the badge in every footer | PR | done | karero/croftweaver-site#26, merged 2026-10-09 (`60fcbf4`) |
@@ -135,7 +146,9 @@ Launch requirements that no test enforces:
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
   links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
-  after step 7 and record its dated result in the table.
+  after step 7 and record its dated result in the table. The slide deck PDF carries the
+  same link and the audit does not read PDFs; the deck takes the address from
+  `SITE.repo`, so once that link resolves, the deck's link resolves too.
 - The cache rule for `/brand/*` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
