@@ -182,7 +182,9 @@ Launch requirements that no test enforces:
     sets no retention or purge; confirm that is what runs.
   - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
     ticked, "Form submissions" unticked (the site has no form). Section 3 has one sentence
-    for each of the two ticked ones; when the ticks change, change the sentences.
+    for each of the two ticked ones; when the ticks change, change the sentences. After the
+    first click on an outbound link and on a download on the live site, the instance's
+    reports must list the address: section 3 says it is sent and stored.
   - What deletes old records in the instance (a retention setting, a table TTL or a job
     you run), and the period it enforces. If nothing deletes, set a table TTL or a job
     first, then state its period (Art. 13(2)(a) GDPR wants the period or the criteria).
