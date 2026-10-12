@@ -132,7 +132,11 @@ const aiDesc =
       ))}, both inside the best 28 days, and <a href={p.url}>its site</a> lists none after
       that up to {latest.to}, the last day of these figures (event pages read on
       <time datetime={p.search.events.readOn.iso}>{p.search.events.readOn.label}</time>).
-      Whether the gap explains the fall was not tested.
+      The rise had begun before the first of them: the 28 days up to
+      <time datetime={p.search.events.eve.iso}>{p.search.events.eve.label}</time>, the day before
+      it, had {p.search.events.eve.clicks} clicks, against
+      {p.search.events.twoWeeksEarlier.clicks} two weeks earlier. Whether the gap explains the
+      fall was not tested.
     </p>
     <p>
       For its two main local searches, Search Console reports these average

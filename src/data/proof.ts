@@ -130,6 +130,20 @@ const rolling = days.slice(27).map((d, i) => ({
   iso: d.date,
   clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0),
 }));
+// /proof also says that the rise had begun before the first event: it gives the 28-day total on
+// the day before it and the total two weeks earlier. Both come from `rolling`, so a refreshed
+// file cannot leave stale figures, and the build stops if the earlier total is not the lower one.
+const daysBefore = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) - n * 86_400_000).toISOString().slice(0, 10);
+const totalUpTo = (iso: string) => {
+  const point = rolling.find((r) => r.iso === iso);
+  if (!point) throw new Error(`src/data/proof.ts: the file has no full 28 days up to ${iso}, which /proof needs to say when the rise began.`);
+  return { iso, label: label(iso), clicks: point.clicks };
+};
+const eve = totalUpTo(daysBefore(EVENTS.days[0]!, 1));
+const twoWeeksEarlier = totalUpTo(daysBefore(eve.iso, 14));
+if (twoWeeksEarlier.clicks >= eve.clicks) {
+  throw new Error(`src/data/proof.ts: the 28 days up to ${eve.iso} had ${eve.clicks} clicks and the 28 days up to ${twoWeeksEarlier.iso} had ${twoWeeksEarlier.clicks}, so /proof may no longer say the rise had begun before the first event.`);
+}
 // The first day with an impression: the chart caption says the file has none before it.
 const firstSeen = days.find((d) => d.impressions > 0);
 if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no impressions at all.');
@@ -334,6 +348,8 @@ export const SITE_PROOF = {
     events: {
       days: EVENTS.days.map((iso) => ({ iso, label: label(iso) })),
       readOn: { iso: EVENTS.readOn, label: label(EVENTS.readOn) },
+      eve,
+      twoWeeksEarlier,
     },
     rolling,
     rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
