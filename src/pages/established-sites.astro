@@ -10,7 +10,7 @@
 // named; the example prompts use example.com. No figure is typed here: this page makes no
 // result claim, and /proof stays the one place for measured numbers.
 import Base from '../layouts/Base.astro';
-import { SITE } from '../config';
+import { SITE, COMPANY } from '../config';
 import EmailLink from '../components/EmailLink.astro';
 import { FAQ_GROUPS, faqSchema } from '../data/established-faq';
 
@@ -324,7 +324,7 @@ const weeks = [
       say, you see each change take shape, and you decide what stays. In my experience
       it is a real learning curve, and a happy one. Questions along the way? I am glad
       to help. Write to
-      <EmailLink address="hello@croftweaver.com" subject="A question about Croftweaver for established sites" />.
+      <EmailLink address={COMPANY.email} subject="A question about Croftweaver for established sites" />.
     </p>
     <p class="byline">Daniel Melter, maintainer of Croftweaver</p>
   </section>

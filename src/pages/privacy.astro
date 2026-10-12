@@ -61,7 +61,7 @@ import { SITE, COMPANY } from '../config';
       {COMPANY.street}<br />
       {COMPANY.postcodeCity}<br />
       Managing director: {COMPANY.managingDirector}<br />
-      Contact: <EmailLink address="hello@croftweaver.com" subject="Privacy request" />
+      Contact: <EmailLink address={COMPANY.email} subject="Privacy request" />
     </p>
 
     <h2>2. Hosting and server logs</h2>

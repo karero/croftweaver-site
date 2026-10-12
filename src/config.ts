@@ -1,6 +1,7 @@
 // Central site configuration. Edit company facts / analytics HERE only — Base.astro,
-// schema, llms.txt and the tests all read from this single source. Keep SITE.url in
-// sync with `site:` in astro.config.mjs.
+// the schema, the legal pages and the tests read from this single source. public/llms.txt
+// does not: it is a static file kept in step by hand (tests/llms-coverage.spec.ts checks
+// which pages it lists). Keep SITE.url in sync with `site:` in astro.config.mjs.
 
 export const SITE = {
   url: 'https://croftweaver.com',         // production origin, no trailing slash
@@ -48,6 +49,8 @@ export const COMPANY = {
   street: 'Schellingstr. 141 Rgb.',
   postcodeCity: '80798 Munich, Germany',
   managingDirector: 'Daniel Melter',
+  email: 'hello@croftweaver.com',      // every page that shows it reads it here, through EmailLink
+  phone: '+49 179 6913629',            // the imprint shows it, through PhoneNumber
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 

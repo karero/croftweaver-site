@@ -31,8 +31,8 @@ import { COMPANY } from '../config';
       VAT identification number: DE218182722
     </p>
     <p>
-      Contact: <EmailLink address="hello@croftweaver.com" subject="Croftweaver" /><br />
-      Phone: <PhoneNumber number="+49 179 6913629" />
+      Contact: <EmailLink address={COMPANY.email} subject="Croftweaver" /><br />
+      Phone: <PhoneNumber number={COMPANY.phone} />
     </p>
 
     {/* A role of its own, so the name is typed here: the person responsible for content

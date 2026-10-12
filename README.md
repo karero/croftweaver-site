@@ -5,10 +5,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 
 ## Decision record (new-website interview, 2026-07-02)
 
-1. **Pages:** three flat pages (`/`, `/privacy`, `/imprint`) — no collections.
-   Extended 2026-10-03: seven more flat pages are planned (`/checks`, `/skills`,
-   `/start`, `/proof`, `/why`, `/compare`, `/roadmap`) plus a 404. Inventory:
-   `CONTENT_GUIDE.md`.
+1. **Pages:** 14 flat pages and a 404, no collections. The site started with three
+   (`/`, `/privacy`, `/imprint`); more were planned on 2026-10-03 and built from
+   2026-10-04. Inventory: `CONTENT_GUIDE.md`.
 2. **Dynamic:** Tier 1, fully static pages, no forms. One Cloudflare Pages middleware
    (`functions/_middleware.ts`) sets noindex on previews and, once CANONICAL_URL is set in
    Cloudflare, redirects the production alias to the live domain.
@@ -19,8 +18,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
    only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner
    (a position to have confirmed; see "Launch requirements" and the header of
    `src/pages/privacy.astro`).
-6. **Publish model:** two-stage. `main` = noindexed preview (`*.pages.dev`),
-   `production` = live at https://croftweaver.com. Publish with `npm run ship`.
+6. **Publish model:** two-stage. `main` = noindexed preview
+   (https://main.croftweaver-site.pages.dev), `production` = live at
+   https://croftweaver.com. Publish with `npm run ship`.
 
 ## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
 
@@ -32,8 +32,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old
   name is never created again, or its redirect stops working.
-- **Name and trademark check:** commissioned before the rename; the rename (release
-  v0.31) waits for its result.
+- **Name and trademark check:** commissioned before the rename, which was to wait for
+  its result. The rename went ahead on 2026-10-11 and release v0.31 came out on
+  2026-10-12. The owner's own searches on 2026-10-12 found nothing (step 0a).
 - **Pitch deck:** rebuilt as the page `/why`, with the deck as a PDF download.
 - **Colour:** an own moss palette with green-tinted neutrals; the values land in
   `BRAND.md` in step 2.
@@ -90,19 +91,19 @@ requests.
 | # | Step | Who | State | Evidence |
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
-| 0a | Name and trademark check for "Croftweaver" | owner | open: no search for "Croftweaver" recorded here yet. The earlier check was for the dropped name "Webcroft" (owner's own searches, 2026-10-04: no identical hit in TMview, USPTO, the UK register and EUIPO; similar marks "webcraft", "web craft" and "croft" in classes 9, 35 and 42, no legal opinion). Webcroft was then dropped as too close to an existing company | — |
+| 0a | Name and trademark check for "Croftweaver" | owner | done: the owner searched for "Croftweaver" on 2026-10-12 and found nothing ("ALL GREEN nothing found"). These were the owner's own searches, with no legal opinion; the owner had asked for the search pages of the US, EU, WIPO and UK registers, and which of them were searched is not recorded here. The earlier check was for the dropped name "Webcroft" (owner's own searches, 2026-10-04: no identical hit in TMview, USPTO, the UK register and EUIPO; similar marks "webcraft", "web craft" and "croft" in classes 9, 35 and 42, no legal opinion). Webcroft was then dropped as too close to an existing company | the owner's statement, 2026-10-12 |
 | 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on `/more-proof` (step 4b). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check (five check days, 26 September to 8 October 2026) are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
-| 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | in review: the operator is M-Squad GmbH, with the address, managing director, register entry and VAT ID the owner gave on 2026-10-09. The structured data (`legalName` in `src/config.ts`) names the same company | karero/croftweaver-site#39 (open, draft) |
+| 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | done: the operator is M-Squad GmbH, with the address, managing director, register entry and VAT ID the owner gave on 2026-10-09, and a phone number (owner, 2026-10-11). The structured data (`legalName` in `src/config.ts`) names the same company | karero/croftweaver-site#39, merged 2026-10-12 (`151fd44`) |
 | 2b | Dependency: sharp 0.35.5, to clear an npm audit advisory | PR | done | karero/croftweaver-site#28, merged 2026-10-09 (`03992f3`); dependabot's pull request for the same bump (karero/croftweaver-site#29) was closed |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | done | karero/croftweaver-site#18, merged 2026-10-08 (`48b1738`) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
 | 4a | Home page as the visitor's story: hero "Weave websites that rank.", the villain, the one-liner, the plan, a short learning section (`STORY.md`) | PRs | done; a fresh-eyes check of the page then led to three fixes: the Quickstart leads with the one-prompt route; the hero says who the site is for; one scene shows life after, and two long sections became one | karero/croftweaver-site#19, merged 2026-10-08 (`d98ff84`); `STORY.md` and the page: karero/croftweaver-site#20, merged 2026-10-08 (`bfe7b0b`); the three fixes: karero/croftweaver-site#31, merged 2026-10-09 (`4f3f604`) |
 | 4b | Home proof strip: the AI panel's SEO and GEO scores first, a try-it prompt, and a `/more-proof` page for PageSpeed and E-E-A-T | PR | done | karero/croftweaver-site#21, merged 2026-10-08 (`24b3738`) |
 | 5 | Pages `/proof` + `/checks`, then `/skills` + `/start` | PRs | done | karero/croftweaver-site#6 (`40c6031`), karero/croftweaver-site#7 (`646bcd1`), karero/croftweaver-site#8 (`2ea1bd2`), all merged 2026-10-04 |
-| 5a | Deck refresh and PDF export | owner + assistant | in review: the deck is made in this repository (`npm run deck`), 11 slides as `public/croftweaver-why.pdf`. The owner has not read the slide wording yet. The Google Slides decks are not part of this and are not refreshed | karero/croftweaver-site#40 (open) |
-| 5b | Page `/why` with the PDF | PR | page done; the download button and the PDF are in review | page: karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`); PDF: karero/croftweaver-site#40 (open) |
+| 5a | Deck refresh and PDF export | owner + assistant | done: the deck is made in this repository (`npm run deck`), 11 slides as `public/croftweaver-why.pdf`. No record here that the owner has read the slide wording. The Google Slides decks are not part of this and are not refreshed | karero/croftweaver-site#40, merged 2026-10-12 (`59a8983`) |
+| 5b | Page `/why` with the PDF | PR | done | page: karero/croftweaver-site#10, merged 2026-10-04 (`bea52e7`); download button and PDF: karero/croftweaver-site#40, merged 2026-10-12 (`59a8983`) |
 | 5c | Pages `/compare` + `/roadmap` | PR | done (built before 5b: `/why` waited for the deck) | karero/croftweaver-site#9, merged 2026-10-04 (`fe7a5dc`) |
 | 5d | Page `/positioning`: how the positioning is worked out and tested, with credits for both source methods (also on `/skills`) | PR | done | spec: karero/croftweaver-site#14, merged 2026-10-04 (`268fbe4`); page: karero/croftweaver-site#15, merged 2026-10-04 (`98f30be`) |
 | 5e | Page `/partner-assets`: the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it and the request to credit Croftweaver; the badge in every footer | PR | done | karero/croftweaver-site#26, merged 2026-10-09 (`60fcbf4`) |
@@ -111,10 +112,10 @@ requests.
 | 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
 | 5i | Launch wording: genai-wednesday.de launched on 27 March 2026 and was not relaunched (`/proof`, `/more-proof`, `/why`, `STORY.md`, `public/llms.txt`) | PR | done | karero/croftweaver-site#27, merged 2026-10-09 (`c48b39e`) |
 | 5j | Perplexity's count in the AI check is worded as what it measures, not as a citation; the export script no longer stops on a valid row | PR | done | karero/croftweaver-site#30, merged 2026-10-09 (`fb2b415`) |
-| 5k | `/skills` lists 34 skills: 31 in toolkit release 0.29 and three added since. At release 0.30, update `RELEASE` and `SKILLS` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done | 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
-| 6 | Toolkit rename pull request (in the toolkit repo) | PR | draft, reviewed; merges right after the rename in step 7. Replaces karero/website-builder#147, which used the dropped name Webcroft | karero/website-builder#212 (draft) |
-| 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | open, waits for 0a and v0.30 | — |
-| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | open | — |
+| 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done | release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
+| 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
+| 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a, which this step was to wait for, got its result afterwards, on 2026-10-12: nothing found | releases `v0.30` and `v0.31` of karero/croftweaver |
+| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). Open: the sitemap in Search Console (the Domain property exists; no sitemap was submitted when last looked, 2026-10-12) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 
@@ -135,7 +136,7 @@ Launch requirements that no test enforces:
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
-  the date here.
+  the date here. A test mail arrived (owner, 2026-10-12).
 - The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
   2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
   `src/data/proof.ts` if its numbers changed, and the caveat sentences in
@@ -151,16 +152,19 @@ Launch requirements that no test enforces:
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
-  links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
-  after step 7 and record its dated result in the table. The slide deck PDF carries the
-  same link and the audit does not read PDFs; the deck takes the address from
-  `SITE.repo`, so once that link resolves, the deck's link resolves too.
+  links to `github.com/karero/croftweaver` could not resolve before step 7, so the audit
+  ran after it: on 2026-10-12, on the build of karero/croftweaver-site#41 at `15c3c5b`,
+  it read 38 links and reported none dead, none redirected to another domain and none
+  unverified. It does not report a redirect within the same domain. The slide deck PDF
+  carries the same link and the audit does not read PDFs; the deck takes the address
+  from `SITE.repo`, which resolves since step 7.
 - The cache rule for `/brand/*` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and
   expect the `cache-control` value that the `/brand/*` rule in `public/_headers` sets.
   A Cloudflare Cache Rule or Browser Cache TTL on the zone could change what visitors
-  get; record the date here.
+  get; record the date here. Seen on 2026-10-12: `cache-control: public, max-age=86400`,
+  the value the rule sets.
 - Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
   states things that only the owner can confirm. Nothing here is recorded yet; write
   each line with its date when it is true:
