@@ -105,6 +105,24 @@ for (let start = 1; start + 28 <= days.length; start++) {
   const w = sum(days.slice(start, start + 28));
   if (w.clicks > peak.clicks) peak = w;
 }
+// GenAI Wednesday's two most recent events, from the site's own event pages
+// (/events/2026-06-17-albert-bozesan and /events/2026-07-01-mathias-schlolaut), read on the day
+// below; that day the home page announced no next date. /proof says that both fall inside the
+// best 28 days and that no event followed up to the last day in the file. A refreshed file can
+// move the peak or reach past the day the pages were read, so both stop the build. The page
+// says "both", so the list must hold exactly two days.
+const EVENTS: { days: readonly string[]; readOn: string } = { days: ['2026-06-17', '2026-07-01'], readOn: '2026-10-12' };
+if (EVENTS.days.length !== 2) {
+  throw new Error(`src/data/proof.ts: EVENTS lists ${EVENTS.days.length} event days, but /proof says "both" and names two. Change the sentence on the page with the list.`);
+}
+for (const day of EVENTS.days) {
+  if (day < peak.fromIso || day > peak.toIso) {
+    throw new Error(`src/data/proof.ts: the event of ${day} is outside the best 28 days (${peak.fromIso} to ${peak.toIso}), so /proof may no longer say that both events fall inside them.`);
+  }
+}
+if (days.at(-1)!.date > EVENTS.readOn) {
+  throw new Error(`src/data/proof.ts: the file now runs to ${days.at(-1)!.date}, past ${EVENTS.readOn}, the day the event pages were read. Read them again and update EVENTS before /proof says no event followed.`);
+}
 // The clicks in the 28 days up to each date, from the first date with a full 28 days.
 // This is the line in the chart on /proof: its last point is the latest block and its
 // highest is the peak. tests/a11y.spec.ts recomputes it from the CSV and compares.
@@ -213,6 +231,12 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
+// /proof also says in a sentence that the check does not ask Gemini with web search. A file
+// that has such rows would make the table contradict that sentence, so it stops the build.
+const askedAfterAll = checks.find((c) => c.mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(c.engine));
+if (askedAfterAll) {
+  throw new Error(`genai-wednesday-de-ai-check.csv has with_search rows for ${askedAfterAll.engine} on ${askedAfterAll.date}, but /proof says the check does not ask it with web search. Change the page before publishing such rows.`);
+}
 const absent = (engine: string, mode: Mode, date = checkDate): 'search-only' | 'not-asked' | 'not-run' => {
   if (mode === 'without_search' && SEARCH_ONLY.includes(engine)) return 'search-only';
   if (mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(engine)) return 'not-asked';
@@ -307,6 +331,10 @@ export const SITE_PROOF = {
     blocks,
     latest: blocks.at(-1)!,
     peak,
+    events: {
+      days: EVENTS.days.map((iso) => ({ iso, label: label(iso) })),
+      readOn: { iso: EVENTS.readOn, label: label(EVENTS.readOn) },
+    },
     rolling,
     rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
     fileFrom: { iso: days[0]!.date, label: label(days[0]!.date) },
@@ -345,5 +373,18 @@ export const SITE_PROOF = {
     // /proof says why nobody named the site from memory, and /why points to it, only while that is
     // true as written: some answers came from memory, none named the site, and with web search some did.
     explainZero: withoutSearch.answers > 0 && withoutSearch.named === 0 && withSearch.named > 0,
+    // Two answers the site's maintainer asked by hand in the Gemini app, because the check does
+    // not ask Gemini with web search (NOT_ASKED_WITH_SEARCH above; /proof links the toolkit's
+    // guide for the reason). They are not in the CSV and enter no count on the page. The first
+    // day's details are read from the owner's screenshot of that answer, which the owner keeps;
+    // it is not in this repository. The screenshot shows no date: that it is from the first day
+    // is the owner's statement. Of the second day only the owner's statement is on record: the
+    // answer named GenAI Wednesday. Question and model are those of the first day.
+    byHand: {
+      question: 'Ki Events in münchen',
+      model: 'Gemini 3.6 Flash',
+      first: { iso: '2026-10-10', label: label('2026-10-10') },
+      again: { iso: '2026-10-12', label: label('2026-10-12') },
+    },
   },
 } as const;
