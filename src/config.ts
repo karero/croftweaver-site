@@ -30,7 +30,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Proof', href: '/proof' },
   { label: 'Checks', href: '/checks' },
   { label: 'Skills', href: '/skills' },
-  { label: 'Established sites', href: '/established-sites' },
+  { label: 'Existing Sites', href: '/established-sites' },
   { label: 'Quickstart', href: '/start' },
 ];
 
