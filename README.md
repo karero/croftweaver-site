@@ -10,7 +10,8 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
    2026-10-04. Inventory: `CONTENT_GUIDE.md`.
 2. **Dynamic:** Tier 1, fully static pages, no forms. One Cloudflare Pages middleware
    (`functions/_middleware.ts`) sets noindex on previews and, once CANONICAL_URL is set in
-   Cloudflare, redirects the production alias to the live domain.
+   Cloudflare, redirects the production alias to the live domain. It has been set
+   since 2026-10-12 (step 8).
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
 5. **Analytics:** Google Search Console, and (configured 2026-10-12) cookieless Plausible
@@ -116,7 +117,7 @@ requests.
 | 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done | release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
 | 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a, which this step was to wait for, got its result afterwards, on 2026-10-12: nothing found | releases `v0.30` and `v0.31` of karero/croftweaver |
-| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). Open: the sitemap in Search Console (the Domain property exists; no sitemap was submitted when last looked, 2026-10-12) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12 |
+| 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). `CANONICAL_URL` is set to `https://croftweaver.com` for Production (owner, 2026-10-12); from the production build after that, `https://croftweaver-site.pages.dev` answers with a 301 to the same path and query on the live domain, and `https://main.croftweaver-site.pages.dev` stays the preview (both seen 2026-10-12). The sitemap `https://croftweaver.com/sitemap-index.xml` was submitted in Search Console on 2026-10-12 (read from Search Console the same day: pending, no errors) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 
@@ -173,7 +174,15 @@ Launch requirements that no test enforces:
   expect the `cache-control` value that the `/brand/*` rule in `public/_headers` sets.
   A Cloudflare Cache Rule or Browser Cache TTL on the zone could change what visitors
   get; record the date here. Seen on 2026-10-12: `cache-control: public, max-age=86400`,
-  the value the rule sets.
+  the value the rule sets. The zone's Browser Cache TTL is 4 hours (owner's setting,
+  2026-10-12). Seen that day with it in place: the brand files keep the rule's value,
+  files without a rule of their own (`/favicon.svg`, the deck PDF) are sent with
+  `max-age=14400`, and pages with `max-age=0`.
+- Search engines. Bing Webmaster Tools is connected (owner, 2026-10-12). Crawler Hints,
+  the Cloudflare switch that tells Bing about changed pages, can only be set in the
+  dashboard; nothing here records that it is on. Search Console positions for seven
+  search terms are read every Monday at 09:00 by a scheduled job on the owner's Mac (set
+  up 2026-10-12); the history stays on that Mac, not in this repository.
 - Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
   states things that only the owner can confirm. Nothing here is recorded yet; write
   each line with its date when it is true:
