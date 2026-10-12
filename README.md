@@ -27,8 +27,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old
   name is never created again, or its redirect stops working.
-- **Name and trademark check:** commissioned before the rename; the rename (release
-  v0.31) waits for its result.
+- **Name and trademark check:** commissioned before the rename, which was to wait for
+  its result. The rename went ahead on 2026-10-11 and release v0.31 came out on
+  2026-10-12; no result of the check is recorded here (step 0a).
 - **Pitch deck:** rebuilt as the page `/why`, with the deck as a PDF download.
 - **Colour:** an own moss palette with green-tinted neutrals; the values land in
   `BRAND.md` in step 2.
@@ -106,9 +107,9 @@ requests.
 | 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
 | 5i | Launch wording: genai-wednesday.de launched on 27 March 2026 and was not relaunched (`/proof`, `/more-proof`, `/why`, `STORY.md`, `public/llms.txt`) | PR | done | karero/croftweaver-site#27, merged 2026-10-09 (`c48b39e`) |
 | 5j | Perplexity's count in the AI check is worded as what it measures, not as a citation; the export script no longer stops on a valid row | PR | done | karero/croftweaver-site#30, merged 2026-10-09 (`fb2b415`) |
-| 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS` and `RECENT` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done; the move to release 0.31 is in review | release 0.31: karero/croftweaver-site#41 (open); 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
+| 5k | `/skills` lists 34 skills, all of them in toolkit release 0.31. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts` and clear `ADDED_SINCE` | PRs | done | release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
-| 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a has no result recorded | releases `v0.30` and `v0.31` of karero/croftweaver |
+| 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a, which this step was to wait for, has no result recorded and stays open | releases `v0.30` and `v0.31` of karero/croftweaver |
 | 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver-site` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` has not been run yet. Open: Search Console, the test mail | `https://croftweaver.com/build.txt` served `59a8983` on 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
@@ -146,12 +147,12 @@ Launch requirements that no test enforces:
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
-  links to `github.com/karero/croftweaver` cannot resolve before step 7; run the audit
-  after step 7 and record its dated result in the table (2026-10-11, on `main` with
-  karero/croftweaver-site#38 to #40 merged in: 38 links, none dead, redirected or
-  unverified). The slide deck PDF carries the
-  same link and the audit does not read PDFs; the deck takes the address from
-  `SITE.repo`, so once that link resolves, the deck's link resolves too.
+  links to `github.com/karero/croftweaver` could not resolve before step 7, so the audit
+  ran after it: on 2026-10-12, on the build of karero/croftweaver-site#41 at `15c3c5b`,
+  it read 38 links and reported none dead, none redirected to another domain and none
+  unverified. It does not report a redirect within the same domain. The slide deck PDF
+  carries the same link and the audit does not read PDFs; the deck takes the address
+  from `SITE.repo`, which resolves since step 7.
 - The cache rule for `/brand/*` in `public/_headers` is tested from the file, because
   `astro preview` does not apply `_headers`. After launch run
   `curl -sI https://croftweaver.com/brand/badge/built-with-croftweaver-light.svg` and

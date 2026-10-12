@@ -2,8 +2,8 @@
 // stages as the diagram on the home page). One line each, in plain words, taken from
 // the skill's own description in the toolkit (skills/<name>/SKILL.md).
 // This list describes ONE toolkit release, plus any skills added since. When the toolkit
-// ships a new release, update RELEASE (with the number of skills it had) and the list
-// together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
+// ships a new release, update RELEASE (with the number of skills it had), the list, RECENT
+// and AS_OF together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
 // build stops when the list, the release's skill count and ADDED_SINCE do not add up.
 export const RELEASE = { version: '0.31', iso: '2026-10-12', label: '12 October 2026', skills: 34 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
