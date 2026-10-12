@@ -1,26 +1,39 @@
 # DIFF review — karero/croftweaver-site#57 — /proof: a shorter Gemini passage that says why the answers come from a signed-in account
 
-Base `1ec53b5` · depth: **Normal** (shipped page copy with factual claims) · verdict: **OPEN** — round 1 has not run yet · authority used: POST AUTHORITY and BRANCH-COMMIT AUTHORITY — this session opened the pull request and created the branch; WORKTREE-WRITE AUTHORITY — the owner's messages of 2026-10-12: "They still do not support automated testing with a not logged in users, that's why I manually tested it. I think that's worth mentioning." and "It's a lot af text about gemini", then the two facts this session asked for before building.
+Base `1ec53b5` · depth: **Normal** (shipped page copy with factual claims) · verdict: **OPEN** — round 1 found 1 BUG and 5 RISKs; fixed in `9a4b50a` except one RISK refuted; round 2 verifies them · authority used: POST AUTHORITY and BRANCH-COMMIT AUTHORITY — this session opened the pull request and created the branch; WORKTREE-WRITE AUTHORITY — the owner's messages of 2026-10-12: "They still do not support automated testing with a not logged in users, that's why I manually tested it. I think that's worth mentioning." and "It's a lot af text about gemini", then the two facts this session asked for before building.
 
-Files in the change: `src/data/proof.ts`, `src/pages/proof.astro`, and this file.
+Files in the change: `src/data/proof.ts`, `src/pages/proof.astro`, `README.md` (from round 1 on), and this file.
 
 | Round | Head | Artifact | Reviewers | seconds, tokens per seat | BUG/RISK/NIT (all seats, before dedup) |
 |---|---|---|---|---|---|
+| 1 | `4ac55d3` | full `main...4ac55d3` | codex-cli 0.162.1, gpt-6.1-sol, config effort, read-only; melious glm-5.3 (HTTP API, text only); fresh-eyes (Sonnet sub-agent, read-only, given both screenshots and the linked guide) | codex 163 s / 62,934; glm 74 s / 21,439; fresh-eyes 249 s / 138,852 | 3 / 6 / 7 · 11 questions asked, 0 confirmed beyond the findings |
 
 | id | Sev | Source | Round | Finding — one line | Status | Evidence |
 |---|---|---|---|---|---|---|
+| H1 | BUG | codex, melious, fresh-eyes | 1 | "So the maintainer asked by hand, signed in" made the attempt of 12 October the reason for the answer of 10 October | fixed `9a4b50a` — locally_verified | the passage gives the check as the reason for asking by hand, as it did before this change, and reports the attempt without a sign-in after both answers |
+| H2 | RISK | codex, fresh-eyes; as NIT: melious | 1 | "showed its results too briefly to read" was stated as what the Gemini web app does, on one report; the screenshot shows only the start page | fixed `9a4b50a` — locally_verified | "Also by the maintainer's report, an attempt without a sign-in on 12 October 2026, in a private browser window on a computer, showed its results too briefly to read." |
+| H3 | RISK | codex, fresh-eyes | 1 | "signed in" was said of both answers, but is on record for the first only | fixed `9a4b50a` — locally_verified | "signed in on a phone" sits in the sentence about 10 October; the closing sentence says "one person"; the code comment says what is on record for each |
+| H4 | RISK | fresh-eyes | 1 | "Asked again" implied the same question, app and model; the limit "nothing else of it was recorded" was gone | fixed `9a4b50a` — locally_verified | "By the maintainer's report, a second asking on 12 October 2026 also named GenAI Wednesday; nothing else of it was recorded." |
+| H5 | RISK | fresh-eyes; as NIT: melious | 1 | "That much is from an unpublished screenshot" covered the date, which the screenshot does not show | fixed `9a4b50a` — locally_verified | "…and the date from the maintainer." |
+| H6 | RISK | melious | 1 | the test records name `e83afd3`, the reviewed head is `4ac55d3` | refuted | `git diff --stat e83afd3..4ac55d3` lists only this file; codex and fresh-eyes confirmed it; the pre-push gate also ran on `4ac55d3` with 223 passed |
+| H7 | NIT | fresh-eyes | 1 | "it named" pointed at the screenshot | fixed `9a4b50a` | the sentence is rewritten (H4) |
+| H8 | NIT | fresh-eyes, melious | 1 | "the Gemini web app" and then "the app"; "on a phone" was gone | fixed `9a4b50a` | "signed in on a phone" for the first answer; "in a private browser window on a computer" for the attempt |
+| H9 | NIT | fresh-eyes | 1 | the README calls `byHand` two answers; it now also holds the attempt without a sign-in | fixed `9a4b50a` | README, launch requirements |
+| H10 | NIT | fresh-eyes | 1 | "the file" has no antecedent in the paragraph | fixed `9a4b50a` | "the published file" |
+| H11 | NIT | melious | 1 | the closing limit "nothing more" was gone | fixed `9a4b50a` | "They show what one person got on two days, nothing more." |
+| H12 | NIT | melious | 1 | `signedOut` repeats the date literal of `again` | refuted | two separate facts that share a day; tying one to the other would move both when one is corrected. The code comment now says so |
 
 ## Where each fact in the passage comes from
 
 | Fact | Source | Who can check it |
 |---|---|---|
-| Without a sign-in, in a private browser window on 12 October 2026, the Gemini web app showed its results too briefly to read | the owner, 2026-10-12: "sign-in request, private window on the computer", "it briefly shows results", "it shows the screenshotteed page again – no time to read the results, and you cannot scroll", "so, NOT possible to use, not supported". The owner's screenshot shows the Gemini start page with "ki treffen in münchen" typed in and "Sign in to connect to Google apps, create images, and more" | the owner; the fresh-eyes reviewer was given the image |
-| The maintainer asked by hand, signed in | the owner, 2026-10-12: "that's why I manually tested it"; the screenshot of the first answer shows "Your organization's chats aren't used to improve our models" | the owner; the image shows it for the first answer |
+| By the maintainer's report: an attempt without a sign-in on 12 October 2026, in a private browser window on a computer, showed its results too briefly to read. The date: the owner reported it in the session of 12 October 2026, hours after this session suggested the attempt, and the screenshot file was created that day | the owner, 2026-10-12: "sign-in request, private window on the computer", "it briefly shows results", "it shows the screenshotteed page again – no time to read the results, and you cannot scroll", "so, NOT possible to use, not supported". The owner's screenshot shows the Gemini start page with "ki treffen in münchen" typed in and "Sign in to connect to Google apps, create images, and more" | the owner; the fresh-eyes reviewer was given the image |
+| The first answer was asked signed in, on a phone | its screenshot: a phone screen, and "Your organization's chats aren't used to improve our models" under the answer. The page says this of the first answer only | the owner; the fresh-eyes reviewer read the image |
 | The answer of 10 October 2026: model label, question, four events, first among the communities, six source labels, four of them on passages about others | unchanged from karero/croftweaver-site#53: the owner's screenshot, read by the author and by that review's fresh-eyes seat | the owner |
 | Asked again on 12 October 2026, it named GenAI Wednesday too | the owner: "both runs named it" | the owner only |
 | Why the check does not ask Gemini with web search | the toolkit's guide at tag `v0.31`, linked from the page | anyone |
 
-What left the passage: "which lies in Google's terms for the Gemini API" (the linked guide says it), "on a phone", "nothing else of it was recorded" (now "by the maintainer's report"), and "the first was to a question the check does not ask" (the check's two questions are listed above the table).
+What left the passage: "which lies in Google's terms for the Gemini API" (the linked guide says it) and "the first was to a question the check does not ask" (the check's two questions are listed above the table). Round 1 put back what the first version of this change had also cut. The passage is 173 words where the live one has 182.
 
 ## Test records (head `e83afd3`)
 
@@ -32,6 +45,8 @@ What left the passage: "which lies in Google's terms for the Gemini API" (the li
 | `git push` (the pre-push gate: build, then the tests) | 223 passed; "pre-push gate passed" | 0 |
 
 The change adds no build check and no test: it changes sentences and one date.
+
+On head `9a4b50a`, after the round-1 fixes: `npm run check` 0 errors, exit status 0; `npx playwright test` 223 passed, none skipped or failed, exit status 0.
 
 Waivers: none. Deferrals: none. Follow-ups: none yet.
 
