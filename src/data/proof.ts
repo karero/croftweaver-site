@@ -64,7 +64,8 @@ export const PANEL = {
 // positions and AI results below against their sources.
 
 type Day = { date: string; clicks: number; impressions: number };
-const dayAfter = (iso: string) => new Date(Date.parse(`${iso}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+const shiftDay = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
+const dayAfter = (iso: string) => shiftDay(iso, 1);
 // A real calendar day: 2026-02-31 parses, but as 3 March.
 const realDay = (iso: string) => {
   const t = Date.parse(`${iso}T00:00:00Z`);
@@ -115,6 +116,10 @@ const EVENTS: { days: readonly string[]; readOn: string } = { days: ['2026-06-17
 if (EVENTS.days.length !== 2) {
   throw new Error(`src/data/proof.ts: EVENTS lists ${EVENTS.days.length} event days, but /proof says "both" and names two. Change the sentence on the page with the list.`);
 }
+// Oldest first: /proof calls the first one "the first of these two" and counts back from it.
+if (EVENTS.days[0]! >= EVENTS.days[1]!) {
+  throw new Error(`src/data/proof.ts: EVENTS must list its two days oldest first, but has ${EVENTS.days[0]} before ${EVENTS.days[1]}. /proof counts back from the first one.`);
+}
 for (const day of EVENTS.days) {
   if (day < peak.fromIso || day > peak.toIso) {
     throw new Error(`src/data/proof.ts: the event of ${day} is outside the best 28 days (${peak.fromIso} to ${peak.toIso}), so /proof may no longer say that both events fall inside them.`);
@@ -130,6 +135,21 @@ const rolling = days.slice(27).map((d, i) => ({
   iso: d.date,
   clicks: days.slice(i, i + 28).reduce((n, x) => n + x.clicks, 0),
 }));
+// /proof also says that the rise had begun before the first of the two events: it gives the
+// 28-day total on the day before it and the total two weeks earlier. Both come from `rolling`,
+// so a refreshed file cannot leave stale figures. "Had begun" needs more than a click or two:
+// the build stops unless the later total is higher and at least twice the earlier one.
+// tests/a11y.spec.ts adds the same two totals up from the CSV and reads them on the page.
+const totalUpTo = (iso: string) => {
+  const point = rolling.find((r) => r.iso === iso);
+  if (!point) throw new Error(`src/data/proof.ts: the file has no full 28 days up to ${iso}, which /proof needs to say when the rise began.`);
+  return { iso, label: label(iso), clicks: point.clicks };
+};
+const eve = totalUpTo(shiftDay(EVENTS.days[0]!, -1));
+const twoWeeksEarlier = totalUpTo(shiftDay(eve.iso, -14));
+if (eve.clicks <= twoWeeksEarlier.clicks || eve.clicks < 2 * twoWeeksEarlier.clicks) {
+  throw new Error(`src/data/proof.ts: the 28 days up to ${eve.iso} had ${eve.clicks} clicks and the 28 days up to ${twoWeeksEarlier.iso} had ${twoWeeksEarlier.clicks}. That is not at least twice as many, so /proof may no longer say the rise had begun before the first event.`);
+}
 // The first day with an impression: the chart caption says the file has none before it.
 const firstSeen = days.find((d) => d.impressions > 0);
 if (!firstSeen) throw new Error('genai-wednesday-de-search-console.csv has no impressions at all.');
@@ -334,6 +354,8 @@ export const SITE_PROOF = {
     events: {
       days: EVENTS.days.map((iso) => ({ iso, label: label(iso) })),
       readOn: { iso: EVENTS.readOn, label: label(EVENTS.readOn) },
+      eve,
+      twoWeeksEarlier,
     },
     rolling,
     rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },
