@@ -191,12 +191,18 @@ Launch requirements that no test enforces:
   - What deletes old records in the instance (a retention setting, a table TTL or a job
     you run), and the period it enforces. If nothing deletes, set a table TTL or a job
     first, then state its period (Art. 13(2)(a) GDPR wants the period or the criteria).
-    State only that period in the `[MISSING:` slot in section 3 (the slot asks for the
-    period, not the mechanism); CI stays red until it is filled.
-    Decided 2026-10-12 (owner): 24 months for the whole instance, the same sentence on the
-    croftweaver.com, m-squad.com and apreet.com pages; section 3 says it now. The table TTL on
-    `events_v2` and `sessions_v2` is applied by the owner on the server; write the date here when
-    it is in place, and do not ship before it is.
+    State only that period in section 3 (the page asks for the period, not the mechanism).
+    The slot is filled; the CI placeholder grep no longer fails on it.
+    Decided 2026-10-12 (owner): 24 months for the whole instance. The same sentence is to appear
+    on the croftweaver.com, m-squad.com and apreet.com pages (the other two are separate pull
+    requests); this repository's section 3 says it now, and a test in `tests/a11y.spec.ts`
+    holds it. The table TTL on `events_v2` and `sessions_v2` is to be applied by the owner on
+    the server and, as of 2026-10-12, is NOT yet applied: write the date here, with the output of
+    `SHOW CREATE TABLE` for both tables, when it is in place, and do not ship before it is. Rows
+    older than the period go at the next background merge, which can be hours or days later.
+    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04);
+    if it is extended to, its archives must not outlive the 24 months, or the page needs a
+    second sentence about backups.
   - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
     names who read it and accepted it, and when, the position is not accepted. If it is
     rejected, the script must not load before consent, or analytics comes out. Then set
