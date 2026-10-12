@@ -12,9 +12,11 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 2. **Dynamic:** Tier 1, fully static. No functions, no forms.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
-5. **Analytics:** Google Search Console, and (from 2026-10-12) cookieless Plausible on
-   M-Squad's own instance, analytics.m-squad.com. The script loads on the live build
-   only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner.
+5. **Analytics:** Google Search Console, and (configured 2026-10-12) cookieless Plausible
+   on M-Squad's own instance, analytics.m-squad.com. The script loads on the live build
+   only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner
+   (a position to have confirmed; see "Launch requirements" and the header of
+   `src/pages/privacy.astro`).
 6. **Publish model:** two-stage. `main` = noindexed preview (`*.pages.dev`),
    `production` = live at https://croftweaver.com. Publish with `npm run ship`.
 
@@ -157,3 +159,22 @@ Launch requirements that no test enforces:
   expect the `cache-control` value that the `/brand/*` rule in `public/_headers` sets.
   A Cloudflare Cache Rule or Browser Cache TTL on the zone could change what visitors
   get; record the date here.
+- Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
+  states facts that only the owner can confirm; record each with its date here:
+  - The instance runs on a server of M-Squad GmbH (name the hosting provider if it is
+    rented, and add it to section 3 as a recipient), and its web server or reverse proxy
+    keeps no IP addresses in access logs.
+  - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
+    ticked, "Form submissions" unticked (the site has no form). Section 3 mirrors that;
+    when the ticks change, change the sentence.
+  - The storage period is set in the instance and stated in section 3 (the
+    `[MISSING:` slot there; CI stays red until it is filled).
+  - The no-banner position (see the header of `src/pages/privacy.astro`) was read by
+    the owner or counsel, who accepted it; record who and when.
+  - After the first ship: `curl -sI https://croftweaver.com/ | grep -i content-security-policy`
+    shows analytics.m-squad.com in script-src and connect-src, and the installer's
+    "Verify" step passes. `astro preview` does not apply `_headers`, so no test sees it.
+  - Exclude your own browser: on croftweaver.com run
+    `localStorage.plausible_ignore = 'true'` in the console. The production build is also
+    served on its deployment URLs (`<hash>.<project>.pages.dev`), and a visit there counts
+    as a visit to croftweaver.com.
