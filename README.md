@@ -184,6 +184,10 @@ Launch requirements that no test enforces:
     2026-10-04 (apreet-stack, docs/CHANGES.md) and the stack sits in
     /home/prixi2/plausible-m-squad. Confirm that Plausible is still v3.2.1 and that nothing
     but the TTL below deletes records.
+  - A goal for the email-click event: in the instance, Settings > Goals > Add goal > Custom event,
+    named `Email Tap`. The site sends it when an email address is clicked, from
+    `src/components/EmailLink.astro`; without the goal the events are stored but not shown.
+    Section 3 says it.
   - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
     ticked, "Form submissions" unticked (the site has no form). Section 3 has one sentence
     for each of the two ticked ones; when the ticks change, change the sentences. After the

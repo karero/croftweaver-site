@@ -84,3 +84,47 @@ for (const theme of THEMES) {
     await expect(page.locator('.phone-number[data-phone]')).toHaveCount(0);
   });
 }
+
+// Site-specific: a click on an email address reports one "Email Tap" event, and the address is never part of
+// it. window.plausible is the live build's stub, so the tests stand their own in. A page without it, or with one
+// that throws, must keep working. Every email link on the page is clicked, not only the first.
+type Tapped = Window & { __tap?: unknown[][]; plausible?: unknown };
+const noNavigation = () => document.addEventListener('click', (e) => e.preventDefault(), true);
+
+test('email — a click on each email address reports one "Email Tap" event and no address', async ({ page }) => {
+  await page.addInitScript(() => {
+    const w = window as Tapped;
+    w.__tap = [];
+    w.plausible = (...args: unknown[]) => { w.__tap!.push(args); };
+  });
+  await page.goto('/privacy');
+  await page.evaluate(noNavigation);
+  const links = page.locator('a.email-link');
+  const n = await links.count();
+  expect(n, '/privacy shows no email link').toBeGreaterThan(0);
+  for (let i = 0; i < n; i++) {
+    await expect(links.nth(i), `link ${i} is not assembled into a mailto`).toHaveAttribute('href', /^mailto:/);
+    await links.nth(i).click();
+    const calls = await page.evaluate(() => (window as Tapped).__tap);
+    expect(calls, `after click ${i + 1}`).toEqual(Array.from({ length: i + 1 }, () => ['Email Tap']));
+  }
+  expect(JSON.stringify(await page.evaluate(() => (window as Tapped).__tap)), 'an event carries an address').not.toContain('@');
+});
+
+test('email — a click does nothing and breaks nothing when there is no tracker, or it throws', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/privacy');
+  await page.evaluate(noNavigation);
+  const link = page.locator('a.email-link').first();
+  // No tracker: whatever the build inherited, remove it, and say so before the click.
+  await page.evaluate(() => { delete (window as Tapped).plausible; });
+  expect(await page.evaluate(() => typeof (window as Tapped).plausible)).toBe('undefined');
+  await link.click();
+  // A tracker that throws, and one that is not a function.
+  await page.evaluate(() => { (window as Tapped).plausible = () => { throw new Error('tracker failure'); }; });
+  await link.click();
+  await page.evaluate(() => { (window as Tapped).plausible = 'not a function'; });
+  await link.click();
+  expect(errors, 'a click raised an error on the page').toEqual([]);
+});

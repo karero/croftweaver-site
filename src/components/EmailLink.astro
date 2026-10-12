@@ -34,5 +34,15 @@ const label = text ?? emailHint(address, SITE.locale);
     } catch {
       /* leave the no-JS hint in place */
     }
+    // Count the click as an "Email Tap" event. window.plausible is the live build's stub, so
+    // nothing happens elsewhere. Only the event name goes out: the address is not part of it,
+    // and the page it happened on travels with every event anyway. /privacy says so.
+    a.addEventListener('click', () => {
+      try {
+        (window as unknown as { plausible?: (name: string) => void }).plausible?.('Email Tap');
+      } catch {
+        /* counting must never get in the way of opening the mail app */
+      }
+    });
   }
 </script>
