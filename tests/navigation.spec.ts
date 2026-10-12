@@ -339,19 +339,45 @@ test('header — on a phone the menu is folded, opens on its button and closes o
     expect(box!.height, `"${await target.innerText()}" is shorter than the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
   }
 
+  // The button names the element it opens, and that element exists.
+  expect(await page.locator(`#${await button.getAttribute('aria-controls')}`).count(), 'aria-controls names no element').toBe(1);
+
+  // Escape with focus on a link: the link is about to be hidden, so focus goes to the button.
+  await headerLinks(page).first().focus();
   await page.keyboard.press('Escape');
   await expect(nav, 'Escape did not close the menu').toBeHidden();
-  await expect(button, 'focus did not return to the button').toBeFocused();
+  await expect(button, 'focus was lost with the hidden link').toBeFocused();
+
+  // The button closes what it opened.
+  await button.click();
+  await expect(nav).toBeVisible();
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(nav, 'a second press did not close the menu').toBeHidden();
 });
 
+test('header — Escape closes the open menu without taking focus from the page', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await page.goto('/skills');
+  await page.locator('.site-header .menu-button').click();
+  const link = page.locator('main a[href]').first();
+  await link.focus();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.site-header nav')).toBeHidden();
+  await expect(link, 'Escape moved focus away from where the visitor was').toBeFocused();
+});
+
+// '/' has no claim under the logo and '/skills' has one, which wraps at 320 px: both must fit.
 for (const width of [360, 320]) {
-  test(`header — the open menu does not make a ${width} px phone scroll sideways`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 740 });
-    await page.goto('/');
-    await page.locator('.site-header .menu-button').click();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow, `the page scrolls sideways at ${width} px with the menu open`).toBeLessThanOrEqual(0);
-  });
+  for (const path of ['/', '/skills']) {
+    test(`header — the open menu does not make a ${width} px phone scroll sideways on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 740 });
+      await page.goto(path);
+      await page.locator('.site-header .menu-button').click();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, `${path} scrolls sideways at ${width} px with the menu open`).toBeLessThanOrEqual(0);
+    });
+  }
 }
 
 test('header — on a wide screen every link shows, the established-sites page among them, with no menu button', async ({ page }) => {
@@ -362,6 +388,9 @@ test('header — on a wide screen every link shows, the established-sites page a
     await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true })).toBeVisible();
   }
   await expect(page.locator('.site-header nav a[href="/established-sites"]'), 'the page for established sites is not in the menu').toBeVisible();
+  // On that page its own link is the marked one, and only it.
+  await page.goto('/established-sites');
+  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Established sites']);
 });
 
 test('header — without JavaScript a phone still shows every link', async ({ browser, baseURL }) => {

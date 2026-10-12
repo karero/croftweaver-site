@@ -40,11 +40,17 @@ const showClaim = path !== '/';
 <script is:inline>
   (function () {
     var button = document.querySelector('.site-header .menu-button');
-    if (!button) return;
+    var nav = document.getElementById('main-nav');
+    if (!button || !nav) return;
     function set(open) { button.setAttribute('aria-expanded', open ? 'true' : 'false'); }
     button.addEventListener('click', function () { set(button.getAttribute('aria-expanded') !== 'true'); });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') { set(false); button.focus(); }
+      if (e.key !== 'Escape' || button.getAttribute('aria-expanded') !== 'true') return;
+      // Focus on a link that is about to be hidden would be lost: hand it to the button.
+      // Focus elsewhere on the page stays where the visitor put it.
+      var inMenu = nav.contains(document.activeElement);
+      set(false);
+      if (inMenu) button.focus();
     });
   })();
 </script>
