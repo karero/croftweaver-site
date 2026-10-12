@@ -88,9 +88,9 @@
   waits on someone else, so changes pile up and the site falls behind (§1, §4).
 - The work that gets a site found is the first to go, and without a check after each edit
   a site slips: a description goes missing, a link breaks, and nothing tells you (§1, §4).
-- Both of a site's jobs suffer (POSITIONING.md §4, the site's two jobs): someone who already knows your
-  name looks you up and the site makes a weaker case than you would yourself, and the
-  people who do not know you yet have a harder time finding you.
+- Both of a site's jobs suffer (POSITIONING.md §4, the site's two jobs): someone who already
+  knows your name looks you up and the site makes a weaker case than you would yourself, and
+  the people who do not know you yet have a harder time finding you.
 
 ## 7. Success (life after)
 
@@ -170,15 +170,15 @@ label (§5).
 The stakes said what goes wrong on a site, not what it costs. The owner's rule: a site has two
 jobs (POSITIONING.md §4), and on the home page the cost names both. The rule is for the home
 page: `/why` and `/established-sites` keep their own wording. Section 2 of the home page now has
-one sentence for each job, after the two paragraphs from §6 and before the pivot. Two wordings were turned down as the
-stakes line. "A site nobody finds earns nothing" leaves out the people who already know your
-name; it still stands in POSITIONING.md §4 and opens `/why`, and the owner has not decided on
-those. "Sees last year's version of you" names age only, and a site can also be vague, slow,
-hard to use on a phone or at odds with itself. The third outcome in the hero and the third card
-now have the visitor as their subject ("You catch common slips"); the second line stays as it
-was. The pivot now answers the first job as well: it says that the assistant first works out
-what you offer and for whom, and that it can tell the home page as your visitor's story, with
-a link to `/positioning`. The story layer is optional, so the sentence says "can". The owner
-chose "visitor", the word `/positioning` and the skills list use, over "customer". These are
-methods, not a measured result: the site shows no conversion figure (`/roadmap` says that
-nothing sets up a conversion to count), and the pivot claims none.
+one sentence for each job, after the two paragraphs from §6 and before the pivot. Two wordings
+were turned down as the stakes line. "A site nobody finds earns nothing" leaves out the people
+who already know your name; it still stands in POSITIONING.md §4 and opens `/why`, and the owner
+has not decided on those. "Sees last year's version of you" names age only, and a site can also
+be vague, slow, hard to use on a phone or at odds with itself. The third outcome in the hero and
+the third card now have the visitor as their subject ("You catch common slips"); the second line
+stays as it was. The pivot now answers the first job as well: it says that the assistant first
+works out what you offer and for whom, and that it can tell the home page as your visitor's
+story, with a link to `/positioning`. The story layer is optional, so the sentence says "can".
+The owner chose "visitor", the word `/positioning` and the skills list use, over "customer".
+These are methods, not a measured result: the site shows no conversion figure (`/roadmap` says
+that nothing sets up a conversion to count), and the pivot claims none.
