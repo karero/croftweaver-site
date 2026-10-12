@@ -197,9 +197,13 @@ Launch requirements that no test enforces:
     on the croftweaver.com, m-squad.com and apreet.com pages (the other two are separate pull
     requests); this repository's section 3 says it now, and a test in `tests/a11y.spec.ts`
     holds it. The table TTL on `events_v2` and `sessions_v2` is to be applied by the owner on
-    the server and, as of 2026-10-12, is NOT yet applied: write the date here, with the output of
-    `SHOW CREATE TABLE` for both tables, when it is in place, and do not ship before it is. Rows
-    older than the period go at the next background merge, which can be hours or days later.
+    the server. APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
+    the owner; `SHOW CREATE TABLE` shows `TTL timestamp + toIntervalMonth(24)` on `events_v2` and
+    `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
+    events), so nothing was deleted by it. Rows older than the period go at the next background
+    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
+    The same output also shows that neither table has an IP address or a raw user-agent column
+    (ClickHouse 26.8; Plausible's version and the daily salt are still to be confirmed).
     Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
     If it is extended to, an archive holds records up to 24 months old, so a record can outlive
     the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
