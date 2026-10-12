@@ -55,7 +55,7 @@ import { SITE, COMPANY } from '../config';
     </p>
 
     <h2>1. Controller</h2>
-    <p>{COMPANY.legalName} is responsible for this website and for the data processing described on this page:</p>
+    <p>The following company is responsible for this website and for the data processing described on this page:</p>
     <p>
       {COMPANY.legalName}<br />
       {COMPANY.street}<br />
@@ -70,7 +70,8 @@ import { SITE, COMPANY } from '../config';
       This site is served by <strong>Cloudflare Pages</strong> (Cloudflare, Inc.,
       101 Townsend St, San Francisco, CA 94107, USA). When you open a page,
       Cloudflare processes technical connection data: your IP address, the date
-      and time, the requested address, and your browser type. Cloudflare needs
+      and time, the requested address, and your browser type and version.
+      Cloudflare needs
       this data to deliver the site and to protect it against attacks.
     </p>
     <p>
@@ -118,9 +119,10 @@ import { SITE, COMPANY } from '../config';
       respond to your browser's &ldquo;Do Not Track&rdquo; setting.
     </p>
     <p>
-      We load fonts and images from this website itself, not from Google Fonts or
-      any other third-party service. The only other server your browser contacts
-      is our analytics server.
+      This website loads no fonts from outside: it uses the fonts already on your
+      device. Its images come from this website itself, not from a third-party
+      service. Apart from this website's own address, your browser contacts only
+      our analytics server.
     </p>
 
     <h2>4. Contact by email or phone</h2>
