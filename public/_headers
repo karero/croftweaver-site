@@ -1,7 +1,7 @@
 # Cloudflare Pages headers: the security headers for every page, then a cache rule for /brand/ (below).
 # CSP allows the inlined stylesheet
 # (astro.config `inlineStylesheets: 'always'`) via style-src 'unsafe-inline' and
-# the inline theme script and analytics stub; the analytics host is listed in script-src
+# the inline theme script, the header's two menu scripts and the analytics stub; the analytics host is listed in script-src
 # and connect-src (tests/check_analytics_gate.sh checks both against src/config.ts).
 # Widen script-src/connect-src only as needed.
 /*

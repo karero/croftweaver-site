@@ -1,6 +1,10 @@
 ---
-// Site header: the horizontal logo lockup (BRAND.md), and the main navigation from
-// NAV in src/config.ts. A language switcher mounts here later.
+// Site header: the horizontal logo lockup (BRAND.md), the claim under it, and the main
+// navigation from NAV in src/config.ts. A language switcher mounts here later.
+//
+// On a phone the navigation folds behind a "Menu" button. The button is switched on by a
+// script, so without JavaScript the links simply stay visible, as they were before. The
+// first script below runs before the list is drawn, so nothing flashes open and shut.
 import { SITE, NAV } from '../config';
 // The theme-ready lockup: its ink is currentColor, set by .brand below, so it follows the
 // light and dark theme and the visitor's toggle. How it is made from the design files:
@@ -13,18 +17,41 @@ const path = Astro.url.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/
 const isCurrent = (href: string) => !href.includes('#') && href === path;
 ---
 <header class="site-header">
-  <a class="brand" href="/" aria-label={SITE.name}><Fragment set:html={lockup} /></a>
-  <nav aria-label="Main">
+  <script is:inline>document.documentElement.classList.add('js');</script>
+  <div class="identity">
+    <a class="brand" href="/" aria-label={SITE.name}><Fragment set:html={lockup} /></a>
+    <p class="claim">{SITE.claim}</p>
+  </div>
+  <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
+  <nav id="main-nav" aria-label="Main">
     <ul>
       {NAV.map((item) => (
         <li>
           <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
         </li>
       ))}
-      <li><a class="repo" href={SITE.repo}>GitHub</a></li>
+      <li><a class="repo" href={SITE.repo}>Get it on GitHub</a></li>
     </ul>
   </nav>
 </header>
+
+<script is:inline>
+  (function () {
+    var button = document.querySelector('.site-header .menu-button');
+    var nav = document.getElementById('main-nav');
+    if (!button || !nav) return;
+    function set(open) { button.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    button.addEventListener('click', function () { set(button.getAttribute('aria-expanded') !== 'true'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || button.getAttribute('aria-expanded') !== 'true') return;
+      // Focus on a link that is about to be hidden would be lost: hand it to the button.
+      // Focus elsewhere on the page stays where the visitor put it.
+      var inMenu = nav.contains(document.activeElement);
+      set(false);
+      if (inMenu) button.focus();
+    });
+  })();
+</script>
 
 <style>
   .site-header {
@@ -36,6 +63,13 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   .brand, nav a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
   .brand { color: var(--heading); }
   .brand :global(svg) { display: block; height: 1.75rem; width: auto; }
+  .claim { margin: -0.15rem 0 0.25rem; font-size: 0.85rem; line-height: 1.3; color: var(--muted); }
+  /* Shown only on a phone, and only once the script has run (html.js). */
+  .menu-button {
+    display: none; min-height: 44px; align-items: center; padding: 0 0.9rem;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer;
+  }
   nav ul {
     list-style: none; margin: 0; padding: 0;
     display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.4rem;
@@ -46,5 +80,18 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   .repo {
     padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--surface); font-weight: 600;
+  }
+  /* Phones: the list folds behind the button and opens as one column under the logo. */
+  @media (max-width: 47.99rem) {
+    /* The logo is a little smaller here, so logo and button share the first row down to 320px. */
+    .site-header { column-gap: 0.75rem; }
+    .brand :global(svg) { height: 1.5rem; }
+    :global(html.js) .identity { flex: 1 1 0; min-width: 0; }
+    :global(html.js) .menu-button { display: inline-flex; }
+    :global(html.js) nav { flex-basis: 100%; }
+    :global(html.js) .menu-button[aria-expanded='false'] + nav { display: none; }
+    :global(html.js) nav ul { flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 0.5rem; }
+    :global(html.js) nav li a { width: 100%; }
+    :global(html.js) nav li .repo { justify-content: center; margin-top: 0.5rem; }
   }
 </style>

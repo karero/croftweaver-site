@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
-import { SITE } from '../src/config';
+import { SITE, NAV } from '../src/config';
 
 // Every route in PAGES returns 200, and every internal link on it resolves to a
 // 200 with no redirect hop (clean URLs only). Links written as absolute production
@@ -309,3 +309,107 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
     }
   }
 });
+
+// Site-specific (not in the shipped suite): the header. On a phone four links and a button
+// already wrapped into three rows, and the page for established sites was in no menu at all.
+// So the links fold behind a "Menu" button on a phone, and that page is in the list. The
+// button is switched on by a script: without JavaScript the links must simply stay visible,
+// or a visitor with scripts off would have no way to any page. Every item stays a 44px tap
+// target (BRAND.md), and the open menu must not make a 320px phone scroll sideways.
+const PHONE = { width: 360, height: 740 };
+const headerLinks = (page: import('@playwright/test').Page) => page.locator('.site-header nav a');
+
+test('header — on a phone the menu is folded, opens on its button and closes on Escape', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await page.goto('/skills');
+  const button = page.locator('.site-header .menu-button');
+  const nav = page.locator('.site-header nav');
+  await expect(button, 'no menu button on a phone').toBeVisible();
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(nav, 'the menu is open before anyone asked').toBeHidden();
+
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  for (const item of NAV) {
+    await expect(nav.getByRole('link', { name: item.label, exact: true }), `${item.label} is not in the open menu`).toBeVisible();
+  }
+  await expect(nav.getByRole('link', { name: 'Get it on GitHub', exact: true })).toHaveAttribute('href', SITE.repo);
+  for (const target of [button, ...(await headerLinks(page).all())]) {
+    const box = await target.boundingBox();
+    expect(box!.height, `"${await target.innerText()}" is shorter than the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
+  }
+
+  // The button names the element it opens, and that element exists.
+  expect(await page.locator(`#${await button.getAttribute('aria-controls')}`).count(), 'aria-controls names no element').toBe(1);
+
+  // Escape with focus on a link: the link is about to be hidden, so focus goes to the button.
+  await headerLinks(page).first().focus();
+  await page.keyboard.press('Escape');
+  await expect(nav, 'Escape did not close the menu').toBeHidden();
+  await expect(button, 'focus was lost with the hidden link').toBeFocused();
+
+  // The button closes what it opened.
+  await button.click();
+  await expect(nav).toBeVisible();
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(nav, 'a second press did not close the menu').toBeHidden();
+});
+
+test('header — Escape closes the open menu without taking focus from the page', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await page.goto('/skills');
+  await page.locator('.site-header .menu-button').click();
+  const link = page.locator('main a[href]').first();
+  await link.focus();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.site-header nav')).toBeHidden();
+  await expect(link, 'Escape moved focus away from where the visitor was').toBeFocused();
+});
+
+// The home page and an inner page: both must fit with the claim under the logo.
+for (const width of [360, 320]) {
+  for (const path of ['/', '/skills']) {
+    test(`header — the open menu does not make a ${width} px phone scroll sideways on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 740 });
+      await page.goto(path);
+      await page.locator('.site-header .menu-button').click();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, `${path} scrolls sideways at ${width} px with the menu open`).toBeLessThanOrEqual(0);
+    });
+  }
+}
+
+test('header — on a wide screen every link shows, the established-sites page among them, with no menu button', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('.site-header .menu-button')).toBeHidden();
+  for (const item of NAV) {
+    await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true })).toBeVisible();
+  }
+  await expect(page.locator('.site-header nav a[href="/established-sites"]'), 'the page for established sites is not in the menu').toBeVisible();
+  // On that page its own link is the marked one, and only it.
+  await page.goto('/established-sites');
+  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Established sites']);
+});
+
+test('header — without JavaScript a phone still shows every link', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: PHONE, baseURL });
+  const page = await context.newPage();
+  await page.goto('/skills');
+  await expect(page.locator('.site-header .menu-button'), 'a button that cannot work is showing').toBeHidden();
+  for (const item of NAV) {
+    await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true })).toBeVisible();
+  }
+  await context.close();
+});
+
+// The line under the logo says what Croftweaver is for, on every page a visitor can land on.
+// It is the line that opens the toolkit's README (POSITIONING.md, header line).
+for (const path of ['/', '/skills', '/established-sites']) {
+  test(`header — the claim shows under the logo on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.locator('.site-header .claim')).toHaveText('Build for search and AI.');
+    await expect(page.locator('.site-header .claim')).toHaveText(SITE.claim);
+  });
+}
