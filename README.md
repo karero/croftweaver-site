@@ -17,7 +17,7 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 5. **Analytics:** Google Search Console, and (configured 2026-10-12) cookieless Plausible
    on M-Squad's own instance, analytics.m-squad.com. The script loads on the live build
    only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner
-   (a position to have confirmed; see "Launch requirements" and the header of
+   (a position the owner accepted on 2026-10-12; see "Launch requirements" and the header of
    `src/pages/privacy.astro`).
 6. **Publish model:** two-stage. `main` = noindexed preview
    (https://main.croftweaver-site.pages.dev), `production` = live at
@@ -233,9 +233,13 @@ Launch requirements that no test enforces:
     are longer): keep that short and say so in a second sentence on the page. The m-squad-website
     README (section "Retention") has the statements, a scratch-table probe that proves the
     mechanism on this ClickHouse, and the re-check after upgrades.
-  - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
-    names who read it and accepted it, and when, the position is not accepted. If it is
-    rejected, the script must not load before consent, or analytics comes out. Then set
+  - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
+    2026-10-12 by Daniel Melter, managing director of M-Squad GmbH, who instructed the ship
+    and this record after the sources in that header were set out to him in the working
+    session (EDPB Guidelines 2/2023 v2.0, paras 33, 53 and 56; DSK Orientierungshilfe
+    Digitale Dienste v1.2, Rz. 87 to 90; § 25 TDDDG). It is a position, not a settled fact,
+    and no counsel's view was taken. If it is ever rejected, the script must not load
+    before consent, or analytics comes out. Then set
     `ANALYTICS.enabled` false in `src/config.ts` and, in the same change, remove the
     "Analytics gate" step in `.github/workflows/ci.yml` and `tests/check_analytics_gate.sh`
     (or change them to match), rewrite section 3, and take out the host in the CSP of
