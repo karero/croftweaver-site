@@ -67,18 +67,21 @@ import { SITE, COMPANY } from '../config';
       To understand how the site is used, we run <strong>Plausible
       Analytics</strong>, a privacy-friendly measurement tool, on our own
       server at analytics.m-squad.com, operated by {COMPANY.legalName}. Its
-      script sets no cookies and writes nothing to your device. It sends the
-      address of the page you open and the page you came from to that server,
-      together with the technical data your browser sends with every request
-      (browser, operating system, IP address). The tool derives your approximate
-      location (country) from the IP address and does not store the IP address
-      itself. It forms a short-lived identifier from these data that is replaced
-      every 24 hours, so a visit is counted once a day and cannot be followed
-      across days or across websites. It also counts clicks on links to other
-      websites and on downloads, such as the slide deck. The results are
+      script sets no cookies and writes nothing to your device. When you open
+      a page, it sends the address of that page and the page you came from to
+      that server, together with the technical data your browser sends with
+      every request (browser, operating system, device type, IP address). When
+      you leave the page, it also sends how far you scrolled and how long the
+      page was in the foreground. The tool derives your approximate location
+      (country, region and city) from the IP address and does not store the IP
+      address itself. It forms a short-lived identifier from these data that is
+      replaced every 24 hours, so a visit is counted once a day and cannot be
+      followed across days or across websites. It also counts clicks on links to
+      other websites and on downloads, such as the slide deck. The results are
       aggregated counts, for example page views, referrers and countries. No
-      data is shared with third parties. Requests to that server pass through
-      Cloudflare, which also serves this site (see section 2).
+      data is passed on to third parties for their own purposes. Requests to
+      that server pass through Cloudflare, which also serves this site (see
+      section 2).
     </p>
     <p>
       The legal basis is our legitimate interest in understanding how the
