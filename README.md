@@ -179,7 +179,10 @@ Launch requirements that no test enforces:
     user-agent column, and how its daily salt is handled. If any of that differs, change
     the sentences in section 3 that say it. The `deploy/plausible-m-squad` folder of the
     m-squad-website repository names Community Edition v3.2.1 with ClickHouse 24.12 and
-    sets no retention or purge; confirm that is what runs.
+    sets no retention or purge. The box's copy differs: ClickHouse was moved to 26.8.16.41 on
+    2026-10-04 (apreet-stack, docs/CHANGES.md) and the stack sits in
+    /home/prixi2/plausible-m-squad. Confirm that Plausible is still v3.2.1 and that nothing
+    but the TTL below deletes records.
   - Settings > General > Tracking in the instance: "Outbound links" and "File downloads"
     ticked, "Form submissions" unticked (the site has no form). Section 3 has one sentence
     for each of the two ticked ones; when the ticks change, change the sentences. After the
