@@ -413,3 +413,37 @@ for (const path of ['/', '/skills', '/established-sites']) {
     await expect(page.locator('.site-header .claim')).toHaveText(SITE.claim);
   });
 }
+
+// Site-specific (not in the shipped suite): what running a site costs. The home page says
+// hosting is free before it asks anyone to start, so the block stands above the Quickstart.
+// It names the two accounts with a link each, and what still costs money. A figure or a
+// price on this site carries the day it was read (CONTENT_GUIDE.md, honesty rules), so the
+// block and the Plausible recommendation on /start must each hold a date and their source.
+test('cost — the home page says hosting is free, above the Quickstart, with its sources and a date', async ({ page }) => {
+  await page.goto('/');
+  const ids = await page.locator('main section[id]').evaluateAll((els) => els.map((e) => e.id));
+  expect(ids.indexOf('cost'), 'no #cost section on the home page').toBeGreaterThanOrEqual(0);
+  expect(ids.indexOf('cost'), '#cost does not stand directly above #quickstart').toBe(ids.indexOf('quickstart') - 1);
+  const cost = page.locator('#cost');
+  for (const href of ['https://github.com/why-github', 'https://www.cloudflare.com/what-is-cloudflare/',
+    'https://github.com/pricing', 'https://developers.cloudflare.com/pages/platform/limits/']) {
+    await expect(cost.locator(`a[href="${href}"]`), `#cost does not link ${href}`).toHaveCount(1);
+  }
+  await expect(cost, 'the block does not say what still costs money').toContainText('You still pay for your domain');
+  await expect(cost.locator('time[datetime]'), 'the 20% figure and the free plans carry no date').toHaveCount(1);
+});
+
+test('cost — no page says hosting can still cost money while the home page says it is free', async ({ page }) => {
+  for (const path of ['/', '/why']) {
+    await page.goto(path);
+    await expect(page.locator('main'), `${path} still lists hosting among the costs`).not.toContainText(/your hosting and your AI assistant can still cost money/i);
+  }
+});
+
+test('cost — the Plausible price on /start has its source and the day it was read', async ({ page }) => {
+  await page.goto('/start');
+  const note = page.locator('#analytics');
+  await expect(note.locator('a[href="https://plausible.io"]')).toHaveCount(1);
+  await expect(note.locator('a[href="https://plausible.io/#pricing"]'), 'the price has no source').toHaveCount(1);
+  await expect(note.locator('time[datetime]'), 'the price has no date').toHaveCount(1);
+});
