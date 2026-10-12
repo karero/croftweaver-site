@@ -5,10 +5,10 @@
 //   2. The live build runs Plausible on M-Squad's own instance (ANALYTICS in
 //      src/config.ts, configured 12 October 2026). Section 3 and the meta description
 //      below say so. If the instance or the tool changes, rewrite both first.
-//      Section 3's sentence on clicks and downloads mirrors two settings in the
+//      Section 3's sentences on clicks and downloads mirror two settings in the
 //      instance (Settings > General > Tracking: Outbound links and File downloads
 //      ticked, Form submissions unticked because the site has no form). When those
-//      ticks change, change the sentence; if a form is ever added, decide on the
+//      ticks change, change the sentences; if a form is ever added, decide on the
 //      third. What the instance keeps, and for how long, is the owner's to confirm:
 //      README, "Launch requirements".
 //      The page states no consent conclusion on purpose. Running without a banner is
@@ -88,30 +88,37 @@ import { SITE, COMPANY } from '../config';
       analytics.m-squad.com, operated by {COMPANY.legalName}. Its script sets no
       cookies and writes nothing to your device. It checks one setting in your
       browser, which lets you exclude your own visits, and whether the browser
-      is automated; neither is sent to the server. When you open a page, it
-      sends the address of that page and the page or site you came from to that
-      server, together with the technical data your browser sends with every
-      request (browser, operating system, device type, IP address). When you
-      leave the page, it also sends how far you scrolled and how long the page
-      was in the foreground. It also counts clicks on links to other websites
-      and on file downloads, such as the slide deck, and sends the address of
-      the link or file you clicked. The tool derives your approximate location
-      from the IP address and does not store the IP address itself. From your IP
-      address, your browser data and this website's domain, plus a value that is
-      replaced every 24 hours, it forms an identifier. Within one day the tool
-      can therefore recognise the same browser and counts it as one visitor; it
-      cannot recognise that browser on another day or on another website. The
-      individual page views are stored with this identifier, the location and
-      the device data, and are shown as aggregated counts, for example page
-      views, referrers and countries. Requests to that server pass through
-      Cloudflare, which also serves this site (see section 2).
+      is automated; neither is sent to the measurement server.
+    </p>
+    <p>
+      When you open a page, the script sends the address of that page and the
+      page or site you came from to that server, together with the technical
+      data your browser sends with every request (browser, operating system,
+      device type, IP address). When you leave the page, it also sends how far
+      you scrolled and how long the page was visible and in focus. It also
+      counts clicks on links to other websites and sends the address of the link
+      you clicked. It counts clicks on links to files, such as the slide deck,
+      and sends the address of the file.
+    </p>
+    <p>
+      The tool derives your approximate location from the IP address and does
+      not store the IP address itself. From your IP address, your browser data
+      and this website's domain, plus a value that is replaced every 24 hours,
+      it forms an identifier. Within one day, as long as those inputs stay the
+      same, the tool can therefore recognise the same browser and counts it as
+      one visitor; it cannot recognise that browser on another day or on another
+      website. The individual events (each page view, with its scroll depth and
+      engaged time) and the session records are stored with this identifier, the
+      location and the device data, and are shown as aggregated counts, for
+      example page views, referrers and countries. Requests to that server pass
+      through Cloudflare, which also serves this site (see section 2).
     </p>
     <p>
       The legal basis is our legitimate interest in understanding how the
       website is used and in improving it (Art. 6(1)(f) GDPR).
-      [MISSING: how long the analytics records are kept, for example: We keep
-      these records for 24 months and then delete them.] You can prevent the
-      measurement by blocking the analytics script in your browser.
+      [MISSING: how long the analytics records are kept and what deletes them.]
+      You can prevent the measurement by blocking the analytics script in your
+      browser.
     </p>
 
     <h2>4. Contact by email or phone</h2>
