@@ -156,8 +156,8 @@ Launch requirements that no test enforces:
   its two days oldest first: the page also says the rise had begun before the first of
   them, with the 28-day totals on the day before it and two weeks earlier, and the build
   stops unless the later total is at least twice the earlier one. The two Gemini
-  answers asked by hand (`byHand`, also in `src/data/proof.ts`) are dated and stay as
-  they are; a new one is the owner's to add.
+  answers asked by hand and the attempt without a sign-in (`byHand`, also in
+  `src/data/proof.ts`) are dated and stay as they are; a new one is the owner's to add.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
   `images/logo.png`).
 - The external link audit (`scripts/check_external_links.sh`) reports no warning. The
