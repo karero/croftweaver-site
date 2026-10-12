@@ -5,11 +5,11 @@
 // ships a new release, update RELEASE (with the number of skills it had) and the list
 // together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
 // build stops when the list, the release's skill count and ADDED_SINCE do not add up.
-export const RELEASE = { version: '0.29', iso: '2026-09-29', label: '29 September 2026', skills: 31 } as const;
-// The skills on the toolkit's main branch that release 0.29 does not have, and the day the
-// list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
-export const ADDED_SINCE: readonly string[] = ['website-contact-form', 'website-scorecard', 'facts-check'];
-export const AS_OF = { iso: '2026-10-09', label: '9 October 2026' } as const;
+export const RELEASE = { version: '0.31', iso: '2026-10-12', label: '12 October 2026', skills: 34 } as const;
+// The skills on the toolkit's main branch that the release above does not have, and the day
+// the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
+export const ADDED_SINCE: readonly string[] = [];
+export const AS_OF = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 export const STAGES = [
   { id: 'build', title: 'Build', intro: 'From a brief to a finished site.' },
@@ -73,7 +73,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
+  { version: '0.31', label: '12 October 2026', text: 'The toolkit takes the name Croftweaver. It is the same toolkit under the same licence. The old address on GitHub leads to the new one, and the download is now called croftweaver.zip.' },
+  { version: '0.30', label: '11 October 2026', text: 'A contact form that needs no account and no setup, a check that catches an empty slot or leftover filler text on a finished page, and a facts check that reads every page of a live site and shows where a figure no longer matches your list.' },
   { version: '0.29', label: '29 September 2026', text: 'One prepaid key covers the weekly AI check for four assistants, and every run shows what it cost. Measured on 26 September 2026 through OpenRouter, a full weekly check for one site (42 questions) cost 0.72 US dollars, before the fee for topping up credit. Prices change.' },
-  { version: '0.28', label: '27 September 2026', text: 'A report page on how people find you on Google: week by week, up to 16 months back, with the searches just below the first page and the pages seen but rarely clicked. It stays on your own computer.' },
-  { version: '0.27', label: '27 September 2026', text: 'An optional story layer for the home page, the weekly check of whether AI assistants name you, a report on it that reads in plain words, and a guided setup for teams.' },
 ] as const;

@@ -1,8 +1,11 @@
 # AGENTS.md — rules for AI assistants (Codex, Claude Code) working on this site
 
 Website of Croftweaver. Astro, static, GitHub → Cloudflare Pages.
-Live: https://croftweaver.com (not launched yet) · Preview: none yet; becomes
-`main.<project>.pages.dev` once `website-team-setup` §6 connects Cloudflare.
+Live: https://croftweaver.com (since 2026-10-12) · Preview:
+https://main.croftweaver-site.pages.dev (Cloudflare Pages project `croftweaver-site`).
+On 2026-10-12 Cloudflare showed the project as disconnected from GitHub: until the
+owner repairs that, a merge builds nothing, a pull request gets no preview and
+`npm run ship` cannot publish. README, step 8, has the state and the commands.
 
 Several people and several AI assistants may work on this site, sometimes at the same
 time. The rules below stop anyone from working on a stale state or overwriting someone
