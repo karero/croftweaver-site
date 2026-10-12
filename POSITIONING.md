@@ -127,7 +127,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 > search data keeps improving it.
 
 - **Core positioning term:** website skills
-- **Kicker (above the H1):** Website skills for search and AI visibility
+- **Kicker (above the H1):** Your AI assistant, guided by website skills. Owner decision, 2026-10-12. Until then it read "Website skills for search and AI visibility", which repeated the header line once that line showed on the home page. The kicker now says how the site gets built. It was picked from ten candidates: two outside models and the assistant each wrote lines, then scored all ten without authors' names, and all three put this one first. The market category sentence moved to the first paragraph of "What Croftweaver is" on the home page.
 - **Header line (under the logo, on every page):** Build for search and AI. Owner decision, 2026-10-12: a visitor who lands on any page reads what Croftweaver is for before the page's own headline. It is the line that opens the toolkit's README, so site and repository say the same. Tried first and dropped: "Website skills for search and AI", which lost the building and read like an SEO tool. Not the brand line: that stays the sign-off (see "Lead with ownership" below).
 - **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
   rank.", the plain fallback if "weave" tests badly with strangers.)
