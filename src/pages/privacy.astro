@@ -5,9 +5,14 @@
 //   2. The live build runs Plausible on M-Squad's own instance (ANALYTICS in
 //      src/config.ts, switched on 12 October 2026). Section 3 and the meta description
 //      below say so. If the instance or the tool changes, rewrite both first.
-//      The "no consent banner" reasoning in section 3 holds only while the script
-//      stays cookieless and touches no device storage; any added embed or tool needs
-//      this page re-checked before it ships.
+//      The page states no consent conclusion on purpose. The choice to run without a
+//      banner rests on: no cookies, nothing written to the device, and only the page
+//      address and referrer read. That is a position, not a settled fact: the EDPB
+//      (Guidelines 2/2023 v2.0, paras 33 and 53) treats JavaScript that makes the
+//      browser send information as "gaining access", and § 25 TDDDG has no analytics
+//      exception (DSK OH Digitale Dienste v1.2, Nov 2024, Rz. 87 to 90). Any added
+//      embed or tool, or a wider set of measured data, needs this page and that
+//      position re-checked before it ships.
 // Still open:
 //   3. German-market sites: translate this page into German (Datenschutzerklaerung)
 //      and serve it at /datenschutz; German law expects legal pages in German.
@@ -61,22 +66,24 @@ import { SITE, COMPANY } from '../config';
     <p>
       To understand how the site is used, we run <strong>Plausible
       Analytics</strong>, a privacy-friendly measurement tool, on our own
-      server at analytics.m-squad.com, operated by {COMPANY.legalName}. It is
-      cookieless and stores no personal data. It does not track you across
-      websites or over time, and no data is shared with third parties. Visitor
-      IP addresses are processed only transiently to derive anonymous,
-      aggregated counts and are never stored. The resulting metrics (such as
-      page views, referrers and countries) are aggregated and cannot be traced
-      back to an individual. Requests to that server pass through Cloudflare,
-      which also serves this site (see section 2).
+      server at analytics.m-squad.com, operated by {COMPANY.legalName}. Its
+      script sets no cookies and writes nothing to your device. It sends the
+      address of the page you open and the page you came from to that server,
+      together with the technical data your browser sends with every request
+      (browser, operating system, IP address). The tool derives your approximate
+      location (country) from the IP address and does not store the IP address
+      itself. It forms a short-lived identifier from these data that is replaced
+      every 24 hours, so a visit is counted once a day and cannot be followed
+      across days or across websites. It also counts clicks on links to other
+      websites and on downloads, such as the slide deck. The results are
+      aggregated counts, for example page views, referrers and countries. No
+      data is shared with third parties. Requests to that server pass through
+      Cloudflare, which also serves this site (see section 2).
     </p>
     <p>
-      The legal basis for this aggregated measurement is our legitimate
-      interest in operating and improving the website (Art. 6(1)(f) GDPR).
-      Because the measurement is cookieless, accesses no information on your
-      device (§ 25 TDDDG) and stores no personal data, no consent banner is
-      required. You can prevent the measurement entirely by blocking the
-      analytics script in your browser.
+      The legal basis is our legitimate interest in understanding how the
+      website is used and in improving it (Art. 6(1)(f) GDPR). You can prevent
+      the measurement by blocking the analytics script in your browser.
     </p>
 
     <h2>4. Contact by email or phone</h2>

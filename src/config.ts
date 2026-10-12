@@ -76,10 +76,14 @@ export const KNOWS_ABOUT: string[] = [
 // A mismatch means analytics silently never loads — no error, no data.
 export const PROD_BRANCH = 'production';
 
-// The instance is M-Squad's own. Changing scriptHost means changing script-src and
-// connect-src in public/_headers too, or the browser blocks the script.
+// The instance is M-Squad's own. scriptId is the per-site script its installer hands out
+// (Settings > Site installation): the domain and the optional measurements (outbound links,
+// file downloads, form submissions) are switched in the instance, not here. Changing
+// scriptHost means changing script-src and connect-src in public/_headers too, or the
+// browser blocks the script. Base.astro writes two tags: the script, and the short stub
+// that calls plausible.init(); without the stub the script never starts.
 export const ANALYTICS = {
   enabled: process.env.CF_PAGES_BRANCH === PROD_BRANCH,
-  domain: 'croftweaver.com',
   scriptHost: 'https://analytics.m-squad.com',
+  scriptId: 'pa--pMhz1-dKjwaTf3D6ArFS',
 } as const;

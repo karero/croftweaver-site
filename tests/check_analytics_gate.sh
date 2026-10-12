@@ -10,7 +10,8 @@
 # so; on for a preview, every look at the preview is counted as a real visitor. The
 # Playwright suite cannot see either, since it builds once with whatever the shell had. So
 # this builds the site four ways, the way the docs tell the owner to, and reads the built
-# HTML. The toolkit's own CI runs it (template-tests.yml); a site's CI does not.
+# HTML. This site's CI runs it (.github/workflows/ci.yml). It began as the toolkit
+# template's test; the tag it reads is the per-site script of the instance's installer.
 #
 # It runs `astro build`, the step of `npm run build` that renders the pages and so decides
 # the tag, into a temporary folder: the site's own dist/ is left alone. The two post-build
@@ -63,12 +64,14 @@ build() {
   fi
 }
 
-# The tag Base.astro writes: <script defer data-domain="…" src="<scriptHost>/js/script.js">.
-# For each page, prints "<full> <part> <path>": how many <script> tags carry both
-# attributes with a value (a working analytics tag) and how many carry either one at all.
+# The tags Base.astro writes: <script async src="<scriptHost>/js/pa-<id>.js"> and, after it,
+# an inline stub that calls plausible.init() (the per-site script starts only on that call).
+# For each page, prints "<full> <part> <path>": how many working tags it has (the script AND
+# the stub) and how many pieces of a tag it has at all (the script, the stub, or a leftover
+# of the older script.js / data-domain form, which this site no longer uses).
 # HTML comments are dropped first, and attributes are read one at a time, so text inside a
 # quoted value never counts as an attribute and <script-x> is not a script. It reads the
-# markup Astro emits from this template; it is not an HTML parser, so a script tag spelled
+# markup Astro emits from this site; it is not an HTML parser, so a script tag spelled
 # out inside another attribute's value or inside a script's code would fool it.
 tags_program() {
   cat <<'PERL'
@@ -79,15 +82,18 @@ for my $file (@ARGV) {
   $_ = '' unless defined;
   s/<!--.*?-->//gs;
   my ($full, $part) = (0, 0);
+  my $init = /plausible\.init\(\)/ ? 1 : 0;
   while (/<script(?=[\s\/>])/gi) {
     my %a;
     while (/\G\s*([^\s"'>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/gc) {
       $a{lc $1} = defined $2 ? $2 : defined $3 ? $3 : defined $4 ? $4 : '';
     }
-    my $src = exists $a{src} && $a{src} =~ m{/js/script\.js(?:[?#]|$)};
-    $full++ if $src && exists $a{'data-domain'} && $a{'data-domain'} ne '';
-    $part++ if $src || exists $a{'data-domain'};
+    my $src = exists $a{src} && $a{src} =~ m{/js/pa-[\w-]+\.js(?:[?#]|$)};
+    my $old = exists $a{src} && $a{src} =~ m{/js/script(?:\.[\w.-]+)?\.js(?:[?#]|$)};
+    $full++ if $src && $init;
+    $part++ if $src || $old || exists $a{'data-domain'};
   }
+  $part += $init;
   print "$full $part $file\n";
 }
 PERL
