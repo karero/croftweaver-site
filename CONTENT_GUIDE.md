@@ -174,7 +174,7 @@ is a trademark of its owner."
 - Use an author's name or "StoryBrand" in the address, the title or the H1.
 - Claim what the test cannot prove (honesty rules).
 - Promise a better "EEAT score" or a ranking effect. There is no such score.
-- Add a header link. The header takes no more links until it has a compact phone menu.
+- Add a header link. (The rule was written when the header had no phone menu. It has one since 2026-10-12, so a new header link is now the owner's call, not a question of room.)
 
 **Where it is linked from.** `/skills` (the `website-positioning` entry and the
 credits), `/checks` (the positioning suite), the home page (the note on the positioning
@@ -192,7 +192,7 @@ neither before.
 | a reader who knows StoryBrand | they read the story section and the sources | the story section says "inspired by" and that the skill is optional; the sources section says neither author endorses Croftweaver |
 | a reader who has heard of EEAT | they read the trust section | it says what the letters stand for, that it is no score, which signals the skills build in, which of them a test checks, and that outside links and profiles are not among them |
 | a reader looks at `/skills` | they read the credits | April Dunford and Donald Miller are named beside the existing credit |
-| a phone 360 pixels wide | the page loads | the header is unchanged, and nothing scrolls sideways |
+| a phone 360 pixels wide | the page loads | the header is the site's own, with no link added for this page, and nothing scrolls sideways |
 
 How the page-and-term table gets its rows: the build reads `tests/positioning.spec.ts`
 as text and takes the map from it. It never imports the file, because importing it would
@@ -205,8 +205,9 @@ How the two scenarios without a test are checked, when the page is built:
 - First screen: the owner reads it and answers two questions without scrolling: what
   does Croftweaver ask before it writes copy, and why does that come first?
 - Phone: the page is opened 360 pixels wide in a browser; the document is no wider than
-  the window, and the header shows the same links as on `main`. The test suite runs at
-  desktop width only, so this is a check by hand, recorded in the pull request.
+  the window, and the header shows the same links as on `main`. Apart from the header's
+  own phone tests in `tests/navigation.spec.ts`, the test suite runs at desktop width,
+  so this is a check by hand, recorded in the pull request.
 
 The per-page contract applies as for every page: route in `PAGES`, line in
 `public/llms.txt`, own share card, entry in the positioning map and in the spine table
