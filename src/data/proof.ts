@@ -401,12 +401,18 @@ export const SITE_PROOF = {
     // day's details are read from the owner's screenshot of that answer, which the owner keeps;
     // it is not in this repository. The screenshot shows no date: that it is from the first day
     // is the owner's statement. Of the second day only the owner's statement is on record: the
-    // answer named GenAI Wednesday. Question and model are those of the first day.
+    // answer named GenAI Wednesday. Question and model are those of the first day. Both were
+    // asked signed in, by the owner's statement; the first screenshot shows an account's footer.
+    // `signedOut` is the day the owner tried the Gemini web app without a sign-in, in a private
+    // browser window on a computer: it showed results too briefly to read and went back to its
+    // start page. That too is the owner's statement; the owner's screenshot of it shows the start
+    // page with a question typed in and a request to sign in.
     byHand: {
       question: 'Ki Events in münchen',
       model: 'Gemini 3.6 Flash',
       first: { iso: '2026-10-10', label: label('2026-10-10') },
       again: { iso: '2026-10-12', label: label('2026-10-12') },
+      signedOut: { iso: '2026-10-12', label: label('2026-10-12') },
     },
   },
 } as const;
