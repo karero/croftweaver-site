@@ -18,7 +18,10 @@ amber of genai-wednesday.de (owner decision, 2026-10-03).
 
 - The logo exists (owner's design package, received 2026-10-08): a mark and the wordmark
   "Croftweaver". The header shows the horizontal lockup inline, in the header link's
-  colour (`.brand`, set to the theme's `--heading`; see the theme copy below).
+  colour (`.brand`, set to the theme's `--heading`; see the theme copy below). Under it,
+  on every page but the home page, stands the header line from `POSITIONING.md`
+  (`SITE.claim`). On a phone the logo is a little smaller (1.5rem high) and the links fold
+  behind a "Menu" button; without JavaScript they stay visible.
 - Name styling: "Croftweaver" in text, never "CroftWeaver"; lower case only in code contexts
   (domain, repo). No "CW" monogram.
 - Files: source SVGs in `src/assets/brand/` (mark, wordmark, horizontal lockup, each in

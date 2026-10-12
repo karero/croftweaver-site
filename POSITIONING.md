@@ -128,6 +128,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 
 - **Core positioning term:** website skills
 - **Kicker (above the H1):** Website skills for search and AI visibility
+- **Header line (under the logo, on every page but the home page):** Website skills for search and AI. Owner decision, 2026-10-12: a visitor who lands on an inner page reads what Croftweaver is before the page's own headline. The home page leaves it out, because the kicker says it there. Not the brand line: that stays the sign-off (see "Lead with ownership" below).
 - **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
   rank.", the plain fallback if "weave" tests badly with strangers.)
 - **Subline:** retired from the home page on 2026-10-08. The one-liner and three short outcomes replace it, since it said SEO and GEO, which strangers do not know. Its words were "Keep improving SEO and GEO, week by week."

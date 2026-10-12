@@ -12,6 +12,9 @@ export const SITE = {
   // Home <title> is special-cased (NOT "Example | Example"). Keep ≤ 60 chars.
   titleHome: 'Croftweaver: website skills for search and AI visibility',
   tagline: 'Your own plot of the web.',
+  // The line under the logo in the header: what Croftweaver is, for a visitor who lands on
+  // an inner page. Not shown on the home page, whose kicker says it above the headline.
+  claim: 'Website skills for search and AI',
   // 120–160 chars: default meta description + Organization/WebPage schema text.
   description:
     'Croftweaver is a suite of open-source website skills for AI coding assistants. ' +
@@ -27,6 +30,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Proof', href: '/proof' },
   { label: 'Checks', href: '/checks' },
   { label: 'Skills', href: '/skills' },
+  { label: 'Established sites', href: '/established-sites' },
   { label: 'Quickstart', href: '/start' },
 ];
 
