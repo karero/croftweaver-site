@@ -236,6 +236,33 @@ test('a11y — the clicks chart on /proof draws the published CSV', async ({ pag
   }
 });
 
+// Site-specific (not in the shipped suite): /proof says the rise in clicks had begun before the
+// first of the two events it names, and gives two 28-day totals for it. A visitor can add them
+// up from the download, so the page must show what the file gives: the 28 days up to the day
+// before the event of 17 June 2026, and the 28 days up to two weeks before that. The days are
+// written out here on purpose. If the events on the page change, this test has to be read again.
+test('proof — the sentence on when the rise began gives the totals the published CSV gives', async ({ page }) => {
+  const days = csvRows('genai-wednesday-de-search-console.csv').map(([date, clicks]) => ({ date: date!, clicks: Number(clicks) }));
+  const totalUpTo = (iso: string) => {
+    const end = days.findIndex((d) => d.date === iso);
+    expect(end, `the CSV has no full 28 days up to ${iso}`).toBeGreaterThanOrEqual(27);
+    return days.slice(end - 27, end + 1).reduce((n, d) => n + d.clicks, 0);
+  };
+  const [eve, earlier] = ['2026-06-16', '2026-06-02'] as const;
+
+  await page.goto('/proof');
+  const sentence = page.locator('#search p', { hasText: 'The rise had begun' });
+  await expect(sentence, 'the sentence on when the rise began is missing or there are two').toHaveCount(1);
+  // The source wraps the paragraph, so its text is read with every run of white space as one space.
+  const text = (await sentence.innerText()).replace(/\s+/g, ' ');
+  for (const part of [
+    `the 28 days up to ${longDate(eve)}, the day before it, had ${totalUpTo(eve)} clicks`,
+    `the 28 days up to ${longDate(earlier)} had ${totalUpTo(earlier)}`,
+  ]) {
+    expect(text, `the sentence does not say "${part}"`).toMatch(word(part));
+  }
+});
+
 test('a11y — the AI check chart on /proof draws the published CSV', async ({ page }) => {
   const rows = csvRows('genai-wednesday-de-ai-check.csv').map(([date, engine, mode, , answers, named, cited, failed]) =>
     ({ date: date!, engine: engine!, mode: mode!, answers: Number(answers), named: Number(named), cited: Number(cited), failed: Number(failed) }));

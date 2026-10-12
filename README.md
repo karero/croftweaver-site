@@ -152,7 +152,10 @@ Launch requirements that no test enforces:
   build stops on any other gap in the file. When the Search Console file is refreshed,
   read the event pages on genai-wednesday.de again and update `EVENTS` in
   `src/data/proof.ts`: the page says which events fall inside the best 28 days and that
-  none followed, and the build stops if the new file no longer fits that. The two Gemini
+  none followed, and the build stops if the new file no longer fits that. `EVENTS` lists
+  its two days oldest first: the page also says the rise had begun before the first of
+  them, with the 28-day totals on the day before it and two weeks earlier, and the build
+  stops unless the later total is at least twice the earlier one. The two Gemini
   answers asked by hand (`byHand`, also in `src/data/proof.ts`) are dated and stay as
   they are; a new one is the owner's to add.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
