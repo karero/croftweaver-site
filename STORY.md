@@ -115,6 +115,11 @@ active voice. "Build or rebuild" covers a new site and an old one.
 Owner-approved 2026-10-08. It pairs the two channels (search and AI), not a person and a
 machine, and narrows the core term "website skills".
 
+**Shorthand, on every page:** "Build for search and AI." It stands under the logo in the
+header (`SITE.claim`; POSITIONING.md, header line) and is the short form of the controlling
+idea, not a second idea. Owner decision, 2026-10-12. The full sentence above is not printed
+on the home page; the one-liner and the shorthand carry it.
+
 ## Home page map (seven sections → src/pages/index.astro)
 
 POSITIONING.md's wording rule 2 keeps the proof strip directly under the hero, so it sits
@@ -122,7 +127,7 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | the kicker (positioning term and market category, the first `<p>`), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
+| 1 | Header | the kicker (the positioning term, the first `<p>`: "Your AI assistant, guided by website skills"; the market category stands in section 5 since 2026-10-12), the `<h1>` "Weave websites that rank.", the one-liner, a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt and a link to `/more-proof`). No customer image: the site has none, and none is invented | yes |
 | 2 | Stakes | §6, then a short pivot to the guide: positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
@@ -134,7 +139,7 @@ Deviation from the skill's rule that objections use only facts already in POSITI
 what you need, the starter prompt and the free accounts come from `/start`, a page the
 owner reviewed. The cost answer also draws on `/why` ("Hosting on Cloudflare's free plan costs nothing.
 Your domain costs money, and your AI assistant can"; until 2026-10-12 it listed hosting
-among the costs) and on the home page's own block "Hosting it costs nothing" and on the price the 0.29 release note on `/skills`
+among the costs) and on the home page's own block "You pay nothing for hosting" and on the price the 0.29 release note on `/skills`
 gives for the optional weekly AI check. None of these are positioning claims.
 
 ## Beyond the seven sections: the learning section
