@@ -77,7 +77,7 @@ requests.
 | 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on `/more-proof` (step 4b). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check (five check days, 26 September to 8 October 2026) are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
-| 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | open, needs the address | — |
+| 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | in review: the operator is M-Squad GmbH, with the address, managing director, register entry and VAT ID the owner gave on 2026-10-09. The structured data (`legalName` in `src/config.ts`) names the same company | karero/croftweaver-site#39 (open, draft) |
 | 2b | Dependency: sharp 0.35.5, to clear an npm audit advisory | PR | done | karero/croftweaver-site#28, merged 2026-10-09 (`03992f3`); dependabot's pull request for the same bump (karero/croftweaver-site#29) was closed |
 | 3 | Logo, favicon and app icons, schema logo | owner + PR | done | karero/croftweaver-site#18, merged 2026-10-08 (`48b1738`) |
 | 4 | Header and navigation; home page rewrite | PR | done | karero/croftweaver-site#5, merged 2026-10-04 (`f7e7eb1`) |
@@ -104,8 +104,17 @@ requests.
 Launch requirements that no test enforces:
 
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
-  slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` are still open; CI
-  only catches `[MISSING:`.
+  slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` were filled in
+  karero/croftweaver-site#39 (step 2a). CI only catches `[MISSING:`.
+- The privacy page names M-Squad GmbH as controller and calls Cloudflare "our
+  processor". That holds while the Cloudflare account that serves the site is the
+  company's: the owner confirmed on 2026-10-11 that it is M-Squad GmbH's. If the site
+  moves to another account, read that sentence again. Four more points from the review
+  of karero/croftweaver-site#39 were answered the same day: the imprint has a phone
+  number as a second contact channel; the number stays in plain text in the source, as
+  the email address does, and is hidden in the served HTML; the privacy page does not
+  name the mail host; and the Organization structured data keeps "M-Squad GmbH" as its
+  name.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record

@@ -1,9 +1,16 @@
 ---
 // Imprint (Impressum) — required under German law (§ 5 DDG) for a site operated
-// from Germany. OWNER TODO before launch: fill the [BRACKET] address slots and
-// confirm the contact address; a postal address is legally required.
+// from Germany. The operator is M-Squad GmbH; the owner gave the company details on
+// 9 October 2026, and on 11 October 2026 they were compared with the company's own
+// imprint at https://m-squad.com/imprint: name, street, postcode, managing director,
+// register court, register number and VAT number are the same there. A postal address,
+// the managing director, the register entry and the VAT identification number are all
+// part of what the law expects here. The phone number is a second, direct contact
+// channel beside email; the owner gave it on 11 October 2026.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
+import PhoneNumber from '../components/PhoneNumber.astro';
+import { COMPANY } from '../config';
 ---
 <Base
   title="Imprint"
@@ -14,12 +21,22 @@ import EmailLink from '../components/EmailLink.astro';
 
     <h2>Site operator</h2>
     <p>
-      Daniel Melter<br />
-      [STREET AND NUMBER]<br />
-      [POSTCODE] Munich, Germany
+      {COMPANY.legalName}<br />
+      {COMPANY.street}<br />
+      {COMPANY.postcodeCity}
     </p>
-    <p>Contact: <EmailLink address="hello@croftweaver.com" subject="Croftweaver" /></p>
+    <p>Managing director: {COMPANY.managingDirector}</p>
+    <p>
+      Commercial register: Munich local court (Amtsgericht München), HRB 138 365<br />
+      VAT identification number: DE218182722
+    </p>
+    <p>
+      Contact: <EmailLink address="hello@croftweaver.com" subject="Croftweaver" /><br />
+      Phone: <PhoneNumber number="+49 179 6913629" />
+    </p>
 
+    {/* A role of its own, so the name is typed here: the person responsible for content
+        need not be the managing director. */}
     <h2>Responsible for content</h2>
     <p>Daniel Melter (address as above).</p>
 

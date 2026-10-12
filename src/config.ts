@@ -5,7 +5,7 @@
 export const SITE = {
   url: 'https://croftweaver.com',         // production origin, no trailing slash
   name: 'Croftweaver',
-  legalName: 'Daniel Melter',
+  legalName: 'M-Squad GmbH',
   locale: 'en',
   themeColor: '#2e6e4e',               // croft moss-green; matches brand primary + manifest
   // Home <title> is special-cased (NOT "Example | Example"). Keep ≤ 60 chars.
@@ -41,8 +41,13 @@ export function ogLocaleFor(lang: string): string | undefined {
   return region && region.length === 2 ? `${base}_${region.toUpperCase()}` : OG_LOCALES[base];
 }
 
+// The operator. The imprint and the privacy page print these facts and the structured
+// data carries the name, so the three cannot disagree.
 export const COMPANY = {
-  legalName: 'Daniel Melter',
+  legalName: SITE.legalName,
+  street: 'Schellingstr. 141 Rgb.',
+  postcodeCity: '80798 Munich, Germany',
+  managingDirector: 'Daniel Melter',
   logo: '/images/logo.png',            // resolved against SITE.url for schema
 } as const;
 

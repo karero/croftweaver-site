@@ -1,9 +1,11 @@
 ---
-// GDPR (EU 2016/679) privacy page draft. Before launch:
-//   1. Fill every [BRACKET] slot. The controller is whoever legally runs the site.
-//   2. Make section 3 match reality: pick the self-hosted OR cloud Plausible
-//      wording, or delete the analytics paragraphs entirely if the site ships
-//      without analytics (then also trim the meta description below).
+// GDPR (EU 2016/679) privacy page. Decided:
+//   1. The controller is whoever legally runs the site: M-Squad GmbH (filled in on
+//      9 October 2026; name, address and managing director as in the imprint).
+//   2. The site ships without analytics, and section 3 and the meta description
+//      below say so. If analytics is ever switched on (ANALYTICS in src/config.ts),
+//      rewrite both first.
+// Still open:
 //   3. German-market sites: translate this page into German (Datenschutzerklaerung)
 //      and serve it at /datenschutz; German law expects legal pages in German.
 //   4. A solid baseline, not legal advice. When in doubt, have it reviewed.
@@ -12,7 +14,7 @@
 // contractions, and every email address behind <EmailLink>.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
-import { SITE } from '../config';
+import { SITE, COMPANY } from '../config';
 ---
 <Base
   title="Privacy Policy"
@@ -20,7 +22,7 @@ import { SITE } from '../config';
   <section class="wrap">
     <h1>Privacy Policy</h1>
     <p>
-      Last updated: 2 July 2026. This page explains which personal data this
+      Last updated: 11 October 2026. This page explains which personal data this
       website processes, on what legal basis under the GDPR (EU 2016/679), and
       which rights you have.
     </p>
@@ -28,9 +30,10 @@ import { SITE } from '../config';
     <h2>1. Controller</h2>
     <p>Responsible for data processing on this website:</p>
     <p>
-      Daniel Melter<br />
-      [STREET AND NUMBER]<br />
-      [POSTCODE] Munich, Germany<br />
+      {COMPANY.legalName}<br />
+      {COMPANY.street}<br />
+      {COMPANY.postcodeCity}<br />
+      Managing director: {COMPANY.managingDirector}<br />
       Contact: <EmailLink address="hello@croftweaver.com" subject="Privacy request" />
     </p>
 
@@ -55,14 +58,15 @@ import { SITE } from '../config';
       script of any kind.
     </p>
 
-    <h2>4. Contact by email</h2>
+    <h2>4. Contact by email or phone</h2>
     <p>
-      If you contact us, we process the data you provide (name, email address,
-      and the content of your message) to handle the request and possible
-      follow-up questions. The legal basis is Art. 6(1)(b) GDPR where the request
-      relates to a contract, otherwise our legitimate interest in answering
-      enquiries (Art. 6(1)(f) GDPR). We keep the correspondence only as long as
-      needed for this purpose and for any statutory retention duties.
+      If you contact us by email or phone, we process the data you provide (name,
+      email address or phone number, and the content of your message or call) to
+      handle the request and possible follow-up questions. The legal basis is
+      Art. 6(1)(b) GDPR where the request relates to a contract, otherwise our
+      legitimate interest in answering enquiries (Art. 6(1)(f) GDPR). We keep the
+      correspondence, and any note we make of a call, only as long as needed for
+      this purpose and for any statutory retention duties.
     </p>
 
     <h2>5. Your rights</h2>
