@@ -199,7 +199,9 @@ Launch requirements that no test enforces:
     m-squad-website repository names Community Edition v3.2.1 with ClickHouse 24.12 and
     sets no retention or purge. The box's copy differs: ClickHouse was moved to 26.8.16.41 on
     2026-10-04 (apreet-stack, docs/CHANGES.md) and the stack sits in
-    /home/prixi2/plausible-m-squad. Confirm that Plausible is still v3.2.1 and that nothing
+    /home/prixi2/plausible-m-squad. CONFIRMED 2026-10-12 at 22:55 CEST, on the box, by the owner:
+    the app container `plausible-m-squad-plausible-1` runs
+    `ghcr.io/plausible/community-edition:v3.2.1`. Not confirmed by that lookup: that nothing
     but the TTL below deletes records.
   - A goal for the email-click event: in the instance, Settings > Goals > Add goal > Custom event,
     named `Email Tap`. The site sends it when an email address is clicked, from
@@ -226,7 +228,13 @@ Launch requirements that no test enforces:
     instance's first event is that day). Rows older than the period go at the next background
     merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
     The same output also shows that neither table has an IP address or a raw user-agent column
-    (ClickHouse 26.8; Plausible's version and the daily salt are still to be confirmed).
+    (ClickHouse 26.8). The daily salt, CONFIRMED 2026-10-12 at 22:55 CEST on the box: the
+    `salts` table in the instance's Postgres holds two rows, inserted 2026-10-11 00:00:01 and
+    2026-10-12 00:00:00 UTC (queried at 20:55 UTC). That is one new value a day at midnight UTC,
+    and the older ones are gone although the instance has recorded events since 2026-05-22; it
+    fits the sentence in section 3 ("replaced every 24 hours"). That a salt is 16 random bytes,
+    and that Plausible deletes salts older than 48 hours, is from Plausible's source (master
+    branch), not read from the v3.2.1 code on the box.
     Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
     If it is extended to, an archive holds records up to 24 months old, so a record can outlive
     the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
