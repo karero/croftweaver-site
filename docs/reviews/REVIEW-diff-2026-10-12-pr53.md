@@ -37,7 +37,7 @@ Files in the change: `src/data/proof.ts`, `src/pages/proof.astro`, `README.md` (
 
 ## Test records (head `4fa38c2`)
 
-The complete output of each run is kept with the review's raw output and goes into the pull request's review comment.
+The reviewers of each round were given the complete output of that round's runs in their brief. The pull request carries, as a second review comment, the complete output of the last gate run on the reviewed code (`2d9fb65`), of both `npm run check` runs and of the four probes; the complete output of the earlier test runs is not kept beyond the session.
 
 | Run | Result | Exit status |
 |---|---|---|
