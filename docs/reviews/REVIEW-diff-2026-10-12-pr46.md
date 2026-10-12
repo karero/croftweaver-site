@@ -1,6 +1,6 @@
 # DIFF review — karero/croftweaver-site#46 — home page: the stakes name both of a site's jobs, the pivot points to positioning, "You catch common slips"
 
-Base `2c99142` · depth: **Normal** (shipped page copy and two strategy files; no legal text, no code path) · verdict: **OPEN** — the wording pass over `ccccfc5..0bbfc4d` is pending · authority used: POST AUTHORITY and BRANCH-COMMIT AUTHORITY — this session opened the pull request and created the branch; WORKTREE-WRITE AUTHORITY — the owner's instruction of 2026-10-12: "Do it: Apply it on a branch. Add the README status row. Open the pull request. Run the review pass."
+Base `2c99142` · depth: **Normal** (shipped page copy and two strategy files; no legal text, no code path) · verdict: **CLEAN** — every BUG fixed, the one RISK refuted, every NIT fixed; the refutation of F2 and the closing edit F8 were checked by the author only · authority used: POST AUTHORITY and BRANCH-COMMIT AUTHORITY — this session opened the pull request and created the branch; WORKTREE-WRITE AUTHORITY — the owner's instruction of 2026-10-12: "Do it: Apply it on a branch. Add the README status row. Open the pull request. Run the review pass."
 
 | Round | Head | Artifact | Reviewers | seconds, tokens per seat | BUG/RISK/NIT (all seats, before dedup) |
 |---|---|---|---|---|---|
@@ -27,4 +27,6 @@ Follow-ups, for the owner:
 Notes:
 - Data check: the artifact holds no credentials, and the repository is public. Destinations: the owner said "Do it" on 2026-10-12 to a review pass this session had described as "Codex plus GLM 5.3"; the service that runs GLM 5.3 (melious) was not named in that exchange.
 - Round 2 was owed by F1, a rule someone follows. It found no BUG and no RISK that calls for a fix, so the rounds stop there. Fresh-eyes ran in round 1 only, as Normal depth says.
-- Checks on `f27571c` and `ccccfc5`: the pre-push gate, `npx playwright test` 203 passed, none skipped; `npm run check` 0 errors on `daec69d`.
+- Wording pass, not a round: codex alone (effort medium, 103 s / 46,963 tokens) over the prose-only delta `ccccfc5..0bbfc4d` (the README row and the re-wrapped paragraphs; this file is left out of every artifact). Result: "No BUG/RISK/NIT findings". It asked 3 questions, none confirmed: the toolkit files behind F2 (as above), the reviewers' own output (posted as the pull request's review comment), and the pull request's state (open and a draft when the row was written).
+- The stamp on the review comment relies on codex's chain: round 1 in full, round 2's delta, the wording pass. Commits after `0bbfc4d` change this file only.
+- Checks on `f27571c`, `ccccfc5` and `5a72f00`: the pre-push gate, `npx playwright test` 203 passed, none skipped; `npm run check` 0 errors on `daec69d`.
