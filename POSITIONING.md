@@ -104,7 +104,8 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
   look you up, from a business card, an email footer or a LinkedIn link, and the site
   helps to win them. Second, the site attracts people who do not know you yet: prospects,
   partners, employees. Serving existing customers is a minor third job for a small site.
-  Copy about what is at stake names both jobs, not only being found.
+  On the home page, copy about what is at stake names both jobs, not only being found;
+  `/why` and `/established-sites` keep their own wording.
 - **Secondary reason to start:** rebuilding a site you know is a good project for
   learning to work with an AI assistant, alone or with a team. Never the lead (see the
   value table).
