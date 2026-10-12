@@ -400,13 +400,15 @@ export const SITE_PROOF = {
     // guide for the reason). They are not in the CSV and enter no count on the page. The first
     // day's details are read from the owner's screenshot of that answer, which the owner keeps;
     // it is not in this repository. The screenshot shows no date: that it is from the first day
-    // is the owner's statement. Of the second day only the owner's statement is on record: the
-    // answer named GenAI Wednesday. Question and model are those of the first day. Both were
-    // asked signed in, by the owner's statement; the first screenshot shows an account's footer.
+    // is the owner's statement. The same screenshot shows a phone screen and an account's footer,
+    // so the page says "signed in on a phone" for that answer and for no other. The `question`
+    // and `model` fields are those of the first day. Of the second asking only the owner's "both
+    // runs named it" is on record: not its question, its model or its account.
     // `signedOut` is the day the owner tried the Gemini web app without a sign-in, in a private
     // browser window on a computer: it showed results too briefly to read and went back to its
-    // start page. That too is the owner's statement; the owner's screenshot of it shows the start
-    // page with a question typed in and a request to sign in.
+    // start page. All of that is the owner's statement, made on that day; the owner's screenshot
+    // of it shows only the start page with a question typed in and a request to sign in. It has
+    // the same date as `again` by coincidence: they are two separate facts.
     byHand: {
       question: 'Ki Events in münchen',
       model: 'Gemini 3.6 Flash',

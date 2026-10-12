@@ -212,19 +212,21 @@ const aiDesc =
     <p>
       The check does not ask Gemini with web search
       (<a href={`${SITE.repo}/blob/v0.31/skills/search-console-insights/references/geo-check.md`}>the toolkit's guide to the check</a>
-      says why). Without a sign-in, the Gemini web app showed its results too briefly to read,
-      in a private browser window on
-      <time datetime={p.ai.byHand.signedOut.iso}>{p.ai.byHand.signedOut.label}</time>. So the
-      maintainer of the site asked by hand, signed in. On
-      <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time>, asked
-      <q lang="de">{p.ai.byHand.question}</q>, the app (model shown: {p.ai.byHand.model}) listed
-      four events, then named GenAI Wednesday first among the communities. Six passages, four of
-      them about other communities and platforms, carried a source labelled
-      <q>GenAI Wednesday</q>; the address behind the label was not checked. That much is from an
-      unpublished screenshot. Asked again on
-      <time datetime={p.ai.byHand.again.iso}>{p.ai.byHand.again.label}</time>, it named GenAI
-      Wednesday too, by the maintainer's report. Neither answer is in the counts above or in the
-      file: they show what one signed-in person got.
+      says why), so the maintainer of the site asked the Gemini app by hand. On
+      <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time>, signed in on a
+      phone, the question was <q lang="de">{p.ai.byHand.question}</q>. The app (model shown:
+      {p.ai.byHand.model}) listed four events, then named GenAI Wednesday first among the
+      communities. Six passages, four of them about other communities and platforms, carried a
+      source labelled <q>GenAI Wednesday</q>; the address behind the label was not checked.
+      That much is from an unpublished screenshot, and the date from the maintainer. By the
+      maintainer's report, a second asking on
+      <time datetime={p.ai.byHand.again.iso}>{p.ai.byHand.again.label}</time> also named GenAI
+      Wednesday; nothing else of it was recorded. Also by the maintainer's report, an attempt
+      without a sign-in on
+      <time datetime={p.ai.byHand.signedOut.iso}>{p.ai.byHand.signedOut.label}</time>, in a
+      private browser window on a computer, showed its results too briefly to read. Neither
+      answer is in the counts above or in the published file. They show what one person got on
+      two days, nothing more.
     </p>
     <p class="note">
       The counts behind the table are published:
