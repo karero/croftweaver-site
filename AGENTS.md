@@ -2,8 +2,17 @@
 
 Website of Croftweaver. Astro, static, GitHub → Cloudflare Pages.
 Live: https://croftweaver.com (since 2026-10-12) · Preview:
-https://main.croftweaver-site.pages.dev (Cloudflare Pages project `croftweaver-site`,
+https://main.croftweaver-site.pages.dev (Cloudflare Pages project `croftweaver`,
 connected to this repository).
+
+The project's name and its addresses differ. On the evening of 2026-10-12 Wrangler
+listed the project as `croftweaver` and refused `--project-name croftweaver-site`
+("Project not found"); its addresses were still `croftweaver-site.pages.dev` and
+`main.croftweaver-site.pages.dev`. So a Wrangler command takes the name, and where a
+document in this repository writes `<project>.pages.dev`, this site's address has
+`croftweaver-site` in that place. Until that afternoon Wrangler had taken
+`croftweaver-site` as the name. If Wrangler does not find the project, run
+`npx wrangler pages project list`, say what it lists, and ask; do not guess a name.
 
 Several people and several AI assistants may work on this site, sometimes at the same
 time. The rules below stop anyone from working on a stale state or overwriting someone
