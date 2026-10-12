@@ -190,6 +190,10 @@ Launch requirements that no test enforces:
     first, then state its period (Art. 13(2)(a) GDPR wants the period or the criteria).
     State only that period in the `[MISSING:` slot in section 3 (the slot asks for the
     period, not the mechanism); CI stays red until it is filled.
+    Decided 2026-10-12 (owner): 24 months for the whole instance, the same sentence on the
+    croftweaver.com, m-squad.com and apreet.com pages; section 3 says it now. The table TTL on
+    `events_v2` and `sessions_v2` is applied by the owner on the server; write the date here when
+    it is in place, and do not ship before it is.
   - The no-banner position (see the header of `src/pages/privacy.astro`): until this line
     names who read it and accepted it, and when, the position is not accepted. If it is
     rejected, the script must not load before consent, or analytics comes out. Then set
