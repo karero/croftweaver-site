@@ -12,7 +12,9 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 2. **Dynamic:** Tier 1, fully static. No functions, no forms.
 3. **Editors:** owner + AI assistant via git. No CMS.
 4. **Language:** English only, unprefixed default (German stays additive later).
-5. **Analytics:** none — Google Search Console only. No cookies, no banner.
+5. **Analytics:** Google Search Console, and (from 2026-10-12) cookieless Plausible on
+   M-Squad's own instance, analytics.m-squad.com. The script loads on the live build
+   only (`CF_PAGES_BRANCH` equals `PROD_BRANCH` in `src/config.ts`). No cookies, no banner.
 6. **Publish model:** two-stage. `main` = noindexed preview (`*.pages.dev`),
    `production` = live at https://croftweaver.com. Publish with `npm run ship`.
 

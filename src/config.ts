@@ -76,10 +76,10 @@ export const KNOWS_ABOUT: string[] = [
 // A mismatch means analytics silently never loads — no error, no data.
 export const PROD_BRANCH = 'production';
 
-// Decision (interview Q5): Google Search Console only — no analytics script,
-// no consent banner. Flip `enabled` to the CF_PAGES_BRANCH check if that changes.
+// The instance is M-Squad's own. Changing scriptHost means changing script-src and
+// connect-src in public/_headers too, or the browser blocks the script.
 export const ANALYTICS = {
-  enabled: false,
+  enabled: process.env.CF_PAGES_BRANCH === PROD_BRANCH,
   domain: 'croftweaver.com',
-  scriptHost: 'https://plausible.io',
+  scriptHost: 'https://analytics.m-squad.com',
 } as const;
