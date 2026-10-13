@@ -184,8 +184,8 @@ Launch requirements that no test enforces:
   search terms are read every Monday at 09:00 by a scheduled job on the owner's Mac (set
   up 2026-10-12); the history stays on that Mac, not in this repository.
 - Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
-  states things that only the owner can confirm. Nothing here is recorded yet; write
-  each line with its date when it is true:
+  states things that only the owner can confirm. Write each line with its date when it
+  is true:
   - Where the instance runs: on a server of M-Squad GmbH, in the EU or EEA (name the
     hosting provider if it is rented, and add it to section 3 as a recipient). Its web
     server or reverse proxy keeps no IP addresses in access logs. The Cloudflare zone in
@@ -199,8 +199,11 @@ Launch requirements that no test enforces:
     m-squad-website repository names Community Edition v3.2.1 with ClickHouse 24.12 and
     sets no retention or purge. The box's copy differs: ClickHouse was moved to 26.8.16.41 on
     2026-10-04 (apreet-stack, docs/CHANGES.md) and the stack sits in
-    /home/prixi2/plausible-m-squad. Confirm that Plausible is still v3.2.1 and that nothing
-    but the TTL below deletes records.
+    /home/prixi2/plausible-m-squad. OBSERVED 2026-10-12 at 22:55 CEST, on the box, by the owner:
+    `docker inspect` on the app container `plausible-m-squad-plausible-1` returns the image
+    tag `ghcr.io/plausible/community-edition:v3.2.1`. That is the tag the container was
+    created from, not a digest, and the lookup did not record whether it was running. Not
+    confirmed by that lookup: that nothing but the TTL below deletes records.
   - A goal for the email-click event: in the instance, Settings > Goals > Add goal > Custom event,
     named `Email Tap`. The site sends it when an email address is clicked, from
     `src/components/EmailLink.astro`; without the goal the events are stored but not shown.
@@ -226,7 +229,16 @@ Launch requirements that no test enforces:
     instance's first event is that day). Rows older than the period go at the next background
     merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
     The same output also shows that neither table has an IP address or a raw user-agent column
-    (ClickHouse 26.8; Plausible's version and the daily salt are still to be confirmed).
+    (ClickHouse 26.8). The daily salt, OBSERVED 2026-10-12 at 22:55 CEST on the box: the
+    `salts` table in the instance's Postgres holds two rows, with `inserted_at` 2026-10-11
+    00:00:01 and 2026-10-12 00:00:00 (the column has no time zone; read here as UTC, which the
+    database clock's +00 offset at 20:55 suggests). A value added at each midnight with nothing
+    older left is what daily replacement and a clean-up leave behind, and it does not contradict
+    section 3 ("replaced every 24 hours"). It does not show which salt an identifier is built
+    from or when a value stops being used, so section 3's sentence that the browser cannot be
+    recognised once the value is replaced is not confirmed by it. That a salt is 16 random
+    bytes, replaced daily, and that Plausible deletes salts older than 48 hours, is from
+    Plausible's source (master branch), not read from the v3.2.1 code on the box.
     Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
     If it is extended to, an archive holds records up to 24 months old, so a record can outlive
     the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
