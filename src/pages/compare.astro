@@ -5,7 +5,7 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED } from '../data/compare';
 ---
 <Base
   title="Croftweaver and its alternatives"
@@ -26,6 +26,32 @@ import { GROUPS, CHECKED } from '../data/compare';
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
     </div>
+  </section>
+
+  <section class="wrap" id="first">
+    <h2>Croftweaver begins with the end in mind</h2>
+    <p>
+      A website has to convince someone. So before Croftweaver writes a line of copy
+      or picks a colour, your assistant works out with you what the site has to say:
+      what you offer, for whom, what they would use instead, and what you have that
+      those alternatives do not. For what you claim, it asks what shows that it is
+      true: a figure, the way it works, a reference. Quotes from your customers, where you
+      have them, go in with the name of the person and the thing they reviewed.
+    </p>
+    <p>
+      The answers go into one file in your repository, and a test keeps every page on
+      its term. This is a method, not a result: whether the positioning is right stays
+      your judgment. <a href="/positioning">How positioning works</a>.
+    </p>
+    <p class="note">
+      Starting with the message is not Croftweaver's alone. Among the
+      <a href="#skills">skills for AI coding assistants</a> below,
+      {MESSAGE_FIRST.map((m, i) => (
+        <>{i === 0 ? ' ' : i === MESSAGE_FIRST.length - 1 ? '; and ' : '; '}<a href={m.url}>{i === 0 ? m.name : m.name.replace(/^The /, 'the ')}</a> {m.fact}</>
+      ))}.
+      Read from each project's own page on
+      <time datetime={FIRST_CHECKED.iso}>{FIRST_CHECKED.label}</time>.
+    </p>
   </section>
 
   {GROUPS.map((group) => (
