@@ -52,7 +52,8 @@ export const GROUPS = [
       { name: 'marketingskills', url: 'https://github.com/coreyhaines31/marketingskills', fact: 'Marketing skills for Claude Code and other agents. MIT licence. Seven of the skills in Croftweaver are derived from it, with credit.' },
       { name: 'Wondel.ai skills', url: 'https://github.com/wondelai/skills', fact: 'Fifty skills built on business, marketing, UX and coding books, with guided journeys, one of them for creating a website. MIT licence.' },
     ],
-    chooseThem: 'You already have a site and want it analysed (the two SEO skills), you are moving off WordPress (website-build-kit), or you want marketing help beyond a website (marketingskills, the Wondel.ai skills).',
-    chooseCroftweaver: 'You want one suite that builds the site, does the search and AI work by default, runs its tests before each push and on each pull request, and includes tools that read your Search Console data and point to the next edits.',
+    chooseThem: 'You want one focused SEO or AI-search audit (the two SEO skills), you are moving off WordPress (website-build-kit), or you want marketing help beyond a website (marketingskills, the Wondel.ai skills).',
+    chooseCroftweaver: 'You want one suite that builds the site, does the search and AI work by default, runs its tests before each push and on each pull request, and includes tools that read your Search Console data and point to the next edits. Its checks and measurements also work on a site that is already live, on any stack, without a rebuild; the ready-made test suite needs the Croftweaver starter.',
+    more: { href: '/established-sites', label: 'Croftweaver for established sites' },
   },
 ] as const;
