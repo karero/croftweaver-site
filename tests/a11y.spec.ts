@@ -833,7 +833,7 @@ test('privacy — section 3 says an open visit continues as the same visit and h
   expect(s3, 'section 3 lost the backup sentence').toContain(
     'Encrypted backup copies of this data are stored at Cloudflare in the EU and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
   expect(s3, 'the backup sentence lost the line about the daily value').toContain(
-    'A backup copy also holds the daily values that were in use when it was made, that day's and the previous day's.');
+    'A backup copy also holds the daily values that were in use when it was made, that day\'s and the previous day\'s.');
 });
 
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
