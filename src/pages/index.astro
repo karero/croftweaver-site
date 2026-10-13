@@ -30,7 +30,9 @@ const softwareSchema = {
   codeRepository: SITE.repo,
   runtimePlatform: 'Astro',
   about: 'Open-source website skills for search and AI visibility',
-  author: { '@type': 'Person', name: 'Daniel Melter' },
+  // The maintainer's LinkedIn profile is in the structured data only, not on the page
+  // (owner, 2026-10-13). LinkedIn redirects the address with a trailing slash to this one.
+  author: { '@type': 'Person', name: 'Daniel Melter', sameAs: ['https://www.linkedin.com/in/danielmelter'] },
 };
 ---
 <Base title={SITE.name} schemas={[softwareSchema]}>
