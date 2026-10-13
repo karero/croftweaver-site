@@ -18,6 +18,12 @@ strip now leads with the AI panel's SEO and GEO scores for genai-wednesday.de an
 prompt to try on your own site; PageSpeed for three sites and the E-E-A-T scores moved
 to `/more-proof`.
 
+Updated 2026-10-13: the panel stays first (owner decision the same day). Under it, the
+strip now states two measured figures and links to the page behind each: the PageSpeed
+range for the three sites (`/more-proof`), and how many answers named genai-wednesday.de
+with and without web search in the AI check (`/proof`). Both are read from
+`src/data/proof.ts`. An outside audit had asked for measured evidence before opinions.
+
 ## 1. Competitive alternatives
 
 - The status quo: an old site, or none, and someone else to ask for every update (an
