@@ -97,9 +97,10 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 - **Best-fit customer:** founders, community organizers, experts and small teams who
   need their website to be found, and the developers and technically comfortable owners
   who build for them.
-- **Why they care most:** a site nobody finds earns nothing, and the search and AI work
-  is exactly what gets skipped when a site is built fast. Many start from an old site, or
-  none, where every change waits on someone else, so that work never gets done.
+- **Why they care most:** people who do not know them yet have to find the site first
+  (the second of the two jobs below), and the search and AI work is exactly what gets
+  skipped when a site is built fast. Many start from an old site, or none, where every
+  change waits on someone else, so that work never gets done.
 - **The site's two jobs (owner, 2026-10-12):** first, people who already know your name
   look you up, from a business card, an email footer or a LinkedIn link, and the site
   helps to win them. Second, the site attracts people who do not know you yet: prospects,
