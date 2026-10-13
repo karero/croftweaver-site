@@ -333,17 +333,27 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
     // from the live page because a copy has no layout. The fused reading below then fuses
     // only what inline markup split: without it "<p>Prices</p><p>Lo<em>rem</em> ipsum</p>"
     // read "PricesLorem ipsum" fused and "Prices Lo rem ipsum" spaced, and neither is a
-    // match. A hidden element (display: none) has no layout to ask, so its tag decides: a
-    // phrasing element stays inline ("dum<span hidden>my</span> text" still fuses), anything
-    // else is a block. Added on this site on 2026-10-13, after a review; not in the
-    // toolkit's copy.
-    const phrasing = ['A', 'ABBR', 'B', 'BDI', 'BDO', 'CITE', 'DATA', 'DFN', 'EM', 'I', 'LABEL', 'MARK', 'Q',
-      'S', 'SMALL', 'SPAN', 'STRONG', 'SUB', 'SUP', 'TIME', 'U', 'VAR', 'WBR'];
+    // match. A hidden element (display: none) has no layout of its own to ask, so the
+    // browser is asked how it lays out a bare element of the same tag on this page: a
+    // hidden <span> or <del> stays inline ("dum<span hidden>my</span> text" still fuses),
+    // a hidden <div> is a block. Added on this site on 2026-10-13, after a review; not in
+    // the toolkit's copy.
     const live = Array.from(document.body.querySelectorAll('*'));
     const copied = Array.from(body.querySelectorAll('*'));
+    const bare = new Map<string, string>();
+    const displayOfBare = (tag: string) => {
+      if (!bare.has(tag)) {
+        const probe = document.createElement(tag);
+        document.body.append(probe);
+        bare.set(tag, getComputedStyle(probe).display);
+        probe.remove();
+      }
+      return bare.get(tag)!;
+    };
     live.forEach((el, i) => {
-      const display = getComputedStyle(el).display;
-      const inline = display === 'none' ? phrasing.includes(el.tagName) : display.startsWith('inline') || display === 'contents';
+      let display = getComputedStyle(el).display;
+      if (display === 'none') display = displayOfBare(el.tagName);
+      const inline = display.startsWith('inline') || display === 'contents';
       if (inline && el.tagName !== 'BR') return;
       copied[i].before(' ');
       copied[i].after(' ');
@@ -413,6 +423,7 @@ test('placeholders — the page reading reaches each surface it claims', async (
     <span>prices</span><span>TODO</span>
     <p>Prices</p><p>do<em>lor</em> sit amet</p><p>Terms</p><p><b>FIX</b>ME</p><p>Rates<br><b>XX</b>X</p>
     <p>Sizes</p><p>dum<span hidden>my</span> text</p><div hidden>Fees</div><div hidden><b>blind</b>text</div>
+    <p>Notes</p><p>place<del hidden>holder</del> text</p>
     <details><summary>More</summary><p>[FOLDED SLOT]</p></details>
     <img alt="[ALT SLOT]" src="data:,">
     <button aria-label="[LABEL SLOT]">Go</button>
@@ -452,6 +463,7 @@ test('placeholders — the page reading reaches each surface it claims', async (
   // Hidden elements: a hidden inline piece of a word still fuses, a hidden block still ends one.
   expect(found('placeholder wording', 'dummytext'), '"dum<span hidden>my</span> text"').toBe(true);
   expect(found('placeholder wording', 'blindtext'), '"<div hidden>Fees</div><div hidden><b>blind</b>text</div>"').toBe(true);
+  expect(found('placeholder wording', 'placeholdertext'), '"place<del hidden>holder</del> text": no list of tags, the browser says <del> is inline').toBe(true);
   const mustSkip = [
     ...notShown.map((t) => `UNSEEN ${t.toUpperCase()}`),
     'IN CODE', 'IN PRE', 'IN KBD', 'IN SAMP', 'EXEMPT NOTE', 'EXEMPT ALT', 'IN NOSCRIPT', 'IN STYLE',
