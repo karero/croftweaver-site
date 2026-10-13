@@ -157,7 +157,7 @@ The owner approved the passage on 2026-10-08, in the first person, with a byline
 `src/data/suites.ts` counts the spec files its glob matches under `tests/` (`.spec` and
 `.test` files ending in `.ts`, `.js` or `.mjs`) and fails the build when one has no
 description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would make the count on the home page and the list on
-`/checks` 13, with a suite that most sites do not have, while POSITIONING.md §2 says 12. The direct
+`/checks` 14, with a suite that most sites do not have, while POSITIONING.md §2 says 13. The direct
 CTA, the one-liner and the plan are guarded by review instead.
 
 ## Changes after a fresh-eyes check (owner, 2026-10-09)

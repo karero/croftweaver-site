@@ -49,9 +49,9 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 - The search and AI-readability work is done by default at build time: metadata within
   limits, schema.org JSON-LD, llms.txt, share cards, clean internal links.
-- Every generated site ships with its own test gate: 12 suites today (accessibility in
+- Every generated site ships with its own test gate: 13 suites today (accessibility in
   light and dark, SEO consistency, navigation, anchors, orphans, images, links, email,
-  llms.txt coverage, tone, positioning, preview handling). The push hook runs it before
+  llms.txt coverage, tone, positioning, placeholders, preview handling). The push hook runs it before
   every push, and CI runs it on pull requests and on `main` and `production`.
 - After launch, real data drives the edits: Search Console insights, a ranking history
   and a weekly check of whether four AI assistants name the site (toolkit skill
@@ -162,7 +162,7 @@ The wording rule applies to all of them.
   of the home page one-liner (owner-approved 2026-10-08). The villain is the situation,
   never a named agency.
 - "Build high-ranking websites." Deck and `/why`, with proof beside it.
-- "Twelve test suites check every change." · "Four AI assistants check who names you." ·
+- "Thirteen test suites check every change." · "Four AI assistants check who names you." ·
   "Open-source skills turn briefs into tested sites."
 
 Held back: "No pass, no publish." The default publish path runs the build and the tests

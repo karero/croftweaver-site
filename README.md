@@ -63,8 +63,8 @@ npm install          # once
 npm run dev          # local dev server
 npm run build        # static build into dist/ (+ anchor ids + build marker)
 npm test             # a11y / seo / navigation / anchors / orphans / images /
-                     # tone / positioning / email / links / llms-coverage /
-                     # middleware (preview handling)
+                     # tone / positioning / placeholders / email / links /
+                     # llms-coverage / middleware (preview handling)
 npm run og           # regenerate OG share cards after brand/copy changes
 npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
 ```
@@ -120,12 +120,14 @@ requests.
 | 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The project's name differs from its addresses, `croftweaver-site.pages.dev` and the preview `main.croftweaver-site.pages.dev`: on the evening of 2026-10-12 Wrangler 4.149.0 listed one project for this site, named `croftweaver`, with the domains `croftweaver-site.pages.dev` and `croftweaver.com`, and refused the name `croftweaver-site` (first refusal at 21:14 CEST), which it had still taken at 15:31 CEST the same day (both times from Wrangler's own logs on the computer the commands ran on). No record here of who changed the name or why. What to do when Wrangler does not find the project is at the top of `AGENTS.md`. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). `CANONICAL_URL` is set to `https://croftweaver.com` for Production (owner, 2026-10-12); from the production build after that, `https://croftweaver-site.pages.dev` answers with a 301 to the same path and query on the live domain, and `https://main.croftweaver-site.pages.dev` stays the preview (both seen 2026-10-12). The sitemap `https://croftweaver.com/sitemap-index.xml` was submitted in Search Console on 2026-10-12 (read from Search Console the same day: pending, no errors) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12; the project's name: `wrangler pages project list`, 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
+| 11 | The rest of the toolkit template, from commit `8ea17a7` to release 0.31. The spec files, `tests/_helpers.ts` and `tests/check_ship_push.sh` are done and `tests/TESTS-VERSION` now names release 0.31, so the toolkit's `scripts/whats-new.sh` no longer lists what is left. Left: changes to `AGENTS.md`, `PUBLISHING.md`, `SETUP.md`, `CONTENT_GUIDE.md`, `.github/workflows/ci.yml`, `.nvmrc`, `public/_headers`, `scripts/hooks/pre-push`, `.claude/settings.json` and `tests/check_analytics_gate.sh` (this site's own copy); and four files the site does not have: `.gitattributes`, `scripts/verify.mjs`, `scripts/wire-hooks.mjs`, `.claude/hooks/git-stand.mjs`. To see them, in a clone of the toolkit: `git diff 8ea17a7 v0.31 -- skills/new-website/templates` | PRs | open; spec files done 2026-10-13 | karero/croftweaver-site#67 |
 
 Launch requirements that no test enforces:
 
 - No unfilled slot in `src` or `public`. The `[STREET AND NUMBER]` and `[POSTCODE]`
   slots in `src/pages/imprint.astro` and `src/pages/privacy.astro` were filled in
-  karero/croftweaver-site#39 (step 2a). CI only catches `[MISSING:`.
+  karero/croftweaver-site#39 (step 2a). CI catches `[MISSING:` in the source, and since
+  2026-10-13 `tests/placeholders.spec.ts` reads the built pages for the slot shapes it knows.
 - The privacy page names M-Squad GmbH as controller and calls Cloudflare "our
   processor". That holds while the Cloudflare account that serves the site is the
   company's: the owner confirmed on 2026-10-11 that it is M-Squad GmbH's. If the site
