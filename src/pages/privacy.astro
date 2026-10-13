@@ -111,14 +111,14 @@ import { SITE, COMPANY } from '../config';
     <p>
       The tool derives your approximate location from the IP address and does not keep the IP address in its own records. From your IP address, your browser data
       and this website's domain, plus a value that is replaced every 24 hours,
-      it forms an identifier. While that value lasts, and as long as those inputs stay the same, the tool therefore recognises the same browser and counts it as one visitor. Once the value is replaced, it can no longer recognise that browser; only a visit that is still going at that moment (one with activity in the last 30 minutes) continues as the same visit. Nor can the tool recognise that browser on another website. The individual events (for example each page view, and the scroll depth and engaged time sent when you leave a page or switch away from it) and the session records are stored with this identifier, the page address, the referrer, any link or file address sent with the event, the location and the device data, and are shown as aggregated counts, for example page views, referrers and countries. Requests to our analytics server pass
+      it forms an identifier. While that value lasts, and as long as those inputs stay the same, the tool therefore recognises the same browser and counts it as one visitor. Once the value is replaced, it can no longer recognise that browser; only a visit that is still going at that moment (one with activity in about the last 30 minutes) continues as the same visit. Nor can the tool recognise that browser on another website. The individual events (for example each page view, and the scroll depth and engaged time sent when you leave a page or switch away from it) and the session records are stored with this identifier, the page address, the referrer, any link or file address sent with the event, the location and the device data, and are shown as aggregated counts, for example page views, referrers and countries. Requests to our analytics server pass
       through Cloudflare, which also serves this site (see section 2).
     </p>
     <p>
       We run this measurement because we have a legitimate interest in
       understanding how the website is used and in improving it. The individual
       events and session records are deleted from the measurement server after 24
-      months. Encrypted backup copies of this data are stored at Cloudflare and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer. A backup copy also holds the daily values of the last two or three days. You can prevent the measurement by blocking the analytics script
+      months. Encrypted backup copies of this data are stored at Cloudflare and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer. A backup copy also holds the earlier values that were replaced every 24 hours: those of the last days, and possibly older ones. You can prevent the measurement by blocking the analytics script
       in your browser, for example with a content blocker. Our analytics do not
       respond to your browser's &ldquo;Do Not Track&rdquo; setting.
     </p>

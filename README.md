@@ -219,10 +219,10 @@ Launch requirements that no test enforces:
     State only that period in section 3 (the page asks for the period, not the mechanism).
     The slot is filled; the CI placeholder grep no longer fails on it.
     Decided 2026-10-12 (owner): 24 months for the whole instance. The same sentence is to appear
-    on the croftweaver.com, m-squad.com and apreet.com pages (the other two are separate pull
+    on the croftweaver.com, m-squad.com and apreet.com pages (the others are separate pull
     requests); this repository's section 3 says it now, and a test in `tests/a11y.spec.ts`
-    holds it. The table TTL on `events_v2` and `sessions_v2` is to be applied by the owner on
-    the server. APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
+    holds it. The table TTL on `events_v2` and `sessions_v2` was applied by the owner on
+    the server: APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
     the owner; `SHOW CREATE TABLE` shows `TTL timestamp + toIntervalMonth(24)` on `events_v2` and
     `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
     events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
@@ -247,7 +247,7 @@ Launch requirements that no test enforces:
     the image tagged v3.2.1.
     Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
     Section 3 says in two sentences that encrypted copies are stored at Cloudflare and kept for 30
-    days, and that a copy holds the daily values of the last two or three days. How far that is verified, the
+    days, and that a copy holds the earlier daily values, those of the last days and possibly older ones. How far that is verified, the
     evidence and the checks still open are in the m-squad-website README (section "Retention"), which also
     holds the scratch-table probe for the TTL mechanism (not yet run).
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on

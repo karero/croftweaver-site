@@ -829,11 +829,11 @@ test('privacy — section 3 says an open visit continues as the same visit and h
   expect(to, 'the section 4 heading, after section 3').toBeGreaterThan(from);
   const s3 = text.slice(from, to);
   expect(s3, 'section 3 lost the open-visit sentence').toContain(
-    'it can no longer recognise that browser; only a visit that is still going at that moment (one with activity in the last 30 minutes) continues as the same visit.');
+    'it can no longer recognise that browser; only a visit that is still going at that moment (one with activity in about the last 30 minutes) continues as the same visit.');
   expect(s3, 'section 3 lost the backup sentence').toContain(
     'Encrypted backup copies of this data are stored at Cloudflare and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
   expect(s3, 'the backup sentence lost the line about the daily value').toContain(
-    'A backup copy also holds the daily values of the last two or three days.');
+    'A backup copy also holds the earlier values that were replaced every 24 hours: those of the last days, and possibly older ones.');
 });
 
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
