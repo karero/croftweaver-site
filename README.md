@@ -248,7 +248,7 @@ Launch requirements that no test enforces:
     moment continues as the same visit. The code was read at the v3.2.1 tag on GitHub; what runs on the box is
     the image tagged v3.2.1.
     Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
-    Section 3 says in two sentences that encrypted copies are stored at Cloudflare in the EU and kept for 30
+    Section 3 says in two sentences that encrypted copies are stored at Cloudflare and kept for 30
     days, and that a copy holds the daily values of its day and the day before. How far that is verified, the
     evidence and the checks still open are in the m-squad-website README (section "Retention"), which also
     holds the scratch-table probe that proves the TTL mechanism.
