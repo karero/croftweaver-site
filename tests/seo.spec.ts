@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
-import { SITE, ogLocaleFor } from '../src/config';
+import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -145,6 +145,80 @@ for (const path of PAGES) {
     for (const b of blocks) expect(() => JSON.parse(b), 'JSON-LD must parse').not.toThrow();
   });
 }
+
+// The structured data keeps three things apart: the operator (an Organization, M-Squad GmbH),
+// this website, and the software (Croftweaver). Owner decision, 2026-10-13, and this site's own
+// test: the starter does not have it. The starter's layout gives the Organization the site's name
+// as alternateName and the site's description, which is right where a site is the company's own
+// and wrong here: Croftweaver is a product, not a trading name, so the markup would say that the
+// company IS the toolkit. This fails if a sync of the layout brings that back, or if a node that
+// another node points at goes missing.
+type Node = Record<string, any>;
+async function jsonLd(page: import('@playwright/test').Page): Promise<Node[]> {
+  return (await page.locator('script[type="application/ld+json"]').allTextContents()).map((b) => JSON.parse(b));
+}
+const one = (nodes: Node[], type: string): Node => {
+  const found = nodes.filter((n) => n['@type'] === type);
+  expect(found.length, `exactly one ${type} node`).toBe(1);
+  return found[0]!;
+};
+// Every { "@id": … } that stands alone is a reference to a node described somewhere else.
+const references = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.flatMap(references);
+  if (!value || typeof value !== 'object') return [];
+  const node = value as Node;
+  const keys = Object.keys(node);
+  if (keys.length === 1 && keys[0] === '@id') return [node['@id']];
+  return keys.flatMap((k) => references(node[k]));
+};
+const SOFTWARE_ID = `${SITE.url}/#software`;
+
+test('seo — structured data keeps the operator, the website and the software apart', async ({ page }) => {
+  await page.goto('/');
+  const nodes = await jsonLd(page);
+
+  const org = one(nodes, 'Organization');
+  expect(org.name, 'the Organization is the operator named in the imprint').toBe(COMPANY.legalName);
+  expect(org.url, "the operator's address is the company's own site, not this one").toBe(COMPANY.url);
+  for (const key of ['alternateName', 'description', 'logo']) {
+    expect(org[key], `the Organization must not carry "${key}": on this site that would be a fact about the product`).toBeUndefined();
+  }
+  expect(org.sameAs ?? [], "the toolkit's repository identifies the software, not the company").not.toContain(SITE.repo);
+
+  const software = one(nodes, 'SoftwareSourceCode');
+  expect(software['@id'], 'the software has its own identifier, and it must not change once published').toBe(SOFTWARE_ID);
+  expect(software['@id']).not.toBe(org['@id']);
+  expect(software.name).toBe(SITE.name);
+  expect(software.codeRepository).toBe(SITE.repo);
+
+  const website = one(nodes, 'WebSite');
+  expect(website.publisher?.['@id'], 'the operator publishes the website').toBe(org['@id']);
+  expect(website.about?.['@id'], 'the website is about the software').toBe(SOFTWARE_ID);
+  expect(one(nodes, 'WebPage').mainEntity?.['@id'], 'the home page is mainly about the software').toBe(SOFTWARE_ID);
+
+  const person = one(nodes, 'Person');
+  expect(software.author?.['@id'], 'the author is the Person node on the page').toBe(person['@id']);
+  expect(software.maintainer?.['@id']).toBe(person['@id']);
+  expect(person.worksFor?.['@id']).toBe(org['@id']);
+  await expect(page.locator(new URL(person.url).hash), "the Person's address is a section of this page").toHaveCount(1);
+
+  const described = new Set(nodes.map((n) => n['@id']).filter(Boolean));
+  for (const ref of references(nodes)) expect(described.has(ref), `"${ref}" is pointed at, so a node on the home page must describe it`).toBe(true);
+});
+
+// Off the home page the software node is not repeated. The one reference to it must use the
+// same identifier, and the operator's node must be the same as on the home page.
+test('seo — every page describes the same operator and points at the same software', async ({ page }) => {
+  await page.goto('/');
+  const home = one(await jsonLd(page), 'Organization');
+  for (const path of PAGES.filter((p) => p !== '/')) {
+    await page.goto(path);
+    const nodes = await jsonLd(page);
+    expect(one(nodes, 'Organization'), `the Organization on ${path}`).toEqual(home);
+    expect(one(nodes, 'WebSite').about?.['@id'], `WebSite.about on ${path}`).toBe(SOFTWARE_ID);
+    expect(one(nodes, 'WebPage').mainEntity, `${path} is not mainly about the software`).toBeUndefined();
+  }
+});
 
 // FAQPage markup must state what the page shows: that is Google's rule for FAQ markup, and the reason
 // a machine can trust it. Every question in the markup is a heading on the page, and its answer text is
