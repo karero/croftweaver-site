@@ -818,6 +818,22 @@ test('privacy — section 3 says the analytics records are deleted after 24 mont
     'The individual events and session records are deleted from the measurement server after 24 months.');
 });
 
+// Site-specific (not in the shipped suite): the two sentences added on 2026-10-13. The tool carries a visit that is
+// still open across the daily replacement of the value (checked in Plausible v3.2.1), and the nightly backup keeps
+// copies for 30 days (the box script, read 2026-10-13). Each sentence is a promise; a later edit must be on purpose.
+test('privacy — section 3 says an open visit carries over and how long backup copies are kept', async ({ page }) => {
+  await page.goto('/privacy');
+  const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
+  const from = text.indexOf('3. Cookies and analytics'), to = text.indexOf('4. Contact by email or phone');
+  expect(from, 'the section 3 heading').toBeGreaterThan(-1);
+  expect(to, 'the section 4 heading, after section 3').toBeGreaterThan(from);
+  const s3 = text.slice(from, to);
+  expect(s3, 'section 3 lost the open-visit sentence').toContain(
+    'it can no longer recognise that browser; only a visit that is still open at that moment carries over.');
+  expect(s3, 'section 3 lost the backup sentence').toContain(
+    'Backup copies of this data are kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
+});
+
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
 // numbers, statutes or law names (owner, 2026-10-12: like m-squad.com/privacy). The sources for the
 // analytics position stay in the page's source comment, which is not rendered.
