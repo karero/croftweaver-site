@@ -55,7 +55,7 @@ the body copy true:
   files), and a new chart needs the same.
 - **AI panel scores are assessments** by assistants, not evidence that assistants
   recommend the site.
-- **"Twelve test suites" means twelve spec files**, each with several assertions. A
+- **"Thirteen test suites" means thirteen spec files**, each with several assertions. A
   count in copy is rendered from the suite itself, never typed.
 - **Assistants:** write "install guides for three assistants" until there is dated
   end-to-end evidence for Codex and Antigravity; then "runs in".
