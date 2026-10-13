@@ -101,7 +101,16 @@ applies there; instead of steps 2 to 4, only this:
   - and the person pressing the button may do so per the merge rule in §5 (default:
     the author merges their own pull request; other people's only after asking).
 
-  The assistant never merges; the person does that on GitHub.
+  The assistant merges only when the owner asks for that pull request in chat, and
+  only when the conditions above hold. The owner's request settles the third condition,
+  whoever opened the pull request. If the checks are still running, the assistant
+  merges only once they are green; if they are red, it reports that and does not merge.
+  It merges as the button does, with a merge commit and not a squash or a rebase
+  (`gh pr merge <number> --merge`), and never with a flag that passes over the checks
+  (`--admin`). When the owner has not asked, merging stays the person's step on GitHub,
+  under the same conditions. This is the owner's rule for this site since 2026-10-13.
+  On this site it holds over the toolkit's default, "the assistant never merges", which
+  the copy of `website-team-setup` in `.claude/skills/` still states.
 - **Preview before merging:** once the repo is connected to Cloudflare by git
   integration (`website-team-setup` §6 does that), every pull request gets its own
   preview address from Cloudflare, listed under the pull request's checks. Look at the
@@ -181,6 +190,9 @@ Publishing live (`npm run ship`, two-stage sites only): the owner.
 | **content** | texts, images, entries in content collections, `public/llms.txt`, `CONTENT_GUIDE.md`, plus the §6 edits an entry needs (`PAGES` in `tests/_helpers.ts`, the share-card list, `llms.txt`) |
 | **content + design** | additionally navigation, components, layouts, styles, existing pages, `src/config.ts`, `BRAND.md` |
 | **everything** | everything the owner may change: also new pages, tests, scripts, CI, settings |
+
+The assistant's part is in §2: it merges only when the owner asks for that pull request,
+and it never runs `npm run ship` unasked.
 
 For everyone, the owner included:
 - Only change what was asked for; do not "tidy up".
