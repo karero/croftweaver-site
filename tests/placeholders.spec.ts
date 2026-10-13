@@ -336,8 +336,11 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
     // match. A hidden element (display: none) has no layout of its own to ask, so the
     // browser is asked how it lays out a bare element of the same tag on this page: a
     // hidden <span> or <del> stays inline ("dum<span hidden>my</span> text" still fuses),
-    // a hidden <div> is a block. Added on this site on 2026-10-13, after a review; not in
-    // the toolkit's copy.
+    // a hidden <div> is a block. A block is what the browser calls block, flex, grid, table
+    // (and table parts), list-item or flow-root, or what stays `none` when bare (script,
+    // template); every other answer is inline: inline*, contents, and ruby, which is what
+    // Chromium answers for <ruby>. Added on this site on 2026-10-13, after a review; not
+    // in the toolkit's copy.
     const live = Array.from(document.body.querySelectorAll('*'));
     const copied = Array.from(body.querySelectorAll('*'));
     const bare = new Map<string, string>();
@@ -353,8 +356,8 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
     live.forEach((el, i) => {
       let display = getComputedStyle(el).display;
       if (display === 'none') display = displayOfBare(el.tagName);
-      const inline = display.startsWith('inline') || display === 'contents';
-      if (inline && el.tagName !== 'BR') return;
+      const block = /^(block|flex|grid|table|list-item|flow-root|-webkit-box|none)/.test(display);
+      if (!block && el.tagName !== 'BR') return;
       copied[i].before(' ');
       copied[i].after(' ');
     });
@@ -424,6 +427,8 @@ test('placeholders — the page reading reaches each surface it claims', async (
     <p>Prices</p><p>do<em>lor</em> sit amet</p><p>Terms</p><p><b>FIX</b>ME</p><p>Rates<br><b>XX</b>X</p>
     <p>Sizes</p><p>dum<span hidden>my</span> text</p><div hidden>Fees</div><div hidden><b>blind</b>text</div>
     <p>Notes</p><p>place<del hidden>holder</del> text</p>
+    <p>Dates</p><p>dum<ins hidden>my</ins> copy</p><p>Names</p><p>place<ruby hidden>holder</ruby> copy</p>
+    <p>Towns</p><p>muster<button hidden>stadt</button></p><p>Firms</p><p>muster<ruby>firma</ruby></p>
     <details><summary>More</summary><p>[FOLDED SLOT]</p></details>
     <img alt="[ALT SLOT]" src="data:,">
     <button aria-label="[LABEL SLOT]">Go</button>
@@ -464,6 +469,10 @@ test('placeholders — the page reading reaches each surface it claims', async (
   expect(found('placeholder wording', 'dummytext'), '"dum<span hidden>my</span> text"').toBe(true);
   expect(found('placeholder wording', 'blindtext'), '"<div hidden>Fees</div><div hidden><b>blind</b>text</div>"').toBe(true);
   expect(found('placeholder wording', 'placeholdertext'), '"place<del hidden>holder</del> text": no list of tags, the browser says <del> is inline').toBe(true);
+  expect(found('placeholder wording', 'dummycopy'), '"dum<ins hidden>my</ins> copy"').toBe(true);
+  expect(found('placeholder wording', 'placeholdercopy'), '"place<ruby hidden>holder</ruby> copy": Chromium lays <ruby> out as "ruby", which is inline').toBe(true);
+  expect(found('placeholder wording', 'musterstadt'), '"muster<button hidden>stadt</button>": inline-block').toBe(true);
+  expect(found('placeholder wording', 'musterfirma'), '"muster<ruby>firma</ruby>": a <ruby> that is shown').toBe(true);
   const mustSkip = [
     ...notShown.map((t) => `UNSEEN ${t.toUpperCase()}`),
     'IN CODE', 'IN PRE', 'IN KBD', 'IN SAMP', 'EXEMPT NOTE', 'EXEMPT ALT', 'IN NOSCRIPT', 'IN STYLE',
