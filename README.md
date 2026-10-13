@@ -227,7 +227,9 @@ Launch requirements that no test enforces:
     `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
     events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
     instance's first event is that day). Rows older than the period go at the next background
-    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
+    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade, and
+    re-read `find_session` in `lib/plausible/session/cache_store.ex` and `lib/plausible/session/salts.ex`: the
+    open-visit sentence in section 3 stands on them.
     The same output also shows that neither table has an IP address or a raw user-agent column
     (ClickHouse 26.8). The daily salt, OBSERVED 2026-10-12 at 22:55 CEST on the box: the
     `salts` table in the instance's Postgres holds two rows, with `inserted_at` 2026-10-11
@@ -235,16 +237,20 @@ Launch requirements that no test enforces:
     database clock's +00 offset at 20:55 suggests). A value added at each midnight with nothing
     older left is what daily replacement and a clean-up leave behind, and it does not contradict
     section 3 ("replaced every 24 hours"). It does not show which salt an identifier is built
-    from or when a value stops being used, so section 3's sentence that the browser cannot be
-    recognised once the value is replaced is not confirmed by it. That a salt is 16 random
-    bytes, replaced daily, and that Plausible deletes salts older than 48 hours, is from
-    Plausible's source (master branch), not read from the v3.2.1 code on the box.
-    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
-    If it is extended to, an archive holds records up to 24 months old, so a record can outlive
-    the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
-    are longer): keep that short and say so in a second sentence on the page. The m-squad-website
-    README (section "Retention") has the statements, a scratch-table probe that proves the
-    mechanism on this ClickHouse, and the re-check after upgrades.
+    from or when a value stops being used, so the snapshot alone does not settle section 3's sentence about
+    the replacement. The v3.2.1 source settles it (read on 2026-10-13: `lib/plausible/session/salts.ex`,
+    `lib/plausible/session/cache_store.ex`, `lib/plausible/ingestion/event.ex`, `config/runtime.exs`): a salt
+    is 16 random bytes; a new one is made at midnight UTC and salts older than 48 hours are deleted; and an
+    event that finds no open visit under today's identifier looks under the previous day's, accepting a visit
+    whose last event is at most 30 minutes old. Section 3 says exactly that: only a visit still going at that
+    moment continues as the same visit. The code was read at the v3.2.1 tag on GitHub; what runs on the box is
+    the image tagged v3.2.1.
+    Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
+    Daily archives are pruned at 30 days; the monthly copies were stopped on 2026-10-13. Section 3 says so
+    in two sentences ("Encrypted backup copies of this data are kept for 30 days ... A backup copy also
+    holds the value that was current when it was made."). They are true once the by-hand backups of
+    2026-10-04 and the old monthly copies are gone from the box; the m-squad-website README (section
+    "Retention") has the state and the checks, and a scratch-table probe that proves the TTL mechanism.
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
     2026-10-12 by Daniel Melter, managing director of M-Squad GmbH, who instructed the ship
     and this record after the sources in that header were set out to him in the working

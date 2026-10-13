@@ -829,9 +829,11 @@ test('privacy — section 3 says an open visit carries over and how long backup 
   expect(to, 'the section 4 heading, after section 3').toBeGreaterThan(from);
   const s3 = text.slice(from, to);
   expect(s3, 'section 3 lost the open-visit sentence').toContain(
-    'it can no longer recognise that browser; only a visit that is still open at that moment continues as the same visit.');
+    'it can no longer recognise that browser; only a visit that is still going at that moment (one with activity in the last 30 minutes) continues as the same visit.');
   expect(s3, 'section 3 lost the backup sentence').toContain(
     'Encrypted backup copies of this data are kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
+  expect(s3, 'the backup sentence lost the line about the daily value').toContain(
+    'A backup copy also holds the value that was current when it was made.');
 });
 
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
