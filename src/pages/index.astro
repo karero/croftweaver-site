@@ -15,8 +15,16 @@ import EmailLink from '../components/EmailLink.astro';
 import { SITE, COMPANY } from '../config';
 import { SUITE_COUNT } from '../data/suites';
 import { PANEL, fmtScore } from '../data/proof';
+import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 
 const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of reason for each score. Then do the same for [your site\'s address].';
+
+// The two measured figures under the AI panel (owner, 2026-10-13). They are read from the
+// data behind /more-proof and /proof, so the three pages cannot disagree.
+if (PROOF.length !== 3) throw new Error('src/pages/index.astro says "three sites" in the proof section: change the word with the list in src/data/proof.ts.');
+const pageSpeed = PROOF.flatMap((p) => [p.performance, p.accessibility, p.bestPractices, p.seo]);
+const pageSpeedRange = Math.min(...pageSpeed) === Math.max(...pageSpeed) ? `${Math.max(...pageSpeed)}` : `${Math.min(...pageSpeed)} to ${Math.max(...pageSpeed)}`;
+const ai = SITE_PROOF.ai;
 
 const install = `git clone ${SITE.repo}.git\ncd croftweaver && ./scripts/install.sh`;
 
@@ -97,9 +105,14 @@ const softwareSchema = {
     </p>
     <pre class="message"><code>{tryIt}</code></pre>
     <p>
-      <a href="/more-proof">More proof</a> covers Google's PageSpeed Insights for three
-      sites and how the same four assistants score trust. <a href="/proof">One site in depth</a> has its clicks
-      from Google and a count of how often assistants name it.
+      <strong>Measured, not scored.</strong> On <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>,
+      Google's PageSpeed Insights gave three sites built with Croftweaver, all of them the
+      maintainer's own, scores of {pageSpeedRange} out of 100 across its four categories.
+      <a href="/more-proof">More proof</a> has the figures, and how the same four
+      assistants score trust. On <time datetime={ai.date.iso}>{ai.date.label}</time>,
+      {ai.withSearch.named} of {ai.withSearch.answers} answers from AI assistants with web
+      search named {SITE_PROOF.site}; without web search, {ai.withoutSearch.named} of {ai.withoutSearch.answers} did.
+      <a href="/proof">One site in depth</a> has the counts and the site's clicks from Google.
     </p>
   </section>
 
