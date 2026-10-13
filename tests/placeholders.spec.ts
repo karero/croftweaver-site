@@ -333,12 +333,18 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
     // from the live page because a copy has no layout. The fused reading below then fuses
     // only what inline markup split: without it "<p>Prices</p><p>Lo<em>rem</em> ipsum</p>"
     // read "PricesLorem ipsum" fused and "Prices Lo rem ipsum" spaced, and neither is a
-    // match. Added on this site on 2026-10-13, after a review; not in the toolkit's copy.
+    // match. A hidden element (display: none) has no layout to ask, so its tag decides: a
+    // phrasing element stays inline ("dum<span hidden>my</span> text" still fuses), anything
+    // else is a block. Added on this site on 2026-10-13, after a review; not in the
+    // toolkit's copy.
+    const phrasing = ['A', 'ABBR', 'B', 'BDI', 'BDO', 'CITE', 'DATA', 'DFN', 'EM', 'I', 'LABEL', 'MARK', 'Q',
+      'S', 'SMALL', 'SPAN', 'STRONG', 'SUB', 'SUP', 'TIME', 'U', 'VAR', 'WBR'];
     const live = Array.from(document.body.querySelectorAll('*'));
     const copied = Array.from(body.querySelectorAll('*'));
     live.forEach((el, i) => {
       const display = getComputedStyle(el).display;
-      if (el.tagName !== 'BR' && (display.startsWith('inline') || display === 'contents')) return;
+      const inline = display === 'none' ? phrasing.includes(el.tagName) : display.startsWith('inline') || display === 'contents';
+      if (inline && el.tagName !== 'BR') return;
       copied[i].before(' ');
       copied[i].after(' ');
     });
@@ -406,6 +412,7 @@ test('placeholders — the page reading reaches each surface it claims', async (
     <p>Lo<em>rem</em> ipsum.</p>
     <span>prices</span><span>TODO</span>
     <p>Prices</p><p>do<em>lor</em> sit amet</p><p>Terms</p><p><b>FIX</b>ME</p><p>Rates<br><b>XX</b>X</p>
+    <p>Sizes</p><p>dum<span hidden>my</span> text</p><div hidden>Fees</div><div hidden><b>blind</b>text</div>
     <details><summary>More</summary><p>[FOLDED SLOT]</p></details>
     <img alt="[ALT SLOT]" src="data:,">
     <button aria-label="[LABEL SLOT]">Go</button>
@@ -442,6 +449,9 @@ test('placeholders — the page reading reaches each surface it claims', async (
   expect(found('filler text', 'dolorsitamet'), '"<p>Prices</p><p>do<em>lor</em> sit amet</p>"').toBe(true);
   expect(found('author note', 'fixme'), '"<p>Terms</p><p><b>FIX</b>ME</p>"').toBe(true);
   expect(found('author note', 'xxx'), '"Rates<br><b>XX</b>X"').toBe(true);
+  // Hidden elements: a hidden inline piece of a word still fuses, a hidden block still ends one.
+  expect(found('placeholder wording', 'dummytext'), '"dum<span hidden>my</span> text"').toBe(true);
+  expect(found('placeholder wording', 'blindtext'), '"<div hidden>Fees</div><div hidden><b>blind</b>text</div>"').toBe(true);
   const mustSkip = [
     ...notShown.map((t) => `UNSEEN ${t.toUpperCase()}`),
     'IN CODE', 'IN PRE', 'IN KBD', 'IN SAMP', 'EXEMPT NOTE', 'EXEMPT ALT', 'IN NOSCRIPT', 'IN STYLE',
