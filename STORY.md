@@ -178,8 +178,10 @@ jobs (POSITIONING.md §4), and on the home page the cost names both. The rule is
 page: `/why` and `/established-sites` keep their own wording. Section 2 of the home page now has
 one sentence for each job, after the two paragraphs from §6 and before the pivot. Two wordings
 were turned down as the stakes line. "A site nobody finds earns nothing" leaves out the people
-who already know your name; it had also stood in POSITIONING.md §4 and opened `/why`, and on
-2026-10-13 the owner had it replaced in both. "Sees last year's version of you" names age only, and a site can also
+who already know your name; it had also stood in POSITIONING.md §4 and, as "A website that
+nobody finds earns nothing", opened `/why`, and on 2026-10-13 the owner had it replaced in
+both. The rule still binds the home page only; that `/why` now names both kinds of people is
+its own wording. "Sees last year's version of you" names age only, and a site can also
 be vague, slow, hard to use on a phone or at odds with itself. The third outcome in the hero and
 the third card now have the visitor as their subject ("You catch common slips"); the second line
 stays as it was. The pivot now answers the first job as well: it says that the assistant first

@@ -102,9 +102,15 @@ applies there; instead of steps 2 to 4, only this:
     the author merges their own pull request; other people's only after asking).
 
   The assistant merges only when the owner asks for that pull request in chat, and
-  only when the conditions above hold; otherwise the person does it on GitHub. (The
-  owner's rule for this site since 2026-10-13. The toolkit's default, which
-  `website-team-setup` still states, is that the assistant never merges.)
+  only when the conditions above hold. The owner's request is what the third condition
+  asks for. If the checks are still running, the assistant merges only once they are
+  green; if they are red, it reports that and does not merge. It merges as the button
+  does, with a merge commit (`gh pr merge <number> --merge`), and never with a flag
+  that passes over the checks. When the owner has not asked, merging stays the person's
+  step on GitHub, under the same conditions. This is the owner's rule for this site
+  since 2026-10-13. On this site it holds over the toolkit's default, "the assistant
+  never merges", which the copy of `website-team-setup` in `.claude/skills/` still
+  states.
 - **Preview before merging:** once the repo is connected to Cloudflare by git
   integration (`website-team-setup` §6 does that), every pull request gets its own
   preview address from Cloudflare, listed under the pull request's checks. Look at the
@@ -178,6 +184,9 @@ Merge rule: the author merges their own pull request once §2's conditions hold;
 people's pull requests only after asking.
 
 Publishing live (`npm run ship`, two-stage sites only): the owner.
+
+The assistant's part is in §2: it merges only when the owner asks for that pull request,
+and it never runs `npm run ship` unasked.
 
 | Level | Collaborators may change |
 |---|---|
