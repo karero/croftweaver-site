@@ -806,7 +806,7 @@ test('skills — the catalogue lists every skill it counts and says what it is a
 });
 
 // Site-specific (not in the shipped suite): section 3 of /privacy says how long the analytics records are kept
-// (24 months, the owner's decision of 2026-10-12; the table TTL on the instance is still to be applied by the owner). The CI placeholder grep
+// (24 months, the owner's decision of 2026-10-12; the table TTL on the instance was applied by the owner on 2026-10-12 at 15:21 CEST). The CI placeholder grep
 // only notices a missing slot, so without this a later edit that weakens or drops the period passes every check.
 test('privacy — section 3 says the analytics records are deleted after 24 months', async ({ page }) => {
   await page.goto('/privacy');
@@ -833,7 +833,7 @@ test('privacy — section 3 says an open visit continues as the same visit and h
   expect(s3, 'section 3 lost the backup sentence').toContain(
     'Encrypted backup copies of this data are stored at Cloudflare and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
   expect(s3, 'the backup sentence lost the line about the daily value').toContain(
-    'A backup copy also holds the daily values that were in use when it was made, that day\'s and the previous day\'s.');
+    'A backup copy also holds the daily values of the last two or three days.');
 });
 
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article

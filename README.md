@@ -228,10 +228,8 @@ Launch requirements that no test enforces:
     events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
     instance's first event is that day). Rows older than the period go at the next background
     merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade, and
-    re-read `on_event` and `find_session` in
-    `lib/plausible/session/cache_store.ex`, `register_session` in `lib/plausible/ingestion/event.ex`,
-    `lib/plausible/session/salts.ex` and the `RotateSalts` cron in `config/runtime.exs`: the open-visit sentence
-    in section 3 stands on them.
+    re-read the session lookup the open-visit sentence in section 3 stands on: the list of files and functions is
+    kept in one place, the m-squad-website README (section "Retention").
     The same output also shows that neither table has an IP address or a raw user-agent column
     (ClickHouse 26.8). The daily salt, OBSERVED 2026-10-12 at 22:55 CEST on the box: the
     `salts` table in the instance's Postgres holds two rows, with `inserted_at` 2026-10-11
@@ -249,9 +247,9 @@ Launch requirements that no test enforces:
     the image tagged v3.2.1.
     Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
     Section 3 says in two sentences that encrypted copies are stored at Cloudflare and kept for 30
-    days, and that a copy holds the daily values of its day and the day before. How far that is verified, the
+    days, and that a copy holds the daily values of the last two or three days. How far that is verified, the
     evidence and the checks still open are in the m-squad-website README (section "Retention"), which also
-    holds the scratch-table probe that proves the TTL mechanism.
+    holds the scratch-table probe for the TTL mechanism (not yet run).
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
     2026-10-12 by Daniel Melter, managing director of M-Squad GmbH, who instructed the ship
     and this record after the sources in that header were set out to him in the working
