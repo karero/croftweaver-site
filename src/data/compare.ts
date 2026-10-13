@@ -4,6 +4,18 @@
 // here says what another product lacks. Re-check every link before changing the date.
 export const CHECKED = { iso: '2026-10-04', label: '4 October 2026' } as const;
 
+// The section "Croftweaver begins with the end in mind" on /compare says what Croftweaver
+// does first: positioning. Starting with the message is not Croftweaver's alone, so the
+// section names the projects from the skills group whose own README says they do the same
+// kind of thing, in that README's terms. Read on FIRST_CHECKED; the links in GROUPS keep
+// their own date.
+export const FIRST_CHECKED = { iso: '2026-10-13', label: '13 October 2026' } as const;
+export const MESSAGE_FIRST = [
+  { name: 'marketingskills', url: 'https://github.com/coreyhaines31/marketingskills', fact: 'has a product-marketing skill for your product, audience and positioning, which its other skills read first' },
+  { name: 'The Wondel.ai skills', url: 'https://github.com/wondelai/skills', fact: "include a positioning skill built on April Dunford's book Obviously Awesome, as Croftweaver's is, and a website journey that puts the message before the design" },
+  { name: 'website-build-kit', url: 'https://github.com/nurkamol/website-build-kit', fact: 'opens its method with discovery' },
+] as const;
+
 export const GROUPS = [
   {
     id: 'hosted',

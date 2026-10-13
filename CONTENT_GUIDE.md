@@ -97,7 +97,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Proof | `/proof` | one site built with it, measured; re-runnable where possible | built with Croftweaver | Built with Croftweaver: one site, measured | [x] |
 | More proof | `/more-proof` | PageSpeed and technical SEO for three sites; the AI panel's SEO, GEO and E-E-A-T scores; what none of it shows | more proof | More proof: speed, trust and technical SEO | [x] |
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [x] page and the deck as PDF (`npm run deck`) |
-| Compare | `/compare` | honest alternatives, "choose X when" | alternatives | Croftweaver and its alternatives | [x] |
+| Compare | `/compare` | what Croftweaver does first (positioning and proof), then honest alternatives, "choose X when" | alternatives | Croftweaver and its alternatives | [x] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
 | Positioning | `/positioning` | how Croftweaver works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [x] spec below |
 | Partner assets | `/partner-assets` | the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it, and the request to credit Croftweaver (never a condition) | partner assets | Partner assets: badge, logo and icon | [x] |
