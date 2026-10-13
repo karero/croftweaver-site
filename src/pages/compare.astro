@@ -44,7 +44,7 @@ import { GROUPS, CHECKED } from '../data/compare';
         </div>
         <div class="card">
           <h3>Choose Croftweaver when</h3>
-          <p>{group.chooseCroftweaver}</p>
+          <p>{group.chooseCroftweaver}{'more' in group && <> <a href={group.more.href}>{group.more.label}</a>.</>}</p>
         </div>
       </div>
     </section>
@@ -56,7 +56,7 @@ import { GROUPS, CHECKED } from '../data/compare';
       <li><strong>You want to see and drag things.</strong> Croftweaver has no visual editor.</li>
       <li><strong>You need a shop, accounts or a database.</strong> It builds content sites.</li>
       <li><strong>You want someone else to host and run it.</strong> You publish to hosting you control.</li>
-      <li><strong>You do not want an AI coding assistant or a GitHub account.</strong> It needs both.</li>
+      <li><strong>You do not want an AI coding assistant.</strong> Croftweaver needs one, and building a new site with it needs a GitHub account too.</li>
       <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one.</li>
     </ul>
     <p>
