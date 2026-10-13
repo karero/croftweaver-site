@@ -247,8 +247,8 @@ Launch requirements that no test enforces:
     the image tagged v3.2.1.
     Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
     Daily archives are pruned at 30 days; the monthly copies were stopped on 2026-10-13. Section 3 says so
-    in two sentences ("Encrypted backup copies of this data are kept for 30 days ... A backup copy also
-    holds the value that was current when it was made."). They are true once the by-hand backups of
+    in two sentences ("Encrypted backup copies of this data are stored at Cloudflare in the EU and kept for 30
+    days ... A backup copy also holds the value that was current when it was made."). They are true once the by-hand backups of
     2026-10-04 and the old monthly copies are gone from the box; the m-squad-website README (section
     "Retention") has the state and the checks, and a scratch-table probe that proves the TTL mechanism.
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
