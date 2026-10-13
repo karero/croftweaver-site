@@ -137,6 +137,18 @@ Launch requirements that no test enforces:
   the email address does, and is hidden in the served HTML; the privacy page does not
   name the mail host; and the Organization structured data keeps "M-Squad GmbH" as its
   name.
+- The structured data keeps the operator, the website and the software apart (owner,
+  2026-10-13, after an outside audit). The Organization is M-Squad GmbH and its address is
+  `https://m-squad.com`; it no longer carries "Croftweaver" as a second name, the product's
+  description, the product's logo, or links to the toolkit's repository and the Builder Lab.
+  Those facts are on the software's own node on the home page (`SoftwareSourceCode`, with the
+  identifier `https://croftweaver.com/#software`), which the website and the home page point
+  at. A Person node names Daniel Melter as author and maintainer, with his LinkedIn profile,
+  M-Squad's team page and his GitHub account. Two tests in `tests/seo.spec.ts` guard this.
+  The identifiers must not change once published. `src/layouts/Base.astro` now differs from
+  the toolkit's starter on purpose: the starter gives the Organization the site's name and
+  description, which is right where a site is the company's own. Keep that out at the next
+  sync; the tests fail if it comes back.
 - `hello@croftweaver.com` is set up (owner, 2026-10-08). The domain's DNS is on Cloudflare
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record

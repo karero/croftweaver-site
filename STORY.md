@@ -136,7 +136,7 @@ at the end of section 1.
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
 | 6 | Lead generator | omitted (§5 is blank) | no |
-| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; what hosting costs; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), then the sign-off | yes |
+| 7 | Junk drawer | the detail sections (what is built in and checked, one short section that links to `/checks`; the weekly loop; "The site is yours"; fit; what hosting costs; quickstart, which leads with the one-prompt route), the learning section (described below; it sits after "The site is yours"), a short section that says who maintains Croftweaver (described below; it follows the learning section), then the sign-off | yes |
 
 Deviation from the skill's rule that objections use only facts already in POSITIONING.md:
 what you need, the starter prompt and the free accounts come from `/start`, a page the
@@ -151,6 +151,21 @@ A short section after "The site is yours". It carries a secondary benefit (POSIT
 §3 and §4: a rebuild as a project to learn with), based on the owner's experience with one
 team, and stays low on the page and out of the headline, the one-liner and the share card.
 The owner approved the passage on 2026-10-08, in the first person, with a byline.
+
+## Beyond the seven sections: who maintains Croftweaver
+
+A short section (`#maintainer`) straight after the learning section, whose byline names the
+maintainer. It answers "who is behind this?" in a few sentences and makes no claim about the
+product. Owner request, 2026-10-13 ("do whatever works best"), after an outside audit named
+authority as the site's weakest point. Its facts and where each comes from: one maintainer
+(`/roadmap`); M-Squad GmbH in Munich operates the site (`/imprint`); Croftweaver grew out of
+genai-wednesday.de (`/proof`); and three facts from the profile M-Squad's own site gives for
+him, read on 2026-10-13 at https://m-squad.com/company/team and linked from the section: he
+co-founded M-Squad in 2001 and leads it, he has worked in product development for mobile and
+telecom for more than 20 years, and he built GenAI Wednesday and still co-organizes it in
+Munich. If that profile changes, read this section again. The home page's structured data has
+a Person node for him that points at this section; his LinkedIn profile is in that node only,
+not on the page (owner, 2026-10-13).
 
 ## Not adopted: tests/story.spec.ts
 

@@ -12,7 +12,7 @@
 // contractions, no buzzwords. The direct call to action keeps one label everywhere.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
-import { SITE, COMPANY } from '../config';
+import { SITE, COMPANY, schemaId } from '../config';
 import { SUITE_COUNT } from '../data/suites';
 import { PANEL, fmtScore } from '../data/proof';
 
@@ -21,21 +21,45 @@ const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of re
 const install = `git clone ${SITE.repo}.git\ncd croftweaver && ./scripts/install.sh`;
 
 // Different schema type than the Builder Lab page on purpose (it owns FAQPage):
-// this page describes the open-source project itself.
+// this page describes the open-source project itself. The software and its maintainer
+// have their own @id, apart from the operator's (src/config.ts says why).
+const origin = (Astro.site ?? new URL(SITE.url)).origin;
+const softwareId = schemaId(origin, 'software');
+const maintainerId = schemaId(origin, 'daniel-melter');
 const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareSourceCode',
-  name: 'Croftweaver',
+  '@id': softwareId,
+  name: SITE.name,
+  url: `${origin}/`,
   description: SITE.description,
+  image: new URL(COMPANY.logo, origin).href,
   codeRepository: SITE.repo,
+  license: `${SITE.repo}/blob/main/LICENSE`,   // MIT; the file names Daniel Melter as the copyright holder
   runtimePlatform: 'Astro',
   about: 'Open-source website skills for search and AI visibility',
-  // The maintainer's LinkedIn profile is in the structured data only, not on the page
-  // (owner, 2026-10-13). LinkedIn redirects the address with a trailing slash to this one.
-  author: { '@type': 'Person', name: 'Daniel Melter', sameAs: ['https://www.linkedin.com/in/danielmelter'] },
+  author: { '@id': maintainerId },
+  maintainer: { '@id': maintainerId },
+};
+// The section #maintainer on this page says the same in words. LinkedIn is in the
+// structured data only, not on the page (owner, 2026-10-13); LinkedIn redirects the address
+// with a trailing slash to this one. The team page and the GitHub account are the ones
+// M-Squad's own site gives for him (https://m-squad.com/company/team, read 2026-10-13).
+const maintainerSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': maintainerId,
+  name: 'Daniel Melter',
+  url: `${origin}/#maintainer`,
+  worksFor: { '@id': schemaId(origin, 'organization') },
+  sameAs: [
+    'https://www.linkedin.com/in/danielmelter',
+    'https://m-squad.com/company/team',
+    'https://github.com/karero',
+  ],
 };
 ---
-<Base title={SITE.name} schemas={[softwareSchema]}>
+<Base title={SITE.name} schemas={[softwareSchema, maintainerSchema]} mainEntity={softwareId}>
   <section class="wrap hero">
     <p class="kicker">Your AI assistant, guided by website skills</p>
     <h1>Weave websites that rank.</h1>
@@ -292,6 +316,22 @@ const softwareSchema = {
       <EmailLink address={COMPANY.email} subject="A question about Croftweaver" />.
     </p>
     <p class="byline">Daniel Melter, maintainer of Croftweaver</p>
+  </section>
+
+  <section class="wrap" id="maintainer">
+    <h2>Who maintains Croftweaver</h2>
+    <p>
+      Croftweaver has one maintainer, Daniel Melter. He co-founded M-Squad in 2001 and
+      leads it today, and he has worked in product development for mobile and telecom
+      for more than 20 years. M-Squad GmbH, in Munich, operates this site. He built the
+      community GenAI Wednesday and still co-organizes it in Munich, and Croftweaver
+      grew out of its website, <a href="https://genai-wednesday.de/">genai-wednesday.de</a>.
+    </p>
+    <p>
+      His profile is on <a href="https://m-squad.com/company/team">M-Squad's team page</a>.
+      The code is on <a href={SITE.repo}>GitHub</a> under the MIT licence, and the
+      <a href="/imprint">imprint</a> has the company's address.
+    </p>
   </section>
 
   <section class="wrap" id="fit">

@@ -50,23 +50,33 @@ export function ogLocaleFor(lang: string): string | undefined {
 // data carries the name, so the three cannot disagree.
 export const COMPANY = {
   legalName: SITE.legalName,
+  url: 'https://m-squad.com',          // the company's own website; the structured data gives it as the operator's address
   street: 'Schellingstr. 141 Rgb.',
   postcodeCity: '80798 Munich, Germany',
   managingDirector: 'Daniel Melter',
   email: 'hello@croftweaver.com',      // every page that shows it reads it here, through EmailLink
   phone: '+49 179 6913629',            // the imprint shows it, through PhoneNumber
-  logo: '/images/logo.png',            // resolved against SITE.url for schema
+  logo: '/images/logo.png',            // the Croftweaver logo: the software's image in the structured data, not the company's logo
 } as const;
 
-// External profiles that corroborate the entity (EEAT). Only ship URLs that
-// resolve — a broken sameAs is worse than none. .filter(Boolean) drops the slots.
-// github.com/karero/croftweaver goes live with the repo rename — publish is gated on it.
-export const SAME_AS: string[] = [
-  'https://github.com/karero/croftweaver',
-  'https://genai-wednesday.de/builder-lab',
-].filter(Boolean);
+// The structured data keeps three things apart (owner decision, 2026-10-13): the operator
+// (an Organization, M-Squad GmbH), this website, and the software (Croftweaver, a
+// SoftwareSourceCode node on the home page). Croftweaver is a product, not a trading name
+// of the company, so the Organization carries no product facts. tests/seo.spec.ts checks it.
+//
+// The @id of a thing in the structured data: a name in URL form, not a page that has to
+// load. Two nodes with the same @id describe the same thing, and other nodes point at it.
+// Base.astro and the home page both build them here, so a reference always meets its node.
+// Once published an @id must not change.
+export const schemaId = (origin: string, thing: 'organization' | 'software' | 'daniel-melter') => `${origin}/#${thing}`;
 
-// Topics the site is authoritative on (schema knowsAbout).
+// External profiles of the OPERATOR (Organization sameAs). Only ship URLs that resolve — a
+// broken sameAs is worse than none. Empty since 2026-10-13: the two links that stood here,
+// the toolkit's repository and the Builder Lab, identify the software and not the company.
+// The repository is the software's codeRepository; the pages link to the Lab.
+export const SAME_AS: string[] = [];
+
+// Topics the operator is authoritative on (Organization knowsAbout).
 export const KNOWS_ABOUT: string[] = [
   'Astro static websites',
   'AI coding assistants',
