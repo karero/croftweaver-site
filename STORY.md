@@ -57,6 +57,9 @@
   one site, genai-wednesday.de, launched on 27 March 2026: clicks from Google per 28
   days went from 3 around the launch to a best 99 (16 June to 13 July 2026) and stood
   at 50 in the 28 days to 29 September, with the limits that page states about itself.
+  One testimonial sits under the proof strip: Dr. Andrea Geistanger, quoted as the Builder
+  Lab shows it. It is not proof from §3. It is the one shared quote that the differentiation
+  contract in POSITIONING.md allows, added by owner decision on 2026-10-13.
 
 ## 4. Plan
 
