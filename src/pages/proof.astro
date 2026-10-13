@@ -86,6 +86,9 @@ const aiDesc =
       In the 28 days from {latest.from} to {latest.to}, Google sent
       <strong>{latest.clicks} clicks</strong> to the site, from
       {latest.impressions.toLocaleString('en-GB')} appearances in search results.
+      GenAI Wednesday held no event in those 28 days: its last one was on
+      <time datetime={p.search.events.last.iso}>{p.search.events.last.label}</time>,
+      {p.search.events.weeksBeforeLatest} weeks before they began.
       The chart shows how that number moved. The table gives the clicks in separate
       28-day blocks, counted back from that day. The launch on
       {p.launched.label} falls inside the first block.
@@ -125,20 +128,20 @@ const aiDesc =
     </div>
     <p>
       Clicks rose from almost nothing to a best 28 days of {peak.clicks}
-      ({peak.from} to {peak.to}), and have fallen since. The cause of the fall is
-      not established. This much is known: GenAI Wednesday held events on
+      ({peak.from} to {peak.to}), and have fallen since. GenAI Wednesday held events on
       {p.search.events.days.map((d, i) => (
         <>{i > 0 && ' and '}<time datetime={d.iso}>{d.label}</time></>
-      ))}, both inside the best 28 days, and <a href={p.url}>its site</a> lists none after
-      that up to {latest.to}, the last day of these figures (event pages read on
+      ))}, both inside the best 28 days, and none after that up to {latest.to}, the last
+      day of these figures. That is the maintainer's own account, and
+      <a href={p.url}>its site</a> lists none either (event pages read on
       <time datetime={p.search.events.readOn.iso}>{p.search.events.readOn.label}</time>).
       The rise had begun before the first of these two: the 28 days up to
       <time datetime={p.search.events.eve.iso}>{p.search.events.eve.label}</time>, the day before
       it, had {p.search.events.eve.clicks} clicks, and the 28 days up to
       <time datetime={p.search.events.twoWeeksEarlier.iso}>{p.search.events.twoWeeksEarlier.label}</time>
       had {p.search.events.twoWeeksEarlier.clicks}. Whether the lack of events after
-      <time datetime={p.search.events.days.at(-1)!.iso}>{p.search.events.days.at(-1)!.label}</time>
-      explains the fall was not tested.
+      <time datetime={p.search.events.last.iso}>{p.search.events.last.label}</time>
+      explains the fall was not tested, so its cause is not established.
     </p>
     <p>
       For its two main local searches, Search Console reports these average
