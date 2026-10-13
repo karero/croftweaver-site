@@ -133,6 +133,7 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 - **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
   rank.", the plain fallback if "weave" tests badly with strangers.)
 - **Subline:** retired from the home page on 2026-10-08. The one-liner and three short outcomes replace it, since it said SEO and GEO, which strangers do not know. Its words were "Keep improving SEO and GEO, week by week."
+- **Definition line (home page, under the one-liner):** Croftweaver is a free, open-source suite of website skills: instructions your AI coding assistant follows to build and test a site you own. Owner decision, 2026-10-13. An outside audit of that day said a stranger cannot tell from the hero what Croftweaver is, a toolkit and not a hosted builder or an agency; a second model (Kimi K3), shown that point and the argument against it, agreed. The sentence says what a skill is and carries the core term. It claims nothing that §2 does not. The one-liner above it stays as approved, and the market category stays in "What Croftweaver is".
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
 - **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
 
