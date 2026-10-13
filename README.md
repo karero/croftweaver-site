@@ -221,15 +221,17 @@ Launch requirements that no test enforces:
     State only that period in section 3 (the page asks for the period, not the mechanism).
     The slot is filled; the CI placeholder grep no longer fails on it.
     Decided 2026-10-12 (owner): 24 months for the whole instance. The same sentence is to appear
-    on the croftweaver.com, m-squad.com and apreet.com pages (the other two are separate pull
+    on the croftweaver.com, m-squad.com and apreet.com pages (the others are separate pull
     requests); this repository's section 3 says it now, and a test in `tests/a11y.spec.ts`
-    holds it. The table TTL on `events_v2` and `sessions_v2` is to be applied by the owner on
-    the server. APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
+    holds it. The table TTL on `events_v2` and `sessions_v2` was applied by the owner on
+    the server: APPLIED 2026-10-12 at 15:21 CEST on the box (`/home/prixi2/plausible-m-squad`), by
     the owner; `SHOW CREATE TABLE` shows `TTL timestamp + toIntervalMonth(24)` on `events_v2` and
     `TTL start + toIntervalMonth(24)` on `sessions_v2`. The oldest event was 2026-05-22 (3,284
     events, queried at 14:41 CEST, before the ALTER), so the TTL had nothing to delete (the sessions table was not queried on its own; the
     instance's first event is that day). Rows older than the period go at the next background
-    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade.
+    merge, which can be hours or days later. Re-check after every Plausible or ClickHouse upgrade, and
+    re-read the session lookup the open-visit sentence in section 3 stands on: the list of files and functions is
+    kept in one place, the m-squad-website README (section "Retention").
     The same output also shows that neither table has an IP address or a raw user-agent column
     (ClickHouse 26.8). The daily salt, OBSERVED 2026-10-12 at 22:55 CEST on the box: the
     `salts` table in the instance's Postgres holds two rows, with `inserted_at` 2026-10-11
@@ -237,16 +239,19 @@ Launch requirements that no test enforces:
     database clock's +00 offset at 20:55 suggests). A value added at each midnight with nothing
     older left is what daily replacement and a clean-up leave behind, and it does not contradict
     section 3 ("replaced every 24 hours"). It does not show which salt an identifier is built
-    from or when a value stops being used, so section 3's sentence that the browser cannot be
-    recognised once the value is replaced is not confirmed by it. That a salt is 16 random
-    bytes, replaced daily, and that Plausible deletes salts older than 48 hours, is from
-    Plausible's source (master branch), not read from the v3.2.1 code on the box.
-    Copies: the nightly backup script did not cover this instance (apreet-stack docs, 2026-10-04).
-    If it is extended to, an archive holds records up to 24 months old, so a record can outlive
-    the 24 months by the archive's own retention (30 days for daily archives; the monthly copies
-    are longer): keep that short and say so in a second sentence on the page. The m-squad-website
-    README (section "Retention") has the statements, a scratch-table probe that proves the
-    mechanism on this ClickHouse, and the re-check after upgrades.
+    from or when a value stops being used, so the snapshot alone does not settle section 3's sentence about
+    the replacement. The v3.2.1 source settles it (read on 2026-10-13: `lib/plausible/session/salts.ex`,
+    `lib/plausible/session/cache_store.ex`, `lib/plausible/ingestion/event.ex`, `config/runtime.exs`): a salt
+    is 16 random bytes; a new one is made at midnight UTC and salts older than 48 hours are deleted; and an
+    event that finds no open visit under today's identifier looks under the previous day's, accepting a visit
+    whose last event is under 31 minutes old. Section 3 says exactly that: only a visit still going at that
+    moment continues as the same visit. The code was read at the v3.2.1 tag on GitHub; what runs on the box is
+    the image tagged v3.2.1.
+    Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
+    Section 3 says in two sentences that encrypted copies are stored at Cloudflare and kept for 30
+    days, and that a copy holds the earlier daily values, those of the last days and possibly older ones. How far that is verified, the
+    evidence and the checks still open are in the m-squad-website README (section "Retention"), which also
+    holds the scratch-table probe for the TTL mechanism (not yet run).
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
     2026-10-12 by Daniel Melter, managing director of M-Squad GmbH, who instructed the ship
     and this record after the sources in that header were set out to him in the working
