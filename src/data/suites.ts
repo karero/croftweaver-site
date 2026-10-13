@@ -89,7 +89,7 @@ export const SUITES: {
     file: 'placeholders', group: 'publish', name: 'Placeholders',
     checks: 'No unfilled slot, filler text or note from the author in what a page serves: its copy, its metadata, the labels and alt texts a visitor meets, its structured data, and the web manifest.',
     example: 'A page that still carries an empty slot in square brackets fails. So does a description left as filler text.',
-    limit: 'It knows a fixed set of shapes, chosen so that it rarely flags real copy, so a leftover in another shape passes. It does not read the 404 page, llms.txt, PDFs or text inside images.',
+    limit: 'It knows a fixed set of shapes, chosen so that it rarely flags real copy, so a leftover in another shape passes. It does not read the 404 page, llms.txt, PDFs, text inside images or text that shows only when JavaScript is off.',
   },
   {
     file: 'middleware', group: 'publish', name: 'Preview handling',

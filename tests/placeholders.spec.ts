@@ -329,6 +329,19 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
   const { text, jsonLd, lang } = await page.evaluate((shownAsText) => {
     const exempt = 'code, pre, kbd, samp, [data-placeholder-exempt]';
     const body = document.body.cloneNode(true) as HTMLElement;
+    // A space around every element the browser lays out as a block (and every <br>), read
+    // from the live page because a copy has no layout. The fused reading below then fuses
+    // only what inline markup split: without it "<p>Prices</p><p>Lo<em>rem</em> ipsum</p>"
+    // read "PricesLorem ipsum" fused and "Prices Lo rem ipsum" spaced, and neither is a
+    // match. Added on this site on 2026-10-13, after a review; not in the toolkit's copy.
+    const live = Array.from(document.body.querySelectorAll('*'));
+    const copied = Array.from(body.querySelectorAll('*'));
+    live.forEach((el, i) => {
+      const display = getComputedStyle(el).display;
+      if (el.tagName !== 'BR' && (display.startsWith('inline') || display === 'contents')) return;
+      copied[i].before(' ');
+      copied[i].after(' ');
+    });
     body.querySelectorAll(`script, style, noscript, ${exempt}`).forEach((el) => el.remove());
     // Text nodes, not innerText: content the layout hides (a closed <details>, a
     // collapsed menu) is still served and still indexed.
@@ -336,9 +349,9 @@ async function readPage(page: Page): Promise<{ text: string; lang: string }> {
     const nodes: string[] = [];
     while (walker.nextNode()) nodes.push(walker.currentNode.nodeValue ?? '');
     // Two readings of the same copy, because neither is safe alone. Fused: a word or
-    // slot split by inline markup stays whole ("Lo<em>rem</em>"). Spaced: one block's
-    // last word never fuses with the next block's first ("pricesTODO"). Fused comes
-    // first, so a leftover both readings see is printed in its unbroken spelling.
+    // slot split by inline markup stays whole ("Lo<em>rem</em>"). Spaced: one inline
+    // element's last word never fuses with the next one's first ("pricesTODO"). Fused
+    // comes first, so a leftover both readings see is printed in its unbroken spelling.
     const copy = [nodes.join(''), nodes.join(' ')];
     // Same <head> surfaces as tone.spec.ts: user-facing in SERPs and share cards.
     const metaSel = [
@@ -392,6 +405,7 @@ test('placeholders — the page reading reaches each surface it claims', async (
        SLOT] soon.</p>
     <p>Lo<em>rem</em> ipsum.</p>
     <span>prices</span><span>TODO</span>
+    <p>Prices</p><p>do<em>lor</em> sit amet</p><p>Terms</p><p><b>FIX</b>ME</p><p>Rates<br><b>XX</b>X</p>
     <details><summary>More</summary><p>[FOLDED SLOT]</p></details>
     <img alt="[ALT SLOT]" src="data:,">
     <button aria-label="[LABEL SLOT]">Go</button>
@@ -420,8 +434,14 @@ test('placeholders — the page reading reaches each surface it claims', async (
   expect(mustFind.filter((m) => hits(m) !== 1), 'planted slots not found exactly once').toEqual([]);
   expect(findings.find((f) => squash(f.match) === '[INNERSLOT]')?.match, 'printed in its unbroken spelling').toBe('[INNER SLOT]');
   // The two leftovers that only one of the two readings can see.
-  expect(findings.some((f) => f.label === 'filler text'), '"Lo<em>rem</em> ipsum" needs the fused reading').toBe(true);
-  expect(findings.some((f) => f.label === 'author note'), '"prices" + "TODO" needs the spaced reading').toBe(true);
+  const found = (label: string, match: string) => findings.some((f) => f.label === label && squash(f.match).toLowerCase() === match);
+  expect(found('filler text', 'loremipsum'), '"Lo<em>rem</em> ipsum" needs the fused reading').toBe(true);
+  expect(found('author note', 'todo'), '"prices" + "TODO" needs the spaced reading').toBe(true);
+  // A leftover split by inline markup at the start of a block, with no space in the HTML
+  // before that block: only the fused reading with its block boundaries sees these.
+  expect(found('filler text', 'dolorsitamet'), '"<p>Prices</p><p>do<em>lor</em> sit amet</p>"').toBe(true);
+  expect(found('author note', 'fixme'), '"<p>Terms</p><p><b>FIX</b>ME</p>"').toBe(true);
+  expect(found('author note', 'xxx'), '"Rates<br><b>XX</b>X"').toBe(true);
   const mustSkip = [
     ...notShown.map((t) => `UNSEEN ${t.toUpperCase()}`),
     'IN CODE', 'IN PRE', 'IN KBD', 'IN SAMP', 'EXEMPT NOTE', 'EXEMPT ALT', 'IN NOSCRIPT', 'IN STYLE',
