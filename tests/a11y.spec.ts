@@ -818,10 +818,10 @@ test('privacy — section 3 says the analytics records are deleted after 24 mont
     'The individual events and session records are deleted from the measurement server after 24 months.');
 });
 
-// Site-specific (not in the shipped suite): the two sentences added on 2026-10-13. The tool carries a visit that is
-// still open across the daily replacement of the value (checked in Plausible v3.2.1), and the nightly backup keeps
+// Site-specific (not in the shipped suite): the two sentences added on 2026-10-13. The tool continues a visit that is
+// still going across the daily replacement of the value (checked in Plausible v3.2.1), and the nightly backup keeps
 // copies for 30 days (the box script, read 2026-10-13). Each sentence is a promise; a later edit must be on purpose.
-test('privacy — section 3 says an open visit carries over and how long backup copies are kept', async ({ page }) => {
+test('privacy — section 3 says an open visit continues as the same visit and how long backup copies are kept', async ({ page }) => {
   await page.goto('/privacy');
   const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
   const from = text.indexOf('3. Cookies and analytics'), to = text.indexOf('4. Contact by email or phone');
@@ -833,7 +833,7 @@ test('privacy — section 3 says an open visit carries over and how long backup 
   expect(s3, 'section 3 lost the backup sentence').toContain(
     'Encrypted backup copies of this data are stored at Cloudflare in the EU and kept for 30 days, so a deleted record can remain in a backup for up to 30 days longer.');
   expect(s3, 'the backup sentence lost the line about the daily value').toContain(
-    'A backup copy also holds the value that was current when it was made.');
+    'A backup copy also holds the daily values that were in use when it was made, that day's and the previous day's.');
 });
 
 // Site-specific (not in the shipped suite): the privacy page says it in plain words, with no article
