@@ -15,7 +15,9 @@ import { SITE } from '../config';
 
 const alt = 'Built with Croftweaver';
 const hosted = `${SITE.url}/brand`;
-const back = `${SITE.url}/partner-assets?ref=badge`;
+// Where the badge sends a visitor: the home page, which says what Croftweaver is (owner, 2026-10-14);
+// ref=badge lets the analytics count those visitors.
+const back = `${SITE.url}/?ref=badge`;
 // Where the HTML code expects the badge files on the partner's own site (public/brand/badge/ in Astro).
 const dir = '/brand/badge';
 
@@ -38,7 +40,7 @@ const iconSizes = [64, 256, 512];
 // One link per file: the label a visitor sees, and a longer name for assistive technology.
 const file = (title: string, label: string, href: string) => ({ label, href, name: `${title}, ${label}` });
 
-// The code to paste. Every snippet links back to this page; the image carries what the checks of a
+// The code to paste. Every snippet links to the home page; the image carries what the checks of a
 // Croftweaver site ask of an image: a description, a size and a loading setting.
 // One attribute group per line, so that the code reads without scrolling; `indent` is where the tag starts.
 const image = (name: string, w: number, h: number, indent: string) =>
@@ -82,7 +84,7 @@ const snippets = [
     </p>
     <p class="aside">
       You do not have to credit Croftweaver. A credit is a request, never a condition of
-      using it. If you do add the badge, a link back to this page helps the next person
+      using it. If you do add the badge, its link to our home page helps the next person
       find Croftweaver. <a href="#credit">More on crediting</a>.
     </p>
     <p>
@@ -132,7 +134,7 @@ const snippets = [
     </p>
     <p>
       The HTML versions already have what the Croftweaver checks ask of an image: a
-      description, a size and a loading setting. Each one links back to this page.
+      description, a size and a loading setting. Each one links to our home page.
     </p>
     {snippets.map((s) => (
       <div class="snippet">
@@ -229,7 +231,7 @@ const snippets = [
     </p>
     <p>
       We would still be glad of one. If your site was built with Croftweaver, the badge in
-      your footer, linking back to this page, helps the next person find it. If a badge does
+      your footer, linking to our home page, helps the next person find it. If a badge does
       not suit your design, a plain text link works too.
     </p>
     <p class="note">This is a request, not a rule. Leaving the badge out breaks no term of the Croftweaver licence.</p>
