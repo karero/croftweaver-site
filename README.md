@@ -202,6 +202,18 @@ Launch requirements that no test enforces:
   dashboard; nothing here records that it is on. Search Console positions for seven
   search terms are read every Monday at 09:00 by a scheduled job on the owner's Mac (set
   up 2026-10-12); the history stays on that Mac, not in this repository.
+- Cloudflare's settings for the whole domain, read through Cloudflare's API on
+  2026-10-13: Always Use HTTPS on; Minimum TLS Version 1.2; HSTS on since 2026-10-12, for
+  six months, subdomains included, preload off; Network Error Logging off, with a rule
+  that removes the `NEL` and `Report-To` headers; Bot Fight Mode off; no AI crawler
+  blocked. Email Address Obfuscation was on and was switched off that day, on the
+  owner's word: the site hides its addresses itself (`EmailLink`), and the toolkit's
+  Cloudflare checklist asks for it off. The toolkit's outside check
+  (`cloudflare-check.mjs`) found nothing to fix on the live domain before and after.
+  For a trial of a setup script planned in karero/croftweaver#265, the hosts
+  `spike.croftweaver.com` and `spike2.croftweaver.com` were attached to two throwaway
+  Pages projects on 2026-10-13, with two test TXT records at `_spike-test`. All of it
+  was removed on 2026-10-14; the zone has the 14 records it had before.
 - Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
   states things that only the owner can confirm. Write each line with its date when it
   is true:
