@@ -128,6 +128,16 @@ for (const day of EVENTS.days) {
 if (days.at(-1)!.date > EVENTS.readOn) {
   throw new Error(`src/data/proof.ts: the file now runs to ${days.at(-1)!.date}, past ${EVENTS.readOn}, the day the event pages were read. Read them again and update EVENTS before /proof says no event followed.`);
 }
+// /proof says, next to the latest figure, that no event fell inside the latest 28 days, and how
+// many full weeks before them the last one was. The owner confirmed on 2026-10-13 that the
+// community held no event over the summer and the early autumn of 2026; the event pages agree.
+// A refreshed file whose latest 28 days reach back to the last event stops the build.
+const lastEvent = EVENTS.days.at(-1)!;
+const latestBlock = blocks.at(-1)!;
+if (lastEvent >= latestBlock.fromIso) {
+  throw new Error(`src/data/proof.ts: the event of ${lastEvent} is not before the latest 28 days (from ${latestBlock.fromIso}), so /proof may no longer say that no event fell inside them.`);
+}
+const weeksSinceLastEvent = Math.floor((Date.parse(latestBlock.fromIso) - Date.parse(lastEvent)) / (7 * 24 * 60 * 60 * 1000));
 // The clicks in the 28 days up to each date, from the first date with a full 28 days.
 // This is the line in the chart on /proof: its last point is the latest block and its
 // highest is the peak. tests/a11y.spec.ts recomputes it from the CSV and compares.
@@ -356,6 +366,8 @@ export const SITE_PROOF = {
       readOn: { iso: EVENTS.readOn, label: label(EVENTS.readOn) },
       eve,
       twoWeeksEarlier,
+      last: { iso: lastEvent, label: label(lastEvent) },
+      weeksBeforeLatest: weeksSinceLastEvent,
     },
     rolling,
     rollingFrom: { iso: rolling[0]!.iso, label: label(rolling[0]!.iso) },

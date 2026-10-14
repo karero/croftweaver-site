@@ -170,7 +170,11 @@ Launch requirements that no test enforces:
   none followed, and the build stops if the new file no longer fits that. `EVENTS` lists
   its two days oldest first: the page also says the rise had begun before the first of
   them, with the 28-day totals on the day before it and two weeks earlier, and the build
-  stops unless the later total is at least twice the earlier one. The two Gemini
+  stops unless the later total is at least twice the earlier one. Next to the latest
+  figure the page says that no event fell inside the latest 28 days and how many weeks
+  before them the last one was; the build stops if the last event is no longer before
+  them. That no event took place over the summer and the early autumn of 2026 is the
+  owner's statement of 2026-10-13, and the event pages agree. The two Gemini
   answers asked by hand and the attempt without a sign-in (`byHand`, also in
   `src/data/proof.ts`) are dated and stay as they are; a new one is the owner's to add.
 - Real icons and a logo in `public/` (icon-192/512, maskable, apple-touch, favicon,
