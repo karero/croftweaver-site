@@ -115,12 +115,15 @@ applies there; instead of steps 2 to 4, only this:
   Auto-merge is allowed on this site since 2026-10-14, as the owner's exception: the
   toolkit's team setup turns it off, and the owner turned it on here. GitHub then merges
   once everything the ruleset on `main` requires is met (on 2026-10-14: the checks
-  `test` and `Cloudflare Pages` green, and no conflict). The assistant turns it on only
-  when the owner asks for that pull request, and always with a merge commit (`gh pr
-  merge <number> --auto --merge`). If the pull request changes anything outside
-  `docs/`, someone must have looked at the preview of its latest commit (see "Preview
-  before merging" below) before auto-merge is turned on; a commit pushed after that look
-  needs a new look. A pull request that only changes `docs/` needs no look.
+  `test` and `Cloudflare Pages` green) and the branch has no conflict. The assistant
+  turns it on only when the owner asks for that pull request, and always with a merge
+  commit (`gh pr merge <number> --auto --merge`). If the pull request changes anything
+  outside `docs/`, someone must have looked at the preview of its latest commit (see
+  "Preview before merging" below) before auto-merge is turned on. GitHub would also
+  merge a commit pushed later, so before pushing to a pull request whose auto-merge is
+  on, the assistant turns it off (`gh pr merge <number> --disable-auto`), and turns it
+  on again only after a look at the new commit's preview. A pull request that only
+  changes `docs/` needs no look.
 - **Preview before merging:** once the repo is connected to Cloudflare by git
   integration (`website-team-setup` §6 does that), every pull request gets its own
   preview address from Cloudflare, listed under the pull request's checks. Look at the
