@@ -25,11 +25,12 @@ with and without web search in the AI check (`/proof`). Both are read from
 `src/data/proof.ts`. An outside audit had asked for measured evidence before opinions.
 
 Updated 2026-10-14, after a broader competitive review (`docs/competitors.md`, "Broader
-review"). Owner decisions the same day, four of them:
+review (14 October 2026)", added in karero/croftweaver-site#76). Owner decisions the same day, four of them:
 
 1. **Start with positioning, and keep your pages on it.** Starting with the message is
-   shared with other skill kits; a test that keeps pages on their terms is not, among
-   the three that start with the message. The copy says "keeps your pages on it", not
+   shared with other skill kits. Keeping pages on their terms with a test is not: none of
+   the three that start with the message ships such a test (read in their code on
+   2026-10-14). The copy says "keeps your pages on it", not
    "keeps every page true to it", for two reasons. The positioning test checks that a
    page carries its term in its title, description and opening, which is not proof that
    the page is true to the positioning (see the wording rule and `/checks`). And it
@@ -44,8 +45,8 @@ review"). Owner decisions the same day, four of them:
    the website and builds no site; seven Croftweaver skills come from it. `/compare`
    says to use them together.
 4. **Safe to install is a point of its own.** For now one answer on the home page,
-   limited to what is checked: plain text skills in a public repository, the assistant
-   asks before running a command unless allowed, a static site with no database and no
+   limited to what is checked: plain text skills in a public repository, Claude Code
+   asks before running a command in its default settings, a static site with no database and no
    user accounts. A fuller account of what the skills run waits for the toolkit's own
    document; nothing more is claimed until it exists.
 
