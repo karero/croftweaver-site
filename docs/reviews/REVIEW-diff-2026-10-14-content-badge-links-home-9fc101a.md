@@ -1,6 +1,6 @@
 # DIFF review — croftweaver-site `content/badge-links-home` — the badge code on /partner-assets links to the home page
 
-Base `origin/main` (`cc206be`) · depth: **Normal** (runtime copy and code on a live page, and the test that pins it) · verdict: **CLEAN** · authority used: BRANCH-COMMIT and POST AUTHORITY — atom A, this session created the branch and opens the pull request; GATED-THIS-DIFF — atom A, round 1 saw the change in full
+Base `origin/main` (`4bb7798`) · depth: **Normal** (runtime copy and code on a live page, and the test that pins it) · verdict: **CLEAN** · authority used: BRANCH-COMMIT and POST AUTHORITY — atom A, this session created the branch and opens the pull request; GATED-THIS-DIFF — atom A, round 1 saw the change in full
 
 | Round | Head | Artifact | Reviewers: CLI version, model, effort, sandbox | seconds, tokens per seat | BUG/RISK/NIT |
 |---|---|---|---|---|---|
@@ -27,3 +27,4 @@ Waivers: none. Deferrals: none. Follow-ups: none.
 Notes:
 - The owner decided on 2026-10-14 that the badge links to the home page for now, not to a landing page of its own.
 - Data check: the diff holds no credentials and no private names. Destinations: Codex, and GLM 5.3 on Melious, the owner's standing pair; the repository is public.
+- The round 1 brief named the base as `cc206be` (the local `main` at the time); the real merge-base is `4bb7798`. The diff the seats read was computed against `origin/main` and is the right one; Codex checked it against the tree.
