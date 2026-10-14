@@ -172,10 +172,11 @@ const maintainerSchema = {
       time finding you.
     </p>
     <p>
-      Croftweaver takes the other route. Your assistant first works out what you offer
-      and for whom, and can tell the home page as your visitor's story:
-      <a href="/positioning">Positioning first</a>. Then you and your assistant make the
-      changes, the search and AI work is done by default, and the tests check it by default.
+      Croftweaver takes the other route. Your assistant starts with your positioning,
+      what you offer and for whom, and from then on a test keeps your pages on it:
+      <a href="/positioning">Positioning first</a>. It can also tell the home page as your
+      visitor's story. Then you and your assistant make the changes, the search and AI
+      work is done by default, and the tests check it by default.
       <a href="/why">Why build for search and AI visibility</a> makes the full case, for
       the person who decides.
     </p>
@@ -248,6 +249,14 @@ const maintainerSchema = {
         <dt>What does it cost?</dt>
         <dd>Croftweaver itself is free and MIT-licensed, a GitHub account and a Cloudflare account are free to open, and <a href="#cost">Cloudflare's free plan hosts the site</a>. You still pay for your domain. Your AI assistant can cost money, and so can the optional weekly AI check.</dd>
       </div>
+      <div>
+        <dt>Is it safe to install?</dt>
+        <dd>The skills are plain text instructions and small scripts in a public repository, so you or your assistant can read every one before you install it. Claude Code asks before it runs a command, unless you have allowed that command. The site it builds is static files, with no database and no user accounts.</dd>
+      </div>
+      <div>
+        <dt>Can my site have a contact form?</dt>
+        <dd>Yes, and ours works differently on purpose. The visitor fills in a few fields, and their own email program opens with the message written, ready to send. It comes from their own address, so it reads like a personal note, and you answer with Reply. They keep a copy in their Sent folder, so they can see that it left. There is no form service to pay for or look after, nothing for a spam bot to fire off, and no message stored on a server. A visitor without an email program copies the address shown under the form.</dd>
+      </div>
     </dl>
   </section>
 
@@ -278,10 +287,12 @@ const maintainerSchema = {
   </section>
 
   <section class="wrap" id="loop">
-    <h2>After launch, search data drives the next edit</h2>
+    <h2>After launch, the next edit, tested</h2>
     <p>
-      A launch is the start. Once you connect Google Search Console and it has data
-      on your site, the skills read it and point at the two or three edits most
+      Knowing where you stand is the easy part: Search Console shows how you do on
+      Google, and plenty of tools check whether AI assistants name you. What moves a
+      site is the next change to it. Once you connect Google Search Console and it has
+      data on your site, the skills read it and point at the two or three edits most
       worth making this week:
     </p>
     <ul class="steps">
@@ -289,7 +300,7 @@ const maintainerSchema = {
       <li>Pages that people see in the results but rarely click.</li>
       <li>An optional weekly check, run with your own API keys, that asks AI assistants the questions your customers ask and counts how often they name you.</li>
     </ul>
-    <p><a href="/skills">The skills</a> cover the whole life of a site, and every edit goes back through the same tests:</p>
+    <p>Your assistant makes the edit with you, and by default it goes back through the same tests before it reaches your visitors. <a href="/skills">The skills</a> cover the whole life of a site:</p>
     <ol class="flow" role="list">
       <li><strong>Build</strong><span>Brief, positioning, content, design.</span></li>
       <li><strong>Verify</strong><span>The test suites, then a two-pass review.</span></li>

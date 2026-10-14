@@ -2,9 +2,10 @@
 // comparisons are factual, sourced and dated. Every `fact` below restates what the
 // linked page says about its own product, in this site's words, as of CHECKED. Nothing
 // here says what another product lacks. Re-check every link before changing the date.
-export const CHECKED = { iso: '2026-10-04', label: '4 October 2026' } as const;
+export const CHECKED = { iso: '2026-10-14', label: '14 October 2026' } as const;
 
-// The section "Croftweaver begins with the end in mind" on /compare says what Croftweaver
+// The section "Croftweaver starts with your positioning and keeps your pages on it" on
+// /compare (until 2026-10-14 "Croftweaver begins with the end in mind") says what Croftweaver
 // does first: positioning. Starting with the message is not Croftweaver's alone, so the
 // section names the projects from the skills group whose own README says they do the same
 // kind of thing, in that README's terms. Read on FIRST_CHECKED; the links in GROUPS keep
@@ -62,10 +63,18 @@ export const GROUPS = [
       { name: 'claude-seo', url: 'https://github.com/AgriciDaniel/claude-seo', fact: 'An SEO skill for Claude Code that covers technical SEO, structured data and AI search. MIT licence.' },
       { name: 'geo-seo-claude', url: 'https://github.com/zubair-trabzada/geo-seo-claude', fact: 'An SEO skill for Claude Code that puts AI search first. MIT licence.' },
       { name: 'marketingskills', url: 'https://github.com/coreyhaines31/marketingskills', fact: 'Marketing skills for Claude Code and other agents. MIT licence. Seven of the skills in Croftweaver are derived from it, with credit.' },
-      { name: 'Wondel.ai skills', url: 'https://github.com/wondelai/skills', fact: 'Fifty skills built on business, marketing, UX and coding books, with guided journeys, one of them for creating a website. MIT licence.' },
+      { name: 'Wondel.ai skills', url: 'https://github.com/wondelai/skills', fact: 'Fifty-one skills built on business, marketing, UX and coding books and style guides, with fourteen guided journeys, one of them for creating a website. MIT licence.' },
     ],
     chooseThem: 'You want one focused SEO or AI-search audit (the two SEO skills), you are moving off WordPress (website-build-kit), or you want marketing help beyond a website (marketingskills, the Wondel.ai skills).',
     chooseCroftweaver: 'You want one suite that builds the site, does the search and AI work by default, runs its tests before each push and on each pull request, and includes tools that read your Search Console data and point to the next edits. Its checks and measurements also work on a site that is already live, on any stack, without a rebuild; the ready-made test suite needs the Croftweaver starter.',
     more: { href: '/established-sites', label: 'Croftweaver for established sites' },
+    // Owner decision, 2026-10-14: present Croftweaver as the layer that builds and tests
+    // the website, next to marketingskills, not as its rival. The clause about
+    // marketingskills restates its README, read on that date.
+    together: {
+      name: 'marketingskills on GitHub',
+      url: 'https://github.com/coreyhaines31/marketingskills',
+      text: 'marketingskills covers marketing beyond the website, such as conversion, email, ads and launches. Croftweaver builds the website itself and tests it on every change. Seven Croftweaver skills come from marketingskills, with credit.',
+    },
   },
 ] as const;

@@ -9,9 +9,8 @@ import { SITE } from '../config';
 const next = [
   { title: 'A standard way to count enquiries', text: 'Cookieless analytics with one conversion event set up by default, so arrivals can be tied to enquiries.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
-  { title: 'An easier install', text: 'A plugin package, a listing where people look for skills, and one command that starts a project.' },
+  { title: 'An easier install', text: 'The Claude Code plugin, which waits for the next release, a Codex plugin, and a listing where people look for skills.' },
   { title: 'Import of an existing site', text: 'Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests.' },
-  { title: 'Forms that send through the website', text: 'A dedicated skill for a form that sends through a server or a form service, with a bundled test that submits one.' },
 ];
 const later = [
   'A pipeline for regular posts.',
@@ -22,6 +21,7 @@ const out = [
   { title: 'A visual editor.', text: 'You work with your assistant in plain language.' },
   { title: 'Shops and accounts.', text: 'An app builder serves you better there.' },
   { title: 'Hosting by us.', text: 'Your site stays on hosting you control.' },
+  { title: 'A form that sends through a server.', text: "The visitor's own email program sends the message: it reads like a personal note, they keep a copy, and there is nothing for you to look after." },
 ];
 ---
 <Base
@@ -50,9 +50,8 @@ const out = [
       <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
       <li><strong>A standard way to count enquiries.</strong> Analytics is optional today: the interview offers a cookieless tool, and nothing sets up a conversion to count.</li>
       <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
-      <li><strong>A one-line install.</strong> Today you clone the repository and run a script.</li>
+      <li><strong>An install without Node.</strong> One command, <code>npm create croftweaver</code>, installs the skills; it needs Node. The Claude Code plugin, which needs nothing else, waits for the next release.</li>
       <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
-      <li><strong>Forms that send through the website.</strong> The optional contact-form skill opens the visitor's own email program with the message ready to send, and the site sends and stores nothing. A site can also have one small server function for a form, but no dedicated skill builds one and no bundled test submits one.</li>
       <li><strong>Tested support beyond Claude Code.</strong> The guides for Codex and Antigravity exist; neither has been tested from start to finish.</li>
     </ul>
   </section>

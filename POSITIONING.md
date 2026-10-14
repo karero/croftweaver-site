@@ -24,6 +24,34 @@ range for the three sites (`/more-proof`), and how many answers named genai-wedn
 with and without web search in the AI check (`/proof`). Both are read from
 `src/data/proof.ts`. An outside audit had asked for measured evidence before opinions.
 
+Updated 2026-10-14, after a broader competitive review (`docs/competitors.md`, "Broader
+review"). Owner decisions the same day, four of them:
+
+1. **Start with positioning, and keep your pages on it.** Starting with the message is
+   shared with other skill kits; a test that keeps pages on their terms is not, among
+   the three that start with the message. The copy says "keeps your pages on it", not
+   "keeps every page true to it", for two reasons. The positioning test checks that a
+   page carries its term in its title, description and opening, which is not proof that
+   the page is true to the positioning (see the wording rule and `/checks`). And it
+   checks only the pages in its map: legal pages are exempt, and a page with no term
+   raises a warning, not a failure (`tests/positioning.spec.ts`).
+2. **Sell the fix, not the watching.** Checking whether AI assistants name a site is now
+   cheap or free in many tools, and Google and Bing report AI impressions and citations
+   themselves. Croftweaver's part is the next edit, made with your assistant, that goes
+   back through the site's tests by default. The weekly AI check stays, as the trigger
+   for an edit, never as the lead.
+3. **Next to marketingskills, not against it.** marketingskills covers marketing beyond
+   the website and builds no site; seven Croftweaver skills come from it. `/compare`
+   says to use them together.
+4. **Safe to install is a point of its own.** For now one answer on the home page,
+   limited to what is checked: plain text skills in a public repository, the assistant
+   asks before running a command unless allowed, a static site with no database and no
+   user accounts. A fuller account of what the skills run waits for the toolkit's own
+   document; nothing more is claimed until it exists.
+
+Also decided the same day: the contact form stays the visitor's own email program. A
+form that sends through a server moves to "Out, on purpose" on `/roadmap`.
+
 ## 1. Competitive alternatives
 
 - The status quo: an old site, or none, and someone else to ask for every update (an
@@ -169,6 +197,11 @@ The wording rule applies to all of them.
   of the home page one-liner (owner-approved 2026-10-08). The villain is the situation,
   never a named agency.
 - "Build high-ranking websites." Deck and `/why`, with proof beside it.
+- "Start with your positioning. Keep your pages on it." (2026-10-14) Never "true to it",
+  and never "every page": the test checks the term, not the truth, and only on the pages
+  in its map.
+- "The next edit, tested." (2026-10-14) The after-launch line: the edit is the point, the
+  watching is the trigger.
 - "Thirteen test suites check every change." · "Four AI assistants check who names you." ·
   "Open-source skills turn briefs into tested sites."
 
