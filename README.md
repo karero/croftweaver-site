@@ -205,9 +205,10 @@ Launch requirements that no test enforces:
   owner's word: the site hides its addresses itself (`EmailLink`), and the toolkit's
   Cloudflare checklist asks for it off. The toolkit's outside check
   (`cloudflare-check.mjs`) found nothing to fix on the live domain before and after.
-  The same day the host `spike.croftweaver.com` was attached to a throwaway Pages
-  project, for a trial of a setup script planned in karero/croftweaver#265. It is to be
-  removed when the trial ends.
+  For a trial of a setup script planned in karero/croftweaver#265, the hosts
+  `spike.croftweaver.com` and `spike2.croftweaver.com` were attached to two throwaway
+  Pages projects on 2026-10-13, with two test TXT records at `_spike-test`. All of it
+  was removed on 2026-10-14; the zone has the 14 records it had before.
 - Analytics (Plausible on analytics.m-squad.com, live build only). The privacy page
   states things that only the owner can confirm. Write each line with its date when it
   is true:
