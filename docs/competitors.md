@@ -315,8 +315,8 @@ and from a second and third proof site, more than from closing any row in the ta
   and 14 journeys. `CHECKED` in `src/data/compare.ts` is 4 October; re-read before the next
   change.
   **Fixed in karero/croftweaver-site#77** (merged and live 14 October): the entry now says
-  fifty-one skills and fourteen journeys. Per #77, all 17 links on the page were re-checked;
-  `CHECKED` is now 14 October 2026.
+  fifty-one skills and fourteen journeys, and `CHECKED`, the date the page gives for its
+  sources, is now 14 October 2026.
 - The weekly tracking is set up automatically only on macOS (launchd). On Linux the script's
   header says to run it from a systemd timer or cron by hand; Windows is not mentioned. Owners
   there get the report when they ask for it unless they set that up.
