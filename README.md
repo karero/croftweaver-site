@@ -83,6 +83,13 @@ Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
 `CONTENT_GUIDE.md`, positioning in `POSITIONING.md`, visuals in `BRAND.md`.
 
+Folders on the owner's Mac: this repository is checked out in `~/Devel/croftweaver-site`.
+The owner renamed that folder from `croftweaver` to `croftweaver-site`, to keep the website
+apart from the work on the skills (the owner, on 2026-10-14; the date of the rename is not
+recorded). The skills, the repository `karero/croftweaver`, are worked on in
+`~/Devel/website-builder`. Neither folder name is the name of the Cloudflare Pages project
+(status row 8).
+
 ## Status: rename and launch
 
 One row per step. Update the row as part of finishing the step; evidence is a commit, a
