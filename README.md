@@ -285,7 +285,7 @@ Launch requirements that no test enforces:
     the image tagged v3.2.1.
     Copies: this instance is in the nightly backup (box script read 2026-10-13: `backup_instance m-squad`).
     Section 3 says in two sentences that encrypted copies are stored at Cloudflare and kept for about 30
-    days, and that a copy holds the earlier daily values, those of the last weeks and possibly older ones. How far that is verified, the
+    days, and that a copy holds the earlier daily values, those of the last days or weeks and possibly older ones. How far that is verified, the
     evidence and the checks still open are in the m-squad-website README (section "Retention"), which also
     holds the scratch-table probe for the TTL mechanism (not yet run).
   - The no-banner position (see the header of `src/pages/privacy.astro`): ACCEPTED on
