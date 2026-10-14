@@ -139,7 +139,7 @@ three does; **Ahead** = Croftweaver has more of it than any of the three; **Shar
 | Design system | ✓ skill | ✗ | ✓ advice only | ✓ tokens | None |
 | A check against a "generated" look | ✗ | ✗ | ✗ | ✓ `npm run tells`, blocks production | Gap |
 | Share cards | ✓ `npm run og` | Partial | ✗ | ✓ `npm run cards` | None |
-| Import from WordPress, Wix, Webflow, Squarespace | Partial: `wordpress-inspector` counts a WordPress site before a move and checks every old address after it (karero/croftweaver#281); no content import found on `main` | Advice | ✗ | ✓ playbooks for 7 platforms, content extract, redirect map, before/after screenshots | Gap; the owner reports an import was just built (to confirm) |
+| Import from WordPress, Wix, Webflow, Squarespace | Partial: `wordpress-inspector` counts a WordPress site before a move and checks every old address after it (karero/croftweaver#281, merged 13 October, not in 0.31; planned for 0.32). No content extract, import or design move, as agreed with the owner; the recommendation is to write them during the first real migration | Advice | ✗ | ✓ playbooks for 7 platforms, content extract, redirect map, before/after screenshots | Gap; confirmed 14 October: the inspector is the only migration skill |
 | Git-based CMS | Partial: optional Keystatic | Advice | ✗ | ✓ PagesCMS by default, plus a check that guards CMS content | Gap (small) |
 | Contact form that sends | Opens the visitor's own email program, ready to send | ✗ | ✗ | ✓ storage, spam guard, email service | Out, on purpose (owner, 14 Oct: the visitor's own email is more personal, leaves them a copy, and has nothing to maintain or attack) |
 | Blog collection with RSS | ✗ no RSS in the starter | ✗ | ✗ | ✓ | Gap |
