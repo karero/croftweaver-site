@@ -195,6 +195,7 @@ is built.
 | Roadmap | `/roadmap` | roadmap | — | live |
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
+| About | `/about` | maintainer | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 

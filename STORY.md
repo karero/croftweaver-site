@@ -168,9 +168,19 @@ genai-wednesday.de (`/proof`); and three facts from the profile M-Squad's own si
 him, read on 2026-10-13 at https://m-squad.com/company/team and linked from the section: he
 co-founded M-Squad in 2001 and leads it, he has worked in product development for mobile and
 telecom for more than 20 years, and he built GenAI Wednesday and still co-organizes it in
-Munich. If that profile changes, read this section again. The home page's structured data has
+Munich. If that profile changes, read this section again, and the same facts on `/about`. The home page's structured data has
 a Person node for him that points at this section; his LinkedIn profile is in that node only,
 not on the page (owner, 2026-10-13).
+
+## Changes on 2026-10-14 (owner)
+
+The home page's `#maintainer` section gained one sentence linking to the new `/about` page,
+which carries a note from the maintainer in his own words and repeats the facts above. The
+home page's learning section is unchanged. On `/established-sites`, the learning section
+(`#learn`) became an offer of help for the team that runs the site (`#help`): setting
+Croftweaver up, reading Search Console and the AI assistants' answers, and learning to work
+with an assistant. That help is outside the open-source project and billed by M-Squad; the
+page names no price, by the owner's choice.
 
 ## Not adopted: tests/story.spec.ts
 

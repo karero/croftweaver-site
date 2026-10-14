@@ -44,6 +44,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/roadmap': { term: 'roadmap' },
   '/established-sites': { term: 'established sites' },
   '/partner-assets': { term: 'partner assets' },
+  '/about': { term: 'maintainer' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
