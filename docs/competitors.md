@@ -104,7 +104,7 @@ https://github.com/wondelai/skills , https://github.com/nurkamol/website-build-k
 
 ✓ = has it. Partial = some of it. ✗ = not found. "Gap?" is about Croftweaver: **Gap** = one or
 more of the three has it and Croftweaver does not; **Lead** = Croftweaver has it and none of the
-three does; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
+three does; **Ahead** = all have some of it, Croftweaver more; **Shared gap** = none has it; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
 `POSITIONING.md`).
 
 **Install and reach**
@@ -123,7 +123,7 @@ three does; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", an
 | Capability | Croftweaver | marketingskills | Wondel | website-build-kit | Gap? |
 |---|---|---|---|---|---|
 | Positioning on April Dunford's method | ✓ required, step 2 | Partial: a product-marketing file with positioning sections, not Dunford | ✓ `obviously-awesome`, optional in its website journey | ✗ discovery rounds, no positioning file | None |
-| Positioning checked on every page | ✓ `positioning.spec.ts` | ✗ other skills read the file | ✗ a review step by judgment | ✗ | **Lead** |
+| Positioning term checked on each mapped page | ✓ `positioning.spec.ts` (legal pages exempt; a page with no term only warns) | ✗ other skills read the file | ✗ a review step by judgment | ✗ | **Lead** |
 | Tone test in the site | ✓ `tone.spec.ts` | ✗ (a list of AI-sounding phrases, no test) | ✗ | ✗ | **Lead** |
 | Placeholder test | ✓ `placeholders.spec.ts` | ✗ | ✗ | ✓ `check:copy` | None |
 | Story layer (StoryBrand-style) | ✓ optional `website-story` | ✗ | ✓ | ✗ | None |
@@ -148,7 +148,7 @@ three does; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", an
 | Metadata, sitemap, schema.org | ✓ with a test | Advice and skills | ✗ | ✓ from one data file | None |
 | `llms.txt` | ✓ with a coverage test | Recommended | ✗ | ✗ | Lead |
 | Weekly check whether AI assistants name you | ✓ four assistants plus Google's AI Mode and AI Overview | Partial: a manual method and paid tools | ✗ | ✗ | Lead |
-| Google's and Bing's own AI reports | ✗ not used yet | ✗ | ✗ | ✗ | Gap (all) |
+| Google's and Bing's own AI reports | ✗ not used yet | ✗ | ✗ | ✗ | Shared gap: none of the four |
 | Programmatic SEO | ✗ | ✓ | ✗ | ✗ | Out (probably) |
 | Keyword research | Partial: Search Console data, optional SERP lookup | ✓ through paid tools | ✗ | ✗ | Partial |
 
@@ -163,7 +163,7 @@ three does; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", an
 | Crawl of the live site after deploy (headers, 404, redirects, page weight) | Partial: `npm run ship` checks the live build | ✗ | ✗ | ✓ `verify` | Partial |
 | Snapshot of DNS records before a change | ✗ | ✗ | ✗ | ✓ | Gap (small) |
 | Analytics with a conversion | Partial: optional, cookieless, no conversion (on `/roadmap`) | ✓ GA4 skill | ✗ | ✓ | Gap |
-| Search Console and business listings | ✓ two skills | Partial | ✗ | Partial: runbook and checklist | Lead |
+| Search Console and business listings | ✓ two skills | Partial | ✗ | Partial: runbook and checklist | Ahead (more complete) |
 | Independent review | ✓ | ✗ | Partial: review by judgment | Partial | None |
 
 **After launch**
@@ -224,10 +224,13 @@ others gather.
 These are proposals for the owner to decide. Each says what it rests on and the best argument
 against it.
 
-1. **Say "keeps every page true to its positioning", not "starts with positioning".**
+1. **Say "keeps your pages on it", not only "starts with positioning".**
    Starting with the message is shared (section above). Testing the site against it is not:
    none of the three ships a positioning or tone test (read in their code). The line on
-   `/compare` could move from what happens first to what holds on every change.
+   `/compare` could move from what happens first to what holds on every change. Not "keeps
+   every page true to it": the test checks that each page in its map carries its term in
+   the title, description and opening. That is not proof the page is true to the
+   positioning, and legal pages and pages without a term are outside it.
    *Against:* buyers do not shop for tests. That is why "lead with the test gate" was turned
    down on 3 October (`POSITIONING.md`, "Routes considered").
 2. **Sell the fix, not the watching.** Checking whether AI names you is free in Wix,
@@ -248,8 +251,10 @@ against it.
 5. **Make "safe to install, safe to run" a point of its own.** Snyk found critical issues in
    13.4% of 3,984 public skills (February 2026), and a Lovable showcase app exposed 18,697 user
    records (February 2026). A static site with no database, an MIT licence and a short page on
-   what the skills run (commands, network calls, files outside the repository) answers both
-   worries. *Against:* it is a hygiene point, and few will choose a tool for it.
+   what the skills run (commands, network calls, files outside the repository) speaks to both
+   worries. It does not make installing safe by itself: claim only what that page documents,
+   once it is checked against the scripts. *Against:* it is a hygiene point, and few will
+   choose a tool for it.
 6. **Stop presenting `llms.txt` as a way to be found.** Google's AI-search guide (15 May 2026)
    says it is not needed, and Ahrefs found that 97% of `llms.txt` files got no request in May
    2026. Present it as cheap readiness for agents. The new "Agentic Browsing" audit in
@@ -270,10 +275,10 @@ and from a second and third proof site, more than from closing any row in the ta
 |---|---|---|---|
 | Cloudflare acquired the Astro team; Astro stays MIT. Astro 7.3 is current, and the starter pins `^7.3.5` | 16 Jan 2026; 7.3 on 3 Sep | Both main dependencies are now one company. The starter is up to date | https://thenewstack.io/cloudflare-acquires-team-behind-open-source-framework-astro/ |
 | Cloudflare recommends Workers with static assets for new projects and has a guide for moving from Pages. No end date for Pages found | 2026 | New features go to Workers. A Workers deploy path is worth planning | https://developers.cloudflare.com/workers/static-assets/migrate-from-pages/ |
-| Cloudflare's new defaults: on new domains, training and agent crawlers blocked on pages that show ads. Crawlers that do search and training together (Googlebot, Bingbot, Applebot) follow the strictest rule the owner sets | 15 Sep 2026 | Most Croftweaver sites show no ads. The real risk: an owner who blocks AI training in Cloudflare can block Googlebot too. Already covered: the toolkit's `docs/CLOUDFLARE-CHECKLIST.md`, "AI crawlers: allow", names both, and its check script reads `robots.txt` | https://blog.cloudflare.com/content-independence-day-ai-options/ (read 14 Oct) |
+| Cloudflare's new defaults: on new domains, training and agent crawlers blocked on pages that show ads. Crawlers that do search and training together (Googlebot, Bingbot, Applebot) follow the strictest rule the owner sets | 15 Sep 2026 | Most Croftweaver sites show no ads. The real risk: an owner who blocks AI training in Cloudflare can block Googlebot too. Covered as advice: the toolkit's `docs/CLOUDFLARE-CHECKLIST.md`, "AI crawlers: allow", names both. Not detected automatically: its check script reads `robots.txt`, but the AI-crawler policy itself is a dashboard setting the script only lists for the owner to look at | https://blog.cloudflare.com/content-independence-day-ai-options/ (read 14 Oct) |
 | Search Console reports impressions in AI Overviews, AI Mode and Discover (no clicks, no queries), for some sites first | 3 Jun 2026 | Free first-party AI data the weekly loop does not read yet | https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports |
 | Bing Webmaster Tools reports citations in Copilot and Bing's AI answers; CSV export, no API | Feb 2026 | Real citation counts, better than asking assistants. A monthly download step would add them | https://searchengineland.com/bing-webmaster-tools-testing-new-ai-performance-report-468039 |
-| Google ended FAQ rich results for all sites | 7 May 2026 | FAQ markup still helps machines read a page; no copy should promise the rich result. `src/data/established-faq.ts` already notes this | https://searchengineland.com/google-to-remove-more-search-features-including-practice-problems-nutrition-facts-nearby-offers-and-more-464255 |
+| Reported: Google ended FAQ rich results for all sites. *Conflicting:* Google's documentation as read on 9 October 2026 (comment in `src/data/established-faq.ts`) still said they show for well-known government and health sites only | 7 May 2026 (reported) | Either way, a small site gets no FAQ rich result: no copy should promise one. FAQ markup still describes the page to machines. Re-read Google's page before relying on the stronger claim | https://searchengineland.com/google-to-remove-more-search-features-including-practice-problems-nutrition-facts-nearby-offers-and-more-464255 |
 | Google: `llms.txt` not needed for Search; Lighthouse 13.3 adds an "Agentic Browsing" audit that checks it; Ahrefs: 97% of files unread | May to June 2026 | See proposal 6 | https://ahrefs.com/blog/llmstxt-study/ , https://debugbear.com/blog/lighthouse-agentic-browsing |
 | AI Overviews cut clicks on the top result by about 58% (Ahrefs) | Updated Feb 2026 | Rankings alone no longer measure success; being named matters more | https://ahrefs.com/blog/ai-overviews-reduce-clicks-update |
 | Codex plugins and plugin marketplace launched | Late Mar 2026 | A second marketplace to be listed in | https://developers.openai.com/codex/plugins.md |
