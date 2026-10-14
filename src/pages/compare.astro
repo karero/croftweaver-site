@@ -29,7 +29,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED } from '../data/compare';
   </section>
 
   <section class="wrap" id="first">
-    <h2>Croftweaver begins with the end in mind</h2>
+    <h2>Croftweaver starts with your positioning and keeps your pages on it</h2>
     <p>
       A website has to convince someone. So before Croftweaver writes a line of copy
       or picks a colour, your assistant works out with you what the site has to say:
@@ -39,9 +39,14 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED } from '../data/compare';
       have them, go in with the name of the person and the thing they reviewed.
     </p>
     <p>
-      The answers go into one file in your repository, and a test keeps every page on
-      its term. This is a method, not a result: whether the positioning is right stays
-      your judgment. <a href="/positioning">How positioning works</a>.
+      The answers go into one file in your repository, and that is where the work
+      begins rather than ends. Each content page gets the term it owns, and from then
+      on a test checks that it still carries that term in its title, its description
+      and its opening. A change that drops it fails that test, which by default runs
+      before every push and on every pull request. A page you have not given a term yet
+      only raises a warning, and legal pages need none. This is a
+      method, not a result: whether the positioning is right stays your judgment.
+      <a href="/positioning">How positioning works</a>.
     </p>
     <p class="note">
       Starting with the message is not Croftweaver's alone. Among the
@@ -73,6 +78,9 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED } from '../data/compare';
           <p>{group.chooseCroftweaver}{'more' in group && <> <a href={group.more.href}>{group.more.label}</a>.</>}</p>
         </div>
       </div>
+      {'together' in group && (
+        <p class="note"><strong>Use them together.</strong> {group.together.text} <a href={group.together.url}>{group.together.name}</a>.</p>
+      )}
     </section>
   ))}
 
