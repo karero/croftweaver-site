@@ -309,9 +309,15 @@ and from a second and third proof site, more than from closing any row in the ta
 - `/roadmap` says "A one-line install. Today you clone the repository and run a script." Since
   12 October, `npm create croftweaver` does it in one line (toolkit README, "Install"). The page
   is out of date there.
+  **Fixed in karero/croftweaver-site#77** (merged and live 14 October): the line now reads "An
+  install without Node" and names `npm create croftweaver`.
 - `/compare` describes the Wondel.ai skills as "Fifty skills". Their README now says 51 skills
   and 14 journeys. `CHECKED` in `src/data/compare.ts` is 4 October; re-read before the next
   change.
+  **Fixed in karero/croftweaver-site#77** (merged and live 14 October): the entry now says
+  fifty-one skills and fourteen journeys. Per #77, all 17 links on the page were re-checked;
+  `CHECKED` is now 14 October 2026.
 - The weekly tracking is set up automatically only on macOS (launchd). On Linux the script's
   header says to run it from a systemd timer or cron by hand; Windows is not mentioned. Owners
   there get the report when they ask for it unless they set that up.
+  **Still open** (toolkit `main` on 14 October).
