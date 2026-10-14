@@ -14,6 +14,7 @@ export const PAGES = [
   '/roadmap',
   '/established-sites',
   '/partner-assets',
+  '/about',
   '/privacy',
   '/imprint',
 ] as const;
