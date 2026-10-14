@@ -104,7 +104,7 @@ https://github.com/wondelai/skills , https://github.com/nurkamol/website-build-k
 
 ✓ = has it. Partial = some of it. ✗ = not found. "Gap?" is about Croftweaver: **Gap** = one or
 more of the three has it and Croftweaver does not; **Lead** = Croftweaver has it and none of the
-three does; **Ahead** = all have some of it, Croftweaver more; **Shared gap** = none has it; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
+three does; **Ahead** = Croftweaver has more of it than any of the three; **Shared gap** = none has it; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
 `POSITIONING.md`).
 
 **Install and reach**
@@ -228,8 +228,9 @@ against it.
    Starting with the message is shared (section above). Testing the site against it is not:
    none of the three ships a positioning or tone test (read in their code). The line on
    `/compare` could move from what happens first to what holds on every change. Not "keeps
-   every page true to it": the test checks that each page in its map carries its term in
-   the title, description and opening. That is not proof the page is true to the
+   every page true to it": the test checks that each page in its map carries the phrases
+   declared for it, by default in the title, the description, and the H1 or the sentence
+   under it. That is not proof the page is true to the
    positioning, and legal pages and pages without a term are outside it.
    *Against:* buyers do not shop for tests. That is why "lead with the test gate" was turned
    down on 3 October (`POSITIONING.md`, "Routes considered").
