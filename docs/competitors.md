@@ -80,8 +80,9 @@ secondary source. Section 5 is opinion, and says so.
   has 54,623. On skills.sh, Croftweaver is still listed under its old name
   (`karero/website-builder`), about 7 installs per skill, and a search for "croftweaver" there
   finds nothing. It is in none of the big lists or directories checked.
-- **Watching whether AI names you is becoming a free feature.** Wix, Squarespace and HubSpot
-  give it away (sources in sections 4 and 6), Google and Bing now report AI impressions and
+- **Watching whether AI names you is becoming a cheap or free feature.** Wix includes an AI
+  visibility overview, Squarespace announced AI Visibility, and HubSpot has a free one-off AEO
+  grader (sources in sections 4 and 6; plan limits not checked), Google and Bing now report AI impressions and
   citations themselves, and paid tools start at about $25 a month (Otterly, per a third-party
   comparison: https://rankai.ai/articles/otterly-alternatives , *unverified*). What stays scarce is *fixing* the site and re-testing it.
 - **The closest competitor after launch is marketingskills.** Its "SEO operator" recipe runs
@@ -107,7 +108,7 @@ https://github.com/wondelai/skills , https://github.com/nurkamol/website-build-k
 
 ✓ = has it. Partial = some of it. ✗ = not found. "Gap?" is about Croftweaver: **Gap** = one or
 more of the three has it and Croftweaver does not; **Lead** = Croftweaver has it and none of the
-three does; **Ahead** = Croftweaver has more of it than any of the three; **Shared gap** = none has it; **Partial** = Croftweaver has some of it; **Closing** = done on `main`, not yet released; **None** = no gap, all comparable; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
+three does; **Ahead** = Croftweaver has more of it than any of the three; **Shared gap** = none has it; **Partial** (in this column) = Croftweaver has some of it and so does a competitor, neither fully; **Gap** wins over Partial when a competitor has it fully; **Closing** = done on `main`, not yet released; **None** = no gap for Croftweaver; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
 `POSITIONING.md`).
 
 **Install and reach**
@@ -118,8 +119,8 @@ three does; **Ahead** = Croftweaver has more of it than any of the three; **Shar
 | Codex plugin | ✗ | ✓ (since 2.11.16) | ✓ | ✗ | Gap |
 | `npx skills add` / skills.sh | Listed under the old name only | ✓ | ✓ | ✗ | Gap |
 | One-line install | ✓ `npm create croftweaver` (published 12 Oct) | ✓ | ✓ | ✓ `npm create website-build-kit` | None |
-| Named support beyond Claude Code | Codex and Antigravity guides, not tested end to end | Codex, Cursor, Windsurf | Codex, Cursor, Cowork and others | Claude Code only | Partial |
-| Evaluations per skill | 10 skills | All 50 | ✗ | ✗ | Partial |
+| Named support beyond Claude Code | Codex and Antigravity guides, not tested end to end | Codex, Cursor, Windsurf | Codex, Cursor, Cowork and others | Claude Code only || Gap |
+| Evaluations per skill | 10 skills | All 50 | ✗ | ✗ | Gap |
 
 **The message**
 
@@ -139,7 +140,7 @@ three does; **Ahead** = Croftweaver has more of it than any of the three; **Shar
 | A check against a "generated" look | ✗ | ✗ | ✗ | ✓ `npm run tells`, blocks production | Gap |
 | Share cards | ✓ `npm run og` | Partial | ✗ | ✓ `npm run cards` | None |
 | Import from WordPress, Wix, Webflow, Squarespace | Partial: `wordpress-inspector` counts a WordPress site before a move and checks every old address after it (karero/croftweaver#281); no content import found on `main` | Advice | ✗ | ✓ playbooks for 7 platforms, content extract, redirect map, before/after screenshots | Gap; the owner reports an import was just built (to confirm) |
-| Git-based CMS | Partial: optional Keystatic | Advice | ✗ | ✓ PagesCMS by default, plus a check that guards CMS content | Partial |
+| Git-based CMS | Partial: optional Keystatic | Advice | ✗ | ✓ PagesCMS by default, plus a check that guards CMS content | Gap (small) |
 | Contact form that sends | Opens the visitor's own email program, ready to send | ✗ | ✗ | ✓ storage, spam guard, email service | Out, on purpose (owner, 14 Oct: the visitor's own email is more personal, leaves them a copy, and has nothing to maintain or attack) |
 | Blog collection with RSS | ✗ no RSS in the starter | ✗ | ✗ | ✓ | Gap |
 | Several languages | ✓ `astro-i18n-setup`, with tests | Advice | ✗ | Advice | **Lead** |
@@ -153,17 +154,17 @@ three does; **Ahead** = Croftweaver has more of it than any of the three; **Shar
 | Weekly check whether AI assistants name you | ✓ four assistants plus Google's AI Mode and AI Overview | Partial: a manual method and paid tools | ✗ | ✗ | Ahead |
 | Google's and Bing's own AI reports | ✗ not used yet | ✗ | ✗ | ✗ | Shared gap: none of the four |
 | Programmatic SEO | ✗ | ✓ | ✗ | ✗ | Gap, not on the roadmap (owner to decide) |
-| Keyword research | Partial: Search Console data, optional SERP lookup | ✓ through paid tools | ✗ | ✗ | Partial |
+| Keyword research | Partial: Search Console data, optional SERP lookup | ✓ through paid tools | ✗ | ✗ | Gap |
 
 **Checks and launch**
 
 | Capability | Croftweaver | marketingskills | Wondel | website-build-kit | Gap? |
 |---|---|---|---|---|---|
 | Tests shipped into the site | ✓ 13 Playwright suites | ✗ | ✗ | ✓ many scripts (pa11y, Puppeteer) | None |
-| CI on pull requests | ✓ the full suite | ✗ | ✗ | Partial: build, types, look, sitemap | Lead over build-kit |
+| CI on pull requests | ✓ the full suite | ✗ | ✗ | Partial: build, types, look, sitemap | Ahead |
 | Accessibility, light and dark | ✓ axe | ✗ | ✗ | ✓ pa11y at WCAG 2.2 AA | None |
 | Reflow at 320px and 200% text | ✗ | ✗ | ✗ | ✓ | Gap |
-| Crawl of the live site after deploy (headers, 404, redirects, page weight) | Partial: `npm run ship` checks the live build | ✗ | ✗ | ✓ `verify` | Partial |
+| Crawl of the live site after deploy (headers, 404, redirects, page weight) | Partial: `npm run ship` checks the live build | ✗ | ✗ | ✓ `verify` | Gap |
 | Snapshot of DNS records before a change | ✗ | ✗ | ✗ | ✓ | Gap (small) |
 | Analytics with a conversion | Partial: optional, cookieless, no conversion (on `/roadmap`) | ✓ GA4 skill | ✗ | ✓ | Gap |
 | Search Console and business listings | ✓ two skills | Partial | ✗ | Partial: runbook and checklist | Ahead (more complete) |
@@ -242,14 +243,16 @@ against it.
    positioning, and legal pages and pages without a term are outside it.
    *Against:* buyers do not shop for tests. That is why "lead with the test gate" was turned
    down on 3 October (`POSITIONING.md`, "Routes considered").
-2. **Sell the fix, not the watching.** Checking whether AI names you is free in Wix,
-   Squarespace and HubSpot, and Google and Bing now report it themselves. Croftweaver's part is
+2. **Sell the fix, not the watching.** Checking whether AI names you comes with Wix and
+   Squarespace, HubSpot grades it for free once, and Google and Bing now report AI impressions
+   and citations themselves (plan limits not checked). Croftweaver's part is
    the next step: the edit, made by your assistant, that goes back through the site's tests.
    Careful: marketingskills' SEO operator also turns Search Console data into pull requests.
    What it does not have is a site with its own tests. *Against:* paid monitoring tools still
    raise money (Profound: $180M at $1.8B, 15 September 2026), so buyers may value the watching.
 3. **Be the build-and-test layer next to marketingskills, not its rival.** It has 54,623 stars,
-   builds nothing, and seven Croftweaver skills already come from it. "For marketing beyond the
+   builds nothing, and seven Croftweaver skills already come from it (the toolkit's
+   `THIRD-PARTY-LICENSES.md` names them). "For marketing beyond the
    website, marketingskills; for the website itself, Croftweaver" is honest and borrows its
    reach. `/compare` already says something close. *Against:* it moves fast and could add a
    starter of its own; its partner listing is paid.
@@ -265,7 +268,9 @@ against it.
    once it is checked against the scripts. *Against:* it is a hygiene point, and few will
    choose a tool for it.
 6. **Stop presenting `llms.txt` as a way to be found.** Google's AI-search guide (15 May 2026)
-   says it is not needed, and Ahrefs found that 97% of `llms.txt` files got no request in May
+   says it is not needed
+   (https://www.searchenginejournal.com/googles-llms-txt-guidance-depends-on-which-product-you-ask/575431/ ,
+   secondary; Google's own page not re-read), and Ahrefs found that 97% of `llms.txt` files got no request in May
    2026. Present it as cheap readiness for agents. The new "Agentic Browsing" audit in
    Lighthouse 13.3 is a checkable claim to put beside it. *Against:* Claude Code was the second
    biggest fetcher in the same study, so for people who build with assistants it is not
@@ -294,7 +299,7 @@ and from a second and third proof site, more than from closing any row in the ta
 | skills.sh (`npx skills`) indexes skills by install, with security audits from Snyk, Socket and Gen | Since 20 Jan 2026 | Where people look for skills; Croftweaver's entry is under the old name | https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem |
 | Snyk's "ToxicSkills" audit of public skills | Feb 2026 | See proposal 5 | https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/ |
 | SKILL.md read by Codex, Gemini CLI, Antigravity, GitHub Copilot, Cursor and more | 2026 | Adding Cursor and Copilot may cost little | https://codelabs.developers.google.com/getting-started-with-antigravity-skills |
-| GEO tools: Profound raised $180M at $1.8B (*unverified*, one secondary source); Adobe closed its $1.9B purchase of Semrush; HubSpot's AEO grader is free | 15 Sep, 28 Apr, 14 Apr 2026 | See proposal 2 | https://www.vktr.com/digital-experience/profound-nabs-180m-to-scale-ai-marketing-platform/ |
+| GEO tools: Profound raised $180M at $1.8B (*unverified*, one secondary source); Adobe closed its $1.9B purchase of Semrush; HubSpot's AEO grader is free | 15 Sep, 28 Apr, 14 Apr 2026 | See proposal 2 | https://www.vktr.com/digital-experience/profound-nabs-180m-to-scale-ai-marketing-platform/ , https://pulse2.com/adobe-completes-acquisition-of-semrush-expanding-brand-visibility-and-ai-search-capabilities/ , https://salesdorado.com/en/ai/review-hubspot-aeo-grader/ |
 | WebMCP in a Chrome origin trial (M149 to M156) | From May 2026 | Watch only: a content site has few tools to offer agents | https://groups.google.com/a/chromium.org/g/blink-dev/c/gmYffo5WOE8/m/OJxuQRP3AAAJ |
 | OpenAI retired the ChatGPT Atlas browser into its desktop app | 9 Aug 2026 | No Atlas mention found on this site | https://searchengineland.com/openai-chatgpt-atlas-deprecation-482003 |
 | First court cases under the European Accessibility Act in France (single source) | May to Jun 2026 | The accessibility tests matter to any client selling in the EU | https://www.pinmeto.com/news/eu-accessibility-act-enforcement-french-courts-2026/ *(unverified)* |
