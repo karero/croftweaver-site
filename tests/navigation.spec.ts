@@ -39,7 +39,7 @@ for (const path of PAGES) {
 }
 
 // Site-specific (not in the shipped suite): /partner-assets. The code a partner pastes must work. Each HTML snippet
-// is parsed as HTML, by the browser's own parser in a document that loads nothing: exactly one link, to this page,
+// is parsed as HTML, by the browser's own parser in a document that loads nothing: exactly one link, to the home page,
 // around the badge image (or around the word "Croftweaver" in the text-only snippet), and the file each snippet
 // names is the one its title promises. The HTML points at files on the partner's OWN site (a relative address):
 // the template of a Croftweaver site only allows images from itself (Content-Security-Policy), so a link to
@@ -66,7 +66,7 @@ const snippetsOf = (page: import('@playwright/test').Page) => page.locator('#foo
 test('partner assets: the code to paste works, and the downloads are exactly the files of the kit', async ({ page, request }) => {
   await page.goto('/partner-assets');
   const origin = new URL(SITE.url).origin;
-  const back = `${origin}/partner-assets?ref=badge`;
+  const back = `${origin}/?ref=badge`;
   const snippets = await snippetsOf(page);
   expect(snippets.map((s) => s.title).sort(), 'the snippets on the page differ from the ones this test knows').toEqual(Object.keys(SNIPPETS).sort());
   for (const s of snippets) {
@@ -101,7 +101,7 @@ test('partner assets: the code to paste works, and the downloads are exactly the
     const where = `HTML snippet "${title}":\n${code}`;
     expect(p.links.length, `${where}\nmust hold exactly one link`).toBe(1);
     const link = p.links[0]!;
-    expect(link.href, `${where}\ndoes not link back to this page`).toBe(back);
+    expect(link.href, `${where}\ndoes not link to the home page`).toBe(back);
     expect(p.imgsOutsideLinks, `${where}\nhas an image outside the link`).toBe(0);
     if (!uses.img) {
       expect(link.imgs.length, `${where}\nthe text-only snippet must not hold an image`).toBe(0);
@@ -125,7 +125,7 @@ test('partner assets: the code to paste works, and the downloads are exactly the
   for (const { title, code } of markdown) {
     const m = code.trim().match(/^\[!\[Built with Croftweaver\]\((\S+)\)\]\((\S+)\)$/);
     expect(m, `the Markdown snippet is not an image in a link, with the right description:\n${code}`).not.toBeNull();
-    expect(m![2], `the Markdown snippet does not link back to this page:\n${code}`).toBe(back);
+    expect(m![2], `the Markdown snippet does not link to the home page:\n${code}`).toBe(back);
     expect(m![1], `the Markdown snippet "${title}" uses the wrong file`).toBe(`${origin}/brand/badge/${SNIPPETS[title]!.img}`);
     toFetch.add(m![1]!);
   }
