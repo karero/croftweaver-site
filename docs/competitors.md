@@ -73,14 +73,17 @@ secondary source. Section 5 is opinion, and says so.
 
 - **No project found does all of what Croftweaver does**: positioning that tests enforce, a
   built site, the search and AI work by default, a test gate shipped into the site, and a loop
-  from Search Console and AI-answer checks after launch. Each competitor has one or two of these.
+  from Search Console and AI-answer checks after launch. Each competitor has some of these and
+  none has all five: website-build-kit comes closest on building and checks, with no positioning
+  step and no AI-answer work.
 - **The gap is reach and proof, not features.** Croftweaver has 6 GitHub stars. marketingskills
   has 54,623. On skills.sh, Croftweaver is still listed under its old name
   (`karero/website-builder`), about 7 installs per skill, and a search for "croftweaver" there
   finds nothing. It is in none of the big lists or directories checked.
 - **Watching whether AI names you is becoming a free feature.** Wix, Squarespace and HubSpot
-  give it away, Google and Bing now report AI impressions and citations themselves, and paid
-  tools start at about $25 a month. What stays scarce is *fixing* the site and re-testing it.
+  give it away (sources in sections 4 and 6), Google and Bing now report AI impressions and
+  citations themselves, and paid tools start at about $25 a month (Otterly, per a third-party
+  comparison: https://rankai.ai/articles/otterly-alternatives , *unverified*). What stays scarce is *fixing* the site and re-testing it.
 - **The closest competitor after launch is marketingskills.** Its "SEO operator" recipe runs
   SEO from the site's repository on a schedule and opens pull requests from Search Console
   data. **The closest on build and checks is website-build-kit**, which goes further than
@@ -104,7 +107,7 @@ https://github.com/wondelai/skills , https://github.com/nurkamol/website-build-k
 
 ✓ = has it. Partial = some of it. ✗ = not found. "Gap?" is about Croftweaver: **Gap** = one or
 more of the three has it and Croftweaver does not; **Lead** = Croftweaver has it and none of the
-three does; **Ahead** = Croftweaver has more of it than any of the three; **Shared gap** = none has it; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
+three does; **Ahead** = Croftweaver has more of it than any of the three; **Shared gap** = none has it; **Partial** = Croftweaver has some of it; **Closing** = done on `main`, not yet released; **None** = no gap, all comparable; **Out** = left out on purpose (see `/roadmap`, "Out, on purpose", and §4 of
 `POSITIONING.md`).
 
 **Install and reach**
@@ -146,10 +149,10 @@ three does; **Ahead** = Croftweaver has more of it than any of the three; **Shar
 | Capability | Croftweaver | marketingskills | Wondel | website-build-kit | Gap? |
 |---|---|---|---|---|---|
 | Metadata, sitemap, schema.org | ✓ with a test | Advice and skills | ✗ | ✓ from one data file | None |
-| `llms.txt` | ✓ with a coverage test | Recommended | ✗ | ✗ | Lead |
-| Weekly check whether AI assistants name you | ✓ four assistants plus Google's AI Mode and AI Overview | Partial: a manual method and paid tools | ✗ | ✗ | Lead |
+| `llms.txt` | ✓ with a coverage test | Recommended | ✗ | ✗ | Ahead |
+| Weekly check whether AI assistants name you | ✓ four assistants plus Google's AI Mode and AI Overview | Partial: a manual method and paid tools | ✗ | ✗ | Ahead |
 | Google's and Bing's own AI reports | ✗ not used yet | ✗ | ✗ | ✗ | Shared gap: none of the four |
-| Programmatic SEO | ✗ | ✓ | ✗ | ✗ | Out (probably) |
+| Programmatic SEO | ✗ | ✓ | ✗ | ✗ | Gap, not on the roadmap (owner to decide) |
 | Keyword research | Partial: Search Console data, optional SERP lookup | ✓ through paid tools | ✗ | ✗ | Partial |
 
 **Checks and launch**
@@ -194,15 +197,20 @@ Ranked by how directly they compete. Stars and dates from the GitHub API on 14 O
 | GEO Optimizer, https://github.com/Auriti-Labs/geo-optimizer-skill | A GEO audit, citation tracking and monitoring, with its own Astro integration | 1,064 stars, MIT | Overlaps the weekly AI check. Could be a part to use, not only a rival |
 | OpenSEO, https://github.com/every-app/open-seo | "Open source alternative to Semrush and Ahrefs", with skills and an MCP server | 23,532 stars | A possible data source for keyword research |
 | aaron-marketing-skills, https://github.com/aaron-he-zhu/aaron-marketing-skills | 120 marketing skills with an SEO and GEO layer; advises and audits | 2,947 stars | Competes for the same install and the same searches |
-| kostja94/marketing-skills and Pagina | 160 marketing skills; building pages goes to Pagina, which checks pages before it calls them done | 1,035 stars and 1 star | The closest idea to a test gate in this group |
+| kostja94/marketing-skills and Pagina | 160 marketing skills; building pages goes to Pagina, which checks pages before it calls them done | marketing-skills 1,035 stars, Pagina 1 star | The closest idea to a test gate in this group |
 | Design-first builders: website-building-skill, website-builder-setup | Builders for non-coders, focused on looks; no SEO | 8 and 356 stars | Same buyer, no search work. Their creator communities could be a channel |
 | Vendor skills: Vercel `agent-skills`, Cloudflare `skills`, Webflow `webflow-skills`, Sanity | Deploy, speed and CMS skills; none builds a content site | Vercel 32,385 stars; Cloudflare 3,056 | Astro has no official skills, only a docs MCP server and an agent-aware dev server since Astro 7.0 (https://docs.astro.build/en/guides/build-with-ai/) |
 
 Hosted builders, new in 2026:
 
-- **Wix Harmony** (21 January 2026): an AI agent plus the drag-and-drop editor. Wix's free AI
-  Visibility Overview dates from July 2025, and Claude can edit a Wix site through the Wix MCP
-  server. https://dev.wix.com/docs/api-reference/articles/ai-tools/wix-mcp/about-the-wix-mcp
+- **Wix Harmony** (21 January 2026): an AI agent plus the drag-and-drop editor.
+  https://www.techwyse.com/news/ai-search/wix-launches-harmony-ai-website-builder . Wix's free
+  AI Visibility Overview dates from July 2025:
+  https://www.nasdaq.com/press-release/wix-launches-ai-visibility-overview-full-generative-engine-optimization-support-ai .
+  Claude can edit a Wix site through the Wix MCP server:
+  https://dev.wix.com/docs/api-reference/articles/ai-tools/wix-mcp/about-the-wix-mcp
+- **HubSpot**: a free AEO grader, and a paid HubSpot AEO from 14 April 2026 (third-party
+  review, *unverified*): https://salesdorado.com/en/ai/review-hubspot-aeo-grader/
 - **Webflow AEO** (announced 13 April, generally available to Enterprise on 21 May 2026): it
   measures AI visibility, agents suggest fixes, and you publish. Its MCP server is on every plan.
   https://webflow.com/updates/introducing-webflow-aeo-for-enterprise
@@ -251,7 +259,7 @@ against it.
    people who install skill kits today.
 5. **Make "safe to install, safe to run" a point of its own.** Snyk found critical issues in
    13.4% of 3,984 public skills (February 2026), and a Lovable showcase app exposed 18,697 user
-   records (February 2026). A static site with no database, an MIT licence and a short page on
+   records (February 2026, https://www.theregister.com/2026/02/27/lovable_app_vulnerabilities ). A static site with no database, an MIT licence and a short page on
    what the skills run (commands, network calls, files outside the repository) speaks to both
    worries. It does not make installing safe by itself: claim only what that page documents,
    once it is checked against the scripts. *Against:* it is a hygiene point, and few will
@@ -278,7 +286,7 @@ and from a second and third proof site, more than from closing any row in the ta
 | Cloudflare recommends Workers with static assets for new projects and has a guide for moving from Pages. No end date for Pages found | 2026 | New features go to Workers. A Workers deploy path is worth planning | https://developers.cloudflare.com/workers/static-assets/migrate-from-pages/ |
 | Cloudflare's new defaults: on new domains, training and agent crawlers blocked on pages that show ads. Crawlers that do search and training together (Googlebot, Bingbot, Applebot) follow the strictest rule the owner sets | 15 Sep 2026 | Most Croftweaver sites show no ads. The real risk: an owner who blocks AI training in Cloudflare can block Googlebot too. Covered as advice: the toolkit's `docs/CLOUDFLARE-CHECKLIST.md`, "AI crawlers: allow", names both. Not detected automatically: its check script reads `robots.txt`, but the AI-crawler policy itself is a dashboard setting the script only lists for the owner to look at | https://blog.cloudflare.com/content-independence-day-ai-options/ (read 14 Oct) |
 | Search Console reports impressions in AI Overviews, AI Mode and Discover (no clicks, no queries), for some sites first | 3 Jun 2026 | Free first-party AI data the weekly loop does not read yet | https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports |
-| Bing Webmaster Tools reports citations in Copilot and Bing's AI answers; CSV export, no API | Feb 2026 | Real citation counts, better than asking assistants. A monthly download step would add them | https://searchengineland.com/bing-webmaster-tools-testing-new-ai-performance-report-468039 |
+| Bing Webmaster Tools reports citations in Copilot and Bing's AI answers; CSV export, no API | Feb 2026 | Real citation counts, better than asking assistants. A monthly download step would add them | https://searchengineland.com/bing-webmaster-tools-testing-new-ai-performance-report-468039 , https://www.practicalecommerce.com/bings-improved-ai-performance-section |
 | Reported: Google ended FAQ rich results for all sites. *Conflicting:* Google's documentation as read on 9 October 2026 (comment in `src/data/established-faq.ts`) still said they show for well-known government and health sites only | 7 May 2026 (reported) | Either way, a small site gets no FAQ rich result: no copy should promise one. FAQ markup still describes the page to machines. Re-read Google's page before relying on the stronger claim | https://searchengineland.com/google-to-remove-more-search-features-including-practice-problems-nutrition-facts-nearby-offers-and-more-464255 |
 | Google: `llms.txt` not needed for Search; Lighthouse 13.3 adds an "Agentic Browsing" audit that checks it; Ahrefs: 97% of files unread | May to June 2026 | See proposal 6 | https://ahrefs.com/blog/llmstxt-study/ , https://debugbear.com/blog/lighthouse-agentic-browsing |
 | AI Overviews cut clicks on the top result by about 58% (Ahrefs) | Updated Feb 2026 | Rankings alone no longer measure success; being named matters more | https://ahrefs.com/blog/ai-overviews-reduce-clicks-update |
@@ -286,7 +294,7 @@ and from a second and third proof site, more than from closing any row in the ta
 | skills.sh (`npx skills`) indexes skills by install, with security audits from Snyk, Socket and Gen | Since 20 Jan 2026 | Where people look for skills; Croftweaver's entry is under the old name | https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem |
 | Snyk's "ToxicSkills" audit of public skills | Feb 2026 | See proposal 5 | https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/ |
 | SKILL.md read by Codex, Gemini CLI, Antigravity, GitHub Copilot, Cursor and more | 2026 | Adding Cursor and Copilot may cost little | https://codelabs.developers.google.com/getting-started-with-antigravity-skills |
-| GEO tools: Profound raised $180M at $1.8B; Adobe closed its $1.9B purchase of Semrush; HubSpot's AEO grader is free | 15 Sep, 28 Apr, 14 Apr 2026 | See proposal 2 | https://www.vktr.com/digital-experience/profound-nabs-180m-to-scale-ai-marketing-platform/ |
+| GEO tools: Profound raised $180M at $1.8B (*unverified*, one secondary source); Adobe closed its $1.9B purchase of Semrush; HubSpot's AEO grader is free | 15 Sep, 28 Apr, 14 Apr 2026 | See proposal 2 | https://www.vktr.com/digital-experience/profound-nabs-180m-to-scale-ai-marketing-platform/ |
 | WebMCP in a Chrome origin trial (M149 to M156) | From May 2026 | Watch only: a content site has few tools to offer agents | https://groups.google.com/a/chromium.org/g/blink-dev/c/gmYffo5WOE8/m/OJxuQRP3AAAJ |
 | OpenAI retired the ChatGPT Atlas browser into its desktop app | 9 Aug 2026 | No Atlas mention found on this site | https://searchengineland.com/openai-chatgpt-atlas-deprecation-482003 |
 | First court cases under the European Accessibility Act in France (single source) | May to Jun 2026 | The accessibility tests matter to any client selling in the EU | https://www.pinmeto.com/news/eu-accessibility-act-enforcement-french-courts-2026/ *(unverified)* |
