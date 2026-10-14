@@ -124,7 +124,8 @@ applies there; instead of steps 2 to 4, only this:
   on; one that only changes `docs/` needs no look. GitHub also merges a commit pushed
   after that look, so this holds for everyone: before pushing to a pull request whose
   auto-merge is on, turn it off (`gh pr merge <number> --disable-auto`), and turn it on
-  again only once the new commit has had its look, where one is needed.
+  again only once the new commit has had its look, where one is needed (the owner's ask
+  for that pull request still stands).
 - **Preview before merging:** once the repo is connected to Cloudflare by git
   integration (`website-team-setup` §6 does that), every pull request gets its own
   preview address from Cloudflare, listed under the pull request's checks. Look at the
