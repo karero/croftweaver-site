@@ -5,11 +5,11 @@
 // ships a new release, update RELEASE (with the number of skills it had), the list, RECENT
 // and AS_OF together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
 // build stops when the list, the release's skill count and ADDED_SINCE do not add up.
-export const RELEASE = { version: '0.31', iso: '2026-10-12', label: '12 October 2026', skills: 34 } as const;
+export const RELEASE = { version: '0.32', iso: '2026-10-16', label: '16 October 2026', skills: 37 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
 // the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
 export const ADDED_SINCE: readonly string[] = [];
-export const AS_OF = { iso: '2026-10-12', label: '12 October 2026' } as const;
+export const AS_OF = { iso: '2026-10-16', label: '16 October 2026' } as const;
 
 export const STAGES = [
   { id: 'build', title: 'Build', intro: 'From a brief to a finished site.' },
@@ -26,10 +26,12 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'website-positioning', stage: 'build', does: 'Works out what you offer, for whom and in which market category, before any copy is written.', more: '/positioning' },
   { name: 'customer-research', stage: 'build', does: 'Collects and analyses what customers say, so the positioning rests on their words.' },
   { name: 'website-content-guide', stage: 'build', does: 'Sets the tone of voice and the trust signals that every page follows.' },
+  { name: 'website-tagline', stage: 'build', optional: true, does: 'Finds the short line under your logo with you, starting from what your business does for its customers.' },
   { name: 'website-story', stage: 'build', optional: true, does: 'Tells the home page as the story of your visitor, in seven sections.' },
   { name: 'copywriting', stage: 'build', does: 'Writes and rewrites page copy: headlines, calls to action, whole pages.' },
   { name: 'site-architecture', stage: 'build', does: 'Plans pages, navigation, addresses and internal links.' },
   { name: 'website-design-system', stage: 'build', does: 'Sets the visual standards: responsive images, dark mode, contrast in both themes.' },
+  { name: 'website-brand-kit', stage: 'build', optional: true, does: 'For an owner without colours or a logo: writes the requests for the design tool you like, checks what comes back for contrast in light and dark, then puts it into the site.' },
   { name: 'image', stage: 'build', does: 'Creates and optimizes images.' },
   { name: 'website-seo-geo', stage: 'build', does: 'The contract for every page head: title and description limits, share tags, canonical address, structured data, llms.txt.' },
   { name: 'schema-markup', stage: 'build', does: 'Adds and fixes structured data (schema.org JSON-LD).' },
@@ -54,6 +56,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
 
   { name: 'search-console-setup', stage: 'launch', does: 'Registers the live site with Google Search Console and Bing, submits the sitemap, turns on IndexNow.' },
   { name: 'business-listings-setup', stage: 'launch', optional: true, does: 'For a business with listings: claims Google Business Profile, Bing Places and directory entries, and checks that the profile links resolve.' },
+  { name: 'wordpress-inspector', stage: 'launch', optional: true, does: 'For a move from WordPress: counts the old site\'s posts, pages and addresses before the move, then names each old address that is missing on the new site or sent to its home page. It reads only and moves nothing.' },
   { name: 'website-team-setup', stage: 'launch', optional: true, does: 'Readies the repository for several people and assistants: collaborators, a rule that changes arrive as pull requests, automatic checks, previews.' },
 
   { name: 'search-console-insights', stage: 'grow', does: 'Reads your Search Console data: where you rank, what sits just below the first page, which pages are seen but not clicked. Also runs the optional weekly AI check.' },
@@ -73,7 +76,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
+  { version: '0.32', label: '16 October 2026', text: 'New sites count no visitors until you switch on Plausible, and with it on, your site counts each click on your email address. Of three new helpers, one gets you colours and a logo, one finds the short line under your logo, and one counts what a WordPress site holds before a move. Croftweaver now comes as a plugin for Claude Code and for Codex, and for a site on GitHub your assistant can set up Cloudflare, with your yes before it changes anything.' },
   { version: '0.31', label: '12 October 2026', text: 'The toolkit takes the name Croftweaver. It is the same toolkit under the same licence. The old address on GitHub leads to the new one, and the download is now called croftweaver.zip.' },
   { version: '0.30', label: '11 October 2026', text: 'A contact form that needs no account and no setup, a check that catches an empty slot or leftover filler text on a finished page, and a facts check that reads every page of a live site and shows where a figure no longer matches your list.' },
-  { version: '0.29', label: '29 September 2026', text: 'One prepaid key covers the weekly AI check for four assistants, and every run shows what it cost. Measured on 26 September 2026 through OpenRouter, a full weekly check for one site (42 questions) cost 0.72 US dollars, before the fee for topping up credit. Prices change.' },
 ] as const;

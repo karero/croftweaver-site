@@ -15,6 +15,10 @@ const prompt = [
   'Then install the Croftweaver skills, tell me when to restart or reopen you so the skills load, and continue from there: start a fresh site by running "new website" in a new, empty folder.',
 ].join(' ');
 
+const plugins = [
+  { assistant: 'Claude Code', command: `claude plugin marketplace add ${SITE.repo}.git\nclaude plugin install croftweaver@croftweaver` },
+  { assistant: 'Codex', command: `codex plugin marketplace add ${SITE.repo}.git\ncodex plugin add croftweaver@croftweaver` },
+];
 const clone = `git clone ${SITE.repo}.git\ncd croftweaver`;
 const installs = [
   { assistant: 'Claude Code', command: './scripts/install.sh', note: 'Links every skill into the folder Claude Code reads.' },
@@ -93,7 +97,33 @@ const questions = [
   </section>
 
   <section class="wrap" id="install">
-    <h2>Or install by hand</h2>
+    <h2>Or install it yourself</h2>
+    <p>
+      There are three ways. Use only one: with a plugin and a copy from one of the
+      other ways, your assistant lists every skill twice.
+    </p>
+    <h3>As a plugin</h3>
+    <p>
+      Your assistant installs Croftweaver itself, with no Node and no script. Run
+      these two lines in a terminal:
+    </p>
+    <dl class="installs">
+      {plugins.map((i) => (
+        <div>
+          <dt>{i.assistant}</dt>
+          <dd><pre tabindex="0"><code>{i.command}</code></pre></dd>
+        </div>
+      ))}
+    </dl>
+    <h3>With one command</h3>
+    <pre tabindex="0"><code>npm create croftweaver</code></pre>
+    <p>
+      It needs <a href="https://nodejs.org">Node</a> 22.12 or newer and runs in any
+      terminal, on Windows too. It downloads the newest release, checks that the
+      download arrived intact, and copies the skills to Claude Code. For Codex, add
+      <code>-- --codex</code>.
+    </p>
+    <h3>From the repository</h3>
     <p>Get the repository first:</p>
     <pre tabindex="0"><code>{clone}</code></pre>
     <p>Then run the installer for your assistant:</p>
@@ -109,8 +139,8 @@ const questions = [
       ))}
     </dl>
     <p>
-      Restart the assistant, open it in a new, empty folder, and say
-      <em>new website</em>.
+      Whichever way you chose, restart the assistant, open it in a new, empty folder,
+      and say <em>new website</em>.
     </p>
   </section>
 
@@ -127,11 +157,20 @@ const questions = [
     </ol>
     <p id="analytics">
       On analytics: Google Search Console shows how people find you on Google, and it
-      is free. If you also want visitor numbers, we recommend
-      <a href="https://plausible.io">Plausible</a>. Its Starter plan covers one site
+      is free. A new site counts no visitors until you say so. If you also want visitor
+      numbers, we recommend <a href="https://plausible.io">Plausible</a>, and your
+      assistant switches it on with you. Its Starter plan covers one site
       with up to 10,000 page views a month for 9 euros or US dollars a month, depending
       on where you are (<a href="https://plausible.io/#pricing">Plausible's prices</a>,
       read on <time datetime="2026-10-12">12 October 2026</time>).
+    </p>
+    <p>
+      With Plausible on, your site also shows from which pages visitors click your
+      email address: it counts each click as one <code>Email Tap</code>. Whether they
+      then write and send the mail, the site cannot know. Before
+      launch, add a goal of that name in Plausible; your assistant gives you the link.
+      Plausible can also count through Cloudflare, with no script in your visitors'
+      browsers. That way is new, and not yet tested with Plausible's paid cloud service.
     </p>
   </section>
 
@@ -139,9 +178,17 @@ const questions = [
     <h2>What happens then</h2>
     <p>
       The assistant works out with you what you offer and for whom, drafts the
-      pages, adds the search and AI work, and runs the tests. Then it helps you
-      publish. <a href="/skills">The skills, by stage</a> shows which skill does
-      which part, and <a href="/checks">the test gate</a> shows what is checked.
+      pages, adds the search and AI work, and runs the tests. If you have no colours
+      or logo yet, or no short line to put under the logo, it can help you find those
+      too. Then it helps you publish. <a href="/skills">The skills, by stage</a> shows
+      which skill does which part, and <a href="/checks">the test gate</a> shows what
+      is checked.
+    </p>
+    <p>
+      For a site on GitHub, your assistant can set up Cloudflare for you. It asks for
+      your yes before it changes anything, on setup day and again on launch day. A
+      checklist names the Cloudflare settings your site relies on, and a check reads
+      your live site and tells you what to change. The check changes nothing itself.
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
