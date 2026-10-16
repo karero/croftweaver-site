@@ -222,5 +222,6 @@ works out what you offer and for whom, and that it can tell the home page as you
 story, with a link to `/positioning`. The story layer is optional, so the sentence says "can".
 The owner chose "visitor", the word `/positioning` and the skills list use, over "customer".
 These are methods, not a measured result: the site shows no conversion figure, and the pivot
-claims none. Since release 0.32 the toolkit counts clicks on an email address (`/roadmap`,
-"Done in release 0.32"), but no figure from that count is on this site.
+claims none. Since release 0.32 the toolkit can count clicks on an email address, once
+Plausible is on (`/roadmap`, "Done in release 0.32"), but no figure from that count is on
+this site.
