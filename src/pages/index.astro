@@ -69,6 +69,7 @@ const maintainerSchema = {
 ---
 <Base title={SITE.name} schemas={[softwareSchema, maintainerSchema]} mainEntity={softwareId}>
   <section class="wrap hero">
+    <a class="oss" href={`${SITE.repo}/blob/main/LICENSE`}>Free and open source · MIT licence</a>
     <p class="kicker">Your AI assistant, guided by website skills</p>
     <h1>Weave websites that rank.</h1>
     <p class="lead">
@@ -456,6 +457,15 @@ const maintainerSchema = {
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
 
   section.hero { padding-top: 3rem; }
+  /* The open-source note: an <a>, not a <p>, so the kicker stays the first <p> in <main>
+     (tests/positioning.spec.ts reads it). */
+  .oss {
+    /* min-height: BRAND.md asks for tap targets of at least 44px. */
+    display: inline-flex; align-items: center; min-height: 44px; box-sizing: border-box;
+    margin: 0 0 1rem; padding: 0.3rem 0.9rem; border: 1px solid var(--accent);
+    border-radius: 999px; color: var(--accent); font-weight: 600; font-size: 0.95rem; text-decoration: none;
+  }
+  .oss:hover, .oss:focus-visible { background: var(--accent); color: var(--bg); }
   .kicker { margin: 0 0 0.6rem; color: var(--accent); font-weight: 600; }
   .hero h1 { font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1.08; margin: 0 0 0.6rem; }
   .hero .lead {
