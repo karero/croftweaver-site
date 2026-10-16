@@ -7,7 +7,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 const next = [
-  { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Most people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
+  { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
   { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Next are listings in Anthropic's and OpenAI's own plugin directories." },
   { title: 'Import of an existing site', text: 'Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests.' },
@@ -64,7 +64,7 @@ const out = [
   <section class="wrap" id="done">
     <h2>Done in release 0.32</h2>
     <ul class="steps">
-      <li><strong>A standard way to count enquiries.</strong> With Plausible on, your site counts each click on your email address as one <code>Email Tap</code>. With the usual script, it also counts each time the contact form asks the browser to open the visitor's mail program. New sites start with analytics off, so you switch Plausible on first.</li>
+      <li><strong>A standard way to count enquiries.</strong> With Plausible on, your site counts each click on your email address as one <code>Email Tap</code>. With the usual script, it also counts each time the contact form asks the browser to open the visitor's mail program. Whether a mail is then sent, the site cannot know. New sites start with analytics off, so you switch Plausible on first.</li>
       <li><strong>An install without Node.</strong> As a Claude Code plugin, Croftweaver needs no Node, no script and no folder to keep. A Codex plugin came with it. <a href="/start#install">The quickstart</a> has the commands.</li>
     </ul>
     <p>

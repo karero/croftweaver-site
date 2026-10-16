@@ -221,5 +221,6 @@ stays as it was. The pivot now answers the first job as well: it says that the a
 works out what you offer and for whom, and that it can tell the home page as your visitor's
 story, with a link to `/positioning`. The story layer is optional, so the sentence says "can".
 The owner chose "visitor", the word `/positioning` and the skills list use, over "customer".
-These are methods, not a measured result: the site shows no conversion figure (`/roadmap` says
-that nothing sets up a conversion to count), and the pivot claims none.
+These are methods, not a measured result: the site shows no conversion figure, and the pivot
+claims none. Since release 0.32 the toolkit counts enquiries (`/roadmap`, "Done in release
+0.32"), but no figure from that count is on this site.
