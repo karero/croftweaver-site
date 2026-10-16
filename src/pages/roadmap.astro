@@ -7,9 +7,9 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 const next = [
-  { title: 'A standard way to count enquiries', text: 'Cookieless analytics with one conversion event set up by default, so arrivals can be tied to enquiries.' },
+  { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Most people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
-  { title: 'An easier install', text: 'The Claude Code plugin, which waits for the next release, a Codex plugin, and a listing where people look for skills.' },
+  { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Next are listings in Anthropic's and OpenAI's own plugin directories." },
   { title: 'Import of an existing site', text: 'Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests.' },
 ];
 const later = [
@@ -48,9 +48,7 @@ const out = [
     <h2>Missing today</h2>
     <ul class="steps">
       <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
-      <li><strong>A standard way to count enquiries.</strong> Analytics is optional today: the interview offers a cookieless tool, and nothing sets up a conversion to count.</li>
       <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
-      <li><strong>An install without Node.</strong> One command, <code>npm create croftweaver</code>, installs the skills; it needs Node. The Claude Code plugin, which needs nothing else, waits for the next release.</li>
       <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
       <li><strong>Tested support beyond Claude Code.</strong> The guides for Codex and Antigravity exist; neither has been tested from start to finish.</li>
     </ul>
@@ -61,6 +59,18 @@ const out = [
     <ol class="steps">
       {next.map((item) => <li><strong>{item.title}.</strong> {item.text}</li>)}
     </ol>
+  </section>
+
+  <section class="wrap" id="done">
+    <h2>Done in release 0.32</h2>
+    <ul class="steps">
+      <li><strong>A standard way to count enquiries.</strong> With Plausible on, your site counts each click on your email address as one <code>Email Tap</code>. With the usual script, it also counts each time the contact form asks the browser to open the visitor's mail program. New sites start with analytics off, so you switch Plausible on first.</li>
+      <li><strong>An install without Node.</strong> As a Claude Code plugin, Croftweaver needs no Node, no script and no folder to keep. A Codex plugin came with it. <a href="/start#install">The quickstart</a> has the commands.</li>
+    </ul>
+    <p>
+      The rest of what the release brought is in
+      <a href={`${SITE.repo}/releases/tag/v0.32`}>its release notes</a>.
+    </p>
   </section>
 
   <section class="wrap" id="later">
