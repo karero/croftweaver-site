@@ -460,7 +460,9 @@ const maintainerSchema = {
   /* The open-source note: an <a>, not a <p>, so the kicker stays the first <p> in <main>
      (tests/positioning.spec.ts reads it). */
   .oss {
-    display: inline-block; margin: 0 0 1rem; padding: 0.3rem 0.9rem; border: 1px solid var(--accent);
+    /* min-height: BRAND.md asks for tap targets of at least 44px. */
+    display: inline-flex; align-items: center; min-height: 44px; box-sizing: border-box;
+    margin: 0 0 1rem; padding: 0.3rem 0.9rem; border: 1px solid var(--accent);
     border-radius: 999px; color: var(--accent); font-weight: 600; font-size: 0.95rem; text-decoration: none;
   }
   .oss:hover, .oss:focus-visible { background: var(--accent); color: var(--bg); }
