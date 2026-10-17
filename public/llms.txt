@@ -22,6 +22,8 @@
 - [Partner assets](https://croftweaver.com/partner-assets): the Built with Croftweaver badge, the logo and the icon to download, the code to put the badge in a footer, the rules for using them, and a request (not a condition) to credit Croftweaver with a link back.
 - [Privacy](https://croftweaver.com/privacy): privacy policy (GDPR).
 - [Imprint](https://croftweaver.com/imprint): legal disclosure (German § 5 DDG).
+- [Terms of Use](https://croftweaver.com/terms): the terms for using Croftweaver: free software under the MIT licence, given as it is; the services you sign up for have their own terms.
+- [Support](https://croftweaver.com/support): how to get help: GitHub issues for questions and bugs, email, and private reporting for security problems.
 
 ## Facts
 - Open source: https://github.com/karero/croftweaver (MIT licence)

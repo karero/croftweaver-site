@@ -35,6 +35,9 @@
 //      reading the page address or the referrer. This configuration measures more
 //      than bare counting. Any added embed, tool or measured data needs this page
 //      and that position re-checked before it ships.
+// Section 6 (added 17 October 2026, for the plugin directories that ask for a privacy
+// address): what the Croftweaver software sends. Its facts come from the toolkit's
+// docs/WHAT-THE-SKILLS-RUN.md (Network calls, Telemetry); change both together.
 // Still open:
 //   3. German-market sites: translate this page into German (Datenschutzerklaerung)
 //      and serve it at /datenschutz; German law expects legal pages in German.
@@ -52,8 +55,9 @@ import { SITE, COMPANY } from '../config';
   <section class="wrap">
     <h1>Privacy Policy</h1>
     <p>
-      Last updated: 14 October 2026. This page explains which personal data this
-      website processes, why, and which rights you have.
+      Last updated: 17 October 2026. This page explains which personal data this
+      website processes, why, and which rights you have. Section 6 covers the
+      Croftweaver software itself: its skills, plugins and installer.
     </p>
 
     <h2>1. Controller</h2>
@@ -168,7 +172,38 @@ import { SITE, COMPANY } from '../config';
       <EmailLink address={COMPANY.email} subject="Privacy request" text="email" /> to do so.
     </p>
 
-    <h2>6. Changes to this page</h2>
+    <h2>6. The Croftweaver software</h2>
+    <p>
+      The Croftweaver skills, its plugins and its installer run on your own computer;
+      the skills and plugins run inside the AI assistant you choose. They send us no
+      usage data, no error reports, and nothing from your site or your files. Two tools
+      a Croftweaver site uses, Astro and Wrangler, send anonymous usage data to their
+      own makers unless you switch that off; the toolkit's documentation, linked below,
+      says how.
+    </p>
+    <p>
+      You download Croftweaver from GitHub, and the installer also comes from the npm
+      registry. Both handle that download under their own privacy terms.
+    </p>
+    <p>
+      Some skills contact outside services. Many of these calls use your own account or
+      key, for example with Google Search Console, GitHub, Cloudflare or an AI service
+      for a check or a review; others read public web pages or download packages and
+      programs. The data goes from your computer to that service, not to us. Each
+      service is responsible for that data under its own terms. The same holds for your
+      AI assistant, which is a separate product. The toolkit's documentation,
+      <a href="https://github.com/karero/croftweaver/blob/main/docs/WHAT-THE-SKILLS-RUN.md">What the skills run</a>,
+      lists which services each skill contacts and what it sends.
+    </p>
+    <p>
+      After launch, the assistant asks you once whether you want a "Built with
+      Croftweaver" link in your footer. Only if you say yes does it fetch the badge from
+      this website, which shows up in our server logs as described in section 2. When a
+      visitor of your site follows that link, the visit is counted on this website as
+      described in section 3.
+    </p>
+
+    <h2>7. Changes to this page</h2>
     <p>
       We update this page whenever the data processing on this website changes,
       and we adjust the date at the top.
