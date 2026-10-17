@@ -1,0 +1,56 @@
+---
+// Support page: where to ask for help with Croftweaver. Added on 2026-10-17 because
+// OpenAI's plugin directory asks every listing for a support address; the owner asked
+// for "a page with some blabla and hello@croftweaver.com". It promises no answer time
+// on purpose: none was decided. Security reports go to GitHub's private reporting, as
+// the toolkit's SECURITY.md says.
+import Base from '../layouts/Base.astro';
+import EmailLink from '../components/EmailLink.astro';
+import { COMPANY } from '../config';
+---
+<Base
+  title="Support"
+  description="How to get help with Croftweaver: ask a question or report a bug on GitHub, write to us by email, and report a security problem privately."
+  image="/images/og/support.jpg">
+  <section class="wrap">
+    <h1>Support</h1>
+    <p>
+      Croftweaver is free, open-source software. If something does not work, or you
+      are not sure how to go on, ask. These are the ways to reach us.
+    </p>
+
+    <h2>Questions and bugs</h2>
+    <p>
+      Ask on GitHub: open an issue at
+      <a href="https://github.com/karero/croftweaver/issues">github.com/karero/croftweaver/issues</a>.
+      Issues are public, so others with the same question find the answer too.
+      Leave out keys, passwords and anything about your customers.
+    </p>
+    <p>An issue is easiest to answer when it says:</p>
+    <ul>
+      <li>which release of Croftweaver you use (the newest is on the <a href="https://github.com/karero/croftweaver/releases/latest">releases page</a>),</li>
+      <li>which AI assistant you work with, for example Claude Code, Codex or Antigravity,</li>
+      <li>what you asked the assistant to do,</li>
+      <li>what happened, and what you expected instead.</li>
+    </ul>
+    <p>
+      Before you write, it is worth updating to the newest release: the problem may
+      already be fixed. The <a href="/start">quickstart</a> covers installing and the first site.
+    </p>
+
+    <h2>By email</h2>
+    <p>
+      For anything you would rather not post in public, write to
+      <EmailLink address={COMPANY.email} subject="Croftweaver support" />.
+    </p>
+
+    <h2>Security problems</h2>
+    <p>
+      Please do not report a security problem in a public issue. Use GitHub's
+      <a href="https://github.com/karero/croftweaver/security/advisories/new">private vulnerability reporting</a>
+      instead: only the maintainers see the report until it is fixed. What the skills
+      run on your computer, and which services they contact, is listed in
+      <a href="https://github.com/karero/croftweaver/blob/main/docs/WHAT-THE-SKILLS-RUN.md">What the skills run</a>.
+    </p>
+  </section>
+</Base>

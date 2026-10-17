@@ -78,6 +78,8 @@ PAGES: list[tuple[str, str, list[str]]] = [
     ("positioning", "Positioning first", ["What your site says,", "decided before the copy."]),
     ("partner-assets", "Partner assets", ["Badge, logo and icon", "for sites built with Croftweaver."]),
     ("about", "About Croftweaver", ["A note from the maintainer,", "and who he is."]),
+    ("terms", "Terms of Use", ["Free software under the MIT licence,", "used as it is."]),
+    ("support", "Support", ["Questions, bugs and security reports:", "where to reach us."]),
     # ("about",    "What we do",  ["One clear promise —", "for the people it's for."]),
     # ("services", "Services",    ["What you get,", "in plain words."]),
 ]

@@ -1,0 +1,82 @@
+---
+// Terms page. Added on 2026-10-17 because OpenAI's plugin directory asks every listing
+// for a terms address; the owner's instruction: "refer to MIT license". So the page
+// adds no terms of its own to the software: the MIT licence in the repository is the
+// licence, and this page explains it in plain words and points to it. What the page
+// says about the user's own site and the services they sign up for restates facts from
+// the toolkit's docs/WHAT-THE-SKILLS-RUN.md; it creates no new duty.
+// Still open, for the owner (not legal advice; have it reviewed when in doubt):
+//   1. Whether a liability clause under German law is wanted beside the licence's
+//      own "as is" wording. The page adds none.
+//   2. Governing law and place of jurisdiction: the page names none.
+//   3. A German version, as for /privacy.
+import Base from '../layouts/Base.astro';
+import EmailLink from '../components/EmailLink.astro';
+import { COMPANY } from '../config';
+---
+<Base
+  title="Terms of Use"
+  description="The terms for using Croftweaver: free software under the MIT licence, used as it is, with your own site and the services you choose in your hands."
+  image="/images/og/terms.jpg">
+  <section class="wrap">
+    <h1>Terms of Use</h1>
+    <p>
+      Last updated: 17 October 2026. This page covers the Croftweaver software (its
+      skills, its plugins and its installer) and this website.
+    </p>
+
+    <h2>1. The software is free, under the MIT licence</h2>
+    <p>
+      Croftweaver is open source under the MIT licence. You may use it, copy it, change
+      it, share it and sell work made with it, also for clients and commercially, at no
+      cost. The one condition: keep the copyright notice and the licence text in every
+      copy of the software or of a substantial part of it.
+    </p>
+    <p>
+      The licence itself is in the repository:
+      <a href="https://github.com/karero/croftweaver/blob/main/LICENSE">LICENSE</a>.
+      Where this page and the licence differ, the licence applies. A few skills build on
+      other people's open-source work; their licences are listed in
+      <a href="https://github.com/karero/croftweaver/blob/main/THIRD-PARTY-LICENSES.md">THIRD-PARTY-LICENSES.md</a>.
+    </p>
+
+    <h2>2. As it is</h2>
+    <p>
+      The licence gives the software "as is", without warranty of any kind. We work to
+      make the skills careful and test them, but we cannot promise that they suit your
+      purpose or that they have no faults. Read the licence for the exact wording.
+    </p>
+
+    <h2>3. Your site is yours</h2>
+    <p>
+      The skills run on your own computer, inside the AI assistant you choose. What they
+      build belongs to you, and so does the responsibility for it: the texts, the images,
+      the claims on your pages and your legal pages, such as an imprint or a privacy
+      policy. Check what your assistant writes before you publish it.
+    </p>
+
+    <h2>4. Other services have their own terms</h2>
+    <p>
+      Croftweaver works with services you sign up for yourself, for example GitHub,
+      Cloudflare, Google Search Console and the AI assistant you use. Your agreement with
+      each of them is your own, under their terms, and any fees go to them. We are not
+      part of those agreements. Which services each skill contacts is listed in
+      <a href="https://github.com/karero/croftweaver/blob/main/docs/WHAT-THE-SKILLS-RUN.md">What the skills run</a>.
+    </p>
+
+    <h2>5. This website</h2>
+    <p>
+      We write the pages on croftweaver.com with care, but they can be out of date.
+      Links to other websites lead to content we do not control. Who runs this website is
+      in the <a href="/imprint">imprint</a>; how it handles personal data is in the
+      <a href="/privacy">privacy policy</a>.
+    </p>
+
+    <h2>6. Changes and contact</h2>
+    <p>
+      We update this page when something here changes, and we adjust the date at the top.
+      Questions about these terms: write to
+      <EmailLink address={COMPANY.email} subject="Terms of Use" />.
+    </p>
+  </section>
+</Base>
