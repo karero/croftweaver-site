@@ -13,6 +13,7 @@ export const PAGES = [
   '/compare',
   '/roadmap',
   '/established-sites',
+  '/from-wordpress',
   '/partner-assets',
   '/about',
   '/privacy',

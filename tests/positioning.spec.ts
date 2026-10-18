@@ -43,6 +43,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/compare': { term: 'alternatives' },
   '/roadmap': { term: 'roadmap' },
   '/established-sites': { term: 'established sites' },
+  '/from-wordpress': { term: 'WordPress to Astro' },
   '/partner-assets': { term: 'partner assets' },
   '/about': { term: 'maintainer' },
 };
