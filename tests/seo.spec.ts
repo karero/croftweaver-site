@@ -205,6 +205,12 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(person.worksFor?.['@id']).toBe(org['@id']);
   await expect(page.locator(new URL(person.url).hash), "the Person's address is a section of this page").toHaveCount(1);
 
+  // An address that identifies Daniel or the software is not the company's: the Organization
+  // shares none with the Person or the software node (owner decision, 2026-10-13).
+  for (const url of org.sameAs ?? []) {
+    expect([...(person.sameAs ?? []), ...(software.sameAs ?? []), software.codeRepository], `the Organization's sameAs ${url} names Daniel or the software`).not.toContain(url);
+  }
+
   const described = new Set(nodes.map((n) => n['@id']).filter(Boolean));
   for (const ref of references(nodes)) expect(described.has(ref), `"${ref}" is pointed at, so a node on the home page must describe it`).toBe(true);
 });
