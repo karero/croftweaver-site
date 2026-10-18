@@ -57,8 +57,10 @@ the body copy true:
   recommend the site.
 - **"Thirteen test suites" means thirteen spec files**, each with several assertions. A
   count in copy is rendered from the suite itself, never typed.
-- **Assistants:** write "install guides for three assistants" until there is dated
-  end-to-end evidence for Codex and Antigravity; then "runs in".
+- **Assistants:** write "install guides for three assistants", developed and used with
+  Claude Code, and Codex and Antigravity each tested from start to finish on one site (the
+  maintainer's word, 18 October 2026; no written record yet). "Runs in" waits for a dated,
+  written test record.
 - **Comparisons** are factual, sourced and dated. Never "the only".
 - **"GEO"** is explained once per page where it appears (how AI assistants read and
   cite a site).
