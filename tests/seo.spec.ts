@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
+import { RELEASE } from '../src/data/skills';
 import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -190,6 +191,7 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(software['@id']).not.toBe(org['@id']);
   expect(software.name).toBe(SITE.name);
   expect(software.codeRepository).toBe(SITE.repo);
+  expect(software.version, 'the version is the release the footer names').toBe(RELEASE.version);
 
   const website = one(nodes, 'WebSite');
   expect(website.publisher?.['@id'], 'the operator publishes the website').toBe(org['@id']);

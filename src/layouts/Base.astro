@@ -15,6 +15,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import { SITE, COMPANY, ANALYTICS, SAME_AS, KNOWS_ABOUT, ogLocaleFor, schemaId } from '../config';
+import { RELEASE } from '../data/skills';
 
 interface Props {
   title: string;
@@ -161,6 +162,8 @@ const ogLocale = ogLocaleFor(lang);
       <a href="/why">Why</a>
       <a href="/compare">Alternatives</a>
       <a href="/from-wordpress">From WordPress</a>
+      <a href="/positioning">Positioning</a>
+      <a href="/more-proof">More proof</a>
       <a href="/roadmap">Roadmap</a>
       <a href="/partner-assets">Partner assets</a>
       <a href="/about">About</a>
@@ -168,6 +171,9 @@ const ogLocale = ogLocaleFor(lang);
       <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms of Use</a>
       <a href="/support">Support</a>
+      <!-- The current toolkit release, read from src/data/skills.ts, so it changes with the release update there.
+           The home page's SoftwareSourceCode node carries the same version. -->
+      <p class="release">Current release: Croftweaver {RELEASE.version}, <time datetime={RELEASE.iso}>{RELEASE.label}</time>. <a href={`${SITE.repo}/releases/tag/v${RELEASE.version}`}>Release notes on GitHub</a>.</p>
       <!-- Where Croftweaver comes from (owner, 2026-10-12): the first site built this way. -->
       <p class="credit">Croftweaver grew out of building the <a href="https://genai-wednesday.de/">GenAI Wednesday</a> website in March 2026.</p>
     </footer>
