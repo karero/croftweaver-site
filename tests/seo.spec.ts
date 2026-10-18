@@ -192,6 +192,7 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(software.name).toBe(SITE.name);
   expect(software.codeRepository).toBe(SITE.repo);
   expect(software.version, 'the version is the release the footer names').toBe(RELEASE.version);
+  expect(software.sameAs, "the repository identifies the software, so it is the software's sameAs").toContain(SITE.repo);
 
   const website = one(nodes, 'WebSite');
   expect(website.publisher?.['@id'], 'the operator publishes the website').toBe(org['@id']);

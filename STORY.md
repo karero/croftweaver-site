@@ -169,8 +169,9 @@ him, read on 2026-10-13 at https://m-squad.com/company/team and linked from the 
 co-founded M-Squad in 2001 and leads it, he has worked in product development for mobile and
 telecom for more than 20 years, and he built GenAI Wednesday and still co-organizes it in
 Munich. If that profile changes, read this section again, and the same facts on `/about`. The home page's structured data has
-a Person node for him that points at this section; his LinkedIn profile is in that node only,
-not on the page (owner, 2026-10-13).
+a Person node for him that points at this section; his LinkedIn profile and GitHub account are in
+that node and, since 2026-10-18, linked on `/about` (until then LinkedIn was in the node only,
+owner, 2026-10-13).
 
 ## Changes on 2026-10-14 (owner)
 

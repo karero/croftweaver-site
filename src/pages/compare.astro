@@ -20,7 +20,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
     </p>
     <p class="note">
       Every statement about another product restates what its own page says and
-      links to it. All links were checked on
+      links to it. All links in the groups below were checked on
       <time datetime={CHECKED.iso}>{CHECKED.label}</time>. Prices and plans change.
     </p>
     <div class="cta">
@@ -29,7 +29,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
   </section>
 
   <section class="wrap" id="short">
-    <h2>The short answer</h2>
+    <h2>Which to choose, in short</h2>
     <ul class="steps">
       {SHORT.map((s) => (
         <li><strong>Choose {'url' in s ? <a href={s.url}>{s.choose}</a> : 'href' in s ? <a href={s.href}>{s.choose}</a> : s.choose} when</strong> {s.when}</li>
