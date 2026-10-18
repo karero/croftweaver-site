@@ -19,8 +19,10 @@ const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordp
 // The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
 const scores = PROOF.map((p) => p.performance);
 const [low, high] = [Math.min(...scores), Math.max(...scores)];
-const count = ['', 'one', 'two', 'three', 'four', 'five', 'six'][PROOF.length] || String(PROOF.length);
-const measured = PROOF.length === 1 ? 'The one site measured' : `The ${count} sites measured`;
+// Typed as a number: PROOF is a fixed tuple today, and the wording must still hold when it changes.
+const siteCount: number = PROOF.length;
+const count = ['', 'one', 'two', 'three', 'four', 'five', 'six'][siteCount] || String(siteCount);
+const measured = siteCount === 1 ? 'The one site measured' : `The ${count} sites measured`;
 const speedFigure = `${measured} on ${PROOF_MEASURED.label} ${low === high ? `scored ${low}` : `ranged from ${low} to ${high}`} for performance on mobile.`;
 
 const fits = [
