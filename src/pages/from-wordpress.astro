@@ -225,7 +225,7 @@ const cannotSee = [
     <h2>Questions and answers</h2>
     {WORDPRESS_FAQ.map((item) => (
       <div class="faq-item">
-        <h4>{item.q}</h4>
+        <h3>{item.q}</h3>
         <div class="faq-answer" set:html={item.a} />
       </div>
     ))}
@@ -271,6 +271,6 @@ const cannotSee = [
   th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
   tbody th { font-weight: 600; }
   .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
-  .faq-item h4 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
+  .faq-item h3 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
   .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
 </style>

@@ -267,7 +267,8 @@ for (const path of ['/established-sites', '/from-wordpress']) {
     await page.goto(path);
     const [faq] = await faqMarkup(page);
     expect(faq, `${path} must carry FAQPage markup`).toBeTruthy();
-    const visible = (await page.locator('#faq h4').allTextContents()).map((q) => q.trim());
+    // A question is the heading inside its .faq-item: h4 under a group heading, or h3 where there are no groups.
+    const visible = (await page.locator('#faq .faq-item > :is(h3, h4)').allTextContents()).map((q) => q.trim());
     expect(new Set(visible).size, 'a question appears twice in the FAQ').toBe(visible.length);
     expect(faq.mainEntity.map((q: { name: string }) => q.name)).toEqual(visible);
   });
