@@ -10,18 +10,18 @@
 // dispute stays off the page on purpose (owner-approved plan, 2026-10-18).
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { WORDPRESS_FAQ, wordpressFaqSchema } from '../data/wordpress-faq';
+import { WORDPRESS_FAQ, wordpressFaqSchema, EMDASH_POST } from '../data/wordpress-faq';
 import { PROOF, PROOF_MEASURED } from '../data/proof';
 
 // The page describes the helper as released in 0.32, so the link is pinned to that tag.
 const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector';
-const EMDASH_POST = 'https://blog.cloudflare.com/emdash-wordpress/';
 
 // The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
 const scores = PROOF.map((p) => p.performance);
 const [low, high] = [Math.min(...scores), Math.max(...scores)];
-const sitesWord = ['no', 'one', 'two', 'three', 'four', 'five', 'six'][PROOF.length] ?? String(PROOF.length);
-const speedFigure = `The ${sitesWord} sites measured on ${PROOF_MEASURED.label} scored ${low === high ? low : `${low} or ${high}`} for performance on mobile.`;
+const count = ['', 'one', 'two', 'three', 'four', 'five', 'six'][PROOF.length] || String(PROOF.length);
+const measured = PROOF.length === 1 ? 'The one site measured' : `The ${count} sites measured`;
+const speedFigure = `${measured} on ${PROOF_MEASURED.label} ${low === high ? `scored ${low}` : `ranged from ${low} to ${high}`} for performance on mobile.`;
 
 const fits = [
   'You use WordPress mainly for pages and posts: a business site, a practice, a consultancy, a blog.',
@@ -58,7 +58,7 @@ const reasons = [
 const changes = [
   { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare Pages. No database, no admin login, no plugins running on a server.', limit: 'A small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day. The site also depends on packages from npm, which still need security updates.' },
   { item: 'Updates', text: 'A new site names three packages directly, about 350 with everything they bring along. The launch checklist switches on GitHub’s security alerts for them.', limit: 'Fewer moving parts, not none. Version updates are not automatic.' },
-  { item: 'Speed', text: `Static pages, with image sizes and formats checked by a test. ${speedFigure}`, limit: 'Measured on one day, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
+  { item: 'Speed', text: `Static pages, with image sizes and formats checked by a test. ${speedFigure}`, limit: 'One PageSpeed run per site, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
   { item: 'Design', text: 'No page builder. The pages are plain files your assistant edits, with one set of colours, type and spacing.', limit: 'Pages laid out in a builder are rebuilt, not converted.' },
   { item: 'Search and AI assistants', text: 'Titles, descriptions, structured data and an llms.txt file in place from the first build, kept in place by tests. After launch, an optional weekly check asks four AI assistants whether they name your site.', limit: 'The weekly check needs paid keys for the assistants. Nothing here promises a ranking or a mention.' },
   { item: 'Where the site lives', text: 'Plain files in your own GitHub repository, under the MIT licence.', limit: 'You still rely on GitHub, Cloudflare, Astro and your assistant’s maker. Leaving any of them is possible, and takes work.' },
@@ -93,9 +93,9 @@ const move = [
     say: 'Write a 301 redirect for each old address we decided to move.',
   },
   {
-    title: 'Check every old address',
+    title: 'Check each address on the list',
     text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
-    say: 'Check every old address against the preview.',
+    say: 'Check each old address on the list against the preview.',
   },
   {
     title: 'Launch, then watch',

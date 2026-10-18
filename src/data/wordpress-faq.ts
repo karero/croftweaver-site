@@ -6,6 +6,9 @@
 // /established-sites, so both pages turn answers into markup text the same way.
 import { plain, type FaqItem } from './established-faq';
 
+// Cloudflare's own announcement of EmDash: the source for "from Cloudflare" here and on the page.
+export const EMDASH_POST = 'https://blog.cloudflare.com/emdash-wordpress/';
+
 export const WORDPRESS_FAQ: FaqItem[] = [
   {
     q: 'Will I lose my Google rankings?',
@@ -33,7 +36,7 @@ export const WORDPRESS_FAQ: FaqItem[] = [
   },
   {
     q: 'Should I look at EmDash instead?',
-    a: '<p>If you want a content system with an admin screen and an importer for WordPress, yes. EmDash is Cloudflare’s open-source content system built on Astro (<a href="https://blog.cloudflare.com/emdash-wordpress/">Cloudflare’s announcement</a>). Its README, read on 18 October 2026, describes a full admin panel and imports posts, pages, media and taxonomies from WordPress: <a href="https://github.com/emdash-cms/emdash">EmDash on GitHub</a>. Croftweaver suits you if you would rather keep the site as plain files, change it with your assistant and have tests run on every change.</p>',
+    a: `<p>If you want a content system with an admin screen and an importer for WordPress, yes. EmDash is Cloudflare’s open-source content system built on Astro (<a href="${EMDASH_POST}">Cloudflare’s announcement</a>). Its README, read on 18 October 2026, describes a full admin panel and imports posts, pages, media and taxonomies from WordPress: <a href="https://github.com/emdash-cms/emdash">EmDash on GitHub</a>. Croftweaver suits you if you would rather keep the site as plain files, change it with your assistant and have tests run on every change.</p>`,
   },
 ];
 
