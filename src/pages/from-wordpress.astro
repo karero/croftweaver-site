@@ -11,8 +11,17 @@
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 import { WORDPRESS_FAQ, wordpressFaqSchema } from '../data/wordpress-faq';
+import { PROOF, PROOF_MEASURED } from '../data/proof';
 
-const INSPECTOR = 'https://github.com/karero/croftweaver/tree/main/skills/wordpress-inspector';
+// The page describes the helper as released in 0.32, so the link is pinned to that tag.
+const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector';
+const EMDASH_POST = 'https://blog.cloudflare.com/emdash-wordpress/';
+
+// The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
+const scores = PROOF.map((p) => p.performance);
+const [low, high] = [Math.min(...scores), Math.max(...scores)];
+const sitesWord = ['no', 'one', 'two', 'three', 'four', 'five', 'six'][PROOF.length] ?? String(PROOF.length);
+const speedFigure = `The ${sitesWord} sites measured on ${PROOF_MEASURED.label} scored ${low === high ? low : `${low} or ${high}`} for performance on mobile.`;
 
 const fits = [
   'You use WordPress mainly for pages and posts: a business site, a practice, a consultancy, a blog.',
@@ -47,9 +56,9 @@ const reasons = [
 ];
 
 const changes = [
-  { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare Pages. No database, no admin login, no plugins running on a server.', limit: 'A small function of the site’s own runs on each request, and the site depends on packages from npm, which still need security updates.' },
+  { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare Pages. No database, no admin login, no plugins running on a server.', limit: 'A small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day. The site also depends on packages from npm, which still need security updates.' },
   { item: 'Updates', text: 'A new site names three packages directly, about 350 with everything they bring along. The launch checklist switches on GitHub’s security alerts for them.', limit: 'Fewer moving parts, not none. Version updates are not automatic.' },
-  { item: 'Speed', text: 'Static pages, with image sizes and formats checked by a test. The three sites measured on 4 October 2026 scored 99 or 100 for performance on mobile.', limit: 'Three sites on one day, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
+  { item: 'Speed', text: `Static pages, with image sizes and formats checked by a test. ${speedFigure}`, limit: 'Measured on one day, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
   { item: 'Design', text: 'No page builder. The pages are plain files your assistant edits, with one set of colours, type and spacing.', limit: 'Pages laid out in a builder are rebuilt, not converted.' },
   { item: 'Search and AI assistants', text: 'Titles, descriptions, structured data and an llms.txt file in place from the first build, kept in place by tests. After launch, an optional weekly check asks four AI assistants whether they name your site.', limit: 'The weekly check needs paid keys for the assistants. Nothing here promises a ranking or a mention.' },
   { item: 'Where the site lives', text: 'Plain files in your own GitHub repository, under the MIT licence.', limit: 'You still rely on GitHub, Cloudflare, Astro and your assistant’s maker. Leaving any of them is possible, and takes work.' },
@@ -65,7 +74,7 @@ const yourJob = [
 const move = [
   {
     title: 'Count the old site',
-    text: 'The helper asks the live WordPress site, from outside and without a login, how many posts, pages and other records it holds. It writes every address it finds into a list, and names page builders, form plugins and leftover shortcodes. It reads only, obeys robots.txt and pauses one second between requests.',
+    text: 'The helper asks the live WordPress site, from outside and without a login, how many posts, pages and other records it holds. It writes each address it finds into a list, and names page builders, form plugins and leftover shortcodes. If its count is incomplete, it says so and names each gap. It reads only, obeys robots.txt and pauses one second between requests; its default of 100 requests covers a site of a few thousand records, and a larger site needs the limit raised.',
     say: 'Count what example.com holds before we move it.',
   },
   {
@@ -85,7 +94,7 @@ const move = [
   },
   {
     title: 'Check every old address',
-    text: 'Before the switch, the helper asks the new site for each old address and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
+    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
     say: 'Check every old address against the preview.',
   },
   {
@@ -103,7 +112,7 @@ const cannotSee = [
 ---
 <Base
   title="WordPress to Astro, with your AI assistant"
-  description="Moving from WordPress to Astro? Your AI assistant rebuilds the site with website skills, counts the old site first and checks each old address after the move."
+  description="Moving from WordPress to Astro? Your AI assistant rebuilds the site page by page, counts the old site first and checks the addresses it found after the move."
   image="/images/og/from-wordpress.jpg"
   schemas={[wordpressFaqSchema]}
 >
@@ -113,7 +122,7 @@ const cannotSee = [
       Croftweaver’s website skills help your AI coding assistant move a WordPress
       content site to a static Astro site you own. There is no import: you and your
       assistant rebuild the pages. A helper counts the old site before the move and
-      checks every old address after it.
+      checks each old address it found after it.
     </p>
     <div class="cta">
       <a class="btn primary" href="#move">See the move, step by step</a>
@@ -204,7 +213,8 @@ const cannotSee = [
       The helper’s two scripts are covered by 87 automated tests, run on every pull
       request to the toolkit. Those tests use stand-in sites, not a real WordPress site, and no
       WordPress site has yet been moved with Croftweaver from start to finish. This
-      section will show the first real move, with its numbers and its date.
+      section will show the first trial on a real WordPress site: the count, and its
+      addresses checked against a preview, with the date and the numbers.
     </p>
     <p>
       What a site built with Croftweaver achieves after launch is on
@@ -215,7 +225,7 @@ const cannotSee = [
   <section class="wrap" id="other-ways">
     <h2>Other ways to leave WordPress</h2>
     <ul class="steps">
-      <li><strong>An Astro content system with an admin screen.</strong> <a href="https://github.com/emdash-cms/emdash">EmDash</a>, open source from Cloudflare, imports from WordPress (its README, read on 18 October 2026).</li>
+      <li><strong>An Astro content system with an admin screen.</strong> <a href={EMDASH_POST}>EmDash</a>, open source from Cloudflare and built on Astro, imports from WordPress (Cloudflare’s announcement, and the <a href="https://github.com/emdash-cms/emdash">project’s README</a>, read on 18 October 2026).</li>
       <li><strong>A hosted builder.</strong> Wix, Squarespace, Webflow and Framer host the site and give you a visual editor, for a monthly fee. <a href="/compare">The alternatives page</a> compares them.</li>
       <li><strong>A static copy of the WordPress site.</strong> Cloudflare’s own guide exports one with a WordPress plugin and uploads it; each change means a new export (<a href="https://developers.cloudflare.com/pages/how-to/deploy-a-wordpress-site/">Cloudflare’s guide</a>, read on 18 October 2026).</li>
     </ul>

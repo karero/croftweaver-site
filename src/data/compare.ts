@@ -67,10 +67,7 @@ export const GROUPS = [
     ],
     chooseThem: 'You want one focused SEO or AI-search audit (the two SEO skills), you are moving off WordPress (website-build-kit), or you want marketing help beyond a website (marketingskills, the Wondel.ai skills).',
     chooseCroftweaver: 'You want one suite that builds the site, does the search and AI work by default, runs its tests before each push and on each pull request, and includes tools that read your Search Console data and point to the next edits. Its checks and measurements also work on a site that is already live, on any stack, without a rebuild; the ready-made test suite needs the Croftweaver starter.',
-    more: [
-      { href: '/established-sites', label: 'Croftweaver for established sites' },
-      { href: '/from-wordpress', label: 'Moving from WordPress' },
-    ],
+    more: { href: '/established-sites', label: 'Croftweaver for established sites' },
     // Owner decision, 2026-10-14: present Croftweaver as the layer that builds and tests
     // the website, next to marketingskills, not as its rival. The clause about
     // marketingskills restates its README, read on that date.
