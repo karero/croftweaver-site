@@ -29,7 +29,7 @@ Each round's artifact began with a context block: the facts read at tag v0.32 of
 | E4 | NIT | melious | "Measured on one day" typed while the date is derived | fixed: "One PageSpeed run per site" (src/data/proof.ts comment: one run each) |
 | E5 | NIT | melious | EmDash announcement URL typed twice | fixed: EMDASH_POST exported from src/data/wordpress-faq.ts, used by the FAQ and the page |
 | — | follow-ups | melious | 87 tests and the Cloudflare guide date not re-verified by the reviewer | host-verified: v0.32 test files hold 59 + 28 test functions; the Cloudflare guide shows "updated April 21, 2026" (read 2026-10-18) |
-| F1 | NIT | melious | 3 | Step 5 prompt still says "old" address while the list can hold hand-added ones | fixed after round 3, not sent back | "Check each address on the list against the preview." |
+| F1 | NIT | melious | Round 3: step 5 prompt still says "old" address while the list can hold hand-added ones | fixed after round 3, not sent back: "Check each address on the list against the preview." |
 
 Guard test red run, 2026-10-18, at `99a151e` with `schemas={[wordpressFaqSchema]}` removed: `npx playwright test tests/seo.spec.ts -g "/from-wordpress keeps its FAQPage"` → 1 failed (tests/seo.spec.ts:266); restored, it passes.
 
