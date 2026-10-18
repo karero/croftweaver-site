@@ -227,6 +227,7 @@ is built.
 | Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
+| From WordPress | `/from-wordpress` | WordPress to Astro | — | live |
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
 | About | `/about` | maintainer | — | live |

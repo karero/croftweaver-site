@@ -75,7 +75,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED } from '../data/compare';
         </div>
         <div class="card">
           <h3>Choose Croftweaver when</h3>
-          <p>{group.chooseCroftweaver}{'more' in group && <> <a href={group.more.href}>{group.more.label}</a>.</>}</p>
+          <p>{group.chooseCroftweaver}{'more' in group && group.more.map((m) => <> <a href={m.href}>{m.label}</a>.</>)}</p>
         </div>
       </div>
       {'together' in group && (
