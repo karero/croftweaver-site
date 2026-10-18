@@ -223,6 +223,21 @@ test('seo — every page describes the same operator and points at the same soft
   }
 });
 
+// This site's own test: the footer of every page names the release that the software node
+// names, so a visitor and a crawler read the same version. Both read RELEASE; this checks
+// that the footer still shows it.
+test('seo — every footer names the current release and links its notes', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const line = page.locator('footer .release');
+    await expect(line, `the release line on ${path}`).toHaveText(
+      `Current release: Croftweaver ${RELEASE.version}, released ${RELEASE.label}. Release notes on GitHub.`,
+    );
+    await expect(line.locator('time')).toHaveAttribute('datetime', RELEASE.iso);
+    await expect(line.locator('a')).toHaveAttribute('href', `${SITE.repo}/releases/tag/v${RELEASE.version}`);
+  }
+});
+
 // FAQPage markup must state what the page shows: that is Google's rule for FAQ markup, and the reason
 // a machine can trust it. Every question in the markup is a heading on the page, and its answer text is
 // the text of the element right after that heading, word for word. A page without FAQPage markup passes.
