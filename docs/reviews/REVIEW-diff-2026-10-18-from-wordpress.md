@@ -36,3 +36,7 @@ Guard test red run, 2026-10-18, at `99a151e` with `schemas={[wordpressFaqSchema]
 Tests at the final head: `astro check` 0 errors; Playwright 287 passed.
 
 Go-live: the pull request stays a draft until a trial on real data has run both helper scripts (a real WordPress site counted, its addresses checked against a small preview) and the page's "What has been tested so far" section carries the trial's date and numbers. At merge, every outside figure is read again and the page's date updated.
+
+## After the review: a type fix from CI
+
+CI's `astro check` failed on the PR (ts2367: `PROOF.length === 1` compares a fixed three-item tuple's length with 1). The local check had reported the same error; its count was cut off by a `tail`, so it was missed. `6dd47b7` types the length as a number. Checked by Codex alone (effort medium, a one-line type fix, not a numbered round): no findings, 66 s / 25,782 tokens. Local: `astro check` 0 errors, Playwright 287 passed, the rendered sentence unchanged.
