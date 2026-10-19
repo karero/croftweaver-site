@@ -204,6 +204,10 @@ Launch requirements that no test enforces:
   2026-10-12). Seen that day with it in place: the brand files keep the rule's value,
   files without a rule of their own (`/favicon.svg`, the deck PDF) are sent with
   `max-age=14400`, and pages with `max-age=0`.
+- `/terms` (2026-10-17) adds no liability clause under German law beside the MIT
+  licence's "as is", names no governing law or place of jurisdiction, and has no German
+  version. Each is the owner's call; the page's source comment lists them. Not legal
+  advice.
 - Search engines. Bing Webmaster Tools is connected (owner, 2026-10-12). Crawler Hints,
   the Cloudflare switch that tells Bing about changed pages, can only be set in the
   dashboard; nothing here records that it is on. Search Console positions for seven
