@@ -51,7 +51,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
 // 404). Excluded from the coverage flag below so it only nags about real content/offer
 // pages. Add to this set for a genuinely term-free page; don't delete the flag.
-const POSITIONING_EXEMPT = new Set<string>(['/privacy', '/imprint']);
+const POSITIONING_EXEMPT = new Set<string>(['/privacy', '/imprint', '/terms', '/support']);
 
 const norm = (r: TermRule | SurfaceRule): Required<SurfaceRule> =>
   'term' in r
