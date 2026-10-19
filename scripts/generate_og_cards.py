@@ -75,6 +75,7 @@ PAGES: list[tuple[str, str, list[str]]] = [
     ("compare", "Croftweaver and its alternatives", ["When to choose which,", "sourced and dated."]),
     ("roadmap", "Roadmap", ["What is missing, what comes next,", "and what stays out on purpose."]),
     ("established-sites", "Croftweaver for established sites", ["Know what to fix.", "Check what changed."]),
+    ("from-wordpress", "From WordPress to Astro", ["Count the old site first,", "check every old address after."]),
     ("positioning", "Positioning first", ["What your site says,", "decided before the copy."]),
     ("partner-assets", "Partner assets", ["Badge, logo and icon", "for sites built with Croftweaver."]),
     ("about", "About Croftweaver", ["A note from the maintainer,", "and who he is."]),

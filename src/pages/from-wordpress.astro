@@ -1,0 +1,288 @@
+---
+// /from-wordpress — for owners of WordPress content sites, and the developers who look after
+// them, who use an AI coding assistant and want fewer moving parts. Positioning term
+// (tests/positioning.spec.ts): "WordPress to Astro", in the title, the description and the H1.
+// Plan, research and sources: the private hub's wordpress-page/FEATURE.md (2026-10-18).
+// Honesty limits for this page: there is no import, and say so first; every figure names its
+// source and date; WordPress is not called insecure or slow, the figures say what they say;
+// the helper (skills/wordpress-inspector, v0.32) has been tested against stand-in sites only,
+// and the proof section says so until a real move is measured. The WordPress governance
+// dispute stays off the page on purpose (owner-approved plan, 2026-10-18).
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { WORDPRESS_FAQ, wordpressFaqSchema, EMDASH_POST } from '../data/wordpress-faq';
+import { PROOF, PROOF_MEASURED } from '../data/proof';
+
+// The page describes the helper as released in 0.32, so the link is pinned to that tag.
+const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector';
+
+// The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
+const scores = PROOF.map((p) => p.performance);
+const [low, high] = [Math.min(...scores), Math.max(...scores)];
+// Typed as a number: PROOF is a fixed tuple today, and the wording must still hold when it changes.
+const siteCount: number = PROOF.length;
+const count = ['', 'one', 'two', 'three', 'four', 'five', 'six'][siteCount] || String(siteCount);
+const measured = siteCount === 1 ? 'The one site measured' : `The ${count} sites measured`;
+const speedFigure = `${measured} on ${PROOF_MEASURED.label} ${low === high ? `scored ${low}` : `ranged from ${low} to ${high}`} for performance on mobile.`;
+
+const fits = [
+  'You use WordPress mainly for pages and posts: a business site, a practice, a consultancy, a blog.',
+  'Plugin and theme updates take more of your time than the content does.',
+  'You, or the person who looks after the site, work with an AI coding assistant such as Claude Code, or are ready to start.',
+];
+
+const notFits = [
+  'You run a shop on WooCommerce, or need memberships, accounts or a booking system.',
+  'Several colleagues edit the site in the browser and do not use an AI assistant.',
+  'A plugin you cannot do without has no counterpart on a static site.',
+  'Your WordPress site runs well and costs you little time. Then there is no reason to move.',
+];
+
+const reasons = [
+  {
+    title: 'Security updates that never stop',
+    html: 'Patchstack counted 11,334 new security flaws across WordPress plugins, themes and core in 2025. Of those, 91% were in plugins, and 46% had no fix yet when they were made public (<a href="https://patchstack.com/whitepaper/state-of-wordpress-security-in-2026/">State of WordPress Security in 2026</a>, updated 25 February 2026). In July 2026 a chain of two flaws in WordPress core itself let an anonymous visitor run code on a standard install with no plugins. It was exploited in the wild and fixed in versions 6.9.5 and 7.0.2 (<a href="https://rapid7.com/blog/post/etr-cve-2026-63030-wp2shell-a-critical-remote-code-execution-vulnerability-in-wordpress-core">Rapid7</a>, 17 July 2026, updated 22 July).',
+  },
+  {
+    title: 'Plugins to find, update and keep compatible',
+    html: 'In the WordPress project’s own survey for 2023, the most chosen frustration was “too many plugins (finding the right one)”, at 18.6%, up from 8% the year before (<a href="https://www.searchenginejournal.com/wordpress-user-survey-indicates-rising-frustration/508354/">Search Engine Journal</a>, 15 February 2024).',
+  },
+  {
+    title: 'Pages that load slowly on phones',
+    html: 'In Chrome’s field data for October 2026, 70% of WordPress sites loaded their main content fast enough on phones, against 94% of Wix sites and 95% of Shopify sites. On how quickly pages respond to a tap, WordPress was level with them (<a href="https://www.corewebvitals.io/state-of-cwv/explorer/technologies/cms">The State of Web Vitals</a>, October 2026, the share of sites with a good Largest Contentful Paint).',
+  },
+  {
+    title: 'Page builders that add weight',
+    html: 'Builders such as Elementor and Divi make pages easy to lay out, and add their own code to each page. Moving off one usually means rebuilding those pages, whatever the new platform.',
+  },
+];
+
+const changes = [
+  { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare Pages. No database, no admin login, no plugins running on a server.', limit: 'A small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day. The site also depends on packages from npm, which still need security updates.' },
+  { item: 'Updates', text: 'A new site names three packages directly, about 350 with everything they bring along. The launch checklist switches on GitHub’s security alerts for them.', limit: 'Fewer moving parts, not none. Version updates are not automatic.' },
+  { item: 'Speed', text: `Static pages, with image sizes and formats checked by a test. ${speedFigure}`, limit: 'One PageSpeed run per site, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
+  { item: 'Design', text: 'No page builder. The pages are plain files your assistant edits, with one set of colours, type and spacing.', limit: 'Pages laid out in a builder are rebuilt, not converted.' },
+  { item: 'Search and AI assistants', text: 'Titles, descriptions, structured data and an llms.txt file in place from the first build, kept in place by tests. After launch, an optional weekly check asks four AI assistants whether they name your site.', limit: 'The weekly check needs paid keys for the assistants. Nothing here promises a ranking or a mention.' },
+  { item: 'Where the site lives', text: 'Plain files in your own GitHub repository, under the MIT licence.', limit: 'You still rely on GitHub, Cloudflare, Astro and your assistant’s maker. Leaving any of them is possible, and takes work.' },
+];
+
+const yourJob = [
+  'The domain, and the GitHub and Cloudflare accounts. Turn on two-factor sign-in for both.',
+  'Security updates for the packages, when GitHub reports one.',
+  'Your AI assistant’s plan, and checking what it changes before it goes out.',
+  'Backups: the repository’s history is one. Keep a copy of the old WordPress site, too, until the move has settled.',
+];
+
+const move = [
+  {
+    title: 'Count the old site',
+    text: 'The helper asks the live WordPress site, from outside and without a login, how many posts, pages and other records it holds. It writes each address it finds into a list, and names page builders, form plugins and leftover shortcodes. If its count is incomplete, it says so and names each gap. It reads only, obeys robots.txt and pauses one second between requests; its default of 100 requests covers a site of a few thousand records, and a larger site needs the limit raised.',
+    say: 'Count what example.com holds before we move it.',
+  },
+  {
+    title: 'Decide what moves',
+    text: 'Go through the list with your assistant: keep, merge, or let go. Each form needs a new home. Each page built with a page builder is rebuilt by hand.',
+    say: 'Go through the inventory with me and mark each address keep, redirect or let go.',
+  },
+  {
+    title: 'Rebuild with the skills',
+    text: 'Your assistant builds the new site from the Croftweaver starter: positioning first, then the pages, with the tests running on every change. Copying the text across is part of this step: there is no import.',
+    say: 'Build the new site and rebuild the service pages from the old ones.',
+  },
+  {
+    title: 'Write the redirects',
+    text: 'Every old address that moves gets a permanent redirect in the site’s redirect file. Your assistant writes the lines from the decisions in step 2; no script builds them yet.',
+    say: 'Write a 301 redirect for each old address we decided to move.',
+  },
+  {
+    title: 'Check each address on the list',
+    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
+    say: 'Check each address on the list against the preview.',
+  },
+  {
+    title: 'Launch, then watch',
+    text: 'Once the domain’s DNS is on Cloudflare (a guide walks you through moving it by hand), the launch stage connects the domain and checks the live site from outside. Then watch Search Console for addresses Google cannot find.',
+    say: 'Launch the site on example.com.',
+  },
+];
+
+const cannotSee = [
+  'Drafts, private posts and anything behind a login.',
+  'Content types the site’s REST API does not list, and fields a plugin keeps to itself.',
+  'The media files themselves, redirects set inside WordPress, and form entries.',
+];
+---
+<Base
+  title="WordPress to Astro, with your AI assistant"
+  description="Moving from WordPress to Astro? Your AI assistant rebuilds the site page by page, counts the old site first and checks the addresses it found after the move."
+  image="/images/og/from-wordpress.jpg"
+  schemas={[wordpressFaqSchema]}
+>
+  <section class="wrap hero">
+    <h1>From WordPress to Astro, with your AI assistant</h1>
+    <p class="lead">
+      Croftweaver’s website skills help your AI coding assistant move a WordPress
+      content site to a static Astro site you own. There is no import: you and your
+      assistant rebuild the pages. A helper counts the old site before the move and
+      checks each old address it found after it.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#move">See the move, step by step</a>
+      <a class="btn" href="#fit">Is it for you?</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="fit">
+    <h2>Is it for you?</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>A good fit when</h3>
+        <ul class="points">{fits.map((f) => <li>{f}</li>)}</ul>
+      </div>
+      <div class="card">
+        <h3>Stay on WordPress when</h3>
+        <ul class="points">{notFits.map((f) => <li>{f}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="why">
+    <h2>Why owners leave WordPress</h2>
+    <p>
+      WordPress runs about four in ten websites, and many run well. These are the
+      reasons that come up most often among owners who want to leave, with the figures
+      behind them.
+    </p>
+    <ul class="steps">
+      {reasons.map((r) => <li><strong>{r.title}.</strong> <span set:html={r.html} /></li>)}
+    </ul>
+    <p class="aside">
+      Share of all websites: 39.6%, by <a href="https://w3techs.com/technologies/details/cm-wordpress">W3Techs</a>
+      on 18 October 2026.
+    </p>
+  </section>
+
+  <section class="wrap" id="changes">
+    <h2>What changes on a static Astro site</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Area</th><th scope="col">With Croftweaver</th><th scope="col">The limit</th></tr></thead>
+        <tbody>
+          {changes.map((c) => (
+            <tr><th scope="row">{c.item}</th><td>{c.text}</td><td>{c.limit}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The speed figures are on <a href="/more-proof">the more proof page</a>, and the tests
+      on <a href="/checks">the checks page</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="your-job">
+    <h2>What stays your job</h2>
+    <p>A lighter site moves some work to you. Plan for these:</p>
+    <ul class="steps">{yourJob.map((j) => <li>{j}</li>)}</ul>
+  </section>
+
+  <section class="wrap" id="move">
+    <h2>The move, step by step</h2>
+    <p>
+      The biggest worry in a move is losing the visitors who arrive through old
+      addresses. These six steps are built around that.
+    </p>
+    <ol class="loop" role="list">
+      {move.map((m) => (
+        <li class="card">
+          <h3>{m.title}</h3>
+          <p>{m.text}</p>
+          <p class="say"><span>Say to the assistant:</span> <q>{m.say}</q></p>
+        </li>
+      ))}
+    </ol>
+    <p>
+      The helper is the <a href={INSPECTOR}><code>wordpress-inspector</code> skill</a>,
+      new in Croftweaver 0.32. What it cannot see:
+    </p>
+    <ul class="steps">{cannotSee.map((c) => <li>{c}</li>)}</ul>
+    <p>Those need a backup of the old site or a login. Run it only on a site you own or are asked to look at.</p>
+  </section>
+
+  <section class="wrap" id="proof">
+    <h2>What has been tested so far</h2>
+    <p>
+      The helper’s two scripts are covered by 87 automated tests, run on every pull
+      request to the toolkit. Those tests use stand-in sites, not a real WordPress site, and no
+      WordPress site has yet been moved with Croftweaver from start to finish. This
+      section will show the first trial on a real WordPress site: the count, and its
+      addresses checked against a preview, with the date and the numbers.
+    </p>
+    <p>
+      What a site built with Croftweaver achieves after launch is on
+      <a href="/proof">the proof page</a>: one site, measured.
+    </p>
+  </section>
+
+  <section class="wrap" id="other-ways">
+    <h2>Other ways to leave WordPress</h2>
+    <ul class="steps">
+      <li><strong>An Astro content system with an admin screen.</strong> <a href={EMDASH_POST}>EmDash</a>, open source from Cloudflare and built on Astro, imports from WordPress (Cloudflare’s announcement, and the <a href="https://github.com/emdash-cms/emdash">project’s README</a>, read on 18 October 2026).</li>
+      <li><strong>A hosted builder.</strong> Wix, Squarespace, Webflow and Framer host the site and give you a visual editor, for a monthly fee. <a href="/compare">The alternatives page</a> compares them.</li>
+      <li><strong>A static copy of the WordPress site.</strong> Cloudflare’s own guide exports one with a WordPress plugin and uploads it; each change means a new export (<a href="https://developers.cloudflare.com/pages/how-to/deploy-a-wordpress-site/">Cloudflare’s guide</a>, read on 18 October 2026).</li>
+    </ul>
+  </section>
+
+  <section class="wrap faq" id="faq">
+    <h2>Questions and answers</h2>
+    {WORDPRESS_FAQ.map((item) => (
+      <div class="faq-item">
+        <h3>{item.q}</h3>
+        <div class="faq-answer" set:html={item.a} />
+      </div>
+    ))}
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+    <p class="aside">
+      The example prompts use example.com. We checked the figures and outside pages on
+      this page on <time datetime="2026-10-18">18 October 2026</time>.
+    </p>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .aside { color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.6rem; }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;
+    margin: 1.2rem 0; padding: 0; list-style: none;
+  }
+  .card h3 { margin-top: 0; }
+  .points { margin: 0; padding-left: 1.2rem; line-height: 1.6; }
+  .points li { margin-bottom: 0.4rem; }
+  /* role="list" in the markup: Safari drops list semantics when list-style is none. */
+  .loop {
+    display: grid; gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none; counter-reset: step;
+  }
+  .loop > li { counter-increment: step; }
+  .loop > li h3 { margin-top: 0; }
+  .loop > li h3::before { content: counter(step) ". "; color: var(--accent); }
+  .loop .card p { max-width: 46rem; line-height: 1.6; margin: 0 0 0.6rem; }
+  .loop .say { margin: 0; color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; max-width: 60rem; border-collapse: collapse; }
+  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
+  tbody th { font-weight: 600; }
+  .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+  .faq-item h3 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
+  .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
+</style>

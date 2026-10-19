@@ -112,7 +112,7 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, launched 27 March 2026: clicks from Google per 28 days rose from 3 around the launch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
-| The owner and the assistant make the everyday changes | Everyday updates (text, pages, images, layout) need no agency or developer: a change is a conversation with your assistant, and the tests run on it by default. A stubborn problem can still need outside help | The output is plain files in your own repository; no account, no subscription, nothing runs on our servers (home page, "The site is yours"). Not measured: how long a change takes compared with an agency. Not covered: anything that needs a database or accounts. Built and used with Claude Code; the Codex and Antigravity guides have not been tested from start to finish (`/roadmap`) |
+| The owner and the assistant make the everyday changes | Everyday updates (text, pages, images, layout) need no agency or developer: a change is a conversation with your assistant, and the tests run on it by default. A stubborn problem can still need outside help | The output is plain files in your own repository; no account, no subscription, nothing runs on our servers (home page, "The site is yours"). Not measured: how long a change takes compared with an agency. Not covered: anything that needs a database or accounts. Built and used with Claude Code; Codex and Antigravity each tested from start to finish on one site (the maintainer's word, 18 October 2026; no written record yet; `/roadmap`) |
 | A real project to learn with | A rebuild is a real learning curve: hands-on practice for you and your team in directing and checking an AI assistant, on a site you know. The maintainer offers to help with questions along the way (best effort) | None measured. The owner's experience with one team he works with: they work with an AI assistant happily and keep learning, improving and fixing (anecdotal; the team is not named here). A secondary benefit: never the lead, never on a share card |
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
@@ -227,6 +227,7 @@ is built.
 | Why | `/why` | search and AI visibility | — | live |
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
+| From WordPress | `/from-wordpress` | WordPress to Astro | — | live |
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
 | About | `/about` | maintainer | — | live |

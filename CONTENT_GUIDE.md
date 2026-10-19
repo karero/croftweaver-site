@@ -57,8 +57,10 @@ the body copy true:
   recommend the site.
 - **"Thirteen test suites" means thirteen spec files**, each with several assertions. A
   count in copy is rendered from the suite itself, never typed.
-- **Assistants:** write "install guides for three assistants" until there is dated
-  end-to-end evidence for Codex and Antigravity; then "runs in".
+- **Assistants:** write "install guides for three assistants", developed and used with
+  Claude Code, and Codex and Antigravity each tested from start to finish on one site (the
+  maintainer's word, 18 October 2026; no written record yet). "Runs in" waits for a dated,
+  written test record.
 - **Comparisons** are factual, sourced and dated. Never "the only".
 - **"GEO"** is explained once per page where it appears (how AI assistants read and
   cite a site).
@@ -99,6 +101,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Why | `/why` | the case for decision-makers, with the deck as PDF | search and AI visibility | Why build for search and AI visibility | [x] page and the deck as PDF (`npm run deck`) |
 | Compare | `/compare` | what Croftweaver does first (positioning and proof), then honest alternatives, "choose X when" | alternatives | Croftweaver and its alternatives | [x] |
 | Roadmap | `/roadmap` | what is missing, planned, deliberately out | roadmap | Roadmap: what is missing, what comes next | [x] |
+| From WordPress | `/from-wordpress` | for WordPress content sites: who it fits, why owners leave (sourced, dated), what changes and what stays the owner's job, the move around `wordpress-inspector`, other ways out, FAQ; says first that there is no import | wordpress to astro | WordPress to Astro, with your AI assistant | [x] |
 | Positioning | `/positioning` | how Croftweaver works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [x] spec below |
 | Partner assets | `/partner-assets` | the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it, and the request to credit Croftweaver (never a condition) | partner assets | Partner assets: badge, logo and icon | [x] |
 | About | `/about` | a note from the maintainer in his own words (owner-approved 2026-10-14), who he is, how to reach him; figures read from `src/data/proof.ts` | maintainer | About Croftweaver and its maintainer | [x] |
