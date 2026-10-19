@@ -104,3 +104,7 @@ Tests on the merged result: `npm run check` 0 errors; `npx playwright test` 309 
 
 Follow-up for the toolkit: `docs/WHAT-THE-SKILLS-RUN.md` calls the Astro and Wrangler data
 "anonymous" as plain fact; Cloudflare says it receives the IP. Worth the same "described as" wording.
+
+Later edit, 2026-10-19 (owner's ask): privacy §6 links "MIT licence" to the toolkit's LICENSE.
+Checked by Codex alone on that delta (40 s, 31,113 tokens): no findings. The owner chose not to add
+a "use at your own risk" sentence to terms §2.
