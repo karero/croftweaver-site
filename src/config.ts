@@ -71,10 +71,11 @@ export const COMPANY = {
 export const schemaId = (origin: string, thing: 'organization' | 'software' | 'daniel-melter') => `${origin}/#${thing}`;
 
 // External profiles of the OPERATOR (Organization sameAs). Only ship URLs that resolve — a
-// broken sameAs is worse than none. Empty since 2026-10-13: the two links that stood here,
+// broken sameAs is worse than none. Empty from 2026-10-13: the two links that stood here,
 // the toolkit's repository and the Builder Lab, identify the software and not the company.
-// The repository is the software's codeRepository; the pages link to the Lab.
-export const SAME_AS: string[] = [];
+// The repository is the software's codeRepository; the pages link to the Lab. Since
+// 2026-10-20 (owner) it holds M-Squad's own LinkedIn company page, which m-squad.com links to.
+export const SAME_AS: string[] = ['https://www.linkedin.com/company/m-squad-gmbh/'];
 
 // Topics the operator is authoritative on (Organization knowsAbout).
 export const KNOWS_ABOUT: string[] = [
