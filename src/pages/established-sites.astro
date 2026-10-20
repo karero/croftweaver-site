@@ -130,10 +130,21 @@ const weeks = [
       the site stands, fix the pages Google already shows, and measure what changed.
     </p>
     <p class="tagline">Know what to fix. Check what changed. Fast.</p>
+    <p class="prereq">Before you start, <a href="#needs">see what your team needs</a>.</p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
       <a class="btn" href="#plan">See the three steps</a>
     </div>
+    <nav class="toc" aria-label="On this page">
+      <strong>On this page:</strong>
+      <a href="#plan">three steps</a>
+      <a href="#loop">six steps</a>
+      <a href="#needs">what your team needs</a>
+      <a href="#data">where your data goes</a>
+      <a href="#first-month">four-week pilot</a>
+      <a href="#limits">what it does not do yet</a>
+      <a href="#faq">questions</a>
+    </nav>
   </section>
 
   <section class="wrap" id="problem">
@@ -384,6 +395,8 @@ const weeks = [
 <style>
   section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
   section.hero { padding-top: 3rem; }
+  .prereq { margin: 0.6rem 0 0; }
+  .toc { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin-top: 1.4rem; font-size: 0.95rem; max-width: 46rem; }
   .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
   h2 { margin-bottom: 0.8rem; line-height: 1.25; }
   section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }

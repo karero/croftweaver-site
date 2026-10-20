@@ -847,3 +847,25 @@ test('privacy — the page cites no articles, statutes or law names', async ({ p
   expect(cited, `/privacy cites ${JSON.stringify(cited)}: say it in words`).toBeNull();
 });
 
+
+// The roadmap says when it was last read through and against which release. Both are typed by hand in
+// roadmap.astro (REVIEWED), apart from RELEASE, so a release update does not change what the line claims.
+// The line must exist, its date must be a real day that the label spells out, and it may not be in the future.
+test('roadmap — says which release and day it was last read through against', async ({ page }) => {
+  await page.goto('/roadmap');
+  const line = page.locator('#reviewed');
+  await expect(line, 'the roadmap does not say when it was last read through').toHaveCount(1);
+  const text = (await line.textContent())!.replace(/\s+/g, ' ').trim();
+  const iso = (await line.locator('time').getAttribute('datetime'))!;
+  expect(iso, 'the review date is not a day').toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  const label = new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  expect(text, 'the label and the datetime of the review line disagree').toBe(`Read through against release ${text.match(/release (\d+\.\d+)/)![1]} on ${label}.`);
+  expect(iso <= new Date().toISOString().slice(0, 10), 'the review date is in the future').toBe(true);
+  // The release it names may be older than RELEASE, never newer.
+  const [maj, min] = text.match(/release (\d+)\.(\d+)/)!.slice(1).map(Number);
+  const [rmaj, rmin] = RELEASE.version.split('.').map(Number);
+  expect(maj * 1000 + min <= rmaj * 1000 + rmin, 'the roadmap names a release newer than the current one').toBe(true);
+  // "No dates" would contradict the line.
+  expect(await page.locator('body').textContent(), 'the roadmap still says it has no dates').not.toMatch(/no dates/i);
+  expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('No delivery dates');
+});
