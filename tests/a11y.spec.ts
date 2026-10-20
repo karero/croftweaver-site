@@ -858,12 +858,17 @@ test('roadmap — says which release and day it was last read through against', 
   const text = (await line.textContent())!.replace(/\s+/g, ' ').trim();
   const iso = (await line.locator('time').getAttribute('datetime'))!;
   expect(iso, 'the review date is not a day').toMatch(/^\d{4}-\d{2}-\d{2}$/);
-  const label = new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-  expect(text, 'the label and the datetime of the review line disagree').toBe(`Read through against release ${text.match(/release (\d+\.\d+)/)![1]} on ${label}.`);
+  const day = new Date(`${iso}T00:00:00Z`);
+  expect(Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== iso, `${iso} is not a day that exists`).toBe(false);
+  const label = day.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const named = text.match(/^Read through against release (\d+(?:\.\d+)+) on /);
+  expect(named, `the review line is not worded as expected: "${text}"`).not.toBeNull();
+  expect(text, 'the label and the datetime of the review line disagree').toBe(`Read through against release ${named![1]} on ${label}.`);
   expect(iso <= new Date().toISOString().slice(0, 10), 'the review date is in the future').toBe(true);
   // The release it names may be older than RELEASE, never newer.
-  const [maj, min] = text.match(/release (\d+)\.(\d+)/)!.slice(1).map(Number);
-  const [rmaj, rmin] = RELEASE.version.split('.').map(Number);
+  const toNum = (v: string) => v.split('.').map(Number);
+  const [maj, min] = toNum(named![1]);
+  const [rmaj, rmin] = toNum(RELEASE.version);
   expect(maj * 1000 + min <= rmaj * 1000 + rmin, 'the roadmap names a release newer than the current one').toBe(true);
   // "No dates" would contradict the line.
   expect(await page.locator('body').textContent(), 'the roadmap still says it has no dates').not.toMatch(/no dates/i);
