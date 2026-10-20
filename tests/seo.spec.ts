@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
+import { RELEASE } from '../src/data/skills';
 import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -190,6 +191,8 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(software['@id']).not.toBe(org['@id']);
   expect(software.name).toBe(SITE.name);
   expect(software.codeRepository).toBe(SITE.repo);
+  expect(software.version, 'the version is the release the footer names').toBe(RELEASE.version);
+  expect(software.sameAs, "the repository identifies the software, so it is the software's sameAs").toContain(SITE.repo);
 
   const website = one(nodes, 'WebSite');
   expect(website.publisher?.['@id'], 'the operator publishes the website').toBe(org['@id']);
@@ -201,6 +204,11 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(software.maintainer?.['@id']).toBe(person['@id']);
   expect(person.worksFor?.['@id']).toBe(org['@id']);
   await expect(page.locator(new URL(person.url).hash), "the Person's address is a section of this page").toHaveCount(1);
+
+  // Empty by owner decision (2026-10-13, src/config.ts): every address offered for it so far
+  // identified the software or Daniel, not the company. A profile of M-Squad itself may go
+  // here with the owner's yes, and this line changes with it.
+  expect(org.sameAs ?? [], "the Organization's sameAs stays empty (src/config.ts, SAME_AS)").toEqual([]);
 
   const described = new Set(nodes.map((n) => n['@id']).filter(Boolean));
   for (const ref of references(nodes)) expect(described.has(ref), `"${ref}" is pointed at, so a node on the home page must describe it`).toBe(true);
@@ -217,6 +225,21 @@ test('seo — every page describes the same operator and points at the same soft
     expect(one(nodes, 'Organization'), `the Organization on ${path}`).toEqual(home);
     expect(one(nodes, 'WebSite').about?.['@id'], `WebSite.about on ${path}`).toBe(SOFTWARE_ID);
     expect(one(nodes, 'WebPage').mainEntity, `${path} is not mainly about the software`).toBeUndefined();
+  }
+});
+
+// This site's own test: the footer of every page names the release that the software node
+// names, so a visitor and a crawler read the same version. Both read RELEASE; this checks
+// that the footer still shows it.
+test('seo — every footer names the current release and links its notes', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const line = page.locator('footer .release');
+    await expect(line, `the release line on ${path}`).toHaveText(
+      `Current release: Croftweaver ${RELEASE.version}, released ${RELEASE.label}. Release notes on GitHub.`,
+    );
+    await expect(line.locator('time')).toHaveAttribute('datetime', RELEASE.iso);
+    await expect(line.locator('a')).toHaveAttribute('href', `${SITE.repo}/releases/tag/v${RELEASE.version}`);
   }
 });
 

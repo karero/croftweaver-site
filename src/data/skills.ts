@@ -3,8 +3,10 @@
 // the skill's own description in the toolkit (skills/<name>/SKILL.md).
 // This list describes ONE toolkit release, plus any skills added since. When the toolkit
 // ships a new release, update RELEASE (with the number of skills it had), the list, RECENT
-// and AS_OF together and empty ADDED_SINCE; the site cannot check the toolkit at build time, but the
-// build stops when the list, the release's skill count and ADDED_SINCE do not add up.
+// and AS_OF together, empty ADDED_SINCE, and change the release line in public/llms.txt
+// (tests/llms-coverage.spec.ts fails until it matches), and open the footer's release-notes link once:
+// the tests build it from RELEASE and SITE.repo, so they cannot see a wrong tag name. The site cannot check the toolkit at
+// build time, but the build stops when the list, the release's skill count and ADDED_SINCE do not add up.
 export const RELEASE = { version: '0.32', iso: '2026-10-16', label: '16 October 2026', skills: 37 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
 // the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).

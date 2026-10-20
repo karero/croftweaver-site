@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PAGES } from './_helpers';
 import { SITE } from '../src/config';
+import { RELEASE } from '../src/data/skills';
 
 // llms.txt coverage guard. public/llms.txt is the curated GEO / AI-answer-engine
 // page map — and it is hand-maintained, so it drifts: a page gets registered in
@@ -107,4 +108,14 @@ test('LLMS_EXEMPT contains only live PAGES routes', () => {
     dead,
     `stale exemptions — routes no longer in PAGES:\n  ` + dead.join('\n  '),
   ).toEqual([]);
+});
+
+// This site's own test (the starter does not have it): llms.txt is static, so the release it
+// names is typed by hand, while the footer and the structured data read src/data/skills.ts.
+// At a release the data changes and this fails until the line in llms.txt changes with it.
+test('llms.txt names the release that src/data/skills.ts names', () => {
+  const txt = readFileSync(join(process.cwd(), 'public', 'llms.txt'), 'utf8');
+  expect(txt).toContain(
+    `- Current release: ${RELEASE.version}, ${RELEASE.label}. Release notes: ${SITE.repo}/releases/tag/v${RELEASE.version}\n`,
+  );
 });
