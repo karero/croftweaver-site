@@ -71,10 +71,18 @@ export const COMPANY = {
 export const schemaId = (origin: string, thing: 'organization' | 'software' | 'daniel-melter') => `${origin}/#${thing}`;
 
 // External profiles of the OPERATOR (Organization sameAs). Only ship URLs that resolve — a
-// broken sameAs is worse than none. Empty since 2026-10-13: the two links that stood here,
+// broken sameAs is worse than none. Empty from 2026-10-13: the two links that stood here,
 // the toolkit's repository and the Builder Lab, identify the software and not the company.
-// The repository is the software's codeRepository; the pages link to the Lab.
-export const SAME_AS: string[] = [];
+// The repository is the software's codeRepository; the pages link to the Lab. Since
+// 2026-10-20 (owner) it holds three profiles of M-Squad itself: the LinkedIn company page, the
+// commercial register entry on North Data (HRB 138365, as in the imprint) and the Wikidata item.
+// All three are in the Organization node on https://m-squad.com (its sameAs), so the company
+// names them itself. Loaded in a browser on 2026-10-20: each shows M-Squad GmbH.
+export const SAME_AS: string[] = [
+  'https://www.linkedin.com/company/m-squad-gmbh/',
+  'https://www.northdata.de/M-Squad%20GmbH,%20München/HRB%20138365',
+  'https://www.wikidata.org/wiki/Q141270739',
+];
 
 // Topics the operator is authoritative on (Organization knowsAbout).
 export const KNOWS_ABOUT: string[] = [

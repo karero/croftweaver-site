@@ -205,10 +205,14 @@ test('seo — structured data keeps the operator, the website and the software a
   expect(person.worksFor?.['@id']).toBe(org['@id']);
   await expect(page.locator(new URL(person.url).hash), "the Person's address is a section of this page").toHaveCount(1);
 
-  // Empty by owner decision (2026-10-13, src/config.ts): every address offered for it so far
-  // identified the software or Daniel, not the company. A profile of M-Squad itself may go
-  // here with the owner's yes, and this line changes with it.
-  expect(org.sameAs ?? [], "the Organization's sameAs stays empty (src/config.ts, SAME_AS)").toEqual([]);
+  // Only profiles of M-Squad itself belong here (owner decision, 2026-10-13; LinkedIn, North Data and
+  // Wikidata added 2026-10-20). Not empty: a company with no profile is harder to confirm. Nothing
+  // that identifies the software or Daniel (his own profiles sit on the Person node).
+  expect(org.sameAs, "the Organization's sameAs names M-Squad's own profiles (src/config.ts, SAME_AS)").toEqual([
+    'https://www.linkedin.com/company/m-squad-gmbh/',
+    'https://www.northdata.de/M-Squad%20GmbH,%20München/HRB%20138365',
+    'https://www.wikidata.org/wiki/Q141270739',
+  ]);
 
   const described = new Set(nodes.map((n) => n['@id']).filter(Boolean));
   for (const ref of references(nodes)) expect(described.has(ref), `"${ref}" is pointed at, so a node on the home page must describe it`).toBe(true);
