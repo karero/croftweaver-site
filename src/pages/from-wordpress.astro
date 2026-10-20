@@ -6,7 +6,8 @@
 // Honesty limits for this page: there is no import, and say so first; every figure names its
 // source and date; WordPress is not called insecure or slow, the figures say what they say;
 // the helper (skills/wordpress-inspector, v0.32) has been tested against stand-in sites only,
-// and the proof section says so until it has been run on a backup of apreet.com's old WordPress site (moved in June 2026, without the helper). The WordPress governance
+// and the proof section reports its first run on a real site: a backup of apreet.com's old WordPress
+// site, 20 October 2026 (the trial's result is in the owner's private feature hub). The WordPress governance
 // dispute stays off the page on purpose (owner-approved plan, 2026-10-18).
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
@@ -219,11 +220,28 @@ const cannotSee = [
       In Croftweaver 0.32 the helper’s two scripts are covered by
       <a href="https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector/scripts/tests">87
       automated tests</a>, run
-      on every pull request to the toolkit; those tests use stand-in sites, not a real
-      WordPress site. This section will show the helper run on a backup of apreet.com’s
-      old WordPress site, with each address it finds checked against the new site, and the
-      date and the numbers.
+      on every pull request to the toolkit; those tests use stand-in sites.
     </p>
+    <p>
+      On 20 October 2026 we ran the helper on a real WordPress site for the first time: a
+      backup of apreet.com’s old site from June 2026, restored on a computer and cut off from
+      the network, with its old addresses then checked against the live new site.
+    </p>
+    <ul class="steps">
+      <li><strong>The count.</strong> 9 published pages, no posts and 54 media files, each
+      the same number the old site’s own database holds. The helper called its count
+      incomplete and named why: four content types, Elementor’s templates among them, are
+      closed to an anonymous visitor.</li>
+      <li><strong>The move.</strong> Of 10 old addresses, 1 stayed the same and 7 lead on
+      with a permanent redirect (6 of them only lose a trailing slash). 1 goes to the home
+      page, as apreet.com’s redirect rules intend for the old <code>/home/</code>. 1 is
+      missing: <code>/locations.kml</code>, a file the old site offered for local search.
+      No redirect was temporary.</li>
+      <li><strong>Not shown by this run.</strong> An address leading to another site, a
+      list of pages dropped on purpose, a temporary redirect and an address that cannot be
+      read did not occur here; the stand-in sites cover them. apreet.com is a small site,
+      so this run says nothing about a large one.</li>
+    </ul>
     <p>
       What a site built with Croftweaver achieves after launch is on
       <a href="/proof">the proof page</a>: one site, measured.
