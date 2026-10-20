@@ -40,6 +40,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
       <time datetime={SHORT_CHECKED.iso}>{SHORT_CHECKED.label}</time>; the other two sum up the
       sections below.
     </p>
+    <p>Already on WordPress and thinking of leaving? See <a href="/from-wordpress">From WordPress to Astro</a>.</p>
   </section>
 
   <section class="wrap" id="first">
@@ -85,7 +86,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
       <div class="grid">
         <div class="card">
           <h3>Choose one of these when</h3>
-          <p>{group.chooseThem}</p>
+          <p>{group.chooseThem}{'themMore' in group && <> {group.themMore.lead} <a href={group.themMore.href}>{group.themMore.label}</a>.</>}</p>
         </div>
         <div class="card">
           <h3>Choose Croftweaver when</h3>
