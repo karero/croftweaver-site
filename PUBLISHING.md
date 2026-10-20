@@ -48,7 +48,7 @@ git commit -m "describe what you changed, e.g. update opening hours"
 git push
 
 # 3. Look at the preview. Open the preview link from Cloudflare
-#    (stable address: main.<your-project>.pages.dev) and check it's right.
+#    (stable address: main.croftweaver-site.pages.dev) and check it's right.
 
 # 4. Happy? Publish it to the live site — ONE command:
 npm run ship
@@ -163,11 +163,11 @@ per `AGENTS.md` §2.*
 A non-technical owner cannot tell a preview URL from the live site. So **every time** you
 push to `main` (or they do), state it explicitly — never let a preview read as live:
 
-> ✅ Your changes are on the **preview**: `https://main.<project>.pages.dev` — **this is NOT
-> live yet.** When it looks right, run `npm run ship` to publish to `<live-domain>`.
+> ✅ Your changes are on the **preview**: `https://main.croftweaver-site.pages.dev` — **this is NOT
+> live yet.** When it looks right, run `npm run ship` to publish to `croftweaver.com`.
 
 Only after `npm run ship` (or the merge into `production`) **and** the Cloudflare production
-build finishes is it actually live at `<live-domain>`. After `npm run ship` prints
+build finishes is it actually live at `croftweaver.com`. After `npm run ship` prints
 "✓ LIVE — verified" (it polls `/build.txt` until the live site serves the new SHA), announce
 it live on that result — no manual re-check needed. For a plain merge into `production` — or
 when ship reports it could not verify — confirm manually before announcing ("✅ now live
@@ -176,9 +176,9 @@ going live now**. Deliver these announcements in the owner's language, like ever
 you say to them.
 
 **Which URL to quote.** Prefer the **memorable `pages.dev` alias** — the branch alias
-`main.<project>.pages.dev` (or, before go-live, the project alias `<project>.pages.dev` —
+`main.croftweaver-site.pages.dev` (or, before go-live, the project alias `croftweaver-site.pages.dev` —
 after go-live it redirects to the live domain) — over the random
-per-deploy hash URL `<hash>.<project>.pages.dev`. The hash URL is ugly but **immutable**, so
+per-deploy hash URL `<hash>.croftweaver-site.pages.dev`. The hash URL is ugly but **immutable**, so
 keep it as a **backup**: when an alias looks **stale** (cache/propagation lag, or it's still
 serving an older build), the hash URL pins the exact fresh deployment and confirms the new
 build is up. For a **brand-new page**, though, the next section wins: until the production
@@ -198,10 +198,10 @@ purge** clears it (Cloudflare dashboard → the zone → Caching → Purge Cache
 URL; wrangler's OAuth token has `zone (read)` only and cannot purge programmatically). So:
 
 - Until the production deployment shows **Active**, verify new pages ONLY on the hash
-  deployment URL (`<hash>.<project>.pages.dev`) — pre-Active the live domain still serves
+  deployment URL (`<hash>.croftweaver-site.pages.dev`) — pre-Active the live domain still serves
   the *previous* deployment, so a brand-new path 404s there no matter how you request it.
   Check Active status without touching the live domain: `wrangler pages deployment list`,
-  the `<project>.pages.dev` alias (Cloudflare's own domain, outside the zone cache — but
+  the `croftweaver-site.pages.dev` alias (Cloudflare's own domain, outside the zone cache — but
   only before go-live; once `CANONICAL_URL` is set it redirects to the live domain, so
   don't follow it), or ask the owner — NEVER poll the live custom domain to see whether the build is done.
   (`npm run ship`'s built-in check is the one exception: it polls `/build.txt` — a path
