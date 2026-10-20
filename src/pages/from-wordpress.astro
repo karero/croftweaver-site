@@ -6,7 +6,7 @@
 // Honesty limits for this page: there is no import, and say so first; every figure names its
 // source and date; WordPress is not called insecure or slow, the figures say what they say;
 // the helper (skills/wordpress-inspector, v0.32) has been tested against stand-in sites only,
-// and the proof section says so until it has been run on apreet.com's move (moved by hand in 2026). The WordPress governance
+// and the proof section says so until it has been run on a backup of apreet.com's old WordPress site (moved in 2026, without the helper). The WordPress governance
 // dispute stays off the page on purpose (owner-approved plan, 2026-10-18).
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
@@ -213,11 +213,13 @@ const cannotSee = [
     <h2>What has been tested so far</h2>
     <p>
       <a href="https://apreet.com/">apreet.com</a> moved from WordPress to a site built
-      with Croftweaver in 2026. That move was done by hand, before this helper existed.
+      with Croftweaver in 2026. That move did not use this helper, which first shipped
+      in Croftweaver 0.32 in October 2026.
       In Croftweaver 0.32 the helper’s two scripts are covered by 87 automated tests, run
       on every pull request to the toolkit; those tests use stand-in sites, not a real
-      WordPress site. This section will show the helper run on apreet.com’s old site and
-      its move, with the date and the numbers.
+      WordPress site. This section will show the helper run on a backup of apreet.com’s
+      old WordPress site, with each old address checked against the new site, and the
+      date and the numbers.
     </p>
     <p>
       What a site built with Croftweaver achieves after launch is on
