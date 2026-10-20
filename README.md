@@ -312,7 +312,7 @@ Launch requirements that no test enforces:
     Verify, and revert both if it fails.
   - Exclude your own browser: run `localStorage.plausible_ignore = 'true'` in the console,
     once per address you visit: croftweaver.com, each production deployment's hash URL
-    (`<hash>.<project>.pages.dev`; a preview deployment's carries no script) you open, and the production alias (`<project>.pages.dev`,
+    (`<hash>.croftweaver-site.pages.dev`; a preview deployment's carries no script) you open, and the production alias (`croftweaver-site.pages.dev`,
     not redirected until CANONICAL_URL is set). The production build is served at all of
     them with the domain written into the script, so a visit counts as a visit to
     croftweaver.com. The flag is stored per address.
