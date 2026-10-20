@@ -1,10 +1,13 @@
 ---
 // /roadmap — what is missing, what comes next, what stays out. Positioning term
 // (tests/positioning.spec.ts): "roadmap", in the title, the description and the H1.
-// No dates and no promises: the order is the maintainer's current intent
+// No delivery dates and no promises (the one date is when the roadmap was last read): the order is the maintainer's current intent
 // (owner-approved plan, 2026-10-03) and may change.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
+
+// Edit both by hand, and only after re-reading this page against that release.
+const REVIEWED = { version: '0.32', iso: '2026-10-20', label: '20 October 2026' } as const;
 
 const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
@@ -26,7 +29,7 @@ const out = [
 ---
 <Base
   title="Roadmap: what is missing, what comes next"
-  description="The Croftweaver roadmap: what is missing today, what comes next and in which order, and what stays out on purpose. No dates, and none of it is a promise."
+  description="The Croftweaver roadmap: what is missing today, what comes next and in which order, and what stays out on purpose. No delivery dates; none of it is a promise."
   image="/images/og/roadmap.jpg"
 >
   <section class="wrap hero">
@@ -36,8 +39,11 @@ const out = [
       gaps are meant to close, and what will stay out on purpose.
     </p>
     <p class="aside">
-      There are no dates here, and none of it is a promise. Croftweaver has one
+      There are no delivery dates here, and none of it is a promise. Croftweaver has one
       maintainer, and the order can change.
+    </p>
+    <p class="aside" id="reviewed">
+      Read through against release {REVIEWED.version} on <time datetime={REVIEWED.iso}>{REVIEWED.label}</time>.
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>

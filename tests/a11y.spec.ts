@@ -847,3 +847,36 @@ test('privacy — the page cites no articles, statutes or law names', async ({ p
   expect(cited, `/privacy cites ${JSON.stringify(cited)}: say it in words`).toBeNull();
 });
 
+
+// The roadmap says when it was last read through and against which release. Both are typed by hand in
+// roadmap.astro (REVIEWED), apart from RELEASE, so a release update does not change what the line claims.
+// The line must exist, its date must be a real day that the label spells out, and it may not be in the future.
+test('roadmap — says which release and day it was last read through against', async ({ page }) => {
+  await page.goto('/roadmap');
+  const line = page.locator('#reviewed');
+  await expect(line, 'the roadmap does not say when it was last read through').toHaveCount(1);
+  const text = (await line.textContent())!.replace(/\s+/g, ' ').trim();
+  const iso = (await line.locator('time').getAttribute('datetime'))!;
+  expect(iso, 'the review date is not a day').toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  const day = new Date(`${iso}T00:00:00Z`);
+  expect(Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== iso, `${iso} is not a day that exists`).toBe(false);
+  const label = day.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const named = text.match(/^Read through against release (\d+(?:\.\d+)+) on /);
+  expect(named, `the review line is not worded as expected: "${text}"`).not.toBeNull();
+  expect(text, 'the label and the datetime of the review line disagree').toBe(`Read through against release ${named![1]} on ${label}.`);
+  expect(iso <= new Date().toISOString().slice(0, 10), 'the review date is in the future').toBe(true);
+  // The release it names may be older than RELEASE, never newer.
+  // Every component counts, missing ones as 0: 0.32.1 is newer than 0.32.
+  const toNum = (v: string) => v.split('.').map(Number);
+  const newer = (x: number[], y: number[]) => {
+    for (let i = 0; i < Math.max(x.length, y.length); i++) {
+      const d = (x[i] ?? 0) - (y[i] ?? 0);
+      if (d !== 0) return d > 0;
+    }
+    return false;
+  };
+  expect(newer(toNum(named![1]), toNum(RELEASE.version)), 'the roadmap names a release newer than the current one').toBe(false);
+  // "No dates" would contradict the line.
+  expect(await page.locator('body').textContent(), 'the roadmap still says it has no dates').not.toMatch(/no dates/i);
+  expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('No delivery dates');
+});
