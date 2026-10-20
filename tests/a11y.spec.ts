@@ -866,10 +866,16 @@ test('roadmap — says which release and day it was last read through against', 
   expect(text, 'the label and the datetime of the review line disagree').toBe(`Read through against release ${named![1]} on ${label}.`);
   expect(iso <= new Date().toISOString().slice(0, 10), 'the review date is in the future').toBe(true);
   // The release it names may be older than RELEASE, never newer.
+  // Every component counts, missing ones as 0: 0.32.1 is newer than 0.32.
   const toNum = (v: string) => v.split('.').map(Number);
-  const [maj, min] = toNum(named![1]);
-  const [rmaj, rmin] = toNum(RELEASE.version);
-  expect(maj * 1000 + min <= rmaj * 1000 + rmin, 'the roadmap names a release newer than the current one').toBe(true);
+  const newer = (x: number[], y: number[]) => {
+    for (let i = 0; i < Math.max(x.length, y.length); i++) {
+      const d = (x[i] ?? 0) - (y[i] ?? 0);
+      if (d !== 0) return d > 0;
+    }
+    return false;
+  };
+  expect(newer(toNum(named![1]), toNum(RELEASE.version)), 'the roadmap names a release newer than the current one').toBe(false);
   // "No dates" would contradict the line.
   expect(await page.locator('body').textContent(), 'the roadmap still says it has no dates').not.toMatch(/no dates/i);
   expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('No delivery dates');
