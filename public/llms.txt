@@ -4,7 +4,7 @@
 > turns an assistant such as Claude Code into a careful website builder: fast,
 > accessible Astro sites built to rank on Google and show up in AI answers,
 > tested on every change, in a repo you fully own. Served at
-> https://croftweaver.com/llms.txt — a curated index for AI answer engines (GEO).
+> https://croftweaver.com/llms.txt, a curated index for AI answer engines (GEO).
 
 ## Key pages
 - [Home](https://croftweaver.com/): the promise (stop waiting on someone else for every change; build or rebuild your site with your AI assistant), the SEO and GEO scores four AI assistants gave genai-wednesday.de and how to try it on your own site, two measured figures (PageSpeed for three sites, and how often AI assistants named genai-wednesday.de), a testimonial from Dr. Andrea Geistanger, who built her consulting site with Croftweaver, the three-step plan, what every site gets built in and the number of test suites that check it, the weekly loop from search data, and a quickstart that starts with one prompt.
@@ -31,7 +31,7 @@
 - Current release: 0.32, 16 October 2026. Release notes: https://github.com/karero/croftweaver/releases/tag/v0.32
 - Maintainer: Daniel Melter, Munich, Germany
 - Origin: the GenAI Wednesday Munich Builder Lab (https://genai-wednesday.de/builder-lab)
-- Stack it builds: Astro, Markdown, GitHub, Cloudflare Pages — static-first
+- Stack it builds: Astro, Markdown, GitHub, Cloudflare Pages, static-first
 - A "croft" is a small Scottish farm worked and owned by its occupier; Croftweaver = your own plot of the web
 
 ## Authoritative on
