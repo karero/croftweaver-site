@@ -3,7 +3,7 @@
 
     python3 scripts/export-own-site.py --out-dir public/data
 
-writes, in one step and only if both check out:
+writes, only if both check out:
   public/data/croftweaver-com-ai-check.csv        the weekly AI check, counts only
   public/data/croftweaver-com-search-console.csv  daily clicks and impressions from Google
 
@@ -35,7 +35,8 @@ Counts may come as whole numbers written as floats (2.0); they are written as wh
 The script stops, and leaves both files as they were, on: two rows for one key, a column the
 history lacks, a row cut short, a mode, slot, status, engine or date it does not know, counts that
 cannot be true, or Search Console data for another property, a country, a repeated day, a count
-that is not a whole number, or more clicks than impressions; and on an output folder it cannot write.
+that is not a whole number, or more clicks than impressions. If the output folder cannot be written
+after the first file was already replaced, it says which file and how to undo it with git.
 """
 import argparse
 import hashlib
@@ -44,7 +45,6 @@ import datetime
 import io
 import json
 import os
-import shutil
 import re
 import sys
 
@@ -202,52 +202,31 @@ ai_text, ai_rows = ai_check(args.history)
 gsc_text, gsc_rows = search_console(args.google_data)
 
 if args.out_dir:
-    # Both new files are written first; each old file is kept as .bak until both are in place. If
-    # anything fails, the old files come back and the temporary files go, so both files are either
-    # new or as they were.
+    # Both new files are written next to the old ones first, then each takes its file's place.
+    # No backup copies: both files are tracked in git, so if the second step fails after the first
+    # one worked, the message names the file that is already new and `git checkout` brings the old
+    # one back. (Review rounds 3-5 kept finding faults in a home-made restore; this is the cut.)
     path = {name: os.path.join(args.out_dir, name) for name in (AI_FILE, GSC_FILE)}
-    existed = {name: os.path.isfile(path[name]) for name in path}
-    done = []
+    replaced = []
     try:
         for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
             with open(path[name] + '.tmp', 'w', newline='') as f:
                 f.write(text)
         for name in (AI_FILE, GSC_FILE):
-            if existed[name]:
-                shutil.copy2(path[name], path[name] + '.bak')
             os.replace(path[name] + '.tmp', path[name])
-            done.append(name)
+            replaced.append(path[name])
     except OSError as e:
-        # Put back what was there: the old file where there was one, nothing where there was none.
-        problems, keep = [], set()
-        for name in done:
-            try:
-                if existed[name]:
-                    os.replace(path[name] + '.bak', path[name])
-                else:
-                    os.remove(path[name])
-            except OSError as again:
-                # The old file is still in its .bak: keep it, and say where it is.
-                keep.add(path[name] + '.bak')
-                problems.append(f'{name} could not be put back ({again.strerror}); the old file is {path[name]}.bak')
         for name in path:
-            for leftover in (path[name] + '.tmp', path[name] + '.bak'):
-                if leftover in keep:
-                    continue
-                try:
-                    if os.path.isfile(leftover):
-                        os.remove(leftover)
-                except OSError:
-                    problems.append(f'{os.path.basename(leftover)} is left over')
-        if problems:
-            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); and ' + '; '.join(problems))
+            try:
+                if os.path.isfile(path[name] + '.tmp'):
+                    os.remove(path[name] + '.tmp')
+            except OSError:
+                pass
+        if replaced:
+            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}). Already replaced: '
+                     f'{", ".join(replaced)}; to undo, run: git checkout -- {" ".join(replaced)} '
+                     f'(a file that was not in git before: delete it)')
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
-    for name in (AI_FILE, GSC_FILE):
-        try:
-            if os.path.isfile(path[name] + '.bak'):
-                os.remove(path[name] + '.bak')
-        except OSError as e:
-            print(f'export-own-site: both files written; the old copy {path[name]}.bak could not be removed ({e.strerror})', file=sys.stderr)
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
 print(f'{ai_rows} AI check rows and {gsc_rows} Search Console days for {SITE}', file=sys.stderr)
