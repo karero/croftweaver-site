@@ -206,24 +206,37 @@ if args.out_dir:
     # anything fails, the old files come back and the temporary files go, so both files are either
     # new or as they were.
     path = {name: os.path.join(args.out_dir, name) for name in (AI_FILE, GSC_FILE)}
+    existed = {name: os.path.isfile(path[name]) for name in path}
     done = []
     try:
         for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
             with open(path[name] + '.tmp', 'w', newline='') as f:
                 f.write(text)
         for name in (AI_FILE, GSC_FILE):
-            if os.path.isfile(path[name]):
+            if existed[name]:
                 shutil.copy2(path[name], path[name] + '.bak')
             os.replace(path[name] + '.tmp', path[name])
             done.append(name)
     except OSError as e:
+        # Put back what was there: the old file where there was one, nothing where there was none.
+        problems = []
         for name in done:
-            if os.path.exists(path[name] + '.bak'):
-                os.replace(path[name] + '.bak', path[name])
-        for name in (AI_FILE, GSC_FILE):
+            try:
+                if existed[name]:
+                    os.replace(path[name] + '.bak', path[name])
+                else:
+                    os.remove(path[name])
+            except OSError as again:
+                problems.append(f'{name} could not be put back ({again.strerror})')
+        for name in path:
             for leftover in (path[name] + '.tmp', path[name] + '.bak'):
-                if os.path.isfile(leftover):
-                    os.remove(leftover)
+                try:
+                    if os.path.isfile(leftover):
+                        os.remove(leftover)
+                except OSError:
+                    problems.append(f'{os.path.basename(leftover)} is left over')
+        if problems:
+            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); and ' + '; '.join(problems))
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
     for name in (AI_FILE, GSC_FILE):
         if os.path.isfile(path[name] + '.bak'):

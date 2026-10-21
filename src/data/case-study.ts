@@ -118,7 +118,7 @@ export const SEARCH = {
 const AI_HEAD = 'date,engine,mode,question,run_id,rev,question_text,config_rev,models_reported,route,answers,named,sources_listed,failed,no_answer';
 const aiLines = aiCsv.trim().split(/\r?\n/);
 if (aiLines[0] !== AI_HEAD) throw new Error('croftweaver-com-ai-check.csv: unexpected header line.');
-type Row = { date: string; engine: string; mode: string; question: string; marker: string; answers: number; named: number; sources: number; failed: number; noAnswer: number };
+type Row = { date: string; engine: string; mode: string; question: string; marker: string; model: string; answers: number; named: number; sources: number; failed: number; noAnswer: number };
 const rows: Row[] = aiLines.slice(1).map((line, i) => {
   // run_id, rev, question_text, config_rev, models_reported, route: plain values the export checks; models_reported
   // is empty when every call failed.
@@ -126,7 +126,7 @@ const rows: Row[] = aiLines.slice(1).map((line, i) => {
   if (!m || !realDay(m[1]!)) throw new Error(`croftweaver-com-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
   const row = {
     date: m[1]!, engine: m[2]!, mode: m[3]!, question: m[4]!,
-    marker: [m[6], m[7], m[8], m[9], m[10]].join(','),
+    marker: [m[6], m[7], m[8], m[10]].join(','), model: m[9]!,
     answers: Number(m[11]), named: Number(m[12]), sources: Number(m[13]), failed: Number(m[14]), noAnswer: Number(m[15]),
   };
   if (row.named > row.answers || row.sources > row.answers) throw new Error(`croftweaver-com-ai-check.csv, line ${i + 2}: counts above the answers.`);
@@ -157,8 +157,16 @@ for (const r of rows) {
   const k = `${r.engine}|${r.mode}|${r.question}`;
   series.set(k, [...(series.get(k) ?? []), r]);
 }
+// The model is compared only between days that name one: when every call failed, geo_check.py writes
+// no model, which says nothing about whether the model changed.
 export const BREAKS = [...series.values()].flatMap((rs) => {
   const sorted = [...rs].sort((a, b) => (a.date < b.date ? -1 : 1));
-  return sorted.slice(1).filter((r, i) => r.marker !== sorted[i]!.marker).map((r) => ({ date: r.date, engine: r.engine }));
+  let lastModel = '';
+  return sorted.flatMap((r, i) => {
+    const prev = sorted[i - 1];
+    const modelChanged = r.model !== '' && lastModel !== '' && r.model !== lastModel;
+    if (r.model !== '') lastModel = r.model;
+    return prev && (r.marker !== prev.marker || modelChanged) ? [{ date: r.date, engine: r.engine }] : [];
+  });
 });
 export const BREAK_DAYS = new Set(BREAKS.map((b) => b.date));
