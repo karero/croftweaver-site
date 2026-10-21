@@ -124,14 +124,20 @@ if [ "$(cat "$tmp/out/croftweaver-com-ai-check.csv")" = KEEP ] && [ "$(cat "$tmp
 python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out" 2>/dev/null
 if [ "$(head -1 "$tmp/out/croftweaver-com-ai-check.csv")" = "$AIHEAD" ] && [ "$(head -1 "$tmp/out/croftweaver-com-search-console.csv")" = "date,clicks,impressions" ] && ! compgen -G "$tmp/out/*.tmp" >/dev/null; then pass "--out-dir: writes both files, no temporary file left"; else fail "--out-dir: wrong files, or a temporary file is left"; fi
 
-# 5b. A failure on the second file, after the first was replaced (the Search Console file is a folder
-#     here): it stops, names the replaced file and the git command that undoes it, and leaves no
-#     temporary file. No home-made restore: both files are tracked in git.
-mkdir "$tmp/out2" "$tmp/out2/croftweaver-com-search-console.csv"; echo KEEP > "$tmp/out2/croftweaver-com-ai-check.csv"
+# 5b. A failure on the second file after the first was replaced (the Search Console file is a folder
+#     here): the first file gets its exact old contents back, nothing is left over, and the script
+#     says why it stopped. Old contents with a line that has no newline at its end, to see they
+#     come back byte for byte.
+mkdir "$tmp/out2" "$tmp/out2/croftweaver-com-search-console.csv"; printf 'KEEP\nno newline' > "$tmp/out2/croftweaver-com-ai-check.csv"
 if python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out2" >/dev/null 2> "$tmp/stderr"; then fail "--out-dir: a failed second write did not stop"
 elif grep -q Traceback "$tmp/stderr"; then fail "--out-dir: a failed second write raised a traceback"
-elif grep -q "Already replaced: $tmp/out2/croftweaver-com-ai-check.csv" "$tmp/stderr" && grep -q "git checkout --" "$tmp/stderr" && ! compgen -G "$tmp/out2/*.tmp" >/dev/null; then pass "--out-dir: a failed second write names the replaced file and how to undo it"
-else fail "--out-dir: a failed second write did not say which file was replaced ($(head -c 160 "$tmp/stderr"))"; fi
+elif [ "$(cat "$tmp/out2/croftweaver-com-ai-check.csv")" = $'KEEP\nno newline' ] && ! compgen -G "$tmp/out2/*.tmp" >/dev/null && grep -q "cannot write" "$tmp/stderr"; then pass "--out-dir: a failed second write puts the first file back exactly"
+else fail "--out-dir: a failed second write left a new first file or a temporary file"; fi
+# The same on a first publication: there was no first file, so the new one goes again.
+mkdir "$tmp/out3" "$tmp/out3/croftweaver-com-search-console.csv"
+python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out3" >/dev/null 2>&1 || true
+if [ ! -e "$tmp/out3/croftweaver-com-ai-check.csv" ] && ! compgen -G "$tmp/out3/*.tmp" >/dev/null; then pass "--out-dir: a failed first publication leaves no file"
+else fail "--out-dir: a failed first publication left a file behind"; fi
 printf '[1, 2]\n' > "$tmp/list.json"; stops one-site list "a cache that is not a record" "not the report cache"
 stops no-such-history good "a history that does not exist" "cannot read"
 

@@ -3,7 +3,7 @@
 
     python3 scripts/export-own-site.py --out-dir public/data
 
-writes, only if both check out:
+writes, only if both check out (and both or neither):
   public/data/croftweaver-com-ai-check.csv        the weekly AI check, counts only
   public/data/croftweaver-com-search-console.csv  daily clicks and impressions from Google
 
@@ -35,8 +35,9 @@ Counts may come as whole numbers written as floats (2.0); they are written as wh
 The script stops, and leaves both files as they were, on: two rows for one key, a column the
 history lacks, a row cut short, a mode, slot, status, engine or date it does not know, counts that
 cannot be true, or Search Console data for another property, a country, a repeated day, a count
-that is not a whole number, or more clicks than impressions. If the output folder cannot be written
-after the first file was already replaced, it says which file and how to undo it with git.
+that is not a whole number, or more clicks than impressions; and on an output folder it cannot
+write, where both files are left as they were (a file replaced before the failure gets its old
+contents back).
 """
 import argparse
 import hashlib
@@ -202,11 +203,17 @@ ai_text, ai_rows = ai_check(args.history)
 gsc_text, gsc_rows = search_console(args.google_data)
 
 if args.out_dir:
-    # Both new files are written next to the old ones first, then each takes its file's place.
-    # No backup copies: both files are tracked in git, so if the second step fails after the first
-    # one worked, the message names the file that is already new and `git checkout` brings the old
-    # one back. (Review rounds 3-5 kept finding faults in a home-made restore; this is the cut.)
+    # The old files are read into memory first. If replacing the second file fails after the first
+    # was replaced, the first gets its old contents back (or is removed, if there was none), so both
+    # files end up new or as they were. Only a failure inside that putting-back is left to the user,
+    # and the message says exactly which file and what is left over.
     path = {name: os.path.join(args.out_dir, name) for name in (AI_FILE, GSC_FILE)}
+    old = {}
+    for name in path:
+        try:
+            old[name] = open(path[name], newline='').read() if os.path.isfile(path[name]) else None
+        except OSError as e:
+            stop(f'cannot read {path[name]} ({e.strerror})')
     replaced = []
     try:
         for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
@@ -214,18 +221,27 @@ if args.out_dir:
                 f.write(text)
         for name in (AI_FILE, GSC_FILE):
             os.replace(path[name] + '.tmp', path[name])
-            replaced.append(path[name])
+            replaced.append(name)
     except OSError as e:
-        for name in path:
+        problems = []
+        for name in replaced:
             try:
-                if os.path.isfile(path[name] + '.tmp'):
-                    os.remove(path[name] + '.tmp')
+                if old[name] is None:
+                    os.remove(path[name])
+                else:
+                    with open(path[name], 'w', newline='') as f:
+                        f.write(old[name])
+            except OSError as again:
+                problems.append(f'{path[name]} is the new version and could not be put back ({again.strerror})')
+        for name in path:
+            leftover = path[name] + '.tmp'
+            try:
+                if os.path.isfile(leftover):
+                    os.remove(leftover)
             except OSError:
-                pass
-        if replaced:
-            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}). Already replaced: '
-                     f'{", ".join(replaced)}; to undo, run: git checkout -- {" ".join(replaced)} '
-                     f'(a file that was not in git before: delete it)')
+                problems.append(f'{leftover} is left over')
+        if problems:
+            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); ' + '; '.join(problems))
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
