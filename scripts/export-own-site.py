@@ -21,20 +21,24 @@ other sites and the branded question are dropped. The rules for reading a row ar
             include croftweaver.com. Not called "cited": geo_check.py does not check, for every
             assistant, that the answer's text uses those sources.
   failed  = X in the status "X of Y failed" (0 when the status is "ok")
-rev, config_rev, models_reported and route are kept, so the page can mark a break where the
-question, the settings, the model or the route changed (geo_check.py --trend does the same).
-Any other status stops the export: a new state in geo_check.py must be read here on purpose.
+rev, config_rev, models_reported, route and a short fingerprint of the question's text are kept,
+so the page can mark a break where the question, the settings, the model or the route changed
+(geo_check.py --trend looks at the same five). Any other status, an assistant outside ENGINES, or
+a value in those columns that is not plain stops the export: a new state or assistant in
+geo_check.py must be read here on purpose.
 
 Search Console: read from the report job's cache (search_report.py writes
 ~/.config/gsc-insights/reports/croftweaver.com/google-data.json). Only the croftweaver.com domain
-property with no country filter is accepted, and only days up to the last finished day.
+property with no country filter is accepted. Days after the last finished day are left out.
+Counts may come as whole numbers written as floats (2.0); they are written as whole numbers.
 
 The script stops, and leaves both files as they were, on: two rows for one key, a column the
 history lacks, a row cut short, a mode, slot, status, engine or date it does not know, counts that
-cannot be true, or Search Console data for another property, a country, an unfinished or repeated
-day, or more clicks than impressions.
+cannot be true, or Search Console data for another property, a country, a repeated day, a count
+that is not a whole number, or more clicks than impressions; and on an output folder it cannot write.
 """
 import argparse
+import hashlib
 import csv
 import datetime
 import io
@@ -49,7 +53,12 @@ MODE = {'finds': 'with_search', 'knows': 'without_search'}
 QUESTION = {'broad': 1, 'narrow': 2}
 SKIPPED_SLOTS = {'branded'}
 NO_ANSWER = {'no AI Overview shown', 'no AI Mode answer'}
-COLUMNS = {'date', 'run_id', 'site', 'engine', 'mode', 'slot', 'rev', 'models_reported', 'config_rev',
+# The assistants geo_check.py asks (its ENGINES). A name outside this list stops the export.
+ENGINES = {'openai', 'perplexity', 'google-ai-mode', 'google-overview', 'gemini', 'anthropic'}
+# The columns passed through as text: plain values only, no comma (the page reads them with a pattern).
+PLAIN = {'run_id': r'[A-Za-z0-9-]+', 'rev': r'\d+', 'config_rev': r'[A-Za-z0-9]*',
+         'models_reported': r'[A-Za-z0-9._/:|-]*', 'route': r'[a-z]*'}
+COLUMNS = {'date', 'run_id', 'site', 'engine', 'mode', 'slot', 'rev', 'query', 'models_reported', 'config_rev',
            'ok', 'named', 'cited_own', 'status', 'route'}
 AI_FILE = 'croftweaver-com-ai-check.csv'
 GSC_FILE = 'croftweaver-com-search-console.csv'
@@ -95,8 +104,11 @@ def ai_check(path):
         if row['mode'] not in MODE:
             stop(f'{where}: unexpected mode {row["mode"]!r}')
         day(row['date'], where)
-        if not re.fullmatch(r'[a-z-]+', row['engine']):
+        if row['engine'] not in ENGINES:
             stop(f'{where}: unexpected assistant name {row["engine"]!r}')
+        for col, pattern in PLAIN.items():
+            if not re.fullmatch(pattern, row[col]):
+                stop(f'{where}: unexpected {col} {row[col]!r}')
         key = (row['date'], row['engine'], MODE[row['mode']], QUESTION[row['slot']])
         if key in kept:
             stop(f'{key}: two runs, {kept[key]["run_id"]} and {row["run_id"]}')
@@ -106,6 +118,7 @@ def ai_check(path):
             stop(f'{key}: unexpected status {status!r}')
         v = {
             'run_id': row['run_id'], 'rev': row['rev'], 'config_rev': row['config_rev'],
+            'question_text': hashlib.sha256(row['query'].encode()).hexdigest()[:8],
             'models_reported': row['models_reported'], 'route': row['route'] or 'direct',
             'answers': count(row['ok'], 'ok', where),
             'named': count(row['named'], 'named', where, True),
@@ -126,7 +139,7 @@ def ai_check(path):
         stop(f'no rows for {SITE} in {path}')
     text = io.StringIO()
     out = csv.writer(text, lineterminator='\n')
-    fields = ['run_id', 'rev', 'config_rev', 'models_reported', 'route', 'answers', 'named', 'sources_listed', 'failed', 'no_answer']
+    fields = ['run_id', 'rev', 'question_text', 'config_rev', 'models_reported', 'route', 'answers', 'named', 'sources_listed', 'failed', 'no_answer']
     out.writerow(['date', 'engine', 'mode', 'question'] + fields)
     for key, v in sorted(kept.items()):
         out.writerow(list(key) + [v[f] for f in fields])
@@ -152,8 +165,12 @@ def search_console(path):
             stop(f'{path}: {d} twice')
         seen.add(d)
         clicks, impressions = r.get('clicks'), r.get('impressions')
-        if not all(isinstance(x, int) and not isinstance(x, bool) and x >= 0 for x in (clicks, impressions)):
+        def whole(x):
+            return (isinstance(x, (int, float)) and not isinstance(x, bool) and x >= 0
+                    and float(x).is_integer())
+        if not (whole(clicks) and whole(impressions)):
             stop(f'{path}: {d}: clicks {clicks!r}, impressions {impressions!r} are not counts')
+        clicks, impressions = int(clicks), int(impressions)
         if clicks > impressions:
             stop(f'{path}: {d}: {clicks} clicks but {impressions} impressions')
         rows.append((d.isoformat(), clicks, impressions))
@@ -177,11 +194,16 @@ ai_text, ai_rows = ai_check(args.history)
 gsc_text, gsc_rows = search_console(args.google_data)
 
 if args.out_dir:
-    for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
-        with open(os.path.join(args.out_dir, name + '.tmp'), 'w', newline='') as f:
-            f.write(text)
-    for name in (AI_FILE, GSC_FILE):
-        os.replace(os.path.join(args.out_dir, name + '.tmp'), os.path.join(args.out_dir, name))
+    # Both temporary files are written before either replaces its file, so a write that fails
+    # leaves both files as they were. (The two renames are not one step; between them is only a rename.)
+    try:
+        for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
+            with open(os.path.join(args.out_dir, name + '.tmp'), 'w', newline='') as f:
+                f.write(text)
+        for name in (AI_FILE, GSC_FILE):
+            os.replace(os.path.join(args.out_dir, name + '.tmp'), os.path.join(args.out_dir, name))
+    except OSError as e:
+        stop(f'cannot write to {args.out_dir} ({e.strerror})')
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
 print(f'{ai_rows} AI check rows and {gsc_rows} Search Console days for {SITE}', file=sys.stderr)

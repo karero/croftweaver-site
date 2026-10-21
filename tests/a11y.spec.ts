@@ -884,7 +884,7 @@ test('roadmap — says which release and day it was last read through against', 
 // The case study shows only what its three sources say (owner, 2026-10-21): the two files written by
 // scripts/export-own-site.py and the log in src/data/case-study.ts. This reads the files itself, not
 // through the page's data module, so a slip in that module's sums shows up here.
-test('case study — every figure on /case-study equals its source file', async ({ page }) => {
+test('case study — the figures from the two data files equal those files', async ({ page }) => {
   const csv = (name: string) => readFileSync(new URL(`../public/data/${name}`, import.meta.url), 'utf8').trim().split('\n').slice(1).map((l) => l.split(','));
   const gsc = csv('croftweaver-com-search-console.csv');
   const ai = csv('croftweaver-com-ai-check.csv');
@@ -901,19 +901,28 @@ test('case study — every figure on /case-study equals its source file', async 
   const sum = (col: number) => gsc.reduce((n, r) => n + Number(r[col]), 0);
   const searchText = (await page.locator('#search p').first().textContent())!.replace(/\s+/g, ' ');
   expect(searchText).toContain(`appeared ${sum(2)} times`);
-  expect(searchText).toContain(`clicked ${sum(1)} time`);
+  expect(searchText).toContain(`clicked ${sum(1)} ${sum(1) === 1 ? 'time' : 'times'}`);
   // The AI check: per day, named / answers with search, sources / answers, named / answers without.
-  // Columns: 0 date, 2 mode, 9 answers, 10 named, 11 sources_listed.
+  // Columns: 0 date, 2 mode, 10 answers, 11 named, 12 sources_listed.
   const days = [...new Set(ai.map((r) => r[0]!))].sort();
   const aiRows = page.locator('#ai tbody tr');
   await expect(aiRows, 'one table row per day of the AI check').toHaveCount(days.length);
   for (const [i, day] of days.entries()) {
     const total = (mode: string, col: number) => ai.filter((r) => r[0] === day && r[2] === mode).reduce((n, r) => n + Number(r[col]), 0);
+    await expect(aiRows.nth(i).locator('time')).toHaveAttribute('datetime', day);
     const cells = aiRows.nth(i).locator('td');
-    await expect(cells.nth(0)).toHaveText(`${total('with_search', 10)} of ${total('with_search', 9)}`);
-    await expect(cells.nth(1)).toHaveText(`${total('with_search', 11)} of ${total('with_search', 9)}`);
-    await expect(cells.nth(2)).toHaveText(`${total('without_search', 10)} of ${total('without_search', 9)}`);
+    await expect(cells.nth(0)).toHaveText(`${total('with_search', 11)} of ${total('with_search', 10)}`);
+    await expect(cells.nth(1)).toHaveText(`${total('with_search', 12)} of ${total('with_search', 10)}`);
+    await expect(cells.nth(2)).toHaveText(`${total('without_search', 11)} of ${total('without_search', 10)}`);
   }
+  // The sentence above the table gives the latest day's totals.
+  const last = days[days.length - 1]!;
+  const t = (mode: string, col: number) => ai.filter((r) => r[0] === last && r[2] === mode).reduce((n, r) => n + Number(r[col]), 0);
+  const aiText = (await page.locator('#ai p').first().textContent())!.replace(/\s+/g, ' ');
+  await expect(page.locator('#ai p').first().locator('time')).toHaveAttribute('datetime', last);
+  expect(aiText).toContain(`${t('with_search', 11)} of ${t('with_search', 10)} answers`);
+  expect(aiText).toContain(`returned in ${t('with_search', 12)} of ${t('with_search', 10)}`);
+  expect(aiText).toContain(`Without web search, ${t('without_search', 11)} of ${t('without_search', 10)} named it`);
   // The page never calls the source count a citation (see src/data/case-study.ts).
   expect(await page.locator('main').textContent()).not.toMatch(/\bcited\b/i);
   // The log: every change links a pull request of one of the three repositories.

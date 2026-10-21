@@ -114,17 +114,19 @@ export const SEARCH = {
 // Totals per day and mode over all assistants. "Among the sources returned" counts answers whose
 // returned sources include croftweaver.com; the page never calls it "cited": for some assistants the
 // check cannot tell which sources the answer's text uses (the toolkit's geo_check.py says so).
-const AI_HEAD = 'date,engine,mode,question,run_id,rev,config_rev,models_reported,route,answers,named,sources_listed,failed,no_answer';
+const AI_HEAD = 'date,engine,mode,question,run_id,rev,question_text,config_rev,models_reported,route,answers,named,sources_listed,failed,no_answer';
 const aiLines = aiCsv.trim().split(/\r?\n/);
 if (aiLines[0] !== AI_HEAD) throw new Error('croftweaver-com-ai-check.csv: unexpected header line.');
 type Row = { date: string; engine: string; mode: string; question: string; marker: string; answers: number; named: number; sources: number; failed: number; noAnswer: number };
 const rows: Row[] = aiLines.slice(1).map((line, i) => {
-  const m = line.match(/^(\d{4}-\d{2}-\d{2}),([a-z-]+),(with_search|without_search),([12]),([^,]+),([^,]+),([^,]+),([^,]+),([a-z]+),(\d+),(\d+),(\d+),(\d+),([01])$/);
+  // run_id, rev, question_text, config_rev, models_reported, route: plain values the export checks; models_reported
+  // is empty when every call failed.
+  const m = line.match(/^(\d{4}-\d{2}-\d{2}),([a-z-]+),(with_search|without_search),([12]),([A-Za-z0-9-]+),(\d+),([0-9a-f]{8}),([A-Za-z0-9]*),([A-Za-z0-9._\/:|-]*),([a-z]+),(\d+),(\d+),(\d+),(\d+),([01])$/);
   if (!m || !realDay(m[1]!)) throw new Error(`croftweaver-com-ai-check.csv, line ${i + 2} is malformed: "${line}".`);
   const row = {
     date: m[1]!, engine: m[2]!, mode: m[3]!, question: m[4]!,
-    marker: [m[6], m[7], m[8], m[9]].join('|'),
-    answers: Number(m[10]), named: Number(m[11]), sources: Number(m[12]), failed: Number(m[13]), noAnswer: Number(m[14]),
+    marker: [m[6], m[7], m[8], m[9], m[10]].join(','),
+    answers: Number(m[11]), named: Number(m[12]), sources: Number(m[13]), failed: Number(m[14]), noAnswer: Number(m[15]),
   };
   if (row.named > row.answers || row.sources > row.answers) throw new Error(`croftweaver-com-ai-check.csv, line ${i + 2}: counts above the answers.`);
   return row;
@@ -145,11 +147,12 @@ export const AI_DAYS = [...new Set(rows.map((r) => r.date))].sort().map((date) =
   return { date, label: dayLabel(date), withSearch: sum('with_search'), withoutSearch: sum('without_search') };
 });
 
-// A break: the question, the settings, the model or the route differs from the series' previous day.
-// Series = one assistant, mode and question, as geo_check.py --trend groups them. No movement is read
-// across a break.
+// A break: the question (its revision or its text), the settings, the model or the route differs from the
+// series' previous answered day. Series = one assistant, mode and question, as geo_check.py --trend groups
+// them; like the trend, a day with no answer (every call failed, or Google showed no AI answer) is not
+// compared. No movement is read across a break.
 const series = new Map<string, Row[]>();
-for (const r of rows) {
+for (const r of rows.filter((x) => x.answers > 0 && x.noAnswer === 0)) {
   const k = `${r.engine}|${r.mode}|${r.question}`;
   series.set(k, [...(series.get(k) ?? []), r]);
 }

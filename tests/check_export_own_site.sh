@@ -16,7 +16,7 @@ fail() { echo "  FAIL $1"; failures=$((failures + 1)); }
 
 header='date,run_id,site,engine,mode,slot,rev,query,model_requested,models_reported,config_rev,ok,named,cited_own,cited_domains,searched,status,route'
 # row DATE RUN SITE ENGINE MODE SLOT OK NAMED CITED STATUS [REV MODEL CONFIG ROUTE]
-row() { printf '%s,%s,%s,%s,%s,%s,%s,q,m,%s,%s,%s,%s,%s,,,%s,%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${11:-1}" "${12:-m}" "${13:-c}" "$7" "$8" "$9" "${10}" "${14:-direct}"; }
+row() { printf '%s,%s,%s,%s,%s,%s,%s,q,m,%s,%s,%s,%s,%s,,,%s,%s\n' "$1" "$2" "$3" "$4" "$5" "$6" "${11-1}" "${12-m}" "${13-c}" "$7" "$8" "$9" "${10}" "${14-direct}"; }
 history() { { echo "$header"; cat; } > "$tmp/$1.csv"; }
 # google NAME [PROPERTY COUNTRY FINISHED DAILY-JSON]
 DAILY='[{"date":"2026-10-16","clicks":0,"impressions":2,"position":5},{"date":"2026-10-17","clicks":1,"impressions":3,"position":4}]'
@@ -30,7 +30,8 @@ ai_part() { sed -n '/^--- croftweaver-com-ai-check.csv$/,/^--- croftweaver-com-s
 gsc_part() { sed -n '/^--- croftweaver-com-search-console.csv$/,$p' | sed '1d'; }
 
 SITE=croftweaver.com
-AIHEAD='date,engine,mode,question,run_id,rev,config_rev,models_reported,route,answers,named,sources_listed,failed,no_answer'
+AIHEAD='date,engine,mode,question,run_id,rev,question_text,config_rev,models_reported,route,answers,named,sources_listed,failed,no_answer'
+Q=8e35c2cd  # the first 8 hex digits of sha256('q'), the question text row() writes
 google good
 
 echo "scripts/export-own-site.py"
@@ -47,7 +48,7 @@ echo "scripts/export-own-site.py"
   row 2026-10-18 r1 CROFTWEAVER.COM openai finds broad 3 3 3 ok
   row 2026-10-18 r1 "$SITE " openai finds broad 3 3 3 ok
 } | history one-site
-want="$AIHEAD"$'\n2026-10-18,openai,with_search,1,r1,1,c,m,direct,3,0,1,0,0\n2026-10-18,openai,with_search,2,r1,1,c,m,direct,3,1,1,0,0'
+want="$AIHEAD"$'\n'"2026-10-18,openai,with_search,1,r1,1,$Q,c,m,direct,3,0,1,0,0"$'\n'"2026-10-18,openai,with_search,2,r1,1,$Q,c,m,direct,3,1,1,0,0"
 if [ "$(run one-site good | ai_part)" = "$want" ]; then pass "keeps croftweaver.com only, drops look-alikes and the branded question"; else fail "writes something else than croftweaver.com's counts"; fi
 
 # 2. Google's "no AI Overview shown" is not an answer (geo_check.py counts it in ok); failed calls
@@ -57,7 +58,7 @@ if [ "$(run one-site good | ai_part)" = "$want" ]; then pass "keeps croftweaver.
   row 2026-10-18 r1 $SITE anthropic finds broad 1 0 0 '2 of 3 failed'
   row 2026-10-19 r2 $SITE anthropic finds broad 3 0 0 ok 2 claude-x c2 openrouter
 } | history states
-want="$AIHEAD"$'\n2026-10-18,anthropic,with_search,1,r1,1,c,m,direct,1,0,0,2,0\n2026-10-18,google-overview,with_search,1,r1,1,c,m,direct,0,0,0,0,1\n2026-10-19,anthropic,with_search,1,r2,2,c2,claude-x,openrouter,3,0,0,0,0'
+want="$AIHEAD"$'\n'"2026-10-18,anthropic,with_search,1,r1,1,$Q,c,m,direct,1,0,0,2,0"$'\n'"2026-10-18,google-overview,with_search,1,r1,1,$Q,c,m,direct,0,0,0,0,1"$'\n'"2026-10-19,anthropic,with_search,1,r2,2,$Q,c2,claude-x,openrouter,3,0,0,0,0"
 if [ "$(run states good | ai_part)" = "$want" ]; then pass "no AI Overview is not an answer; failed calls and break markers are kept"; else fail "states or break markers are read wrongly"; fi
 
 # 3. Search Console: finished days only, sorted.
@@ -99,6 +100,21 @@ google nocount sc-domain:croftweaver.com '' 2026-10-17 '[{"date":"2026-10-16","c
 stops one-site nocount "a count that is not a number" "not counts"
 google nodays sc-domain:croftweaver.com '' 2026-10-10
 stops one-site nodays "no finished day" "no finished days"
+
+# 4b. More inputs that must stop it: an assistant geo_check.py does not ask, and a value that is not plain.
+row 2026-10-18 a $SITE cohere finds broad 3 0 0 ok | history s-cohere;          stops s-cohere good "an assistant outside the list" "unexpected assistant name"
+row 2026-10-18 a $SITE openai finds broad 3 0 0 ok 1 m c Direct | history s-route; stops s-route good "a route that is not plain" "unexpected route"
+row 2026-10-18 a $SITE openai finds broad 3 0 0 ok 1 'gpt 6' c direct | history s-model; stops s-model good "a model name with a space" "unexpected models_reported"
+# 4c. Accepted on purpose: every call failed (geo_check.py then writes no model name), and Google counts as floats.
+row 2026-10-18 r1 $SITE openai finds broad 0 '' '' '3 of 3 failed' 1 '' c direct | history allfail
+if [ "$(run allfail good | ai_part)" = "$AIHEAD"$'\n'"2026-10-18,openai,with_search,1,r1,1,$Q,c,,direct,0,0,0,3,0" ]; then pass "every call failed: no model name, 0 answers, 3 failed"; else fail "a run where every call failed is refused or written wrongly"; fi
+google floats sc-domain:croftweaver.com '' 2026-10-17 '[{"date":"2026-10-16","clicks":1.0,"impressions":2.0}]'
+if [ "$(run one-site floats | gsc_part)" = $'date,clicks,impressions\n2026-10-16,1,2' ]; then pass "whole numbers written as floats are written as whole numbers"; else fail "float counts are refused or written as floats"; fi
+google half sc-domain:croftweaver.com '' 2026-10-17 '[{"date":"2026-10-16","clicks":0.5,"impressions":2}]'
+stops one-site half "a count that is not whole" "not counts"
+if out=$(python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/no-such-dir" 2> "$tmp/stderr"); then fail "an output folder that does not exist: did not stop"
+elif grep -q Traceback "$tmp/stderr"; then fail "an output folder that does not exist: a traceback, not a message"
+elif grep -q "cannot write" "$tmp/stderr"; then pass "stops on an output folder it cannot write"; else fail "an output folder that does not exist: wrong message"; fi
 
 # 5. --out-dir writes both files only when both check out: a stop in either leaves both as they were.
 mkdir "$tmp/out"
