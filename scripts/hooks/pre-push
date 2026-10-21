@@ -42,6 +42,12 @@ if [ -f tests/check_export_ai_check.sh ]; then
   bash tests/check_export_ai_check.sh
 fi
 
+# And for the case study's own export: croftweaver.com only, counts only.
+if [ -f tests/check_export_own_site.sh ]; then
+  echo "▶ pre-push gate: case study export…"
+  bash tests/check_export_own_site.sh
+fi
+
 echo "▶ pre-push gate: building…"
 npm run build
 
