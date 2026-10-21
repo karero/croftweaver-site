@@ -124,5 +124,14 @@ if [ "$(cat "$tmp/out/croftweaver-com-ai-check.csv")" = KEEP ] && [ "$(cat "$tmp
 python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out" 2>/dev/null
 if [ "$(head -1 "$tmp/out/croftweaver-com-ai-check.csv")" = "$AIHEAD" ] && [ "$(head -1 "$tmp/out/croftweaver-com-search-console.csv")" = "date,clicks,impressions" ] && ! ls "$tmp/out"/*.tmp >/dev/null 2>&1; then pass "--out-dir: writes both files, no temporary file left"; else fail "--out-dir: wrong files, or a temporary file is left"; fi
 
+# 5b. A failure on the second file restores the first: the Search Console file is a folder here, so
+#     its rename fails after the AI file was already replaced.
+mkdir "$tmp/out2" "$tmp/out2/croftweaver-com-search-console.csv"; echo KEEP > "$tmp/out2/croftweaver-com-ai-check.csv"
+if python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out2" >/dev/null 2>&1; then fail "--out-dir: a failed second write did not stop"
+elif [ "$(cat "$tmp/out2/croftweaver-com-ai-check.csv")" = KEEP ] && ! ls "$tmp/out2"/*.tmp "$tmp/out2"/*.bak >/dev/null 2>&1; then pass "--out-dir: a failed second write restores the first file and leaves nothing behind"
+else fail "--out-dir: a failed second write left a new first file or a temporary file"; fi
+printf '[1, 2]\n' > "$tmp/list.json"; stops one-site list "a cache that is not a record" "not the report cache"
+stops no-such-history good "a history that does not exist" "cannot read"
+
 if [ "$failures" -ne 0 ]; then echo "$failures check(s) failed"; exit 1; fi
 echo "all checks passed"

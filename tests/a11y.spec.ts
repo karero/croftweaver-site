@@ -900,7 +900,9 @@ test('case study — the figures from the two data files equal those files', asy
   }
   const sum = (col: number) => gsc.reduce((n, r) => n + Number(r[col]), 0);
   const searchText = (await page.locator('#search p').first().textContent())!.replace(/\s+/g, ' ');
-  expect(searchText).toContain(`appeared ${sum(2)} times`);
+  expect(searchText).toContain(`appeared ${sum(2)} ${sum(2) === 1 ? 'time' : 'times'}`);
+  await expect(page.locator('#search p').first().locator('time').first()).toHaveAttribute('datetime', gsc[0]![0]!);
+  await expect(page.locator('#search p').first().locator('time').last()).toHaveAttribute('datetime', gsc[gsc.length - 1]![0]!);
   expect(searchText).toContain(`clicked ${sum(1)} ${sum(1) === 1 ? 'time' : 'times'}`);
   // The AI check: per day, named / answers with search, sources / answers, named / answers without.
   // Columns: 0 date, 2 mode, 10 answers, 11 named, 12 sources_listed.
@@ -920,7 +922,8 @@ test('case study — the figures from the two data files equal those files', asy
   const t = (mode: string, col: number) => ai.filter((r) => r[0] === last && r[2] === mode).reduce((n, r) => n + Number(r[col]), 0);
   const aiText = (await page.locator('#ai p').first().textContent())!.replace(/\s+/g, ' ');
   await expect(page.locator('#ai p').first().locator('time')).toHaveAttribute('datetime', last);
-  expect(aiText).toContain(`${t('with_search', 11)} of ${t('with_search', 10)} answers`);
+  const engines = new Set(ai.filter((r) => r[0] === last && r[2] === 'with_search').map((r) => r[1])).size;
+  expect(aiText).toContain(`${t('with_search', 11)} of ${t('with_search', 10)} answers from ${engines} ${engines === 1 ? 'assistant' : 'assistants'}`);
   expect(aiText).toContain(`returned in ${t('with_search', 12)} of ${t('with_search', 10)}`);
   expect(aiText).toContain(`Without web search, ${t('without_search', 11)} of ${t('without_search', 10)} named it`);
   // The page never calls the source count a citation (see src/data/case-study.ts).

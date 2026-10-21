@@ -80,7 +80,7 @@ const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
     <p>
       From <time datetime={SEARCH.from}>{dayLabel(SEARCH.from)}</time> to
       <time datetime={SEARCH.to}>{dayLabel(SEARCH.to)}</time>, croftweaver.com appeared
-      {SEARCH.impressions} times in Google's results and was clicked {SEARCH.clicks}
+      {SEARCH.impressions} {SEARCH.impressions === 1 ? 'time' : 'times'} in Google's results and was clicked {SEARCH.clicks}
       {SEARCH.clicks === 1 ? 'time' : 'times'}.
     </p>
     <div class="table-wrap" role="region" aria-label="Daily clicks and appearances in Google for croftweaver.com" tabindex="0">
@@ -108,6 +108,10 @@ const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
 
   <section class="wrap" id="log">
     <h2>The log</h2>
+    <p class="note">
+      A change is dated by the day its pull request was merged. It goes live when the site is next
+      published, which can be a few days later.
+    </p>
     <ol class="log" reversed>
       {LOG_NEWEST.map((e) => (
         <li class={e.kind}>

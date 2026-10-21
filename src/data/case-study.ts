@@ -18,8 +18,9 @@ export const dayLabel = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 // ── The log ─────────────────────────────────────────────────────────────────────
-// A change has a merged pull request; "live" is its merge day (both sites publish from main, the
-// toolkit README is live on GitHub when merged). An observation is something seen, with its source.
+// A change has a merged pull request, dated by its merge day. Merge is not publication: croftweaver.com
+// goes live when main is shipped to its production branch (scripts/ship.sh); genai-wednesday.de and the
+// toolkit README follow their own repositories. An observation is something seen, with its source.
 type Change = { kind: 'change'; date: string; title: string; asked: string; pr: string; checks?: string; next?: string };
 type Observation = { kind: 'observation'; date: string; title: string; seen: string; source: string };
 export type Entry = Change | Observation;
@@ -148,11 +149,11 @@ export const AI_DAYS = [...new Set(rows.map((r) => r.date))].sort().map((date) =
 });
 
 // A break: the question (its revision or its text), the settings, the model or the route differs from the
-// series' previous answered day. Series = one assistant, mode and question, as geo_check.py --trend groups
-// them; like the trend, a day with no answer (every call failed, or Google showed no AI answer) is not
-// compared. No movement is read across a break.
+// series' previous day. Series = one assistant, mode and question, as geo_check.py --trend groups them.
+// Every day counts here, answered or not (stricter than the trend), so a change on a day with no answer is
+// still marked and the page's "nothing changed" sentence stays true. No movement is read across a break.
 const series = new Map<string, Row[]>();
-for (const r of rows.filter((x) => x.answers > 0 && x.noAnswer === 0)) {
+for (const r of rows) {
   const k = `${r.engine}|${r.mode}|${r.question}`;
   series.set(k, [...(series.get(k) ?? []), r]);
 }

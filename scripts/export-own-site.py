@@ -44,6 +44,7 @@ import datetime
 import io
 import json
 import os
+import shutil
 import re
 import sys
 
@@ -56,7 +57,7 @@ NO_ANSWER = {'no AI Overview shown', 'no AI Mode answer'}
 # The assistants geo_check.py asks (its ENGINES). A name outside this list stops the export.
 ENGINES = {'openai', 'perplexity', 'google-ai-mode', 'google-overview', 'gemini', 'anthropic'}
 # The columns passed through as text: plain values only, no comma (the page reads them with a pattern).
-PLAIN = {'run_id': r'[A-Za-z0-9-]+', 'rev': r'\d+', 'config_rev': r'[A-Za-z0-9]*',
+PLAIN = {'run_id': r'[A-Za-z0-9-]+', 'rev': r'[0-9]+', 'config_rev': r'[A-Za-z0-9]*',
          'models_reported': r'[A-Za-z0-9._/:|-]*', 'route': r'[a-z]*'}
 COLUMNS = {'date', 'run_id', 'site', 'engine', 'mode', 'slot', 'rev', 'query', 'models_reported', 'config_rev',
            'ok', 'named', 'cited_own', 'status', 'route'}
@@ -88,7 +89,10 @@ def day(value, where):
 
 
 def ai_check(path):
-    reader = csv.DictReader(open(path, newline=''))
+    try:
+        reader = csv.DictReader(open(path, newline=''))
+    except OSError as e:
+        stop(f'{path}: cannot read ({e.strerror})')
     missing = COLUMNS - set(reader.fieldnames or [])
     if missing:
         stop(f'{path}: the history has no column {", ".join(sorted(missing))}')
@@ -151,6 +155,8 @@ def search_console(path):
         data = json.load(open(path))
     except (OSError, ValueError) as e:
         stop(f'{path}: cannot read ({e})')
+    if not isinstance(data, dict) or not isinstance(data.get('daily', []), list):
+        stop(f'{path}: not the report cache this script reads')
     if data.get('property') != PROPERTY:
         stop(f'{path}: property {data.get("property")!r}, not {PROPERTY}')
     if data.get('country') != '':
@@ -158,6 +164,8 @@ def search_console(path):
     finished = day(data.get('finished'), f'{path} finished')
     rows, seen = [], set()
     for r in data.get('daily') or []:
+        if not isinstance(r, dict):
+            stop(f'{path}: a daily entry that is not a record')
         d = day(r.get('date'), f'{path} daily')
         if d > finished:
             continue
@@ -194,16 +202,32 @@ ai_text, ai_rows = ai_check(args.history)
 gsc_text, gsc_rows = search_console(args.google_data)
 
 if args.out_dir:
-    # Both temporary files are written before either replaces its file, so a write that fails
-    # leaves both files as they were. (The two renames are not one step; between them is only a rename.)
+    # Both new files are written first; each old file is kept as .bak until both are in place. If
+    # anything fails, the old files come back and the temporary files go, so both files are either
+    # new or as they were.
+    path = {name: os.path.join(args.out_dir, name) for name in (AI_FILE, GSC_FILE)}
+    done = []
     try:
         for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
-            with open(os.path.join(args.out_dir, name + '.tmp'), 'w', newline='') as f:
+            with open(path[name] + '.tmp', 'w', newline='') as f:
                 f.write(text)
         for name in (AI_FILE, GSC_FILE):
-            os.replace(os.path.join(args.out_dir, name + '.tmp'), os.path.join(args.out_dir, name))
+            if os.path.isfile(path[name]):
+                shutil.copy2(path[name], path[name] + '.bak')
+            os.replace(path[name] + '.tmp', path[name])
+            done.append(name)
     except OSError as e:
+        for name in done:
+            if os.path.exists(path[name] + '.bak'):
+                os.replace(path[name] + '.bak', path[name])
+        for name in (AI_FILE, GSC_FILE):
+            for leftover in (path[name] + '.tmp', path[name] + '.bak'):
+                if os.path.isfile(leftover):
+                    os.remove(leftover)
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
+    for name in (AI_FILE, GSC_FILE):
+        if os.path.isfile(path[name] + '.bak'):
+            os.remove(path[name] + '.bak')
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
 print(f'{ai_rows} AI check rows and {gsc_rows} Search Console days for {SITE}', file=sys.stderr)
