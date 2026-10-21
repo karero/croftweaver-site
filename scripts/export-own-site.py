@@ -219,7 +219,7 @@ if args.out_dir:
             done.append(name)
     except OSError as e:
         # Put back what was there: the old file where there was one, nothing where there was none.
-        problems = []
+        problems, keep = [], set()
         for name in done:
             try:
                 if existed[name]:
@@ -227,9 +227,13 @@ if args.out_dir:
                 else:
                     os.remove(path[name])
             except OSError as again:
-                problems.append(f'{name} could not be put back ({again.strerror})')
+                # The old file is still in its .bak: keep it, and say where it is.
+                keep.add(path[name] + '.bak')
+                problems.append(f'{name} could not be put back ({again.strerror}); the old file is {path[name]}.bak')
         for name in path:
             for leftover in (path[name] + '.tmp', path[name] + '.bak'):
+                if leftover in keep:
+                    continue
                 try:
                     if os.path.isfile(leftover):
                         os.remove(leftover)
@@ -239,8 +243,11 @@ if args.out_dir:
             sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); and ' + '; '.join(problems))
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
     for name in (AI_FILE, GSC_FILE):
-        if os.path.isfile(path[name] + '.bak'):
-            os.remove(path[name] + '.bak')
+        try:
+            if os.path.isfile(path[name] + '.bak'):
+                os.remove(path[name] + '.bak')
+        except OSError as e:
+            print(f'export-own-site: both files written; the old copy {path[name]}.bak could not be removed ({e.strerror})', file=sys.stderr)
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
 print(f'{ai_rows} AI check rows and {gsc_rows} Search Console days for {SITE}', file=sys.stderr)
