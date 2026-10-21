@@ -228,29 +228,41 @@ if args.out_dir:
             os.replace(path[name] + '.tmp', path[name])
             replaced.append(name)
     except OSError as e:
-        problems = []
+        problems, kept = [], set()
         for name in replaced:
-            try:
-                if old[name] is None:
+            if old[name] is None:
+                try:
                     os.remove(path[name])
-                else:
-                    # Written beside the file, then renamed over it: a failure here never leaves half a file.
-                    with open(path[name] + '.restore', 'wb') as f:
-                        f.write(old[name])
-                    os.replace(path[name] + '.restore', path[name])
+                except OSError as again:
+                    problems.append(f'{path[name]} is new and could not be removed ({again.strerror})')
+                continue
+            restore = path[name] + '.restore'
+            # Written beside the file, then renamed over it: a failure here never leaves half a file.
+            try:
+                with open(restore, 'wb') as f:
+                    f.write(old[name])
             except OSError as again:
                 note = f'{path[name]} could not be put back ({again.strerror})'
-                if old[name] is not None:
-                    keep = f'{path[name]}.old-{os.getpid()}'
-                    try:
-                        with open(keep, 'wb') as f:
-                            f.write(old[name])
-                        note += f'; its old contents are in {keep}'
-                    except OSError:
-                        note += '; its old contents could not be saved either'
+                keep = f'{path[name]}.old-{os.getpid()}'
+                try:
+                    with open(keep, 'wb') as f:
+                        f.write(old[name])
+                    kept.add(keep)
+                    note += f'; its old contents are in {keep}'
+                except OSError:
+                    note += '; its old contents could not be saved'
                 problems.append(note)
+                continue
+            try:
+                os.replace(restore, path[name])
+            except OSError as again:
+                # The old contents are complete in the .restore file: keep it and say so.
+                kept.add(restore)
+                problems.append(f'{path[name]} could not be put back ({again.strerror}); its old contents are in {restore}')
         for name in path:
             for leftover in (path[name] + '.tmp', path[name] + '.restore'):
+                if leftover in kept:
+                    continue
                 try:
                     if os.path.isfile(leftover):
                         os.remove(leftover)
