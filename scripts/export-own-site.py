@@ -37,8 +37,9 @@ history lacks, a row cut short, a mode, slot, status, engine or date it does not
 cannot be true, or Search Console data for another property, a country, a repeated day, a count
 that is not a whole number, or more clicks than impressions; on an existing output file it cannot
 read; and on an output folder it cannot write, where a file replaced before the failure gets its
-old contents back. Only if that putting-back fails too does the message name the file, and where
-its old contents were saved.
+old contents back. If that putting-back fails too, the message names the file and either where its
+old contents were saved or that saving them failed as well. Recovery files carry this run's process
+id, so a later run never removes an earlier run's copy.
 """
 import argparse
 import hashlib
@@ -236,7 +237,7 @@ if args.out_dir:
                 except OSError as again:
                     problems.append(f'{path[name]} is new and could not be removed ({again.strerror})')
                 continue
-            restore = path[name] + '.restore'
+            restore = f'{path[name]}.restore-{os.getpid()}'
             # Written beside the file, then renamed over it: a failure here never leaves half a file.
             try:
                 with open(restore, 'wb') as f:
@@ -260,7 +261,7 @@ if args.out_dir:
                 kept.add(restore)
                 problems.append(f'{path[name]} could not be put back ({again.strerror}); its old contents are in {restore}')
         for name in path:
-            for leftover in (path[name] + '.tmp', path[name] + '.restore'):
+            for leftover in (path[name] + '.tmp', f'{path[name]}.restore-{os.getpid()}'):
                 if leftover in kept:
                     continue
                 try:
