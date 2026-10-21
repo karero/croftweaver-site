@@ -3,7 +3,7 @@
 
     python3 scripts/export-own-site.py --out-dir public/data
 
-writes, in one step and only if both check out:
+writes, only if both check out (and both or neither):
   public/data/croftweaver-com-ai-check.csv        the weekly AI check, counts only
   public/data/croftweaver-com-search-console.csv  daily clicks and impressions from Google
 
@@ -35,7 +35,11 @@ Counts may come as whole numbers written as floats (2.0); they are written as wh
 The script stops, and leaves both files as they were, on: two rows for one key, a column the
 history lacks, a row cut short, a mode, slot, status, engine or date it does not know, counts that
 cannot be true, or Search Console data for another property, a country, a repeated day, a count
-that is not a whole number, or more clicks than impressions; and on an output folder it cannot write.
+that is not a whole number, or more clicks than impressions; on an existing output file it cannot
+read; and on an output folder it cannot write, where a file replaced before the failure gets its
+old contents back. If that putting-back fails too, the message names the file and either where its
+old contents were saved or that saving them failed as well. Recovery files carry this run's process
+id, so a later run never removes an earlier run's copy.
 """
 import argparse
 import hashlib
@@ -44,7 +48,6 @@ import datetime
 import io
 import json
 import os
-import shutil
 import re
 import sys
 
@@ -202,52 +205,73 @@ ai_text, ai_rows = ai_check(args.history)
 gsc_text, gsc_rows = search_console(args.google_data)
 
 if args.out_dir:
-    # Both new files are written first; each old file is kept as .bak until both are in place. If
-    # anything fails, the old files come back and the temporary files go, so both files are either
-    # new or as they were.
+    # The old files are read into memory first. If replacing the second file fails after the first
+    # was replaced, the first gets its old contents back (or is removed, if there was none), so both
+    # files end up new or as they were. Only a failure inside that putting-back is left to the user,
+    # and the message says exactly which file and what is left over.
     path = {name: os.path.join(args.out_dir, name) for name in (AI_FILE, GSC_FILE)}
-    existed = {name: os.path.isfile(path[name]) for name in path}
-    done = []
+    old = {}
+    for name in path:
+        try:
+            if os.path.isfile(path[name]):
+                with open(path[name], 'rb') as f:
+                    old[name] = f.read()
+            else:
+                old[name] = None
+        except OSError as e:
+            stop(f'cannot read {path[name]} ({e.strerror})')
+    replaced = []
     try:
         for name, text in ((AI_FILE, ai_text), (GSC_FILE, gsc_text)):
             with open(path[name] + '.tmp', 'w', newline='') as f:
                 f.write(text)
         for name in (AI_FILE, GSC_FILE):
-            if existed[name]:
-                shutil.copy2(path[name], path[name] + '.bak')
             os.replace(path[name] + '.tmp', path[name])
-            done.append(name)
+            replaced.append(name)
     except OSError as e:
-        # Put back what was there: the old file where there was one, nothing where there was none.
-        problems, keep = [], set()
-        for name in done:
-            try:
-                if existed[name]:
-                    os.replace(path[name] + '.bak', path[name])
-                else:
+        problems, kept = [], set()
+        for name in replaced:
+            if old[name] is None:
+                try:
                     os.remove(path[name])
+                except OSError as again:
+                    problems.append(f'{path[name]} is new and could not be removed ({again.strerror})')
+                continue
+            restore = f'{path[name]}.restore-{os.getpid()}'
+            # Written beside the file, then renamed over it: a failure here never leaves half a file.
+            try:
+                with open(restore, 'wb') as f:
+                    f.write(old[name])
             except OSError as again:
-                # The old file is still in its .bak: keep it, and say where it is.
-                keep.add(path[name] + '.bak')
-                problems.append(f'{name} could not be put back ({again.strerror}); the old file is {path[name]}.bak')
+                note = f'{path[name]} could not be put back ({again.strerror})'
+                keep = f'{path[name]}.old-{os.getpid()}'
+                try:
+                    with open(keep, 'wb') as f:
+                        f.write(old[name])
+                    kept.add(keep)
+                    note += f'; its old contents are in {keep}'
+                except OSError:
+                    note += '; its old contents could not be saved'
+                problems.append(note)
+                continue
+            try:
+                os.replace(restore, path[name])
+            except OSError as again:
+                # The old contents are complete in the .restore file: keep it and say so.
+                kept.add(restore)
+                problems.append(f'{path[name]} could not be put back ({again.strerror}); its old contents are in {restore}')
         for name in path:
-            for leftover in (path[name] + '.tmp', path[name] + '.bak'):
-                if leftover in keep:
+            for leftover in (path[name] + '.tmp', f'{path[name]}.restore-{os.getpid()}'):
+                if leftover in kept:
                     continue
                 try:
                     if os.path.isfile(leftover):
                         os.remove(leftover)
                 except OSError:
-                    problems.append(f'{os.path.basename(leftover)} is left over')
+                    problems.append(f'{leftover} is left over')
         if problems:
-            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); and ' + '; '.join(problems))
+            sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); ' + '; '.join(problems))
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
-    for name in (AI_FILE, GSC_FILE):
-        try:
-            if os.path.isfile(path[name] + '.bak'):
-                os.remove(path[name] + '.bak')
-        except OSError as e:
-            print(f'export-own-site: both files written; the old copy {path[name]}.bak could not be removed ({e.strerror})', file=sys.stderr)
 else:
     sys.stdout.write(f'--- {AI_FILE}\n{ai_text}--- {GSC_FILE}\n{gsc_text}')
 print(f'{ai_rows} AI check rows and {gsc_rows} Search Console days for {SITE}', file=sys.stderr)
