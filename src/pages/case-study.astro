@@ -1,0 +1,160 @@
+---
+// /case-study — Croftweaver used on its own site, croftweaver.com, from launch onwards: a dated log
+// of changes and observations, with the weekly AI check and Google's daily figures. Positioning term
+// (tests/positioning.spec.ts): "case study". Owner decisions, 2026-10-21: its own page, its own
+// export (scripts/export-own-site.py), counts only. Every figure comes from src/data/case-study.ts.
+// Honesty rules (CONTENT_GUIDE.md): the page says what was seen after a change, never that it caused it.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, dayLabel, DAILY, SEARCH, AI_DAYS, BREAKS, BREAK_DAYS } from '../data/case-study';
+
+const named = (n: number, of: number) => `${n} of ${of}`;
+const assistants = (n: number) => `${n} ${n === 1 ? 'assistant' : 'assistants'}`;
+const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
+---
+<Base
+  title="Croftweaver case study: its own site"
+  description="A Croftweaver case study kept as a public log: each change to croftweaver.com, the checks that ran, and what Google and AI assistants showed after it."
+  image="/images/og/case-study.jpg"
+>
+  <section class="wrap hero">
+    <h1>Croftweaver case study: its own website, week by week</h1>
+    <p class="lead">
+      This case study follows croftweaver.com, built with Croftweaver, from its launch on
+      <time datetime={LAUNCH.iso}>{LAUNCH.label}</time>. It is a log, not a finished story:
+      each change says what was asked, links the pull request, names the checks that ran, and
+      is followed by the next measurement. The zeros stay in.
+    </p>
+    <p class="aside">
+      Last updated <time datetime={UPDATED.iso}>{UPDATED.label}</time>. A movement after a change
+      is something we saw, not proof that the change caused it. For a site that is months old,
+      see <a href="/proof">one site, measured</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="ai">
+    <h2>Do AI assistants name it?</h2>
+    <p>
+      Croftweaver's weekly AI check asks AI assistants two questions that do not name
+      Croftweaver, with web search and without. On <time datetime={latestAi.date}>{latestAi.label}</time>,
+      with web search, {named(latestAi.withSearch.named, latestAi.withSearch.answers)} answers from
+      {assistants(latestAi.withSearch.assistants)} named it, and croftweaver.com was among the sources
+      returned in {named(latestAi.withSearch.sources, latestAi.withSearch.answers)}. Without web search,
+      {named(latestAi.withoutSearch.named, latestAi.withoutSearch.answers)} named it.
+    </p>
+    <div class="table-wrap" role="region" aria-label="The weekly AI check for croftweaver.com" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Day</th>
+            <th scope="col" class="num">With search: named</th>
+            <th scope="col" class="num">croftweaver.com among the sources</th>
+            <th scope="col" class="num">Without search: named</th>
+          </tr>
+        </thead>
+        <tbody>
+          {AI_DAYS.map((d) => (
+            <tr>
+              <th scope="row"><time datetime={d.date}>{d.label}</time>{BREAK_DAYS.has(d.date) && ' ‡'}</th>
+              <td class="num">{named(d.withSearch.named, d.withSearch.answers)}</td>
+              <td class="num">{named(d.withSearch.sources, d.withSearch.answers)}</td>
+              <td class="num">{named(d.withoutSearch.named, d.withoutSearch.answers)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      “Among the sources” counts answers whose returned sources include croftweaver.com; for some
+      assistants the check cannot tell whether the answer's text uses them, so this page does not
+      call it a citation.
+      {BREAKS.length > 0
+        ? ' ‡ The question, the settings, the model or the route changed on this day for at least one assistant, so it is not compared with the day before.'
+        : ' No question, setting, model or route has changed between these days.'}
+      Counts only: the answers themselves are not published.
+    </p>
+  </section>
+
+  <section class="wrap" id="search">
+    <h2>What Google shows</h2>
+    <p>
+      From <time datetime={SEARCH.from}>{dayLabel(SEARCH.from)}</time> to
+      <time datetime={SEARCH.to}>{dayLabel(SEARCH.to)}</time>, croftweaver.com appeared
+      {SEARCH.impressions} times in Google's results and was clicked {SEARCH.clicks}
+      {SEARCH.clicks === 1 ? 'time' : 'times'}.
+    </p>
+    <div class="table-wrap" role="region" aria-label="Daily clicks and appearances in Google for croftweaver.com" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col">Day</th><th scope="col" class="num">Clicks</th><th scope="col" class="num">Appearances</th></tr>
+        </thead>
+        <tbody>
+          {DAILY.map((r) => (
+            <tr>
+              <th scope="row"><time datetime={r.date}>{dayLabel(r.date)}</time></th>
+              <td class="num">{r.clicks}</td>
+              <td class="num">{r.impressions}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Source: Google Search Console, whole site, all countries, finished days only. The figures in
+      files: <a href="/data/croftweaver-com-search-console.csv">Google, daily</a> and
+      <a href="/data/croftweaver-com-ai-check.csv">the AI check</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="log">
+    <h2>The log</h2>
+    <ol class="log" reversed>
+      {LOG_NEWEST.map((e) => (
+        <li class={e.kind}>
+          <p class="when"><time datetime={e.date}>{dayLabel(e.date)}</time> · {e.kind === 'change' ? 'Change' : 'Observation'}</p>
+          <h3>{e.title}</h3>
+          {e.kind === 'change' ? (
+            <>
+              <p><strong>Asked:</strong> {e.asked}</p>
+              <p>
+                <strong>Pull request:</strong> <a href={e.pr}>{prLabel(e.pr)}</a>.
+                {e.checks ? <> <strong>Checks:</strong> {e.checks}.</> : <> The checks are in the pull request.</>}
+              </p>
+              <p><strong>Next measurement:</strong> {e.next ? <time datetime={e.next}>{dayLabel(e.next)}</time> : 'the next weekly check'}.</p>
+            </>
+          ) : (
+            <>
+              <p>{e.seen}</p>
+              <p class="note">Source: {e.source}.</p>
+            </>
+          )}
+        </li>
+      ))}
+    </ol>
+    <div class="cta">
+      <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
+      <a class="btn" href="/proof">One site, measured</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note, .aside { font-size: 0.9rem; color: var(--muted); }
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .log { list-style: none; padding: 0; margin: 0; max-width: 46rem; }
+  .log li { border-left: 3px solid var(--line); padding: 0.2rem 0 0.8rem 1rem; margin-bottom: 1rem; }
+  .log li.change { border-left-color: var(--accent, var(--pass)); }
+  .log h3 { margin: 0.2rem 0 0.4rem; font-size: 1.1rem; }
+  .log p { margin: 0.3rem 0; }
+  .when { font-size: 0.85rem; color: var(--muted); }
+  .cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+</style>

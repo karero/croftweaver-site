@@ -57,6 +57,8 @@ jobs:
         run: bash tests/check_ship_push.sh
       - name: AI check export (scripts/export-ai-check.py)
         run: bash tests/check_export_ai_check.sh
+      - name: Case study export (scripts/export-own-site.py)
+        run: bash tests/check_export_own_site.sh
       - uses: actions/setup-node@v7
         with:
           node-version: 24

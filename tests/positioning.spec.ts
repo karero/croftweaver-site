@@ -36,6 +36,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/checks': { term: 'test gate' },
   '/proof': { term: 'built with Croftweaver' },
   '/more-proof': { term: 'more proof' },
+  '/case-study': { term: 'case study' },
   '/skills': { term: 'website skills' },
   '/start': { term: 'quickstart' },
   '/positioning': { term: 'positioning' },
