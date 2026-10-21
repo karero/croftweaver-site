@@ -128,10 +128,10 @@ if [ "$(head -1 "$tmp/out/croftweaver-com-ai-check.csv")" = "$AIHEAD" ] && [ "$(
 #     here): the first file gets its exact old contents back, nothing is left over, and the script
 #     says why it stopped. Old contents with a line that has no newline at its end, to see they
 #     come back byte for byte.
-mkdir "$tmp/out2" "$tmp/out2/croftweaver-com-search-console.csv"; printf 'KEEP\nno newline' > "$tmp/out2/croftweaver-com-ai-check.csv"
+mkdir "$tmp/out2" "$tmp/out2/croftweaver-com-search-console.csv"; printf 'KEEP\nno newline' > "$tmp/out2/croftweaver-com-ai-check.csv"; cp "$tmp/out2/croftweaver-com-ai-check.csv" "$tmp/old-ai.csv"
 if python3 scripts/export-own-site.py --history "$tmp/one-site.csv" --google-data "$tmp/good.json" --out-dir "$tmp/out2" >/dev/null 2> "$tmp/stderr"; then fail "--out-dir: a failed second write did not stop"
 elif grep -q Traceback "$tmp/stderr"; then fail "--out-dir: a failed second write raised a traceback"
-elif [ "$(cat "$tmp/out2/croftweaver-com-ai-check.csv")" = $'KEEP\nno newline' ] && ! compgen -G "$tmp/out2/*.tmp" >/dev/null && grep -q "cannot write" "$tmp/stderr"; then pass "--out-dir: a failed second write puts the first file back exactly"
+elif cmp -s "$tmp/out2/croftweaver-com-ai-check.csv" "$tmp/old-ai.csv" && ! compgen -G "$tmp/out2/*.tmp" >/dev/null && ! compgen -G "$tmp/out2/*.restore" >/dev/null && grep -q "cannot write" "$tmp/stderr"; then pass "--out-dir: a failed second write puts the first file back exactly"
 else fail "--out-dir: a failed second write left a new first file or a temporary file"; fi
 # The same on a first publication: there was no first file, so the new one goes again.
 mkdir "$tmp/out3" "$tmp/out3/croftweaver-com-search-console.csv"

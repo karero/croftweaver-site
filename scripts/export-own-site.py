@@ -35,9 +35,10 @@ Counts may come as whole numbers written as floats (2.0); they are written as wh
 The script stops, and leaves both files as they were, on: two rows for one key, a column the
 history lacks, a row cut short, a mode, slot, status, engine or date it does not know, counts that
 cannot be true, or Search Console data for another property, a country, a repeated day, a count
-that is not a whole number, or more clicks than impressions; and on an output folder it cannot
-write, where both files are left as they were (a file replaced before the failure gets its old
-contents back).
+that is not a whole number, or more clicks than impressions; on an existing output file it cannot
+read; and on an output folder it cannot write, where a file replaced before the failure gets its
+old contents back. Only if that putting-back fails too does the message name the file, and where
+its old contents were saved.
 """
 import argparse
 import hashlib
@@ -211,7 +212,11 @@ if args.out_dir:
     old = {}
     for name in path:
         try:
-            old[name] = open(path[name], newline='').read() if os.path.isfile(path[name]) else None
+            if os.path.isfile(path[name]):
+                with open(path[name], 'rb') as f:
+                    old[name] = f.read()
+            else:
+                old[name] = None
         except OSError as e:
             stop(f'cannot read {path[name]} ({e.strerror})')
     replaced = []
@@ -229,17 +234,28 @@ if args.out_dir:
                 if old[name] is None:
                     os.remove(path[name])
                 else:
-                    with open(path[name], 'w', newline='') as f:
+                    # Written beside the file, then renamed over it: a failure here never leaves half a file.
+                    with open(path[name] + '.restore', 'wb') as f:
                         f.write(old[name])
+                    os.replace(path[name] + '.restore', path[name])
             except OSError as again:
-                problems.append(f'{path[name]} is the new version and could not be put back ({again.strerror})')
+                note = f'{path[name]} could not be put back ({again.strerror})'
+                if old[name] is not None:
+                    keep = f'{path[name]}.old-{os.getpid()}'
+                    try:
+                        with open(keep, 'wb') as f:
+                            f.write(old[name])
+                        note += f'; its old contents are in {keep}'
+                    except OSError:
+                        note += '; its old contents could not be saved either'
+                problems.append(note)
         for name in path:
-            leftover = path[name] + '.tmp'
-            try:
-                if os.path.isfile(leftover):
-                    os.remove(leftover)
-            except OSError:
-                problems.append(f'{leftover} is left over')
+            for leftover in (path[name] + '.tmp', path[name] + '.restore'):
+                try:
+                    if os.path.isfile(leftover):
+                        os.remove(leftover)
+                except OSError:
+                    problems.append(f'{leftover} is left over')
         if problems:
             sys.exit(f'export-own-site: cannot write to {args.out_dir} ({e.strerror}); ' + '; '.join(problems))
         stop(f'cannot write to {args.out_dir} ({e.strerror})')
