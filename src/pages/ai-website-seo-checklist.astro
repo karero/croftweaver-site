@@ -1,0 +1,235 @@
+---
+// /ai-website-seo-checklist: a checklist for people whose site came out of an AI assistant.
+// Positioning term (tests/positioning.spec.ts): "SEO checklist for AI-built websites" in the title,
+// the description and the H1, and "vibe coded website SEO issues" in the body (the H2 below).
+// Plan, proof, route options and review: the private hub's vibe-coded-seo/ folder (2026-10-22).
+// Honesty limits for this page: the two Search Engine Journal reports are reported speech about one
+// reviewed site and one podcast episode, not rules from Google; the page says "reported", never
+// "Google says". Only the three skips in the May 2026 report (canonicals, sitemaps, robots.txt) say
+// an assistant leaves something out; the other rows are things worth checking, with no claim about
+// how often an assistant gets them wrong. No ranking is promised. Lovable and Bolt are named once,
+// neutrally: who each says it is for, and one dated trade report each; nothing is said about what
+// either builds, and no site built with either was tested. The checklist rows and the guards that
+// keep them true are in src/data/ai-website-seo-checklist.ts.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+import { CHECKS, CHECK_COUNT_WORD, NOT_COVERED, QUESTIONS, RED_RUNS, checkedSuites } from '../data/ai-website-seo-checklist';
+
+const REPORT_2025 = 'https://www.searchenginejournal.com/googles-john-mueller-flags-seo-issues-in-vibe-coded-website/558393/';
+const REPORT_2026 = 'https://www.searchenginejournal.com/googles-mueller-vibe-coding-wont-handle-your-seo-for-you/574237/';
+const LOVABLE_DOCS = 'https://docs.lovable.dev/';
+const LOVABLE_TECHCRUNCH = 'https://techcrunch.com/2025/02/25/swedens-lovable-an-app-building-ai-platform-rakes-in-16m-after-spectacular-growth';
+const BOLT_HOME = 'https://bolt.new/';
+const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fast-growing-ai-coding-tool/';
+---
+<Base
+  title="SEO checklist for AI-built websites"
+  description={`SEO checklist for AI-built websites: ${CHECK_COUNT_WORD} checks, the Croftweaver test that catches each, what happened when we broke it, and what a pass does not prove.`}
+  image="/images/og/ai-website-seo-checklist.jpg"
+>
+  <section class="wrap hero">
+    <h1>SEO checklist for AI-built websites</h1>
+    <p class="lead">
+      An AI assistant can build a website in a day, and nobody has to check what search
+      engines make of it. Whether a site was vibe coded in an app builder or built in a terminal
+      with a coding assistant, the same question follows: what should be checked? This page lists
+      {CHECK_COUNT_WORD} checks, says which of them a Croftweaver test catches, and says what a passing
+      test does not prove. Croftweaver sites are built with an AI assistant too; the difference is
+      the tests.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#checklist">See the checklist</a>
+      <a class="btn" href="#reported">What was reported</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="reported">
+    <h2>Vibe coded website SEO issues</h2>
+    <p>
+      Two reports from Search Engine Journal tell what people on Google’s Search Relations team
+      said about vibe coded sites and other sites built with an AI assistant. They point in
+      opposite directions, too little and too much, and meet at the same place: someone has to
+      check.
+    </p>
+    <ul class="steps">
+      <li>
+        <strong>Too much.</strong> In <time datetime="2025-10-15">October 2025</time> the
+        <a href={REPORT_2025}>first report</a> told how John Mueller, a Google Search Advocate,
+        reviewed on Reddit a website a developer had vibe coded in two days. He named things with no
+        value for search on that site: keywords, author and robots meta tags, hreflang tags on a
+        one-language site, hidden headings, a sitemap for a single page, and structured data he
+        called ineffective. He also named key content held in a JavaScript llms.txt file, which he
+        said Google does not use. Fixing these, he added, does not bring traffic by itself, but makes
+        it easier for search engines to understand a site.
+      </li>
+      <li>
+        <strong>Too little.</strong> In <time datetime="2026-05-07">May 2026</time> the
+        <a href={REPORT_2026}>second report</a>, on an episode of Google’s podcast Search Off The
+        Record, gave the takeaway of Mueller and Martin Splitt: canonicals, sitemaps and robots.txt
+        do not set themselves up because an AI tool built the site. Mueller said he got better results
+        by telling the assistant what he wanted from the start, the domain name, the canonical setup,
+        the sitemap files and robots.txt, by knowing which site generator he wanted, and by adding
+        checks before publishing.
+      </li>
+    </ul>
+    <p class="aside">
+      Both are reports of what two people said about one site and one episode. The second adds that
+      the episode gave no formal guidance, and that the two were sharing what they had tried. Neither
+      is a rule from Google.
+    </p>
+    <p>
+      Sites called vibe coded are sometimes built with AI app builders such as Lovable and Bolt. This
+      page says nothing about what either one builds, and we did not test a site built with either.
+      Here is who each says it is for, and what trade press reported:
+    </p>
+    <ul class="steps">
+      <li>
+        <strong>Lovable</strong> describes itself in <a href={LOVABLE_DOCS}>its documentation</a> as
+        a full-stack AI development platform for individuals and teams. It names product managers
+        and designers, marketing, sales and operations teams, developers, agencies, founders and
+        independent makers. <a href={LOVABLE_TECHCRUNCH}>TechCrunch</a> reported in
+        <time datetime="2025-02">February 2025</time> that its founder aims it at the people who
+        do not know how to code.
+      </li>
+      <li>
+        <strong>Bolt</strong> describes itself on <a href={BOLT_HOME}>its home page</a> as a way to
+        create apps and websites by chatting with AI, for product builders. It speaks to business
+        owners who want an app without a developer, to teams that prototype, to people who need
+        campaign pages, and to students. <a href={BOLT_NEWSTACK}>The New Stack</a> reported in
+        <time datetime="2025-02">February 2025</time> that Bolt’s CEO said over half of its users are
+        not professional developers, and put the non-technical share at 60 to 70 percent.
+      </li>
+    </ul>
+    <p class="aside">
+      These are the companies’ own words and reports of what their founders said, read on
+      <time datetime="2026-10-22">22 October 2026</time>. They may have changed since.
+    </p>
+  </section>
+
+  <section class="wrap" id="checklist">
+    <h2>The checklist</h2>
+    <p>
+      Each row is one thing to check, the Croftweaver suite that covers it, what happened when we broke
+      it, and what a pass does not prove. On <time datetime={RED_RUNS.iso}>{RED_RUNS.label}</time> we
+      broke a copy of the Croftweaver starter, version {RED_RUNS.toolkit}, one thing at a time,
+      ran the suite that covers it, and wrote down what failed. You can make the same edits and see
+      the same. The suites are described on <a href="/checks">the checks page</a>.
+      The checklist works by hand on any site; the tests come with a site built from the Croftweaver
+      starter, which needs a coding assistant and a terminal.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Check</th>
+            <th scope="col">Suite</th>
+            <th scope="col">When we broke it</th>
+            <th scope="col">A pass does not prove</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CHECKS.map((c) => (
+            <tr>
+              <th scope="row">{c.check}</th>
+              <td>
+                {checkedSuites(c).map((s, i) => (
+                  <>{i > 0 && ' and '}<a href={`/checks#${s.group}`}>{s.name}</a></>
+                ))}
+              </td>
+              <td>{c.broke}</td>
+              <td>{c.limit}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <h3>What no test here covers</h3>
+    <ul class="steps">{NOT_COVERED.map((n) => <li>{n}</li>)}</ul>
+  </section>
+
+  <section class="wrap" id="tell">
+    <h2>Tell your assistant up front</h2>
+    <p>
+      The second report’s advice is cheap to follow. Say what the site needs before the assistant
+      starts, then keep a check that fails when one of those things goes wrong.
+    </p>
+    <div class="card">
+      <p class="say">
+        <span>Say to the assistant:</span>
+        <q>Set up the canonical address, the sitemap and robots.txt for example.com from the start.
+        Use Astro as the site generator. Add a test for each of them that fails when it is wrong.</q>
+      </p>
+    </div>
+    <p>
+      A test gives you something to run every time. It is not a lock. The hook that runs the tests can
+      be skipped with one flag, and nothing on the server stops a build that failed from being
+      published, as <a href="/checks">the checks page</a> says.
+    </p>
+  </section>
+
+  <section class="wrap" id="extras">
+    <h2>What Croftweaver ships that the first report questions</h2>
+    <p>
+      The first report’s list of extras includes things Croftweaver puts on its sites. Here is what each
+      one is, and what it is not.
+    </p>
+    <ul class="steps">
+      <li><strong>An llms.txt file.</strong> A short list of a site’s pages for AI assistants. A test keeps it in step with the pages. It does not guarantee that an assistant reads it, and Croftweaver does not say Google uses it.</li>
+      <li><strong>Structured data.</strong> Every page carries it, and a test checks that it parses. It does not check that any search engine uses it.</li>
+      <li><strong>A robots meta tag.</strong> Every page carries one. The first report names robots meta tags among those with no SEO benefit on the site it covers.</li>
+      <li><strong>A sitemap.</strong> The report advised skipping one for a single page. A test keeps this one in step with the site’s pages.</li>
+    </ul>
+  </section>
+
+  <section class="wrap" id="existing">
+    <h2>If your site already exists</h2>
+    <p>
+      The checklist works by hand on your site. Croftweaver builds a new site and has no import of an
+      existing one. Part of it works on a site that is already live, without a rebuild: the SEO audit,
+      Search Console insights, the positioning check, the facts check and the weekly AI check. The
+      ready-made test suite and the two link audits need the Croftweaver starter.
+      <a href="/established-sites">Croftweaver for established sites</a> says what each one does.
+      If your site runs on WordPress, <a href="/from-wordpress">the page on moving from WordPress</a>
+      covers that case.
+    </p>
+  </section>
+
+  <section class="wrap faq" id="questions">
+    <h2>Questions and answers</h2>
+    {QUESTIONS.map((item) => (
+      <div class="faq-item">
+        <h3>{item.q}</h3>
+        <div class="faq-answer" set:html={item.a} />
+      </div>
+    ))}
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+    <p class="aside">
+      We read the Search Engine Journal reports on <time datetime="2026-10-22">22 October 2026</time>,
+      not the podcast episode, and ran the breaks on that day.
+    </p>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  section p, .steps { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .aside { color: var(--muted); }
+  .steps { padding-left: 1.3rem; }
+  .steps li { margin-bottom: 0.6rem; }
+  .card p { margin: 0; }
+  .say { color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; max-width: 64rem; border-collapse: collapse; }
+  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
+  tbody th { font-weight: 600; }
+  .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
+  .faq-item h3 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
+  .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
+</style>
