@@ -106,6 +106,7 @@ uses `SITE.titleHome` as the whole title, so that one may be up to 60 characters
 | Positioning | `/positioning` | how Croftweaver works out what a site says before any copy, and how a test keeps each page on it | positioning | Positioning first: what your site says | [x] spec below |
 | Partner assets | `/partner-assets` | the partner kit (badge, logo, icon) to download, the code for a footer, the rules for using it, and the request to credit Croftweaver (never a condition) | partner assets | Partner assets: badge, logo and icon | [x] |
 | About | `/about` | a note from the maintainer in his own words (owner-approved 2026-10-14), who he is, how to reach him; figures read from `src/data/proof.ts` | maintainer | About Croftweaver and its maintainer | [x] |
+| Security | `/security` | what a static website changes for security: what runs on a visit, what Cloudflare handles, what stays with the owner, a checklist, four checks a reader can run and croftweaver.com's own result; every fact a dated claim in `src/data/security.ts` (plan and sources: the private hub's `security-page/`) | static website | What a static website changes for security | [x] |
 | Privacy | `/privacy` | GDPR | — | Privacy Policy | [x] |
 | Imprint | `/imprint` | § 5 DDG legal disclosure | — | Imprint | [x] |
 | 404 | (not a route in `PAGES`) | not found | — | — | [ ] |

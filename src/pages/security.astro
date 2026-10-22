@@ -1,0 +1,478 @@
+---
+// /security: what a static website changes for security, for a site owner choosing Croftweaver and the IT
+// person they hand it to. Positioning term (tests/positioning.spec.ts): "static website", in the title, the
+// description and the H1. Plan, research and sources: the private hub's security-page/ (PLAN.md,
+// SOURCES-LOG.md), 2026-10-22.
+// Honesty limits for this page:
+// - every statement is about the Croftweaver template, about croftweaver.com, or about someone else's
+//   product, and says which. Every fact is a claim in src/data/security.ts with a source and the day it was
+//   read, and tests/check_security_page.sh holds the page to that data;
+// - WordPress is not called insecure, and no overall ranking is given. The 17 PHP systems are named as plain
+//   fact (their repositories are written in PHP), never as hit. Sites are not named as hit;
+// - the news about the PHP alert is a dated panel (#php-alert) and the PHP steps (#php-steps), both to be
+//   updated or removed; the answer in the first section stands without them;
+// - croftweaver.com's own results (#own) list what fails, and are updated by hand in src/data/security.ts.
+import Base from '../layouts/Base.astro';
+import Claim from '../components/Claim.astro';
+import { claim, longDate, LATEST_READ, PHP_SYSTEMS } from '../data/security';
+
+const description =
+  'What a static website changes for security: what runs on a visit, what Cloudflare handles, what stays with the owner, and four checks you can run yourself.';
+
+const own = ['own-headers', 'own-dnssec', 'own-caa', 'own-security-txt'].map((id) => claim(id));
+const ownLabel: Record<string, string> = {
+  'own-headers': 'Security headers',
+  'own-dnssec': 'DNSSEC',
+  'own-caa': 'CAA records',
+  'own-security-txt': 'security.txt',
+};
+const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' ? 'is-open' : 'is-neutral');
+---
+<Base
+  title="What a static website changes for security"
+  description={description}
+  image="/images/og/security.jpg"
+>
+  <section class="wrap hero">
+    <h1>What does a static website change about security?</h1>
+    <p class="lead">
+      A static website is a set of finished files. When someone opens a page, nothing builds it on a
+      server, so a flaw in the software that builds pages cannot be reached through a visit. The site
+      still has accounts, build tools and an owner to look after. This page says what changes, what does
+      not, and how to check it yourself.
+    </p>
+    <p class="note">
+      Every fact below names its source and the day we read it, and says whether it is about the
+      Croftweaver site template, about croftweaver.com, or about someone else's product. Last read on
+      <time datetime={LATEST_READ}>{longDate(LATEST_READ)}</time>.
+    </p>
+  </section>
+
+  <section class="wrap" id="safer">
+    <h2>Is Croftweaver safer than WordPress?</h2>
+    <p class="answer">On one point, yes.</p>
+    <p>
+      The Croftweaver site template holds no PHP files, and croftweaver.com runs none, so a flaw in PHP
+      does not apply to either, whatever its date. Many well-known systems, WordPress among them, are
+      written in PHP, so a flaw in PHP applies to the servers behind them.
+    </p>
+    <p>
+      We give no overall ranking. One alert does not show one, and every site depends on its accounts. A
+      WordPress site has a database and plugins besides WordPress itself, and WordPress.org tells its
+      owners to keep WordPress and the plugins up to date. A Croftweaver site has build tools to keep up
+      to date. The sections below set out the differences, each with its source or a check you can run, and
+      what stays with you. For why owners leave WordPress, with figures, see
+      <a href="/from-wordpress">From WordPress to Astro</a>.
+    </p>
+    <h3>What this rests on</h3>
+    <ul class="proof">
+      <Claim as="li" id="template-no-php">The Croftweaver template, at the version we read, holds no PHP files.</Claim>
+      <Claim as="li" id="site-no-php">The repository of croftweaver.com holds no PHP files.</Claim>
+      <Claim as="li" id="php-systems-news">Krebs on Security and Malwarebytes name WordPress, Drupal, Joomla and Magento as systems that run on PHP.</Claim>
+      <Claim as="li" id="php-systems-repos">The GitHub repositories of {PHP_SYSTEMS.length} systems have PHP as their main language: {PHP_SYSTEMS.join(', ')}. That is a fact about how they are written. It does not show that any one site on them was attacked.</Claim>
+      <Claim as="li" id="php-share">PHP is used by 69.3% of the websites whose server-side language W3Techs knows. The figure changes daily.</Claim>
+    </ul>
+  </section>
+
+  <!-- PHP-DATED: this section and #php-steps are the news about one alert. Cut both, and the claims
+       marked "PHP alert" in src/data/security.ts, to remove it. The answer above stands without them. -->
+  <section class="wrap panel" id="php-alert">
+    <p class="eyebrow">News · dated 21 and 22 October 2026 · to be updated or removed</p>
+    <h2>The PHP alert of 21 October 2026</h2>
+    <p>
+      On 21 October 2026 the US cyber agency CISA urged everyone to patch two critical flaws in PHP,
+      CVE-2026-109618 and CVE-2026-109619, nicknamed “php2shell”. This is what the sources say. We give
+      each report to the source that made it.
+    </p>
+    <dl class="facts">
+      <dt>What CISA said</dt>
+      <Claim as="dd" id="cisa-patch">Patch at once. The flaws allow remote code execution without a login and affect all PHP installations serving web requests. Fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35.</Claim>
+      <dt>Who is affected</dt>
+      <Claim as="dd" id="php-advisory">All PHP installations serving web requests, php.net says, among them PHP-FPM, Apache with mod_php, php-cgi, FrankenPHP and LiteSpeed. It sees the risk as highest for mod_php.</Claim>
+      <dt>The two flaws</dt>
+      <Claim as="dd" id="ghsa-109618">CVE-2026-109618, “RCE via OOM corruption”: rated critical, published on 21 October 2026, fixed in 8.2.35, 8.3.36, 8.4.27 and 8.5.12.</Claim>
+      <Claim as="dd" id="ghsa-109619">CVE-2026-109619, “RCE via stale global state”: rated critical, published on 21 October 2026, fixed in the same four versions.</Claim>
+      <dt>Reported by</dt>
+      <Claim as="dd" id="reported-by">Calif, OpenAI and Wiz Research told the PHP project about the flaws in August 2026, the PHP Foundation writes.</Claim>
+      <dt>Older versions</dt>
+      <Claim as="dd" id="php-old-versions">PHP 8.1 and older no longer receive updates from the PHP project. Its security team published minimal source backports for 7.4, 8.0 and 8.1, and some distributions and long-term-support vendors provide backported fixes.</Claim>
+      <dt>Attacks?</dt>
+      <dd>
+        <p class="plain">The reports differ, and some are older than others.</p>
+        <ul class="reports">
+          <Claim as="li" id="cisa-no-exploitation">CISA had not observed exploitation when it published its alert.</Claim>
+          <Claim as="li" id="cloudflare-attacks">Cloudflare's chief technology officer said the same day that Cloudflare was seeing early attacks emerging, and called its firewall rules a stopgap.</Claim>
+          <Claim as="li" id="watchtowr-attempts">The security firm watchTowr reported “active exploitation attempts” later the same day, after reporting none earlier. Its head of threat intelligence told The Record that nobody had been successful so far.</Claim>
+          <Claim as="li" id="krebs-in-the-wild">Krebs on Security wrote that experts say working exploits exist and that the flaws are already being exploited in the wild.</Claim>
+          <Claim as="li" id="no-confirmed-breakin">When The Hacker News last updated its report, no source had reported a confirmed break-in of a specific server.</Claim>
+        </ul>
+      </dd>
+      <dt>Offline as a precaution</dt>
+      <Claim as="dd" id="offline-precaution">Several governments, and some companies, took services offline for a while before patching. Malwarebytes points out that downtime alone does not mean a site was broken into.</Claim>
+    </dl>
+    <h3>The flaw is in PHP, not in the systems on top of it</h3>
+    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of WordPress, Drupal and Joomla, and says the flaws are in PHP itself, not in those applications.</Claim>
+    <Claim id="calif-demo">Calif says it confirmed code execution without a login on WordPress, Drupal, Joomla, MediaWiki, Roundcube, Magento, phpMyAdmin, Nextcloud, Laravel, Symfony and WHMCS.</Claim>
+    <p>
+      These were demonstrations by the people who found the flaws. They are not reports of sites that were
+      hit. Running on PHP does not show that a given site was attacked or is exposed today: that depends on
+      its PHP version and on whether its host has patched. The alert names no product.
+    </p>
+    <p class="note">
+      What we did not check about the alert: whether a given host has patched its PHP; which sites were
+      broken into, and whether any WordPress site was; the names in lists of outages that circulated, which
+      we could not confirm; and OpenAI's own post about the flaws, which our tools could not open.
+    </p>
+  </section>
+
+  <section class="wrap" id="runs">
+    <h2>What runs when someone opens a page</h2>
+    <p>Code that runs on every visit is code that a visitor's request can reach. This is what runs, step by step.</p>
+    <div class="paths">
+      <article class="path" aria-labelledby="wp-h">
+        <h3 id="wp-h">A WordPress site</h3>
+        <ol class="steps-list">
+          <li class="step"><span class="tag">Visitor</span><span>The browser asks the server for the page.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>PHP starts.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>WordPress runs.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>The plugins run.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>The database answers.</span></li>
+          <li class="step"><span class="tag">Visitor</span><span>The finished page goes back.</span></li>
+        </ol>
+      </article>
+      <article class="path" aria-labelledby="cw-h">
+        <h3 id="cw-h">A Croftweaver site</h3>
+        <ol class="steps-list">
+          <li class="step"><span class="tag">Visitor</span><span>The browser asks for the page.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>One short function of the site runs. On croftweaver.com it passes the request on unchanged.</span></li>
+          <li class="step is-file"><span class="tag">No code</span><span>Cloudflare hands back a file that was built in advance.</span></li>
+          <li class="step"><span class="tag">Visitor</span><span>The page arrives.</span></li>
+        </ol>
+      </article>
+    </div>
+    <p class="legend">
+      “Runs code” means code that belongs to the site and runs on a server for each visit. Cloudflare's own
+      network software runs in every case. Each step carries a label as well as a colour.
+    </p>
+    <ul class="proof">
+      <Claim as="li" id="site-one-function">croftweaver.com has one function, <code>functions/_middleware.ts</code>. On its own domain it passes each request on unchanged. On its <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim>
+      <Claim as="li" id="template-two-functions">The Croftweaver template has two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
+      <Claim as="li" id="functions-all-requests">Cloudflare's documentation says that once a Pages project has a function, every request calls it by default, unless a routes file leaves some out.</Claim>
+      <Claim as="li" id="function-runs-on-static">On the preview address of croftweaver.com a static file carries the header that the function adds, so the function does run for static files there. We did not check this on the live domain, where the function adds nothing.</Claim>
+    </ul>
+
+    <h3>Side by side</h3>
+    <div class="table-wrap" role="region" aria-label="A WordPress site and a Croftweaver site, side by side" tabindex="0">
+      <table>
+        <thead><tr><th scope="col">Area</th><th scope="col">A WordPress site</th><th scope="col">A Croftweaver site</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">Code that runs for a visit</th>
+            <td>PHP, WordPress and its plugins.</td>
+            <td>croftweaver.com: one function. The template: two.</td>
+          </tr>
+          <tr>
+            <th scope="row">Where the content is kept</th>
+            <td>In a database, MariaDB or MySQL.</td>
+            <td>As files in a Git repository.</td>
+          </tr>
+          <tr>
+            <th scope="row">A login on the site</th>
+            <td>An administration area at <code>/wp-admin/</code>, with a login screen.</td>
+            <td>None on croftweaver.com. The pages change when someone edits the files and publishes.</td>
+          </tr>
+          <tr>
+            <th scope="row">What needs updates</th>
+            <td>WordPress, its plugins, and PHP.</td>
+            <td>The packages that build the site (see <a href="#checklist">the checklist</a>). Not PHP.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The sources for the table:</p>
+    <ul class="proof">
+      <Claim as="li" id="wp-needs-php-db">WordPress needs PHP and a database, MariaDB or MySQL. Its requirements page adds that older PHP versions have reached end of life and may expose a site to security vulnerabilities.</Claim>
+      <Claim as="li" id="wp-admin-login">WordPress has an administration area, <code>/wp-admin/</code>, and a login screen.</Claim>
+      <Claim as="li" id="wp-updates">WordPress.org tells owners to keep WordPress and the plugins up to date, says older versions of WordPress are not maintained with security updates, and lists attacks by specially crafted requests that exploit old plugins and software.</Claim>
+      <Claim as="li" id="site-content-files">The pages of croftweaver.com are files in its repository.</Claim>
+      <Claim as="li" id="site-no-login">croftweaver.com has no administration or login page in its repository: the command prints 0.</Claim>
+    </ul>
+  </section>
+
+  <section class="wrap" id="cloudflare">
+    <h2>What Cloudflare handles</h2>
+    <p>
+      A Croftweaver site is served by Cloudflare Pages. These are statements from Cloudflare's own
+      documentation, each with its page and the date the page was last updated. What Cloudflare does is
+      Cloudflare's to promise. This page repeats what it says, and says nothing where the documentation is
+      silent.
+    </p>
+    <ul class="proof">
+      <Claim as="li" id="cf-certs">Cloudflare issues, and renews, free HTTPS certificates for domains that are on Cloudflare.</Claim>
+      <Claim as="li" id="cf-ddos">Cloudflare's protection against distributed denial-of-service attacks is on for every plan, the free plan included.</Claim>
+      <Claim as="li" id="cf-network">Cloudflare Pages serves the built files from Cloudflare's global network.</Claim>
+      <Claim as="li" id="cf-functions">The site's function runs on Cloudflare Workers, in isolates. Cloudflare says that each isolate has its own memory, and that a security patch for V8, the engine under them, reaches production in under 24 hours. Its own page adds that isolates, like virtual machines and containers, have bugs too.</Claim>
+      <Claim as="li" id="cf-preview">Each pull request gets its own preview address. A preview is public by default and carries a noindex header; Cloudflare Access can restrict who may open it.</Claim>
+      <Claim as="li" id="cf-rollback">Pages can roll a project back to an earlier production deployment.</Claim>
+      <Claim as="li" id="cf-2fa">Cloudflare recommends two-factor sign-in for every account holder, and says a security key resists phishing.</Claim>
+    </ul>
+  </section>
+
+  <section class="wrap" id="setup">
+    <h2>What Croftweaver sets up, and what stays yours</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Set up by the template</h3>
+        <ul class="points">
+          <Claim as="li" id="template-headers">Security headers on every page, in <code>public/_headers</code>: a ban on sniffing content types, a referrer policy, a ban on framing, a permissions policy and a content security policy. We say “headers set”, not “protected”: a header asks the browser to behave, and does nothing against an attack on a server.</Claim>
+          <Claim as="li" id="site-headers">croftweaver.com keeps the same five headers in its own <code>public/_headers</code>.</Claim>
+          <li>A noindex header on preview copies, added by the site's function (see <a href="#runs">what runs</a>).</li>
+          <Claim as="li" id="launch-dependabot">A step in the launch checklist that switches on Dependabot security updates for the site's repository.</Claim>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Stays yours</h3>
+        <ul class="points">
+          <Claim as="li" id="site-publish">The Cloudflare, GitHub and domain registrar accounts: two-step sign-in, who has access, and who may publish. On croftweaver.com, <code>npm run ship</code> publishes the <code>main</code> branch to the live site, and only the owner runs it.</Claim>
+          <li>The domain's DNS records and its renewal date.</li>
+          <Claim as="li" id="site-hsts">HSTS, which tells browsers to use HTTPS only, is a Cloudflare dashboard switch and not in <code>public/_headers</code>. The owner turned it on for croftweaver.com on 12 October 2026, for six months, subdomains included.</Claim>
+          <Claim as="li" id="site-dashboard-switches">Other dashboard switches: Always Use HTTPS, a minimum TLS version of 1.2, the <code>CANONICAL_URL</code> setting that sends the <code>pages.dev</code> address to the live domain, a rule that removes the NEL headers, and Bot Fight Mode, which is off. The toolkit's Cloudflare checklist lists them. The values here are croftweaver.com's as the README records them, read through Cloudflare's API on 13 October 2026.</Claim>
+          <Claim as="li" id="no-dnssec-caa-securitytxt-in-template">DNSSEC, CAA records and a security.txt file. The template sets up none of them. <a href="#own">The result for croftweaver.com</a> shows where it stands.</Claim>
+          <li>Optional add-ons, such as a form service, analytics or an editing tool. Each adds code or a login, and its own updates.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="checklist">
+    <h2>A checklist for any website</h2>
+    <p>
+      These seven points apply whatever software runs your site. They are listed by what costs most when it
+      goes wrong, and the first two matter far more than the rest. Where a Croftweaver site differs, the
+      point says so.
+    </p>
+    <ol class="priorities">
+      <li class="card">
+        <h3>Lock the accounts that can publish</h3>
+        <p>GitHub, Cloudflare and your domain registrar. Use two-step sign-in, best with a passkey or a hardware key. Remove people who left. Give access tokens the narrowest scope that works. Whoever can log in to these can change what your site says. A WordPress site has the same kinds of accounts, plus its own administration login.</p>
+      </li>
+      <li class="card">
+        <h3>Know who can publish</h3>
+        <p>List every person, script and AI assistant that can push to the production branch, and what happens when one does. With one owner this list is short. With a team it needs a rule.</p>
+      </li>
+      <li class="card">
+        <h3>Turn on security updates for everything your site runs</h3>
+        <p>On a Croftweaver site that means the build tools. Switch on Dependabot security updates, then merge the fix once the tests pass. Your site keeps its own lockfile, so no Croftweaver release patches it for you. Once a month, run <code>npm audit</code> and read what it says. On a PHP site it means PHP itself, the system and its plugins. For croftweaver.com on 22 October 2026:</p>
+        <ul class="proof">
+          <Claim as="li" id="site-audit">The audit lists no known flaws.</Claim>
+          <Claim as="li" id="site-outdated">Seven of the eight direct packages were behind the latest version, two of them by a major version or more: TypeScript 6 to 7, and @types/node 24 to 26.</Claim>
+          <Claim as="li" id="site-lockfile">The lockfile last changed on 21 October 2026, a version bump of the build tool vite.</Claim>
+          <Claim as="li" id="site-dependabot">Dependabot alerts and security updates are on for the repository (the command needs access to its settings). There is no routine version-update file, so Dependabot opens pull requests for security fixes only.</Claim>
+        </ul>
+      </li>
+      <li class="card">
+        <h3>Watch the domain</h3>
+        <p>The renewal date, auto-renew and the registrar lock. Remove DNS records that point at services you no longer use. Set up SPF, DKIM and DMARC, so that receiving mail servers can check that mail from your domain is real.</p>
+        <ul class="proof">
+          <Claim as="li" id="site-renewal">croftweaver.com is registered until 7 October 2028.</Claim>
+        </ul>
+      </li>
+      <li class="card">
+        <h3>Keep the optional parts few</h3>
+        <p>A contact form, an editing tool or a third-party script each adds code or a login. Add one for a reason, and read again what it sends and where.</p>
+      </li>
+      <li class="card">
+        <h3>Check the live headers after a change</h3>
+        <p>Security headers sit in <code>public/_headers</code>, but the live site is what counts. <a href="#checks">The four checks</a> include the command.</p>
+      </li>
+      <li class="card">
+        <h3>Keep private files out of the public folder</h3>
+        <p>Everything in the public folder is on the internet. On a Croftweaver site that folder is <code>public/</code>. Drafts, price lists and exports are public too, if you put them there.</p>
+      </li>
+    </ol>
+
+    <h3>If you stop updating</h3>
+    <p>The site keeps serving. Your pages are files, and Cloudflare renews the HTTPS certificate (see <a href="#cloudflare">what Cloudflare handles</a>). What changes is what piles up behind the scenes.</p>
+    <ul class="steps">
+      <li><strong>Known flaws collect in your build tools.</strong> Visitors never run those tools, so a visit does not reach them. You do run them, on your computer and in the build that publishes. A site that skips updates ends up with a longer list than croftweaver.com had on 22 October 2026, when the audit above listed none.</li>
+      <li><strong>The gap grows.</strong> The seven packages that were behind on 22 October 2026 cost effort, not safety, that day: the audit listed no flaw. The gap becomes a risk when a security fix is released only for a version newer than the one you run. A small step is one click. Years of steps arrive together, and the changes between them can alter how pages build.</li>
+      <li><strong>The facts on your pages age.</strong> Prices, dates and figures stay as written, and a page with dated figures looks worse every month nobody checks it.</li>
+    </ul>
+    <p>
+      A routine that covers most of it is short. Once a month, merge the security pull requests and run
+      <code>npm audit</code>. Once a year, reread the figures on each page and check the renewal date of the
+      domain.
+    </p>
+  </section>
+
+  <section class="wrap" id="checks">
+    <h2>Four checks you can run yourself</h2>
+    <p>Each needs a terminal and no account. <a href="#own">The next section</a> gives the result for croftweaver.com.</p>
+    <ol class="checks">
+      <li class="card">
+        <h3>The response headers</h3>
+        <p><code>curl -sI https://croftweaver.com/</code></p>
+        <p>Expect lines for <code>strict-transport-security</code>, <code>content-security-policy</code>, <code>x-content-type-options</code>, <code>x-frame-options</code>, <code>referrer-policy</code> and <code>permissions-policy</code>.</p>
+      </li>
+      <li class="card">
+        <h3>DNSSEC</h3>
+        <p><code>dig +short DS croftweaver.com</code></p>
+        <p>Expect a line of numbers and a long string of letters and digits if DNSSEC is on, and nothing if it is off.</p>
+        <Claim id="cf-dnssec">Cloudflare says DNSSEC adds an extra layer of authentication to DNS, so that requests are not routed to a spoofed domain, and that it adds the needed record itself for domains registered with Cloudflare.</Claim>
+      </li>
+      <li class="card">
+        <h3>CAA records (optional)</h3>
+        <p><code>dig +short CAA croftweaver.com</code></p>
+        <p>Nothing is fine. If lines appear, they name the certificate authorities that may issue certificates for the domain.</p>
+        <Claim id="cf-caa">Cloudflare says a CAA record states which certificate authorities may issue certificates for a domain, and warns that a record which does not allow Cloudflare can cause trouble when you add a custom domain to Pages.</Claim>
+      </li>
+      <li class="card">
+        <h3>security.txt</h3>
+        <p><code>curl -s https://croftweaver.com/.well-known/security.txt</code></p>
+        <p>Expect a short text file with a <code>Contact</code> line, an <code>Expires</code> date in the future and a <code>Canonical</code> line.</p>
+        <Claim id="rfc-9116">RFC 9116 asks a site to publish this file at <code>/.well-known/security.txt</code>, so that someone who finds a problem knows where to send it. <code>Contact</code> and <code>Expires</code> are required.</Claim>
+      </li>
+    </ol>
+  </section>
+
+  <section class="wrap" id="own">
+    <h2>The result for croftweaver.com</h2>
+    <p>
+      One row per check, as seen from outside on the date shown. A check that fails is listed as failing. We
+      update this table by hand when a check changes.
+    </p>
+    <div class="table-wrap" role="region" aria-label="Results of the four checks for croftweaver.com" tabindex="0">
+      <table>
+        <thead><tr><th scope="col">Check</th><th scope="col">Result, and how to run the check</th></tr></thead>
+        <tbody>
+          {own.map((c) => (
+            <tr class={`claim own ${statusClass(c.status)}`} data-claim={c.id}>
+              <th scope="row">{ownLabel[c.id]}</th>
+              <td>
+                {c.result}
+                <span class="own-src" data-kind={c.kind} data-source={c.source}>Command: <code>{c.source}</code>, run <time datetime={c.read}>{longDate(c.read)}</time></span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="wrap" id="limits">
+    <h2>Where this advice runs out</h2>
+    <ul class="steps">
+      <li><strong>Accounts matter for both kinds of site.</strong> A Croftweaver site depends on your domain registrar, GitHub and Cloudflare. A WordPress site depends on the same kinds of account, and on its own administration login. If an account is taken over, the whole site goes with it.</li>
+      <li><strong>Cloudflare is a dependency.</strong> An outage on its side takes the site offline for as long as it lasts, and a flaw in its isolates would reach every site that runs on them.</li>
+      <Claim as="li" id="site-csp-inline"><strong>Headers are set, not perfect.</strong> The content security policy of croftweaver.com still allows inline scripts, so it limits less than a strict one would.</Claim>
+      <Claim as="li" id="npm-attacks"><strong>Installing packages runs other people's code on your computer.</strong> In September 2025 CISA warned of a worm in the npm registry that had compromised over 500 packages. Updating the day a release appears can pick up a bad one, so security-only updates are a sensible middle path.</Claim>
+      <li><strong>Anything you add brings its own risk.</strong> A form service, an analytics script and an editing tool are each outside this comparison.</li>
+      <li><strong>A passed check shows what it checks.</strong> The headers are there; that does not make the site safe. The audit lists no known flaw; that does not say there is none.</li>
+    </ul>
+  </section>
+
+  <!-- PHP-DATED: see the note above #php-alert. -->
+  <section class="wrap" id="php-steps">
+    <p class="eyebrow">News · dated 21 October 2026 · to be updated or removed</p>
+    <h2>If you run PHP anywhere</h2>
+    <p>CISA's advice of 21 October 2026, in our words:</p>
+    <Claim as="div" id="cisa-steps">
+      <ul class="steps">
+        <li>List every system that runs PHP. PHP is often a component of other software, so you may not see it.</li>
+        <li>Patch, internet-facing systems first. The fixed versions are in the panel above.</li>
+        <li>If you cannot patch at once, or you run PHP 8.1 or earlier, take the system offline until you can.</li>
+        <li>A web application firewall may give some protection meanwhile. It does not replace the patch.</li>
+        <li>Watch for PHP worker processes that start a shell or download tools.</li>
+      </ul>
+    </Claim>
+    <Claim id="php-not-wordpress-update">Updating WordPress or its plugins does not update PHP. The host, or whoever runs the server, does that.</Claim>
+  </section>
+
+  <section class="wrap" id="how-checked">
+    <h2>How this page was checked</h2>
+    <p>
+      Each fact above carries its source and the day we read it. The news pages, the advisories and
+      Cloudflare's documentation were read in full on 22 October 2026, not through a summary. A test,
+      <code>tests/check_security_page.sh</code>, checks that every fact has a source and a date. It cannot
+      check that the source says it: a person did that.
+    </p>
+    <p>
+      What we did not check here: whether the routes file of the live deployment leaves static files out of
+      the function.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="/support">Report a security problem</a>
+      <a class="btn" href="/from-wordpress">From WordPress to Astro</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  section.wrap { padding: 2.5rem 1.25rem; max-width: var(--maxw); margin: 0 auto; }
+  section.hero { padding-top: 3rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 1rem; hyphens: manual; }
+  h2 { margin-bottom: 0.8rem; line-height: 1.25; }
+  h3 { margin: 1.6rem 0 0.6rem; font-size: 1.1rem; }
+  /* Elements the Claim component renders carry the component's scope, not this page's, so a rule that must
+     reach them is wrapped in :global(). */
+  section p, section :global(p.claim), .steps, .proof, .reports { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .note, .legend { color: var(--muted); }
+  .eyebrow { margin: 0 0 0.4rem; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .answer { font-size: 1.5rem; font-weight: 700; line-height: 1.25; margin: 0.2rem 0 1rem; }
+  .steps { padding-left: 1.3rem; }
+  .steps > :global(li) { margin-bottom: 0.6rem; }
+  .points { margin: 0; padding-left: 1.2rem; line-height: 1.6; }
+  .points > :global(li) { margin-bottom: 0.7rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem; margin: 1.2rem 0; padding: 0; list-style: none; }
+  .card h3 { margin-top: 0; }
+
+  /* A fact and its source (the source line itself is styled in components/Claim.astro). */
+  .proof { padding-left: 1.2rem; }
+  .proof > :global(li), .reports > :global(li) { margin-bottom: 0.8rem; }
+
+  /* The dated panel is set apart, so that it is plain which part of the page will age. */
+  .panel { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); max-width: none !important; }
+  .panel > * { max-width: 46rem; }
+  .panel > .facts { max-width: 60rem; }
+  .facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.9rem 1.5rem; margin: 1.2rem 0; }
+  /* Columns are named, so that two <dd> in a row (the two flaws) cannot push one into the label column. */
+  .facts dt { font-weight: 700; grid-column: 1; }
+  .facts :global(dd) { margin: 0; min-width: 0; grid-column: 2; }
+  .facts .plain { margin: 0 0 0.5rem; }
+  .reports { padding-left: 1.2rem; margin: 0; }
+
+  .paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem; margin: 1.2rem 0; }
+  .path { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem; min-width: 0; }
+  .path h3 { margin-top: 0; }
+  .steps-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .step { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: baseline; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-left-width: 4px; border-radius: 6px; line-height: 1.5; }
+  .step > span:last-child { flex: 1 1 12rem; min-width: 0; }
+  .step.is-code { border-left-color: var(--warn); }
+  .step.is-file { border-left-color: var(--pass); }
+  .tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); min-width: 5.5em; }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; max-width: 60rem; border-collapse: collapse; }
+  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
+  thead th { font-size: 0.85rem; color: var(--muted); }
+  tbody th { font-weight: 600; }
+  tr.own td:first-of-type { border-left: 4px solid var(--line); padding-left: 0.8rem; }
+  tr.own.is-pass td:first-of-type { border-left-color: var(--pass); }
+  tr.own.is-open td:first-of-type { border-left-color: var(--warn); }
+  .own-src { display: block; margin-top: 0.3rem; font-size: 0.85rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+  .own-src code { font-size: 0.85em; overflow-wrap: anywhere; }
+  .points, .priorities .card p { hyphens: manual; }
+
+  .priorities, .checks { list-style: none; padding: 0; margin: 1.2rem 0; display: grid; gap: 1rem; counter-reset: p; }
+  .priorities > li, .checks > li { counter-increment: p; }
+  .priorities > li h3::before, .checks > li h3::before { content: counter(p) ". "; color: var(--accent); }
+  .priorities .card p, .checks .card p { margin: 0 0 0.6rem; max-width: 46rem; line-height: 1.6; }
+  .checks code, .priorities code, .proof code, .steps code, .points code, .facts code { overflow-wrap: anywhere; }
+
+  @media (max-width: 40rem) {
+    .facts { grid-template-columns: 1fr; gap: 0.2rem; }
+    .facts dt, .facts :global(dd) { grid-column: 1; }
+    .facts :global(dd) { margin-bottom: 0.9rem; }
+  }
+</style>

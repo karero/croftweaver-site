@@ -1,0 +1,29 @@
+---
+// One fact of /security with its source and the day it was read (src/data/security.ts). The element carries
+// data-claim="<id>"; the source line carries the kind and the source itself, so that
+// tests/check_security_page.sh can read the page back without knowing the data file's shape.
+import { claim, longDate, REPO_FILE_BASE } from '../data/security';
+
+interface Props {
+  id: string;
+  /** The element to render: p, li, dd, td, span. */
+  as?: string;
+  class?: string;
+}
+const { id, as: Tag = 'p', class: className } = Astro.props;
+const c = claim(id);
+---
+<Tag class:list={['claim', className]} data-claim={c.id}>
+  <slot />
+  <span class="src" data-kind={c.kind} data-source={c.source}>
+    {c.kind === 'url' && (<><a href={c.source}>{c.label}</a>{(c.also ?? []).map((a) => <>{'; '}<a href={a.url}>{a.label}</a></>)}{', read '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
+    {c.kind === 'file' && (<><a href={REPO_FILE_BASE + c.source}><code>{c.source}</code></a>{', read '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
+    {c.kind === 'command' && (<>{'Command: '}<code>{c.source}</code>{', run '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
+  </span>
+</Tag>
+
+<style>
+  /* The source line of a fact: small and quiet, and it wraps a long command rather than widen the page. */
+  .src { display: block; margin-top: 0.15rem; font-size: 0.85rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+  .src code { font-size: 0.85em; overflow-wrap: anywhere; }
+</style>

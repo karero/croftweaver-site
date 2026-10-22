@@ -232,6 +232,7 @@ is built.
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
 | About | `/about` | maintainer | — | live |
+| Security | `/security` | static website | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 
