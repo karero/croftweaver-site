@@ -1,0 +1,7 @@
+# How to report a security problem in croftweaver.com or in Croftweaver itself (RFC 9116).
+# Please do not open a public issue. Use the first contact below; the second is a mailbox.
+Contact: https://github.com/karero/croftweaver/security/advisories/new
+Contact: mailto:security@croftweaver.com
+Expires: 2027-04-22T00:00:00Z
+Canonical: https://croftweaver.com/.well-known/security.txt
+Policy: https://croftweaver.com/support

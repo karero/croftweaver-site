@@ -48,6 +48,20 @@ if [ -f tests/check_export_own_site.sh ]; then
   bash tests/check_export_own_site.sh
 fi
 
+# The security.txt file: a contact, the canonical address, and an Expires date that has not run out.
+# Warns at 30 days, fails at 7 (see the script), so a lapse also holds up a push and `npm run ship`.
+# Needs no build. A warning is printed again after the tests, so that it does not scroll away.
+sec_warn=""
+if [ -f tests/check_security_txt.sh ]; then
+  echo "▶ pre-push gate: security.txt (its self-test takes a few seconds)…"
+  if ! sec_out=$(bash tests/check_security_txt.sh 2>&1); then
+    printf '%s\n' "$sec_out"
+    exit 1
+  fi
+  printf '%s\n' "$sec_out"
+  sec_warn=$(printf '%s\n' "$sec_out" | grep '^ *WARN' || true)
+fi
+
 echo "▶ pre-push gate: building…"
 npm run build
 
@@ -58,5 +72,10 @@ fi
 
 echo "▶ pre-push gate: tests…"
 npm test
+
+if [ -n "$sec_warn" ]; then
+  echo "⚠ security.txt is close to its Expires date; renew it soon:"
+  printf '%s\n' "$sec_warn"
+fi
 
 echo "✓ pre-push gate passed — pushing."
