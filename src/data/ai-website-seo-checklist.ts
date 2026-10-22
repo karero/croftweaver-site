@@ -7,19 +7,21 @@
 // The page prints no failure message word for word: several carry a long dash or a contraction,
 // which tests/tone.spec.ts rejects in body text.
 //
-// Two guards run when the site builds, so the page cannot go on describing tests that changed:
+// Two guards run when the site builds. They check inventory and provenance, not what the tests assert:
 //  1. the suites the rows name must exist, and must be among the four the breaks covered;
 //  2. the suite copy named in tests/TESTS-VERSION must be the toolkit commit whose template specs
 //     the breaks were run against. If the site's suites are copied from a newer toolkit commit, run
 //     the breaks again (they are listed on the page), then change RED_RUNS.suiteCommit.
-// Not guarded: this site's own copies of seo, images and navigation have assertions the toolkit
-// template lacks, so a hash of them would trip on unrelated edits and say nothing about the
-// template the page describes. The suite names, group and file come from src/data/suites.ts, so a
+// Not guarded: edits to the specs, what their assertions say, and new toolkit releases. This site's
+// own copies of seo, images and navigation already have assertions the toolkit template lacks, so a
+// hash of them would trip on unrelated edits and say nothing about the template the page
+// describes. When a release changes the template tests, run the breaks again before merging. The suite names, group and file come from src/data/suites.ts, so a
 // rename there reaches this page.
 import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 
 export const RED_RUNS = {
   toolkit: '0.32',
+  node: '26',
   iso: '2026-10-22',
   label: '22 October 2026',
   // The toolkit commit named in tests/TESTS-VERSION. Its template specs for the four suites below
@@ -48,14 +50,14 @@ export const CHECKS: CheckRow[] = [
     check: 'Canonical address',
     suites: ['seo'],
     broke:
-      'A canonical address on another host turned the suite red on every page, with a message that it must be the full production address of that page. With the canonical link removed the suite also failed, but by waiting 30 seconds for a link that was not there and timing out, with no message about the canonical.',
-    limit: 'That the address is the page’s own production address, not that it is the address you want search engines to prefer.',
+      'A canonical address on another host turned the suite red on every page, with a message that it must be the full production address of that page. With the canonical link removed the suite also failed, but by waiting 30 seconds for a link that was not there and timing out, with no message that the canonical is missing; the log only names the link it waited for.',
+    limit: 'That this is the address you want search engines to prefer. The suite checks only that it is the page’s own production address.',
   },
   {
     check: 'One main heading',
     suites: ['seo'],
     broke: 'A second main heading on a page turned the suite red for that page.',
-    limit: 'It counts main headings. It does not check the order of the headings below them, and no test here looks for hidden headings.',
+    limit: 'It counts main headings, hidden ones included. The accessibility suite checks heading order through axe’s best-practice rules. Nothing looks for hidden h2 or h3 headings.',
   },
   {
     check: 'Images: alt text, width and height, format, loading',
@@ -71,7 +73,7 @@ export const CHECKS: CheckRow[] = [
     broke:
       'A link to a page that does not exist turned the navigation suite red, and the message reported the 404. A link to a section that does not exist turned the anchors suite red.',
     limit:
-      'Links written relative to the current page are not followed, and links to other sites are not checked. A section link can exist and still point at the wrong section.',
+      'Links to pages written relative to the current page are not followed, and links to other sites are not checked. Section links into other sites and into files such as PDFs are skipped, and a section link can exist and still point at the wrong section.',
   },
   {
     check: 'The sitemap matches the pages',
@@ -84,9 +86,9 @@ export const CHECKS: CheckRow[] = [
     check: 'robots.txt does not close the site',
     suites: ['seo'],
     broke:
-      'Replacing the rule that allows everything with one that blocks everything turned the suite red. Adding the blocking rule beside the allowing one did not: when both apply, the allowing rule wins, and so does the check.',
+      'Replacing the rule that allows everything with one that blocks everything turned the suite red. Adding the same blocking rule beside the allowing one did not: when an allow and a block match equally well, the allow wins, and so does the check.',
     limit:
-      'It reads the two common whole-site rules, a single slash and a slash with an asterisk. Other ways of closing a site are not checked, and single pages are not tested.',
+      'It reads the two common whole-site rules, a single slash and a slash with an asterisk, and the longer pattern wins, as RFC 9309 says: the suite’s own unit cases show a longer block beside an allow is caught. Only six named search crawlers are checked. Other ways of closing a site are not checked, and single pages are not tested.',
   },
   {
     check: 'Hreflang entries, for translated pages only',
@@ -102,9 +104,9 @@ export const CHECK_COUNT_WORD = NUMBER_WORDS[CHECKS.length] ?? String(CHECKS.len
 
 // What the starter's tests do not look at (read in the test sources at v0.32, 22 October 2026).
 export const NOT_COVERED = [
-  'That a page’s text is in the HTML as served. A Croftweaver site is built as plain pages, so it is by default. A few suites fetch the served HTML directly, for section ids, the email link and the analytics script; none checks that a page’s text is there.',
+  'That a page’s text is in the HTML as served. A Croftweaver site is built as plain pages, so it is by default. The email suite fetches the served HTML of every page, and the anchors suite does so for a link target outside the page list. None checks that a page’s text is there.',
   'Speed on each change. Page speed is measured by hand, with PageSpeed Insights.',
-  'Hidden headings.',
+  'Hidden h2 and h3 headings.',
   'Whether Google has found, indexed or ranked a page.',
 ];
 

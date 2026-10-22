@@ -7,8 +7,8 @@
 // reviewed site and one podcast episode, not rules from Google; the page says "reported", never
 // "Google says". Only the three skips in the May 2026 report (canonicals, sitemaps, robots.txt) say
 // an assistant leaves something out; the other rows are things worth checking, with no claim about
-// how often an assistant gets them wrong. No ranking is promised. Lovable and Bolt are named once,
-// neutrally: who each says it is for, and one dated trade report each; nothing is said about what
+// how often an assistant gets them wrong. No ranking is promised. Lovable and Bolt are named only in
+// one passage, neutrally: who each says it is for, and one dated trade report each; nothing is said about what
 // either builds, and no site built with either was tested. The checklist rows and the guards that
 // keep them true are in src/data/ai-website-seo-checklist.ts.
 import Base from '../layouts/Base.astro';
@@ -24,17 +24,17 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
 ---
 <Base
   title="SEO checklist for AI-built websites"
-  description={`SEO checklist for AI-built websites: ${CHECK_COUNT_WORD} checks, the Croftweaver test that catches each, what happened when we broke it, and what a pass does not prove.`}
+  description={`SEO checklist for AI-built websites: ${CHECK_COUNT_WORD} checks, the Croftweaver test behind each, what happened when we broke it, and what a pass does not prove.`}
   image="/images/og/ai-website-seo-checklist.jpg"
 >
   <section class="wrap hero">
     <h1>SEO checklist for AI-built websites</h1>
     <p class="lead">
-      An AI assistant can build a website in a matter of days, and nobody has to check what search
-      engines make of it. Whether a site was vibe coded in an app builder or built in a terminal
+      An AI assistant can build a website in a matter of days, and nothing makes anyone check what
+      search engines make of it. Whether a site was vibe coded in an app builder or built in a terminal
       with a coding assistant, the same question follows: what should be checked? This page lists
       {CHECK_COUNT_WORD} checks, says which of them a Croftweaver test catches, and says what a passing
-      test does not prove. Croftweaver sites are built with an AI assistant too; the difference is
+      test does not prove. Croftweaver sites are built with an AI assistant too; one difference is
       the tests.
     </p>
     <div class="cta">
@@ -57,8 +57,8 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
         <a href={REPORT_2025}>first report</a> told how John Mueller, a Google Search Advocate,
         reviewed on Reddit a website a developer had vibe coded in two days. He named things with no
         value for search on that site: keywords, author and robots meta tags, hreflang tags on a
-        one-language site, hidden headings, a sitemap for a single page, and structured data he
-        called ineffective. He also named key content held in a JavaScript llms.txt file, which he
+        one-language site, hidden headings, a sitemap for a single page, and structured data the
+        report calls ineffective. He also named key content held in a JavaScript llms.txt file, which he
         said Google does not use. Fixing these, he added, does not bring traffic by itself, but makes
         it easier for search engines to understand a site.
       </li>
@@ -78,14 +78,14 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
       is a rule from Google.
     </p>
     <p>
-      Sites called vibe coded are sometimes built with AI app builders such as Lovable and Bolt. This
+      Some people use AI app builders such as Lovable and Bolt for the same job. This
       page says nothing about what either one builds, and we did not test a site built with either.
       Here is who each says it is for, and what trade press reported:
     </p>
     <ul class="steps">
       <li>
         <strong>Lovable</strong> describes itself in <a href={LOVABLE_DOCS}>its documentation</a> as
-        a full-stack AI development platform for individuals and teams. It names product managers
+        a full-stack AI development platform for individuals and teams. It names, among others, product managers
         and designers, marketing, sales and operations teams, developers, agencies, founders and
         independent makers. <a href={LOVABLE_TECHCRUNCH}>TechCrunch</a> reported in
         <time datetime="2025-02">February 2025</time> that its founder aims it at the people who
@@ -111,13 +111,13 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
     <p>
       Each row is one thing to check, the Croftweaver suite that covers it, what happened when we broke
       it, and what a pass does not prove. On <time datetime={RED_RUNS.iso}>{RED_RUNS.label}</time> we
-      broke a copy of the Croftweaver starter, version {RED_RUNS.toolkit}, one thing at a time,
-      ran the suite that covers it, and wrote down what failed. You can make the same edits and see
-      the same. The suites are described on <a href="/checks">the checks page</a>.
+      broke a copy of the Croftweaver starter, version {RED_RUNS.toolkit}, on Node {RED_RUNS.node}, one thing at a time,
+      ran the suite that covers it, and wrote down what failed. You can make the same edits on a copy of your own and
+      compare. The suites are described on <a href="/checks">the checks page</a>.
       The checklist works by hand on any site; the tests come with a site built from the Croftweaver
       starter, which needs a coding assistant and a terminal.
     </p>
-    <div class="table-wrap">
+    <div class="table-wrap" role="region" aria-label="The checks, the suite behind each, and what a pass does not prove" tabindex="0">
       <table>
         <thead>
           <tr>
@@ -150,7 +150,7 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
   <section class="wrap" id="tell">
     <h2>Tell your assistant up front</h2>
     <p>
-      The second report’s advice is cheap to follow. Say what the site needs before the assistant
+      What the second report says Mueller did is cheap to copy. Say what the site needs before the assistant
       starts, then keep a check that fails when one of those things goes wrong.
     </p>
     <div class="card">
