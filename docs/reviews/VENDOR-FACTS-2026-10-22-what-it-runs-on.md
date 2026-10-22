@@ -1,0 +1,70 @@
+# Vendor facts behind /what-it-runs-on, read on 2026-10-22
+
+A record, so the figures on the page have a source that outlives the session. Two kinds of reading:
+
+1. **Vendor pages**, read by a Sonnet sub-agent with WebFetch. WebFetch answers come from a small model's reading of each page, so each quote below is that model's rendering, not a copy of the page. The agent changed no file. Brief: the 2026-10-05 figures of the spec, checked one by one.
+2. **Repository settings and toolkit files**, read by the host (`gh api`, `git show origin/main:…`).
+
+Result of the vendor read: no figure changed since 2026-10-05. Four wording limits, applied on the page.
+
+## 1. Vendor pages (sub-agent, verdict against the 2026-10-05 statement)
+
+| # | Page read | What it says today | Verdict |
+|---|---|---|---|
+| 1 | developers.cloudflare.com/pages/platform/limits/ | Free plan: 500 builds a month, 1 build at a time, 20,000 files per site, 25 MiB per file, 100 projects per account. Custom domains: 100 on Free, 250 on Pro, 500 on Business and Enterprise. Anyone hosting more than 100 sites is pointed to Workers for Platforms or Workers Static Assets | SAME |
+| 2 | …/pages/functions/pricing/ and developers.cloudflare.com/workers/platform/limits/ | "On both free and paid plans, requests to static assets are free and unlimited." Functions requests count toward the Workers Free quota. The Pages page does not state 100,000 itself; the Workers limits page does: 100,000 requests a day, reset at midnight UTC | SAME |
+| 3 | …/pages/functions/routing/ | "once you add Functions on a Pages project, all requests by default will invoke your Function." The Fail open / Fail closed setting applies on the Workers Free plan when the daily allowance runs out: fail open keeps serving static assets, fail closed returns an error page | SAME |
+| 4 | …/pages/functions/middleware/ | A `functions/_middleware.js` file runs in front of static files | SAME |
+| 5 | …/pages/configuration/preview-deployments/ | Every new branch gets a preview address. For pull requests: "This is only true when pull requests originate from the repository itself." Fork pull requests are not described further | SAME |
+| 6 | developers.cloudflare.com/pages/ | Workers is "Cloudflare's primary platform for building applications. Start new projects with Workers." Workers "supports most Pages use cases." Pages: "Available on all plans." | SAME |
+| 7 | developers.cloudflare.com/dns/, /dns/faq/, /dns/zone-setups/full-setup/, /registrar/ | DNS "Available on all plans"; full setup "the only one available for Free or Pro plans". FAQ: "You do not need to move away from your registrar." Registrar sells domains "at cost, without markup fees". Caveat: no Registrar page read says in so many words that Registrar is optional; that rests on the DNS FAQ line | SAME |
+| 8 | developers.cloudflare.com/email-service/ (overview, get-started/route-emails/, platform/pricing/) | Email Routing forwards incoming mail to destination addresses (each must be verified first); "Available on Free and Paid plans"; "You must be using Cloudflare DNS to use Email Service"; onboarding adds MX, SPF and DKIM records; sending to any recipient needs Workers Paid and is labelled Beta | SAME |
+| 9 | docs.github.com/en/get-started/learning-about-github/githubs-plans | "unlimited collaborators on unlimited public repositories with a full feature set." Private repositories are unlimited too, with a "limited feature set." No collaborator cap is stated for private ones | SAME, wording limit: "unlimited collaborators" is stated for public repositories only |
+| 10 | docs.github.com/en/billing/concepts/product-billing/github-actions | Free for self-hosted runners and for public repositories on standard GitHub-hosted runners; GitHub Free includes 2,000 minutes a month for private repositories; "usage is blocked once you use up your quota"; overage is billed to the payment method on file | SAME, wording limit: the payment-method condition for standard runners is not in one sentence |
+| 11 | git-scm.com/docs/gitfaq#sync-working-tree | Under "How do I sync a working tree across systems?": "not to use a cloud syncing service to sync any portion of a Git repository", continuing "since this can cause corruption". Names no product | SAME |
+| 12 | plausible.io/data-policy; /privacy-focused-web-analytics; /#pricing; /docs/billing; github.com/plausible/community-edition | "We do not use cookies, browser cache or local storage"; no persistent visitor identifiers; no cookie banners needed. Pricing page: Starter "$9 /month", "Up to 10k monthly pageviews", one site, 3 years of retention; Growth $14, Business $19 at that tier. A Monthly/Yearly toggle with "2 months free" is shown, and the text does not say which is selected. 30-day free trial. Community Edition: MIT licence, v3.2.1 the latest version, an example Docker Compose setup | SAME on cookies and the repository; the $9 billing period (monthly or yearly) is not shown in the page text |
+
+## 2. Repository settings (host, `gh api`, read-only, 2026-10-22)
+
+`gh api repos/karero/croftweaver-site/rulesets/<id>`, each read back by its ID:
+
+- `24992030` "protect main": enforcement active; target branch; include `~DEFAULT_BRANCH`; bypass actors 0; rules `deletion`, `non_fast_forward`, `pull_request` (0 approvals required; extra approval for unattributed changes on), `required_status_checks` with contexts `test` and `Cloudflare Pages` (integration 85455), strict policy off.
+- `24992045` "protect production": enforcement active; include `refs/heads/production`; bypass actors 0; rules `deletion`, `non_fast_forward`. No required checks, no pull request rule.
+- `gh repo view`: visibility PUBLIC. PR #115 state: OPEN.
+- `.github/workflows/ci.yml`: `on:` push to `main` and `production`, `pull_request`, `workflow_dispatch`; the job is named `test` (line 30).
+- Branch protection API for `main` and `production`: 404 "Branch not protected" (the rulesets are the mechanism).
+
+## 3. Toolkit files (host, `git show origin/main:…`, toolkit at `001c68b7`)
+
+- `skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`: section S "Setup by script, connected to GitHub — RECOMMENDED for a site on GitHub" (line 25), which creates the Pages project connected to the repository; line 172: direct upload, "Ongoing deploys are then `wrangler pages deploy`, not Cloudflare's git-push auto-build"; lines 257 and 276: `wrangler pages deploy dist`; section B "GitHub git-integration — RECOMMENDED if the owner wants push-to-deploy and no token" (line 290).
+- `docs/WHAT-THE-SKILLS-RUN.md` lines 34 and 38: "In Claude Code, routine build commands run without asking" … "`npm run` and `git push` run without asking. It saves clicks; it is not a safety fence."
+- `skills/new-website/references/WEBSITE_ARCHITECTURE.md` lines 199, 200, 241: Plausible is cookieless and needs a paid licence from 9 euro a month.
+- `docs/GETTING-STARTED.md` lines 53 to 56: "If your Documents folder syncs to iCloud or OneDrive, pick a folder outside it".
+- `skills/new-website/templates/AGENTS.md` lines 73 to 95: Codex in the cloud starts every task from a fresh copy from GitHub; for an older resumed task, "Whether GitHub has moved on since is not checked."
+- `skills/keystatic-setup/SKILL.md` lines 24 and 100 to 111: local mode is what the skill sets up; GitHub mode is a documented upgrade needing an adapter, a GitHub App and secrets, "not wired by default".
+- `skills/new-website/templates/astro/functions/_middleware.ts` header: three jobs (preview noindex; pages.dev alias redirect once `CANONICAL_URL` is set; in server mode, page views to Plausible).
+- `skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md` lines 415 to 426, step 4 of the going-live steps: "Disable DNSSEC at the registrar before touching nameservers" (flipping them with the old DS record live makes resolvers return SERVFAIL and "the domain goes dark"); step 5: change the name servers only after the passes agree and DNSSEC is handled. **Correction:** an earlier version of this file said DNSSEC was absent from the toolkit's checklist. The search was cut off after four lines (`head -4`), all of them review trails; the DIFF review's fresh-eyes seat found the step.
+- Lines 312 to 318 of the same file: the free plan's 100,000 requests a day are "shared by every Pages Function and Worker in the account", reset at midnight UTC; the guide's heading is "After the first deploy, whichever option: set 'Fail open'".
+
+## 4. Not read from a vendor page
+
+- "Every preview build counts toward the monthly builds": the spec's claim. A second read of developers.cloudflare.com/pages/platform/limits/ on the same day (WebFetch): the page "does not say whether the 500 monthly builds on the Free plan include preview deployments"; its closest line is "Each time you push new code to your Git repository, Pages will build and deploy your site." The page no longer makes the claim.
+- Whether the Cloudflare dashboard counts every request to croftweaver.com as a Functions request: Daniel's check.
+
+## 5. Layout measurement (host, Chromium via Playwright, 2026-10-22)
+
+The question (DIFF review, Codex): which layout rule keeps a long word inside the screen on `/what-it-runs-on`?
+Method: the built page (`dist/what-it-runs-on.html`) loaded in Chromium with each rule removed from its inline
+CSS; a 60-character word appended to the first box's paragraph; overflow = `scrollWidth - innerWidth`. The
+page's rules: `overflow-wrap: anywhere` on `.place`, and `minmax(0, 1fr)` on the column; the site's
+`global.css` line 71 sets `overflow-wrap: break-word` on the page.
+
+| Variant | 360 px | 320 px |
+|---|---|---|
+| as built | 0 | 0 |
+| without `overflow-wrap: anywhere` (the box inherits `break-word`) | 0 | 0 |
+| without `minmax(0, 1fr)` (plain `1fr`) | 0 | 0 |
+| without both | 191 | 231 |
+
+Either rule alone is enough; the phone test in `tests/a11y.spec.ts` fails only when both are gone. An earlier
+comment credited `overflow-wrap: anywhere` alone, because the first check removed both rules at once.
