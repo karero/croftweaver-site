@@ -516,20 +516,26 @@ test('footer credit: every page names GenAI Wednesday as the origin and links to
 // Site-specific (not in the shipped suite): the footer. Its links are the FOOTER list in src/config.ts, in
 // labelled columns. orphans.spec.ts passes when any link anywhere reaches a page, so a page left out of the
 // footer would go unnoticed: this test fails it. PAGES is tied to the built pages by the sitemap drift alarm
-// in seo.spec.ts, so checking PAGES covers every indexable page. The header is a curated subset of the pages:
-// no test requires a page in it.
+// in seo.spec.ts, so checking PAGES covers every indexable page. The header is a curated subset of the pages: no test
+// requires a page in it, apart from the wide-screen header test above, which asserts the Existing Sites link. Because the
+// footer links every page, orphans.spec.ts and scripts/check_internal_links.sh can no longer flag a page that has no
+// in-body link: the contextual-link rows in CONTENT_GUIDE.md are kept by people, not by those two.
 const footerLinks = (page: import('@playwright/test').Page) => page.locator('.site-footer .footer-nav a[href]');
 
 test('footer — every page except home is linked from the footer, each once', async ({ page }) => {
   await page.goto('/');
   const hrefs = await footerLinks(page).evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));
-  for (const route of PAGES.filter((r) => r !== '/')) {
-    expect(hrefs.filter((h) => h === route).length, `${route} must be linked from the footer exactly once (add it to FOOTER in src/config.ts)`).toBe(1);
-  }
+  const problems = PAGES.filter((r) => r !== '/').flatMap((route) => {
+    const n = hrefs.filter((h) => h === route).length;
+    if (n === 1) return [];
+    return [n === 0 ? `${route} is not linked from the footer (add it to FOOTER in src/config.ts)` : `${route} is linked ${n} times from the footer (once is enough)`];
+  });
+  expect(problems, 'the footer must link every page except home exactly once').toEqual([]);
 });
 
 test('footer — the columns and links are the ones in FOOTER, each list named by its heading, the badge above them', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('.site-footer nav.footer-nav'), 'the footer nav needs its own name next to the header nav').toHaveAttribute('aria-label', 'Footer');
   const lists = page.locator('.site-footer .footer-nav ul');
   await expect(lists, 'the footer shows a different number of columns than FOOTER lists').toHaveCount(FOOTER.length);
   for (const [i, column] of FOOTER.entries()) {

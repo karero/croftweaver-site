@@ -92,8 +92,8 @@ const robots = noindex
 // config.ogLocaleFor (unmapped bases omit the tag; a wrong en_US would
 // contradict inLanguage).
 const ogLocale = ogLocaleFor(lang);
-// The id that names a footer column's list (aria-labelledby). The column heading is a paragraph, not an h2:
-// scripts/anchor-ids.mjs gives every built h2 an id, and a footer heading on every page would add one to each.
+// The id that names a footer column's list (aria-labelledby). The column heading is a paragraph, not an h2: four
+// boilerplate headings would repeat in the outline of every page. The list is named through aria-labelledby instead.
 const footerId = (heading: string) => 'footer-' + heading.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 ---
 <!doctype html>

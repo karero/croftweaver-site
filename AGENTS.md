@@ -235,8 +235,9 @@ except the home page, and the total may be at most 60. So a page `title` is at m
 **New page** (e.g. `/pricing`):
 1. Create `src/pages/pricing.astro` with `Base`, like the other pages. `title` at most
    46 characters, `description` 140 to 160 characters (test: 120 to 160).
-2. Link the page from somewhere, usually the navigation. A page without a link fails a
-   test.
+2. Link the page from somewhere, usually the navigation, and add it to FOOTER in
+   `src/config.ts` (a footer test fails an indexable page that is missing there). A page
+   without a link fails a test.
 3. Add the address to `PAGES` in `tests/_helpers.ts`.
 4. Add a line to `public/llms.txt` in the style of the others.
 5. Share card: add the page to `PAGES` in `scripts/generate_og_cards.py`, run

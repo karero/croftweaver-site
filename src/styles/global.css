@@ -115,7 +115,7 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 .site-footer .release, .site-footer .credit { flex-basis: 100%; margin: 0; color: var(--muted); }
 /* The footer links, in labelled columns (FOOTER in src/config.ts). The nav takes a row of its own, so the badge
    stands above it. The columns share the width and drop to fewer per row as it narrows: two on a 360px phone,
-   one on 320px. The link text keeps the size it had in the flat footer. */
+   one on 320px (with the footer's 1.25rem side padding). The link text keeps the size it had in the flat footer. */
 .site-footer .footer-nav {
   flex-basis: 100%;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1.25rem 1.5rem;
