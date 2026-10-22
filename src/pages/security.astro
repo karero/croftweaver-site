@@ -289,7 +289,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <Claim as="li" id="toolkit-dependabot-ignores">The toolkit's own Dependabot file for the Astro starter ignores major updates of @types/node, which follows the Node major, and of typescript, because @astrojs/check 0.9.x does not accept version 7 yet. The file says so in comments.</Claim>
           <Claim as="li" id="site-lockfile">The lockfile last changed on 22 October 2026, when Dependabot updated six packages.</Claim>
           <Claim as="li" id="site-dependabot">Dependabot alerts and security updates are on for the repository (the command needs access to its settings).</Claim>
-          <Claim as="li" id="site-dependabot-file">The repository also has a Dependabot file that asks for version updates once a month: one pull request for the minor and patch steps, and no major updates of @types/node or typescript.</Claim>
+          <Claim as="li" id="site-dependabot-file">The repository also has a Dependabot file that asks for version updates once a month: one grouped pull request for the minor and patch steps of the npm packages, with no major updates of @types/node or typescript, and one grouped pull request for GitHub Actions updates.</Claim>
         </ul>
       </li>
       <li class="card">
@@ -317,7 +317,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p>The site keeps serving. Your pages are files, and Cloudflare renews the HTTPS certificate (see <a href="#cloudflare">what Cloudflare handles</a>). What changes is what piles up behind the scenes.</p>
     <ul class="steps">
       <li><strong>Known flaws collect in your build tools.</strong> Visitors never run those tools, so a visit does not reach them. You do run them, on your computer and in the build that publishes. A site that skips updates ends up with a longer list than croftweaver.com had on 22 October 2026, when the audit above listed none.</li>
-      <li><strong>The gap grows.</strong> On 22 October 2026 seven of the eight direct packages of croftweaver.com were behind, and the toolkit holds two of them back on purpose (see the list above). Today the audit reports no known flaw, and the packages that were behind are used to build and test the site. The gap becomes a risk when a security fix is released only for a version newer than the one you run. A small step is one click. Years of steps arrive together, and the changes between them can alter how pages build.</li>
+      <li><strong>The gap grows.</strong> On 22 October 2026 four of the eight direct packages of croftweaver.com were behind, and the toolkit holds two of them back on purpose (see the list above). Today the audit reports no known flaw, and the packages that were behind are used to build and test the site. The gap becomes a risk when a security fix is released only for a version newer than the one you run. A small step is one click. Years of steps arrive together, and the changes between them can alter how pages build.</li>
       <li><strong>The facts on your pages age.</strong> Prices, dates and figures stay as written, and a page with dated figures looks worse every month nobody checks it.</li>
     </ul>
     <p>
