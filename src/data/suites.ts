@@ -92,6 +92,12 @@ export const SUITES: {
     limit: 'It knows a fixed set of shapes, chosen so that it rarely flags real copy, so a leftover in another shape passes. It does not read the 404 page, llms.txt, PDFs, text inside images or text that shows only when JavaScript is off.',
   },
   {
+    file: 'privacy-host', group: 'publish', name: 'Privacy host',
+    checks: 'The analytics host the privacy page names is the host the site loads its analytics from.',
+    example: 'A privacy page that names one analytics host while the site loads its analytics from another fails.',
+    limit: 'It reads only the host the page marks. A page with no mark passes without being checked, so this site keeps a separate test that a mark is present. It does not judge the wording around the host.',
+  },
+  {
     file: 'middleware', group: 'publish', name: 'Preview handling',
     checks: 'Preview addresses ask search engines not to index them.',
     example: 'A change that lets a preview address answer without the noindex header fails.',

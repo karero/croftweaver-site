@@ -1,3 +1,24 @@
+// The shape of a [SLOT] the owner still has to fill: an opening bracket, a capital letter
+// and at least one more character ("[DATE]", "[Your Name]", "[MISSING: year built]").
+// placeholders.spec.ts reports every match as an "unfilled [SLOT]" (its rule list says
+// why the shape is this one). privacy-host.spec.ts skips a mark only when its whole text
+// is one match that names ANALYTICS.scriptHost and placeholders.spec.ts reports it (its
+// own comment has every condition), so the two specs share this one copy. Global flag:
+// use it with matchAll or String.match, not .test().
+export const UNFILLED_SLOT = /\[\s*\p{Lu}\s*[^\]\s][^\]]*\]/gu;
+
+// What placeholders.spec.ts lets pass although it looks like a leftover: an exact match
+// in PLACEHOLDER_ALLOWLIST (e.g. '[PDF]' for a download label; case, line breaks and a
+// space just inside the brackets do not matter), and anything inside an element that
+// matches PLACEHOLDER_EXEMPT. They live here, not in that spec, because
+// privacy-host.spec.ts must not skip a slot that spec lets pass.
+export const PLACEHOLDER_ALLOWLIST = new Set<string>([]);
+export const PLACEHOLDER_EXEMPT = 'code, pre, kbd, samp, [data-placeholder-exempt]';
+export function placeholderAllowed(match: string): boolean {
+  const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
+  return [...PLACEHOLDER_ALLOWLIST].some((a) => squash(a) === squash(match));
+}
+
 // One source of truth for routes. Every suite iterates PAGES — add a route here
 // and the a11y / SEO / navigation / image checks all cover it automatically.
 // CONVENTION: NO trailing slash (matches `trailingSlash: 'never'`); home stays '/'.
@@ -22,6 +43,7 @@ export const PAGES = [
   '/imprint',
   '/terms',
   '/support',
+  '/security',
 ] as const;
 
 // a11y (and any visual check) runs in both themes; the toggle is driven by

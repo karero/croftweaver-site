@@ -68,6 +68,7 @@ export const FOOTER: { heading: string; links: { label: string; href: string }[]
     links: [
       { label: 'Existing sites', href: '/established-sites' },
       { label: 'From WordPress', href: '/from-wordpress' },
+      { label: 'Security', href: '/security' },
     ],
   },
   {
