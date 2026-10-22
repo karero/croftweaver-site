@@ -661,7 +661,15 @@ test('seo — every link in the slide deck to this site points at a page that ex
 // tests/privacy-host.spec.ts (copied from the toolkit) compares every element marked
 // data-analytics-host with ANALYTICS.scriptHost. With no mark it finds nothing and passes, so
 // a mark lost in an edit would turn that suite into a check of nothing. This keeps one mark in place.
+// A mark is an attribute inside a start tag: not a comment, not a longer name such as data-analytics-host-old.
+const hasHostMark = (html: string) =>
+  /<[a-z][^<>]*\sdata-analytics-host(?=[\s=/>])[^<>]*>/i.test(html.replace(/<!--[\s\S]*?-->/g, ''));
+
 test('seo — the privacy page names the analytics host in an element marked data-analytics-host', () => {
-  const privacy = distFile('privacy.html');
-  expect(privacy, 'privacy.html has no element marked data-analytics-host: tests/privacy-host.spec.ts would check nothing').toMatch(/data-analytics-host/);
+  expect(hasHostMark('<p><span data-analytics-host>a.example</span></p>'), 'a plain mark must count').toBe(true);
+  expect(hasHostMark('<p><span data-analytics-host="a.example">x</span></p>'), 'a mark with a value must count').toBe(true);
+  expect(hasHostMark('<p><!-- <span data-analytics-host>a.example</span> --></p>'), 'a commented-out mark must not count').toBe(false);
+  expect(hasHostMark('<p><span data-analytics-host-old>a.example</span></p>'), 'a longer attribute name must not count').toBe(false);
+  expect(hasHostMark('<p>data-analytics-host</p>'), 'the words in the text must not count').toBe(false);
+  expect(hasHostMark(distFile('privacy.html')), 'privacy.html has no element marked data-analytics-host: tests/privacy-host.spec.ts would check nothing').toBe(true);
 });

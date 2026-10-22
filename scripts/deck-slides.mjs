@@ -113,7 +113,7 @@ p { margin: 0 0 14px; }
 .groups .card { padding: 16px 24px; }
 .groups h3 { font-size: 20px; }
 .groups .list { padding-left: 20px; }
-.groups .list li { font-size: 18px; line-height: 1.25; margin-bottom: 4px; }
+.groups .list li { line-height: 1.25; }
 .card.good { border-color: var(--brand); border-width: 2px; }
 .card .list { padding-left: 22px; }
 .card .list li { font-size: 20px; margin-bottom: 8px; }
