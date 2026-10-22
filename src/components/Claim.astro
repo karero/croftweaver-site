@@ -2,11 +2,11 @@
 // One fact of /security with its source and the day it was read (src/data/security.ts). The element carries
 // data-claim="<id>"; the source line carries the kind and the source itself, so that
 // tests/check_security_page.sh can read the page back without knowing the data file's shape.
-import { claim, longDate, REPO_FILE_BASE } from '../data/security';
+import { claim, longDate, fileHref, linesLabel } from '../data/security';
 
 interface Props {
   id: string;
-  /** The element to render: p, li, dd, td, span. */
+  /** The element to render: p, li, dd, div or span. (A table row is written in the page, see #own.) */
   as?: string;
   class?: string;
 }
@@ -17,7 +17,7 @@ const c = claim(id);
   <slot />
   <span class="src" data-kind={c.kind} data-source={c.source}>
     {c.kind === 'url' && (<><a href={c.source}>{c.label}</a>{(c.also ?? []).map((a) => <>{'; '}<a href={a.url}>{a.label}</a></>)}{', read '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
-    {c.kind === 'file' && (<><a href={REPO_FILE_BASE + c.source}><code>{c.source}</code></a>{', read '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
+    {c.kind === 'file' && (<><a href={fileHref(c.source, c.lines)}><code>{c.source}</code>{c.lines ? ', ' + linesLabel(c.lines) : ''}</a>{', read '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
     {c.kind === 'command' && (<>{'Command: '}<code>{c.source}</code>{', run '}<time datetime={c.read}>{longDate(c.read)}</time></>)}
   </span>
 </Tag>

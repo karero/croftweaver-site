@@ -23,7 +23,7 @@
 - [Roadmap](https://croftweaver.com/roadmap): what is missing today, what comes next and in which order, and what stays out on purpose.
 - [About](https://croftweaver.com/about): a note from the maintainer, Daniel Melter, on why he builds Croftweaver, with PageSpeed scores for three of his sites and clicks from Google for genai-wednesday.de; who he is, and how to reach him.
 - [Partner assets](https://croftweaver.com/partner-assets): the Built with Croftweaver badge, the logo and the icon to download, the code to put the badge in a footer, the rules for using them, and a request (not a condition) to credit Croftweaver with a link back.
-- [Security](https://croftweaver.com/security): what a static website changes for security: what runs on a visit, what Cloudflare handles, what Croftweaver sets up and what stays with the owner, a checklist for any website, four checks a reader can run, and the result for croftweaver.com, each fact with its source and the day it was read; the PHP alert of 21 October 2026 as a dated panel.
+- [Security](https://croftweaver.com/security): what a static website changes for security: what runs on a visit, what Cloudflare handles, what Croftweaver sets up and what stays with the owner, a checklist for any website, four checks a reader can run, and the result for croftweaver.com, each dated fact with its source and the day it was read.
 - [Privacy](https://croftweaver.com/privacy): privacy policy (GDPR).
 - [Imprint](https://croftweaver.com/imprint): legal disclosure (German § 5 DDG).
 - [Terms of Use](https://croftweaver.com/terms): the terms for using Croftweaver: free software under the MIT licence, given as it is; the services you sign up for have their own terms.

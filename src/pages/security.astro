@@ -10,11 +10,16 @@
 // - WordPress is not called insecure, and no overall ranking is given. The 17 PHP systems are named as plain
 //   fact (their repositories are written in PHP), never as hit. Sites are not named as hit;
 // - the news about the PHP alert is a dated panel (#php-alert) and the PHP steps (#php-steps), both to be
-//   updated or removed; the answer in the first section stands without them;
-// - croftweaver.com's own results (#own) list what fails, and are updated by hand in src/data/security.ts.
+//   updated or removed. To cut them: delete both sections (each has a PHP-DATED comment) and the claims of
+//   the "PHP alert" group in src/data/security.ts. Nothing else names the alert (the description, the share
+//   card, the first section, "how this page was checked" and public/llms.txt carry no mention of it); the
+//   build, tests/check_security_page.sh and the /security tests passed on the cut page (tried 2026-10-22);
+// - croftweaver.com's own results (#own) list what fails, and are filled from LIVE reads by hand in
+//   src/data/security.ts; the check fails while the security.txt row says "not yet" and the file exists;
+// - advice and reasoning stand outside the claim elements, and a claim states one sourced fact.
 import Base from '../layouts/Base.astro';
 import Claim from '../components/Claim.astro';
-import { claim, longDate, LATEST_READ, PHP_SYSTEMS } from '../data/security';
+import { claim, longDate, readPhrase, PHP_SYSTEMS } from '../data/security';
 
 const description =
   'What a static website changes for security: what runs on a visit, what Cloudflare handles, what stays with the owner, and four checks you can run yourself.';
@@ -42,9 +47,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       not, and how to check it yourself.
     </p>
     <p class="note">
-      Every fact below names its source and the day we read it, and says whether it is about the
-      Croftweaver site template, about croftweaver.com, or about someone else's product. Last read on
-      <time datetime={LATEST_READ}>{longDate(LATEST_READ)}</time>.
+      Every dated fact below names its source and the day we read it, and says whether it is about the
+      Croftweaver site template, about croftweaver.com, or about someone else's product. {readPhrase()}.
     </p>
   </section>
 
@@ -52,12 +56,13 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <h2>Is Croftweaver safer than WordPress?</h2>
     <p class="answer">On one point, yes.</p>
     <p>
-      The Croftweaver site template holds no PHP files, and croftweaver.com runs none, so a flaw in PHP
-      does not apply to either, whatever its date. Many well-known systems, WordPress among them, are
-      written in PHP, so a flaw in PHP applies to the servers behind them.
+      The Croftweaver site template holds no PHP files, and neither does the repository of croftweaver.com.
+      The server-side code of both is written in TypeScript, so a flaw in PHP does not apply to either,
+      whatever its date. Many well-known systems, WordPress among them, are written in PHP, so a flaw in PHP
+      applies to servers that run an affected PHP version.
     </p>
     <p>
-      We give no overall ranking. One alert does not show one, and every site depends on its accounts. A
+      We give no overall ranking. No single fact about what runs on a server settles one, and every site depends on its accounts. A
       WordPress site has a database and plugins besides WordPress itself, and WordPress.org tells its
       owners to keep WordPress and the plugins up to date. A Croftweaver site has build tools to keep up
       to date. The sections below set out the differences, each with its source or a check you can run, and
@@ -67,7 +72,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <h3>What this rests on</h3>
     <ul class="proof">
       <Claim as="li" id="template-no-php">The Croftweaver template, at the version we read, holds no PHP files.</Claim>
-      <Claim as="li" id="site-no-php">The repository of croftweaver.com holds no PHP files.</Claim>
+      <Claim as="li" id="site-no-php">The repository of croftweaver.com holds no PHP files. The command counts the files whose names end in .php.</Claim>
       <Claim as="li" id="php-systems-news">Krebs on Security and Malwarebytes name WordPress, Drupal, Joomla and Magento as systems that run on PHP.</Claim>
       <Claim as="li" id="php-systems-repos">The GitHub repositories of {PHP_SYSTEMS.length} systems have PHP as their main language: {PHP_SYSTEMS.join(', ')}. That is a fact about how they are written. It does not show that any one site on them was attacked.</Claim>
       <Claim as="li" id="php-share">PHP is used by 69.3% of the websites whose server-side language W3Techs knows. The figure changes daily.</Claim>
@@ -80,13 +85,14 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p class="eyebrow">News · dated 21 and 22 October 2026 · to be updated or removed</p>
     <h2>The PHP alert of 21 October 2026</h2>
     <p>
-      On 21 October 2026 the US cyber agency CISA urged everyone to patch two critical flaws in PHP,
+      On 21 October 2026 the US cyber agency CISA urged organizations to patch two critical flaws in PHP,
       CVE-2026-109618 and CVE-2026-109619, nicknamed “php2shell”. This is what the sources say. We give
       each report to the source that made it.
     </p>
     <dl class="facts">
       <dt>What CISA said</dt>
       <Claim as="dd" id="cisa-patch">Patch at once. The flaws allow remote code execution without a login and affect all PHP installations serving web requests. Fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35.</Claim>
+      <Claim as="dd" id="cisa-names-no-product">The alert names PHP and no other product.</Claim>
       <dt>Who is affected</dt>
       <Claim as="dd" id="php-advisory">All PHP installations serving web requests, php.net says, among them PHP-FPM, Apache with mod_php, php-cgi, FrankenPHP and LiteSpeed. It sees the risk as highest for mod_php.</Claim>
       <dt>The two flaws</dt>
@@ -104,19 +110,19 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <Claim as="li" id="cloudflare-attacks">Cloudflare's chief technology officer said the same day that Cloudflare was seeing early attacks emerging, and called its firewall rules a stopgap.</Claim>
           <Claim as="li" id="watchtowr-attempts">The security firm watchTowr reported “active exploitation attempts” later the same day, after reporting none earlier. Its head of threat intelligence told The Record that nobody had been successful so far.</Claim>
           <Claim as="li" id="krebs-in-the-wild">Krebs on Security wrote that experts say working exploits exist and that the flaws are already being exploited in the wild.</Claim>
-          <Claim as="li" id="no-confirmed-breakin">When The Hacker News last updated its report, no source had reported a confirmed break-in of a specific server.</Claim>
+          <Claim as="li" id="no-confirmed-breakin">As of its update of 21 October 2026, The Hacker News wrote that no source had reported a confirmed break-in of a specific server.</Claim>
         </ul>
       </dd>
       <dt>Offline as a precaution</dt>
       <Claim as="dd" id="offline-precaution">Several governments, and some companies, took services offline for a while before patching. Malwarebytes points out that downtime alone does not mean a site was broken into.</Claim>
     </dl>
-    <h3>The flaw is in PHP, not in the systems on top of it</h3>
-    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of WordPress, Drupal and Joomla, and says the flaws are in PHP itself, not in those applications.</Claim>
-    <Claim id="calif-demo">Calif says it confirmed code execution without a login on WordPress, Drupal, Joomla, MediaWiki, Roundcube, Magento, phpMyAdmin, Nextcloud, Laravel, Symfony and WHMCS.</Claim>
+    <h3>The flaw sits in PHP itself</h3>
+    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of PHP applications such as Drupal, Joomla and WordPress. It says the flaws are in PHP itself and that exploitation does not depend on a flaw in the application's code.</Claim>
+    <Claim id="calif-demo">Calif says it confirmed code execution without a login on PHP applications such as Drupal, Joomla, Laravel, Magento, MediaWiki, Nextcloud, phpMyAdmin, Roundcube, Symfony, WHMCS and WordPress.</Claim>
     <p>
       These were demonstrations by the people who found the flaws. They are not reports of sites that were
-      hit. Running on PHP does not show that a given site was attacked or is exposed today: that depends on
-      its PHP version and on whether its host has patched. The alert names no product.
+      hit. Running on PHP does not show that a given site was attacked or is exposed today. Exposure depends
+      on its PHP version and on whether its host has patched.
     </p>
     <p class="note">
       What we did not check about the alert: whether a given host has patched its PHP; which sites were
@@ -130,7 +136,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p>Code that runs on every visit is code that a visitor's request can reach. This is what runs, step by step.</p>
     <div class="paths">
       <article class="path" aria-labelledby="wp-h">
-        <h3 id="wp-h">A WordPress site</h3>
+        <h3 id="wp-h">A WordPress site, for a request that no page cache answers</h3>
         <ol class="steps-list">
           <li class="step"><span class="tag">Visitor</span><span>The browser asks the server for the page.</span></li>
           <li class="step is-code"><span class="tag">Runs code</span><span>PHP starts.</span></li>
@@ -144,7 +150,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <h3 id="cw-h">A Croftweaver site</h3>
         <ol class="steps-list">
           <li class="step"><span class="tag">Visitor</span><span>The browser asks for the page.</span></li>
-          <li class="step is-code"><span class="tag">Runs code</span><span>One short function of the site runs. On croftweaver.com it passes the request on unchanged.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>According to Cloudflare's documentation, one short function of the site runs on each request. On croftweaver.com it passes the request on unchanged.</span></li>
           <li class="step is-file"><span class="tag">No code</span><span>Cloudflare hands back a file that was built in advance.</span></li>
           <li class="step"><span class="tag">Visitor</span><span>The page arrives.</span></li>
         </ol>
@@ -152,13 +158,14 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     </div>
     <p class="legend">
       “Runs code” means code that belongs to the site and runs on a server for each visit. Cloudflare's own
-      network software runs in every case. Each step carries a label as well as a colour.
+      network software runs in every case. A WordPress site that answers from a page cache skips the PHP,
+      WordPress, plugin and database steps for that request. Each step carries a label as well as a colour.
     </p>
     <ul class="proof">
       <Claim as="li" id="site-one-function">croftweaver.com has one function, <code>functions/_middleware.ts</code>. On its own domain it passes each request on unchanged. On its <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim>
       <Claim as="li" id="template-two-functions">The Croftweaver template has two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
       <Claim as="li" id="functions-all-requests">Cloudflare's documentation says that once a Pages project has a function, every request calls it by default, unless a routes file leaves some out.</Claim>
-      <Claim as="li" id="function-runs-on-static">On the preview address of croftweaver.com a static file carries the header that the function adds, so the function does run for static files there. We did not check this on the live domain, where the function adds nothing.</Claim>
+      <Claim as="li" id="function-runs-on-static">On the preview address of croftweaver.com a static file carries <code>x-robots-tag: noindex, nofollow</code>, the header that the function adds, so the function does run for static files there. The live domain's response is unchanged by the function, so the function could not be observed in production.</Claim>
     </ul>
 
     <h3>Side by side</h3>
@@ -168,7 +175,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <tbody>
           <tr>
             <th scope="row">Code that runs for a visit</th>
-            <td>PHP, WordPress and its plugins.</td>
+            <td>PHP, WordPress and its plugins, unless a page cache answers the request.</td>
             <td>croftweaver.com: one function. The template: two.</td>
           </tr>
           <tr>
@@ -179,7 +186,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <tr>
             <th scope="row">A login on the site</th>
             <td>An administration area at <code>/wp-admin/</code>, with a login screen.</td>
-            <td>None on croftweaver.com. The pages change when someone edits the files and publishes.</td>
+            <td>No page named admin or login on croftweaver.com. The pages change when someone edits the files and publishes.</td>
           </tr>
           <tr>
             <th scope="row">What needs updates</th>
@@ -193,9 +200,10 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <ul class="proof">
       <Claim as="li" id="wp-needs-php-db">WordPress needs PHP and a database, MariaDB or MySQL. Its requirements page adds that older PHP versions have reached end of life and may expose a site to security vulnerabilities.</Claim>
       <Claim as="li" id="wp-admin-login">WordPress has an administration area, <code>/wp-admin/</code>, and a login screen.</Claim>
+      <Claim as="li" id="wp-page-cache">WordPress.org's caching handbook describes caching plugins that store posts and pages as static files and serve those files to users, which reduces the load on the server.</Claim>
       <Claim as="li" id="wp-updates">WordPress.org tells owners to keep WordPress and the plugins up to date, says older versions of WordPress are not maintained with security updates, and lists attacks by specially crafted requests that exploit old plugins and software.</Claim>
       <Claim as="li" id="site-content-files">The pages of croftweaver.com are files in its repository.</Claim>
-      <Claim as="li" id="site-no-login">croftweaver.com has no administration or login page in its repository: the command prints 0.</Claim>
+      <Claim as="li" id="site-no-login">The repository of croftweaver.com has no page or function file with admin or login in its name. The command counts those names and prints 0.</Claim>
     </ul>
   </section>
 
@@ -211,6 +219,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       <Claim as="li" id="cf-certs">Cloudflare issues, and renews, free HTTPS certificates for domains that are on Cloudflare.</Claim>
       <Claim as="li" id="cf-ddos">Cloudflare's protection against distributed denial-of-service attacks is on for every plan, the free plan included.</Claim>
       <Claim as="li" id="cf-network">Cloudflare Pages serves the built files from Cloudflare's global network.</Claim>
+      <li><Claim as="span" id="cf-pages-workers">Cloudflare's Pages documentation now says that Workers supports most Pages use cases, and recommends starting new projects with Workers.</Claim> croftweaver.com is served by Pages today.</li>
       <Claim as="li" id="cf-functions">The site's function runs on Cloudflare Workers, in isolates. Cloudflare says that each isolate has its own memory, and that a security patch for V8, the engine under them, reaches production in under 24 hours. Its own page adds that isolates, like virtual machines and containers, have bugs too.</Claim>
       <Claim as="li" id="cf-preview">Each pull request gets its own preview address. A preview is public by default and carries a noindex header; Cloudflare Access can restrict who may open it.</Claim>
       <Claim as="li" id="cf-rollback">Pages can roll a project back to an earlier production deployment.</Claim>
@@ -224,20 +233,30 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       <div class="card">
         <h3>Set up by the template</h3>
         <ul class="points">
-          <Claim as="li" id="template-headers">Security headers on every page, in <code>public/_headers</code>: a ban on sniffing content types, a referrer policy, a ban on framing, a permissions policy and a content security policy. We say “headers set”, not “protected”: a header asks the browser to behave, and does nothing against an attack on a server.</Claim>
-          <Claim as="li" id="site-headers">croftweaver.com keeps the same five headers in its own <code>public/_headers</code>.</Claim>
+          <Claim as="li" id="template-headers">Security headers on every page, in <code>public/_headers</code>: a ban on sniffing content types, a referrer policy, a ban on framing, a permissions policy and a content security policy.</Claim>
+          <li>We call these headers set, and we do not say they protect the site. A header asks the browser to behave. It does nothing against an attack on a server.</li>
+          <Claim as="li" id="site-headers">croftweaver.com keeps the same five headers in its own <code>public/_headers</code> (its content security policy also names its analytics host).</Claim>
           <li>A noindex header on preview copies, added by the site's function (see <a href="#runs">what runs</a>).</li>
-          <Claim as="li" id="launch-dependabot">A step in the launch checklist that switches on Dependabot security updates for the site's repository.</Claim>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Offered by the toolkit's launch steps</h3>
+        <ul class="points">
+          <Claim as="li" id="toolkit-cloudflare-setup">The toolkit's script <code>cloudflare-setup.mjs</code> sets Always Use HTTPS, a minimum TLS version of 1.2, Email Address Obfuscation off, Network Error Logging off, Bot Fight Mode off and AI crawler blocking off, through Cloudflare's API and one short-lived token. It asks the owner to confirm before it changes anything, and it does not set HSTS.</Claim>
+          <Claim as="li" id="launch-dependabot">A step in the toolkit's launch checklist switches on Dependabot security updates for the site's repository.</Claim>
         </ul>
       </div>
       <div class="card">
         <h3>Stays yours</h3>
         <ul class="points">
-          <Claim as="li" id="site-publish">The Cloudflare, GitHub and domain registrar accounts: two-step sign-in, who has access, and who may publish. On croftweaver.com, <code>npm run ship</code> publishes the <code>main</code> branch to the live site, and only the owner runs it.</Claim>
+          <li>The Cloudflare, GitHub and domain registrar accounts: two-step sign-in, who has access, and who may publish.</li>
+          <Claim as="li" id="site-publish">On croftweaver.com, <code>npm run ship</code> publishes the <code>main</code> branch to <code>production</code>, the live site.</Claim>
+          <Claim as="li" id="site-publish-owner">The rule in AGENTS.md is that only the owner publishes live.</Claim>
           <li>The domain's DNS records and its renewal date.</li>
-          <Claim as="li" id="site-hsts">HSTS, which tells browsers to use HTTPS only, is a Cloudflare dashboard switch and not in <code>public/_headers</code>. The owner turned it on for croftweaver.com on 12 October 2026, for six months, subdomains included.</Claim>
-          <Claim as="li" id="site-dashboard-switches">Other dashboard switches: Always Use HTTPS, a minimum TLS version of 1.2, the <code>CANONICAL_URL</code> setting that sends the <code>pages.dev</code> address to the live domain, a rule that removes the NEL headers, and Bot Fight Mode, which is off. The toolkit's Cloudflare checklist lists them. The values here are croftweaver.com's as the README records them, read through Cloudflare's API on 13 October 2026.</Claim>
-          <Claim as="li" id="no-dnssec-caa-securitytxt-in-template">DNSSEC, CAA records and a security.txt file. The template sets up none of them. <a href="#own">The result for croftweaver.com</a> shows where it stands.</Claim>
+          <Claim as="li" id="site-hsts">HSTS, which tells browsers to use HTTPS only, is a Cloudflare dashboard switch and is not in <code>public/_headers</code>. On croftweaver.com it has been on since 12 October 2026, for six months, subdomains included.</Claim>
+          <Claim as="li" id="site-dashboard-switches">Other dashboard values on croftweaver.com, as the README records them after reading Cloudflare's API on 13 October 2026: Always Use HTTPS on, a minimum TLS version of 1.2, a rule that removes the NEL headers, and Bot Fight Mode off. The README also records that <code>CANONICAL_URL</code> is set, so that the <code>pages.dev</code> address sends visitors to the live domain.</Claim>
+          <Claim as="li" id="no-dnssec-caa-securitytxt-in-template">The template sets up none of DNSSEC, CAA records and a security.txt file: it holds no security.txt file, and DNS records are the owner's.</Claim>
+          <li><a href="#own">The result for croftweaver.com</a> shows where it stands on those three.</li>
           <li>Optional add-ons, such as a form service, analytics or an editing tool. Each adds code or a login, and its own updates.</li>
         </ul>
       </div>
@@ -248,7 +267,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <h2>A checklist for any website</h2>
     <p>
       These seven points apply whatever software runs your site. They are listed by what costs most when it
-      goes wrong, and the first two matter far more than the rest. Where a Croftweaver site differs, the
+      goes wrong. In our judgment the first two matter far more than the rest. Where a Croftweaver site differs, the
       point says so.
     </p>
     <ol class="priorities">
@@ -265,7 +284,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <p>On a Croftweaver site that means the build tools. Switch on Dependabot security updates, then merge the fix once the tests pass. Your site keeps its own lockfile, so no Croftweaver release patches it for you. Once a month, run <code>npm audit</code> and read what it says. On a PHP site it means PHP itself, the system and its plugins. For croftweaver.com on 22 October 2026:</p>
         <ul class="proof">
           <Claim as="li" id="site-audit">The audit lists no known flaws.</Claim>
-          <Claim as="li" id="site-outdated">Seven of the eight direct packages were behind the latest version, two of them by a major version or more: TypeScript 6 to 7, and @types/node 24 to 26.</Claim>
+          <Claim as="li" id="site-outdated">Seven of the eight direct packages were behind the latest version. Five were a minor or patch step behind. Two were a major version or more behind: TypeScript 6 to 7, and @types/node 24 to 26. All of them are used to build and test the site.</Claim>
+          <Claim as="li" id="toolkit-dependabot-ignores">The toolkit's own Dependabot file for the Astro starter ignores major updates of @types/node, which follows the Node major, and of typescript, because @astrojs/check 0.9.x does not accept version 7 yet. The file says so in comments.</Claim>
           <Claim as="li" id="site-lockfile">The lockfile last changed on 21 October 2026, a version bump of the build tool vite.</Claim>
           <Claim as="li" id="site-dependabot">Dependabot alerts and security updates are on for the repository (the command needs access to its settings). There is no routine version-update file, so Dependabot opens pull requests for security fixes only.</Claim>
         </ul>
@@ -287,7 +307,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       </li>
       <li class="card">
         <h3>Keep private files out of the public folder</h3>
-        <p>Everything in the public folder is on the internet. On a Croftweaver site that folder is <code>public/</code>. Drafts, price lists and exports are public too, if you put them there.</p>
+        <p>Almost everything in the public folder is on the internet. On a Croftweaver site that folder is <code>public/</code>. Drafts, price lists and exports are public too, if you put them there.</p>
       </li>
     </ol>
 
@@ -295,7 +315,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p>The site keeps serving. Your pages are files, and Cloudflare renews the HTTPS certificate (see <a href="#cloudflare">what Cloudflare handles</a>). What changes is what piles up behind the scenes.</p>
     <ul class="steps">
       <li><strong>Known flaws collect in your build tools.</strong> Visitors never run those tools, so a visit does not reach them. You do run them, on your computer and in the build that publishes. A site that skips updates ends up with a longer list than croftweaver.com had on 22 October 2026, when the audit above listed none.</li>
-      <li><strong>The gap grows.</strong> The seven packages that were behind on 22 October 2026 cost effort, not safety, that day: the audit listed no flaw. The gap becomes a risk when a security fix is released only for a version newer than the one you run. A small step is one click. Years of steps arrive together, and the changes between them can alter how pages build.</li>
+      <li><strong>The gap grows.</strong> On 22 October 2026 seven of the eight direct packages of croftweaver.com were behind, and the toolkit holds two of them back on purpose (see the list above). Today the audit reports no known flaw, and the packages that were behind are used to build and test the site. The gap becomes a risk when a security fix is released only for a version newer than the one you run. A small step is one click. Years of steps arrive together, and the changes between them can alter how pages build.</li>
       <li><strong>The facts on your pages age.</strong> Prices, dates and figures stay as written, and a page with dated figures looks worse every month nobody checks it.</li>
     </ul>
     <p>
@@ -350,7 +370,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
               <th scope="row">{ownLabel[c.id]}</th>
               <td>
                 {c.result}
-                <span class="own-src" data-kind={c.kind} data-source={c.source}>Command: <code>{c.source}</code>, run <time datetime={c.read}>{longDate(c.read)}</time></span>
+                <span class="own-src" data-kind={c.kind} data-source={c.source}>{c.kind === 'command' ? 'Command: ' : 'Source: '}<code>{c.source}</code>, {c.kind === 'command' ? 'run' : 'read'} <time datetime={c.read}>{longDate(c.read)}</time></span>
               </td>
             </tr>
           ))}
@@ -364,8 +384,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <ul class="steps">
       <li><strong>Accounts matter for both kinds of site.</strong> A Croftweaver site depends on your domain registrar, GitHub and Cloudflare. A WordPress site depends on the same kinds of account, and on its own administration login. If an account is taken over, the whole site goes with it.</li>
       <li><strong>Cloudflare is a dependency.</strong> An outage on its side takes the site offline for as long as it lasts, and a flaw in its isolates would reach every site that runs on them.</li>
-      <Claim as="li" id="site-csp-inline"><strong>Headers are set, not perfect.</strong> The content security policy of croftweaver.com still allows inline scripts, so it limits less than a strict one would.</Claim>
-      <Claim as="li" id="npm-attacks"><strong>Installing packages runs other people's code on your computer.</strong> In September 2025 CISA warned of a worm in the npm registry that had compromised over 500 packages. Updating the day a release appears can pick up a bad one, so security-only updates are a sensible middle path.</Claim>
+      <li><strong>Headers help only so far.</strong> <Claim as="span" id="site-csp-inline">The content security policy of croftweaver.com still allows inline scripts.</Claim> A strict policy would limit more.</li>
+      <li><strong>Installing packages runs other people's code on your computer.</strong> <Claim as="span" id="npm-attacks">In September 2025 CISA warned of a worm in the npm registry that had compromised over 500 packages.</Claim> Updating the day a release appears can pick up a bad one, so we think security-only updates are a sensible middle path.</li>
       <li><strong>Anything you add brings its own risk.</strong> A form service, an analytics script and an editing tool are each outside this comparison.</li>
       <li><strong>A passed check shows what it checks.</strong> The headers are there; that does not make the site safe. The audit lists no known flaw; that does not say there is none.</li>
     </ul>
@@ -382,6 +402,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <li>Patch, internet-facing systems first. The fixed versions are in the panel above.</li>
         <li>If you cannot patch at once, or you run PHP 8.1 or earlier, take the system offline until you can.</li>
         <li>A web application firewall may give some protection meanwhile. It does not replace the patch.</li>
+        <li>Read the PHP project's security advisory for how to patch.</li>
         <li>Watch for PHP worker processes that start a shell or download tools.</li>
       </ul>
     </Claim>
@@ -391,10 +412,11 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
   <section class="wrap" id="how-checked">
     <h2>How this page was checked</h2>
     <p>
-      Each fact above carries its source and the day we read it. The news pages, the advisories and
-      Cloudflare's documentation were read in full on 22 October 2026, not through a summary. A test,
-      <code>tests/check_security_page.sh</code>, checks that every fact has a source and a date. It cannot
-      check that the source says it: a person did that.
+      Each dated fact above carries its source and the day we read it. An AI assistant read each source
+      directly on 22 October 2026, without a summary tool, and kept a log of what each one says. A test,
+      <code>tests/check_security_page.sh</code>, checks that every registered claim has a source and a date
+      and that the page shows what the data lists. It cannot check that a source says what the sentence
+      says. Editorial review covers that, and everything on this page that is not a registered claim.
     </p>
     <p>
       What we did not check here: whether the routes file of the live deployment leaves static files out of
@@ -432,8 +454,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
   .proof > :global(li), .reports > :global(li) { margin-bottom: 0.8rem; }
 
   /* The dated panel is set apart, so that it is plain which part of the page will age. */
-  .panel { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); max-width: none !important; }
-  .panel > * { max-width: 46rem; }
+  .panel { background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); }
   .panel > .facts { max-width: 60rem; }
   .facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.9rem 1.5rem; margin: 1.2rem 0; }
   /* Columns are named, so that two <dd> in a row (the two flaws) cannot push one into the label column. */
