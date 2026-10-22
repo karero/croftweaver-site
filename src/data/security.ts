@@ -173,7 +173,7 @@ export const CLAIMS: Claim[] = [
   // tests/check_security_page.sh fails while own-security-txt says "not yet" and public/.well-known/security.txt exists: the
   // three rows below are filled from live reads after the DNS steps and the first ship of the security.txt file.
   { id: 'own-headers', kind: 'command', source: 'curl -sI https://croftweaver.com/', read: READ_LIVE, status: 'pass', result: 'Pass. All five headers from the template are sent, and so is HSTS, which is a Cloudflare setting.' },
-  { id: 'own-dnssec', kind: 'command', source: 'dig +short DS croftweaver.com', read: READ_LIVE, status: 'not yet', result: 'Not yet. The answer is empty, so DNSSEC is not on for croftweaver.com.' },
+  { id: 'own-dnssec', kind: 'command', source: 'dig +short DS croftweaver.com', read: READ_LIVE, status: 'pass', result: 'Pass. The answer holds a key tag and algorithm 13, so DNSSEC is on for croftweaver.com.' },
   { id: 'own-caa', kind: 'command', source: 'dig +short CAA croftweaver.com', read: READ_LIVE, status: 'optional', result: 'Not set. CAA is optional, and a wrong record can stop a certificate from being issued.' },
   { id: 'own-security-txt', kind: 'command', source: 'curl -s https://croftweaver.com/.well-known/security.txt', read: READ_LIVE, status: 'not yet', result: 'Not yet. The live site answers 404 for this file.' },
 ];
