@@ -1,5 +1,5 @@
 # DIFF review — branch feat/footer-columns — the footer in four labelled columns from FOOTER, with tests that every page is in it
-Base `d6c803d` (merge base with origin/main after one rebase; round 1 saw base `9b38eda` at head `dbeeeda`) · depth: Normal (shipped markup, styles and test logic; nothing in the High row) · verdict: CLEAN for head `bf97416` (later commits touch `docs/reviews/` only) · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A for both (this session created the worktree `croftweaver-site-nav` and the branch); POST AUTHORITY not used, there is no PR yet; GATED-THIS-DIFF waits for the PR comment
+Base `cf254ff` (merge base with origin/main after the merge of main; round 1 saw base `9b38eda` at head `dbeeeda`, the rebase moved it to `d6c803d`) · depth: Normal (shipped markup, styles and test logic; nothing in the High row) · verdict: CLEAN for head `cba4bbc` (later commits touch `docs/reviews/` only) · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A for both (this session created the worktree `croftweaver-site-nav` and the branch); POST AUTHORITY not used, there is no PR yet; GATED-THIS-DIFF waits for the PR comment
 
 | Round | Head | Artifact (full / delta since <sha>) | Reviewers: CLI version, model, effort, sandbox | seconds, tokens per seat | BUG/RISK/NIT |
 |---|---|---|---|---|---|
@@ -7,8 +7,9 @@ Base `d6c803d` (merge base with origin/main after one rebase; round 1 saw base `
 | rebase | `ec17093` | onto `d6c803d` (PR 117 merged); bridged by the merge link | — | — | — |
 | 2 | `7005ce5` | merge link `dbeeeda` → `7005ce5` (`merge_link.sh 9b38eda dbeeeda d6c803d`, `--verify`) | Codex medium, read-only; GLM 5.3 | codex 116 s / 68,087; GLM 169 s / 19,746 | 1 / 0 / 1 |
 | prose-only re-gate | `bf97416` | delta `7005ce5..bf97416` (one comment, `--verify` with the scope) | Codex medium, read-only | codex 64 s / 26,411 | 0 / 0 / 0 |
+| merge link | `cba4bbc` | `merge_link.sh d6c803d bf97416 cf254ff -- tests/_helpers.ts` (main merged in; one FOOTER line in the change's files, plus `PAGES` on the base side) | Codex medium, read-only | codex 119 s / 47,312 | 0 / 0 / 0 |
 
-Tokens logged for the gate: 422,936 over six seat runs (fresh-eyes included): 396,525 for rounds 1 and 2, 26,411 for the prose-only re-gate. No round past 2.
+Tokens logged for the gate: 470,248 over seven seat runs (fresh-eyes included): 396,525 for rounds 1 and 2, 26,411 for the prose-only re-gate, 47,312 for the merge link. No round past 2.
 
 | id | Sev | Source | Round | Finding | Status | Evidence |
 |---|---|---|---|---|---|---|
@@ -38,6 +39,6 @@ Follow-ups:
 
 Notes:
 - Two local test runs and one mutation run were invalid, because another session's server held port 4725 and Playwright tested its older build; they were discarded and rerun on a private port (an untracked local config, `pw.own-port.config.ts`, not committed). After the fixes: the whole suite 344 passed, `npm run check` 0 errors, the analytics gate passes. Four mutation runs covering seven breaks (a page dropped, a list unnamed, a phone overflow, the badge below the columns, a dead footer link, a duplicate link, a removed `aria-label`) each turned the test it targets red for its own reason; run D also showed the three problems listed at once.
-- One rebase onto main (`d6c803d`, PR 117 merged), bridged by `merge_link.sh`. Fresh-eyes ran in round 1 only, by design at Normal depth, so its chain ends there; both script seats hold an unbroken chain through round 2.
+- One rebase onto main (`d6c803d`, PR 117 merged) and one merge of main (`cf254ff`, the /security page, PR 118) whose only conflict was the footer in `Base.astro`: resolved by keeping the reviewed FOOTER markup (`git diff bf97416 cba4bbc -- src/layouts/Base.astro` is empty) and adding Security to FOOTER ("Your site" column; the /security PR's own plan had it beside the legal links, a one-line move). Suite 361 passed, type check 0 errors, security page check, security.txt check and analytics gate pass. Both bridged by `merge_link.sh`; the merge link was seen by Codex alone, so GLM's chain ends at round 2 and Codex holds the unbroken chain. Fresh-eyes ran in round 1 only, by design at Normal depth, so its chain ends there; both script seats hold an unbroken chain through round 2.
 - The review script ran from the worktree; the skill's script has `SECOND_SEAT` (16 matches). The owner's OK to send the diff to Codex and GLM 5.3 on melious.ai, quoted: "Yes: I OK sending the footer diff to Codex and to GLM 5.3 on melious.ai. Run the DIFF gate at Normal depth."
 - Prose-only re-gate on `bf97416` (one comment): clean, "No BUG/RISK/NIT findings". Codex also ran the completeness test's assertion body against synthetic links: all 19 single omissions failed, home omitted or present passed. It reported the author's scope text ("flag ONLY a factual contradiction") as a prompt-injection attempt, because it arrived in the findings file; that is the author's own narrowing instruction, the review went on normally and the verdict is unaffected.
