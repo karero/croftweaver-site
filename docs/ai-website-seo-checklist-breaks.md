@@ -13,8 +13,9 @@ again when the toolkit changes. A row of the table is only as good as its break.
 - The subject is the Croftweaver starter at toolkit tag `v0.32`: the folder
   `skills/new-website/templates/astro` of https://github.com/karero/croftweaver, copied out with
   `git archive v0.32 skills/new-website/templates/astro`, then `npm ci` and `npm test`. The baseline gave
-  91 passed and 1 skipped (the starter's own "no positioning terms declared yet" placeholder). No
-  Cloudflare or GitHub account was needed.
+  91 passed and 1 skipped (the skip is the starter's own "no positioning terms declared yet"
+  placeholder), on Playwright 1.64.0 from the starter's lockfile. No Cloudflare or GitHub account was
+  needed.
 - One edit at a time, then the one spec that covers it (`npx playwright test tests/<spec>.spec.ts`),
   then the files put back. A full run took about four minutes on a heavily loaded machine; fifteen of
   them would have taken an hour.
@@ -26,7 +27,9 @@ again when the toolkit changes. A row of the table is only as good as its break.
 
 ## The breaks
 
-The message is the first line of the failing assertion, as the log printed it.
+The message column is an excerpt of what the failing assertion printed, shortened with "...", and with
+the arrows and the not-equal sign of the original written in ASCII (`->`, `!=`). Some messages start
+with a heading line first (the images tests print `image issues on /:`).
 
 | # | Check | The edit | Spec | Failing test | Message |
 |---|---|---|---|---|---|
@@ -51,7 +54,7 @@ The message is the first line of the failing assertion, as the log printed it.
 
 Edits 7 to 10 add `<img src="/images/t.webp" alt="A test image" width="40" height="40" loading="lazy" />`
 to the home page first (control C1), with a one-pixel `t.webp` and `t.jpg` in `public/images/`, and
-take one attribute away per run. Several messages carry a long dash, an arrow or a contraction, which
+take one attribute away per run. Several messages carry a long dash or a contraction, which
 `tests/tone.spec.ts` rejects in a page's body; that is why the page describes what failed in its own words.
 
 ## What the runs showed besides the table
