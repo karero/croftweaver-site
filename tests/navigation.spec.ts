@@ -394,9 +394,10 @@ test('header — on a wide screen every link shows, the established-sites page a
 });
 
 // Site-specific (not in the shipped suite): the checklist table on /ai-website-seo-checklist. On a wide
-// screen it is a four-column table. On a phone four columns of prose would share about 335px, so below
+// screen it is a four-column table. On a phone four columns of prose would share 320px or less, so below
 // 40rem each row stacks, the check as a title and each cell under its own label, and the page must not
-// scroll sideways. The labels come from data-label, so the test reads them as the visitor sees them.
+// scroll sideways. The labels come from data-label; the test reads them as the visitor sees them and
+// holds them to the header cells' own text, so a renamed column cannot leave a stale label behind.
 for (const width of [360, 320]) {
   test(`checklist table — at ${width} px each row stacks, each cell has its label, and nothing scrolls sideways`, async ({ page }) => {
     await page.setViewportSize({ width, height: 740 });
@@ -410,14 +411,17 @@ for (const width of [360, 320]) {
       expect(w, `a cell is squeezed to ${Math.round(w)} px in a ${Math.round(wrap)} px table`).toBeGreaterThan(wrap * 0.8);
     }
     const labels = await cells.evaluateAll((tds) => tds.map((td) => getComputedStyle(td, '::before').content));
-    expect(labels, 'a cell shows no label').toEqual(['"Suite"', '"When we broke it"', '"A pass does not prove"']);
+    const headers = (await page.locator('#checklist thead th').allTextContents()).map((h) => h.trim());
+    expect(headers.length, 'the table has four columns').toBe(4);
+    expect(labels, 'a cell shows no label, or one that is not its column header').toEqual(headers.slice(1).map((h) => `"${h}"`));
   });
 }
 
 test('checklist table — on a wide screen it is still a table: the header row shows and the cells sit side by side', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/ai-website-seo-checklist');
-  await expect(page.locator('#checklist thead'), 'the header row is hidden on a wide screen').toBeVisible();
+  const head = await page.locator('#checklist thead').boundingBox();
+  expect(head?.height ?? 0, 'the header row is hidden or clipped on a wide screen').toBeGreaterThan(20);
   const tops = await page.locator('#checklist tbody tr').first().locator('th, td').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
   expect(new Set(tops).size, `the cells of a row are stacked on a wide screen (tops ${tops.join(', ')})`).toBe(1);
 });
