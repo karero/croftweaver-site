@@ -70,11 +70,16 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # Reads one file (public/.well-known/security.txt) and runs `node -e` for the date maths. Not for
-      # Dependabot's own pull requests: an Expires date that has run out must not hold up a security
-      # update (the script says why). It still runs on the push that merges them. The condition
-      # reads the pull request's author, as GitHub's Dependabot documentation does, and names the
-      # event first so that it never depends on what a missing pull request evaluates to.
+      # Reads public/.well-known/security.txt, src/config.ts and tests/_helpers.ts, and runs `node` for the
+      # date maths. Not for Dependabot's own pull requests: an Expires date that has run out must not hold up
+      # a security update. It still runs on the push that merges them, and the pre-push hook runs it too.
+      # So an expired or 7-days-away file also holds up `npm run ship`. That delay is accepted: the message
+      # names the fix (edit Expires), and `git push --no-verify` skips the hook for one push.
+      # The condition follows GitHub's documentation of Dependabot with Actions, whose examples test
+      # github.event.pull_request.user.login (https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions,
+      # read 2026-10-22), and it names the event first, so that it never depends on what a missing pull
+      # request evaluates to. Not run on GitHub: Actions cannot run locally, so only the YAML parse and the
+      # expression have been read.
       - name: security.txt (public/.well-known/security.txt)
         if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
         run: bash tests/check_security_txt.sh

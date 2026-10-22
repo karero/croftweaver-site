@@ -129,6 +129,7 @@ requests.
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
 | 11 | The rest of the toolkit template, from commit `8ea17a7` to release 0.31. The spec files, `tests/_helpers.ts` and `tests/check_ship_push.sh` are done and `tests/TESTS-VERSION` now names release 0.31, so the toolkit's `scripts/whats-new.sh` no longer lists what is left. Left: changes to `AGENTS.md`, `PUBLISHING.md`, `SETUP.md`, `CONTENT_GUIDE.md`, `.github/workflows/ci.yml`, `.nvmrc`, `public/_headers`, `scripts/hooks/pre-push`, `.claude/settings.json` and `tests/check_analytics_gate.sh` (this site's own copy); and four files the site does not have: `.gitattributes`, `scripts/verify.mjs`, `scripts/wire-hooks.mjs`, `.claude/hooks/git-stand.mjs`. To see them, in a clone of the toolkit: `git diff 8ea17a7 v0.31 -- skills/new-website/templates` | PRs | open; spec files done 2026-10-13 | karero/croftweaver-site#67 |
+| 12 | `security.txt`: the file at `public/.well-known/security.txt` expires on 2027-04-22 (`Expires`). Renew it, to a date about six months ahead, by 2027-03-08, 45 days before. `tests/check_security_txt.sh` warns from 2027-03-23 and fails from 2027-04-15, but only when someone pushes, so the date is kept here | owner | open: renew by 2027-03-08 | `public/.well-known/security.txt`, `tests/check_security_txt.sh` |
 
 Launch requirements that no test enforces:
 
