@@ -149,7 +149,7 @@ export const CLAIMS: Claim[] = [
   // ---- What the template and the toolkit set up, and what the owner switches on ----
   { id: 'template-headers', kind: 'url', source: `${TEMPLATE_AT}/public/_headers`, label: 'the template at 3b8a6c5f', read: READ_REPO },
   { id: 'site-headers', kind: 'file', source: 'public/_headers', lines: 'L7-L12', read: READ_REPO },
-  { id: 'site-analytics', kind: 'command', source: "curl -s https://croftweaver.com/ | grep -o -E '<script[^>]*src=\"[^\"]*\"'; curl -s https://croftweaver.com/ | grep -c -i -E 'cloudflareinsights|beacon.min.js'", read: READ_LIVE },
+  { id: 'site-analytics', kind: 'command', source: "curl -s https://croftweaver.com/ | grep -o -E '<script[^>]*src=\"[^\"]*\"'; curl -s https://croftweaver.com/ | grep -c -i -E 'cloudflareinsights|beacon.min.js'; curl -s https://analytics.m-squad.com/js/pa--pMhz1-dKjwaTf3D6ArFS.js | grep -o 'window.plausible.init' | sort -u", read: READ_LIVE },
   { id: 'toolkit-cloudflare-setup', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/scripts/cloudflare-setup.mjs#L45-L76`, label: 'the toolkit script cloudflare-setup.mjs at 3b8a6c5f', read: READ_REPO },
   { id: 'launch-dependabot', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/SKILL.md#L758`, label: 'the toolkit launch checklist at 3b8a6c5f', read: READ_REPO },
   { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L139-L145', read: READ_REPO },

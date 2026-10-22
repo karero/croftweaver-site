@@ -235,8 +235,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <ul class="points">
           <Claim as="li" id="template-headers">Security headers on every page, in <code>public/_headers</code>: a ban on sniffing content types, a referrer policy, a ban on framing, a permissions policy and a content security policy.</Claim>
           <li>We call these headers set, and we do not say they protect the site. A header asks the browser to behave. It does nothing against an attack on a server.</li>
-          <Claim as="li" id="site-headers">croftweaver.com keeps the same five headers in its own <code>public/_headers</code> (its content security policy also names the host of its analytics, Plausible Analytics).</Claim>
-          <Claim as="li" id="site-analytics">croftweaver.com uses Plausible Analytics, not Cloudflare's analytics. Its home page loads one script from outside the site, from analytics.m-squad.com, and no Cloudflare analytics beacon.</Claim>
+          <Claim as="li" id="site-headers">croftweaver.com keeps the same five headers in its own <code>public/_headers</code> (its content security policy also names its analytics host).</Claim>
+          <Claim as="li" id="site-analytics">croftweaver.com uses Plausible Analytics, not Cloudflare's analytics. Its home page loads one script from outside the site, the Plausible script from analytics.m-squad.com, and no Cloudflare analytics beacon.</Claim>
         </ul>
       </div>
       <div class="card">
