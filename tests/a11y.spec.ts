@@ -757,7 +757,7 @@ for (const width of [360, 320] as const) {
     await page.goto('/what-it-runs-on');
     // The copy has no word long enough to push the page sideways, so put one in a box. The page stays
     // inside the screen while either overflow-wrap: anywhere (on the box) or minmax(0, 1fr) (on the
-    // column) is in place; this fails when both are gone, which is what a long future word would meet.
+    // column) is in place; this fails only when both are gone.
     await page.evaluate(() => { document.querySelector('[data-place] p')!.textContent += ' ' + 'x'.repeat(60); });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, `/what-it-runs-on scrolls sideways at ${width} px with a 60-character word in a box`).toBeLessThanOrEqual(0);
