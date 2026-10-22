@@ -9,6 +9,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+# The token these jobs get can read the repository and nothing else. They check out the code and run
+# the tests; nothing here writes to GitHub, so nothing more is granted, whatever the repository's own
+# default for the workflow token is.
+permissions:
+  contents: read
+
 # One run per branch at a time: a newer push to the same branch cancels the run it
 # supersedes. Saves Actions minutes (a private repo has 2 000 free per month; each run
 # here is ~5 min) and means the green tick always belongs to the latest commit.
