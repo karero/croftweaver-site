@@ -155,31 +155,31 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
     </p>
     <div class="card">
       <h3>A site from another tool</h3>
-      <p>You ask for each part, and you check.</p>
+      <p>You ask, and you check.</p>
       <ul class="steps">
         <li>
           Say what the site needs before the assistant starts: the domain, the canonical address, the
-          sitemap and robots.txt, and which site generator to use. The second report says John Mueller of
-          Google got better results this way.
+          sitemap and robots.txt, and which site generator to use. The second report says John Mueller, a
+          Google Search Advocate, got better results this way.
         </li>
         <li>Ask for a title and a description on every page, within the limits in the table above, and a share image for each page.</li>
-        <li>Ask for a test for each of these that fails when it is wrong, and run the tests every time.</li>
+        <li>Ask for a test for each item above that fails when it is wrong, and run the tests every time.</li>
       </ul>
       <p class="say">
         <span>Say to the assistant:</span>
         <q>Set up the canonical address, the sitemap and robots.txt for example.com from the start.
-        Use Astro as the site generator. Write a title and a description for every page within the
-        length limits, and make a share image for each page. Add a test for each of them that fails
+        Use Astro as the site generator. Write a title of at most 60 characters and a description
+        of 120 to 160 characters for every page, and make a share image for each page. Add a test for each of them that fails
         when it is wrong.</q>
       </p>
     </div>
     <div class="card">
       <h3>A site from the Croftweaver starter</h3>
-      <p>The parts come with the site, and so do the tests.</p>
+      <p>The setup comes with the site, and so do the tests.</p>
       <ul class="steps">
         <li>The canonical address, the sitemap, robots.txt and structured data are part of the starter.</li>
-        <li>Your assistant writes each page’s title and description to the length limits, and one command makes a share image for every page.</li>
-        <li>The tests for all of it come with the site, so a wrong canonical address or an overlong title turns the suite red.</li>
+        <li>Your assistant writes each page’s title and description to the length limits and adds a share image for each page; <code>npm run og</code> makes the images.</li>
+        <li>Tests come with the site. A canonical address that is not the page’s own, a sitemap that no longer matches the pages, a robots.txt that closes the site to search crawlers, an overlong title or description, or a page with no share image of its own turns the suite red.</li>
       </ul>
     </div>
     <p>
