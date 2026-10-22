@@ -110,10 +110,10 @@ p { margin: 0 0 14px; }
 .four .card p { font-size: 19px; }
 .card h3 { color: var(--heading); font-size: 24px; margin-bottom: 12px; }
 .four .card h3 { font-size: 22px; }
-.groups .card { padding: 22px 24px; }
+.groups .card { padding: 16px 24px; }
 .groups h3 { font-size: 20px; }
 .groups .list { padding-left: 20px; }
-.groups .list li { font-size: 19px; margin-bottom: 6px; }
+.groups .list li { line-height: 1.25; }
 .card.good { border-color: var(--brand); border-width: 2px; }
 .card .list { padding-left: 22px; }
 .card .list li { font-size: 20px; margin-bottom: 8px; }

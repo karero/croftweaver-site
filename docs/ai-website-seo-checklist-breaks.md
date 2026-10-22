@@ -21,8 +21,9 @@ again when the toolkit changes. A row of the table is only as good as its break.
   them would have taken an hour.
 - This site's own copies of the specs are not the starter's. Compared with the `v0.32` template,
   `tests/seo.spec.ts` differs by 224 lines, `tests/images.spec.ts` by 62 and `tests/navigation.spec.ts`
-  by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `0597a28`,
-  and at that commit the template's four specs are byte-identical to the `v0.32` ones. So the table
+  by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `a0fbfb18`,
+  which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
+  specs were byte-identical to the `v0.32` ones). So the table
   describes the starter, and these breaks were not run against this site's copies.
 
 ## The breaks

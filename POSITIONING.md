@@ -84,9 +84,9 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 - The search and AI-readability work is done by default at build time: metadata within
   limits, schema.org JSON-LD, llms.txt, share cards, clean internal links.
-- Every generated site ships with its own test gate: 13 suites today (accessibility in
+- Every generated site ships with its own test gate: 14 suites today (accessibility in
   light and dark, SEO consistency, navigation, anchors, orphans, images, links, email,
-  llms.txt coverage, tone, positioning, placeholders, preview handling). The push hook runs it before
+  llms.txt coverage, tone, positioning, placeholders, privacy host, preview handling). The push hook runs it before
   every push, and CI runs it on pull requests and on `main` and `production`.
 - After launch, real data drives the edits: Search Console insights, a ranking history
   and a weekly check of whether four AI assistants name the site (toolkit skill
@@ -189,6 +189,8 @@ Further rules for copy live in `CONTENT_GUIDE.md` (honesty rules).
 
 ## Reference lines (approved, for headings, the README and the deck)
 
+Counts in these lines are typed by hand: when the number of test suites changes, update them with the suite count (`SUITE_COUNT`).
+
 The wording rule applies to all of them.
 
 - "Search finds you. AI names you." Only directly above dated proof; never alone on a
@@ -203,7 +205,7 @@ The wording rule applies to all of them.
   in its map.
 - "The next edit, tested." (2026-10-14) The after-launch line: the edit is the point, the
   watching is the trigger.
-- "Thirteen test suites check every change." · "Four AI assistants check who names you." ·
+- "Fourteen test suites check every change." · "Four AI assistants check who names you." ·
   "Open-source skills turn briefs into tested sites."
 
 Held back: "No pass, no publish." The default publish path runs the build and the tests
