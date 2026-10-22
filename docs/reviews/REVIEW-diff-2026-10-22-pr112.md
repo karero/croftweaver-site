@@ -25,16 +25,15 @@ primary checkout was 52 commits behind.
 | D7 | BUG | fresh-eyes | 1 | "no message about the canonical" while the log names the locator | fixed; verified |
 | D8 | RISK | Codex | 1, 2 | the observed failures had no retained run record | fixed: `docs/ai-website-seo-checklist-breaks.md` holds setup, the eighteen lines, outcomes and the rerun steps; Node and Playwright versions stated; the historical observations stay the author's, not reproduced by a reviewer |
 | D9 | RISK | GLM | 1 | positioning body clause may not match a heading or capitals | refuted: `positioning.spec.ts` lower-cases and reads `document.body.innerText`; the test for this route passed |
-| D10 | RISK | fresh-eyes, Codex | 1, 2 | the second guard keys on `TESTS-VERSION`, blind to spec edits and releases | comment fixed; a `RELEASE.version` guard declined (it would fail every release update; the break rerun at merge is a plan step): **waiver proposed, owner has not signed off** |
+| D10 | RISK | fresh-eyes, Codex | 1, 2 | the second guard keys on `TESTS-VERSION`, blind to spec edits and releases | comment fixed; a `RELEASE.version` guard declined (it would fail every release update; the break rerun at merge is a plan step): **waived by the owner, 2026-10-22** |
 | D11 to D17, D19, D20, D22, D23 | NIT | fresh-eyes, GLM | 1, 2 | heading and robots limits, "catches each", the report's own word "ineffective", "advice", lead wording, the unsupported link between the term vibe coded and Lovable or Bolt, `/checks` wording, a focusable table region, Node and `.nvmrc`, "among others" | fixed; verified in round 2 |
 | D18 | NIT | fresh-eyes | 1 | `datetime="2026-05-07"` not on the visible page | refuted: the article's own `article:published_time` meta is 2026-05-07 |
-| D21 | NIT | fresh-eyes, Codex | 1, 2 | "eight" typed in the share card, llms.txt and CONTENT_GUIDE.md | **waiver proposed, owner has not signed off** (other lines in llms.txt type counts too) |
+| D21 | NIT | fresh-eyes, Codex | 1, 2 | "eight" typed in the share card, llms.txt and CONTENT_GUIDE.md | **waived by the owner, 2026-10-22** (other lines in llms.txt type counts too) |
 | D24 | NIT | GLM | 1 | description close to the 160 limit | refuted: 148 characters, inside the site's 140 to 160; the SEO suite fails on any overlong edit |
 | W1, W2 | BUG | Codex | wording pass | the breaks file called every cell a message excerpt, and said the tone test rejects arrows | fixed (arrows are not rejected; the column is described row by row); confirmation 2 clean |
 | W3 | NIT | GLM | wording pass | "the starter asks for 24" without a unit | fixed ("Node 24") |
 
-Waivers and deferrals: none signed. Proposed to the owner, not granted: **D10** (no `RELEASE.version`
-guard; the guard cannot see spec edits) and **D21** (counts typed in three places). No BUG was deferred.
+Waivers (the owner's sign-off, quoted, 2026-10-22, in chat): "Waive D10 (no RELEASE.version guard) and D21 (eight typed in the card, llms.txt and CONTENT_GUIDE). Record the sign-off in the trail and the PR comment." **D10**: no `RELEASE.version` guard. Reason: such a guard would fail every release update, although the page names the toolkit version the breaks ran on, and the rerun of the breaks at merge is a step in the PR's "Before merge" list; the guard cannot see spec edits, and the data comment says so. **D21**: the number "eight" stays typed in the share card, `llms.txt` and `CONTENT_GUIDE.md`. Reason: other lines in `llms.txt` type counts too, and the page and its meta description render the count from the data. No BUG was deferred.
 
 Follow-ups, outside this change: this site's own copies of `seo.spec.ts`, `images.spec.ts` and
 `navigation.spec.ts` differ from the toolkit template (by 224, 62 and 445 lines) while
@@ -51,4 +50,4 @@ paraphrases. (2) The claims sweep before round 1 found two sentences, fixed in `
 full suite passed 337 tests on the final tree on a private port after two earlier runs collided with
 another process on the port every worktree of this site shares (4725); those runs count as neither
 pass nor fail. (4) The stamp relies on Codex's unbroken chain (rounds 1 and 2, the wording pass and
-both confirmations); GLM's chain ends at `3a16c9e`.
+both confirmations); GLM's chain ends at `3a16c9e`. (5) This trail was changed after the verdict only to record the owner's sign-off of the two waivers; every commit after the reviewed head `850c215` changes `docs/reviews/` alone.
