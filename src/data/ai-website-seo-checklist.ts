@@ -1,6 +1,6 @@
 // The checklist on /ai-website-seo-checklist: eight things to check on a site an AI assistant built, the
 // suite that covers each, what happened when we broke it, and what a pass does not prove.
-// Plan and proof: the private hub's vibe-coded-seo/PAGE-PLAN.md and RED-RUNS-2026-10-22.md.
+// The breaks, the commands and what failed: docs/ai-website-seo-checklist-breaks.md.
 //
 // Every "what happened" cell is something we saw, on 22 October 2026, in a copy of the starter at
 // toolkit version 0.32: we made one edit, ran the suite that covers it, and wrote down what failed.
@@ -22,6 +22,7 @@ import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 export const RED_RUNS = {
   toolkit: '0.32',
   node: '26',
+  nodeStarterAsks: '24',
   iso: '2026-10-22',
   label: '22 October 2026',
   // The toolkit commit named in tests/TESTS-VERSION. Its template specs for the four suites below
@@ -73,7 +74,7 @@ export const CHECKS: CheckRow[] = [
     broke:
       'A link to a page that does not exist turned the navigation suite red, and the message reported the 404. A link to a section that does not exist turned the anchors suite red.',
     limit:
-      'Links to pages written relative to the current page are not followed, and links to other sites are not checked. Section links into other sites and into files such as PDFs are skipped, and a section link can exist and still point at the wrong section.',
+      'The navigation suite does not follow links to pages written relative to the current page, and does not check links to other sites. The anchors suite does follow relative section links, but skips section links into other sites and into files such as PDFs. A section link can exist and still point at the wrong section.',
   },
   {
     check: 'The sitemap matches the pages',
