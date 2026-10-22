@@ -189,6 +189,8 @@ Further rules for copy live in `CONTENT_GUIDE.md` (honesty rules).
 
 ## Reference lines (approved, for headings, the README and the deck)
 
+Counts in these lines are typed by hand: when the number of test suites changes, update them with the suite count (`SUITE_COUNT`).
+
 The wording rule applies to all of them.
 
 - "Search finds you. AI names you." Only directly above dated proof; never alone on a

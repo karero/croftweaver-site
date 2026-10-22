@@ -18,7 +18,7 @@ import { ANALYTICS } from '../src/config';
 // slot, so only a plain mark is skipped: text alone in the page's own document (not in
 // a shadow root, which placeholders.spec.ts does not read), with no element inside it
 // and no element around it that placeholders.spec.ts leaves unread (PLACEHOLDER_EXEMPT,
-// script, style, noscript), and in no PLACEHOLDER_ALLOWLIST entry, not even one that
+// style, noscript, and a script other than application/ld+json, which it does read), and in no PLACEHOLDER_ALLOWLIST entry, not even one that
 // runs on from text before the mark. Any other mark is compared as a host. The text is
 // read as placeholders.spec.ts reads it, from the text nodes (textContent).
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
