@@ -91,8 +91,8 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       Claude Code, routine build commands, <code>git push</code> among them, run without asking.
       That saves clicks and is not a safety fence. The <code>AGENTS.md</code> in a site tells the assistant
       never to run <code>npm run ship</code> unasked, but that is a written rule, not something Claude Code
-      enforces. <a href={RUNS}>What the skills run</a> lists the commands; it was read from Claude Code's
-      documentation and not tried in a live session.
+      enforces. <a href={RUNS}>What the skills run</a> lists the commands. The list of what runs without
+      asking was read from Claude Code's documentation and not tried in a live session.
     </p>
   </section>
 
@@ -159,14 +159,15 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       <a href="https://developers.cloudflare.com/pages/functions/routing/">all requests invoke it by default</a>.
       So the free plan's limit of 100,000 requests a day
       (<a href="https://developers.cloudflare.com/workers/platform/limits/">Cloudflare's Workers limits, read {READ}</a>),
-      which the toolkit's guide says every Function and Worker in your account shares, counts the whole
+      which <a href={DEPLOY}>the toolkit's guide</a> says every Function and Worker in your account shares, counts the whole
       site, not only pages that need a server. When the limit is used up, a project setting decides: serve
       the pages without the function, or show an error page. The toolkit tells you to set it to serve the
       pages, so the pages keep being served and the function's jobs pause until the limit resets.
     </p>
     <h3>Your domain</h3>
     <p>
-      Your domain's DNS can move to Cloudflare; the full setup is available on every plan. You change the name servers at the
+      Your domain's DNS can move to Cloudflare; the full setup is available on every plan
+      (<a href="https://developers.cloudflare.com/dns/zone-setups/full-setup/">Cloudflare's DNS setup, read {READ}</a>). You change the name servers at the
       company where you bought the domain, and the domain stays registered there: Cloudflare's
       <a href="https://developers.cloudflare.com/dns/faq/">DNS FAQ</a> says you do not need to move away
       from your registrar (read {READ}). The move has two traps above all: mail records, and DNSSEC, which
@@ -178,9 +179,8 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       whether the forwarding keeps working once the DNS is elsewhere. With some companies it stops,
       because it depends on their own DNS.
       <a href="https://developers.cloudflare.com/email-service/get-started/route-emails/">Cloudflare Email
-      Routing</a> is one replacement: it forwards incoming mail to a mailbox you already have, it is
-      available on every plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own
-      (read {READ}).
+      Routing</a> (read {READ}) is one replacement: it forwards incoming mail to a mailbox you already have, it is
+      available on every plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own.
     </p>
     <p>
       Cloudflare now recommends Workers for new projects. The toolkit deploys to Pages, which
@@ -237,9 +237,9 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       Not free: your domain, at the price of whoever registers it; your AI assistant's own plan; and
       Plausible, if you switch it on. Plausible counts visits without cookies
       (<a href="https://plausible.io/data-policy">its data policy</a>). Its
-      <a href="https://plausible.io/#pricing">pricing page</a> showed $9 a month for up to 10,000 page views
-      on {READ}. It did not show whether that price is for monthly or yearly billing, and the
-      <a href="/start#analytics">quickstart</a> gives it as 9 euros or US dollars, depending on where you are.
+      <a href="https://plausible.io/#pricing">pricing page</a> showed $9 for up to 10,000 page views
+      on {READ} and did not say whether that is billed monthly or yearly. The
+      <a href="/start#analytics">quickstart</a> gives the Starter plan as 9 euros or US dollars a month, depending on where you are.
       You can also host Plausible yourself
       (<a href="https://github.com/plausible/community-edition">the community edition</a>). Plausible stays
       off until you switch it on.
@@ -275,9 +275,10 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
 </Base>
 
 <style>
-  /* The three places: side by side from 48rem, one under the other below it. overflow-wrap: anywhere breaks
-     a long word inside its box, and minmax(0, 1fr) keeps the column from growing to fit one
-     (tests/a11y.spec.ts puts a long word in a box at 360 and 320 px). */
+  /* The three places: side by side from 48rem, one under the other below it. A long word stays inside the
+     screen if the box can shrink: overflow-wrap: anywhere on the box lets it, and so does minmax(0, 1fr) on
+     the column together with the site's overflow-wrap: break-word. Either is enough and the page has both
+     (measured at 360 and 320 px). tests/a11y.spec.ts puts a long word in a box and fails when neither is left. */
   .places { list-style: none; margin: 1rem 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
   .place { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
   .place h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
