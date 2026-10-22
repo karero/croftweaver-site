@@ -102,7 +102,7 @@ export const CHECK_COUNT_WORD = NUMBER_WORDS[CHECKS.length] ?? String(CHECKS.len
 
 // What the starter's tests do not look at (read in the test sources at v0.32, 22 October 2026).
 export const NOT_COVERED = [
-  'That a page’s text is in the HTML as served. A Croftweaver site is built as plain pages, so it is by default. The only checks that read the served HTML are the section ids and the email link.',
+  'That a page’s text is in the HTML as served. A Croftweaver site is built as plain pages, so it is by default. A few suites fetch the served HTML directly, for section ids, the email link and the analytics script; none checks that a page’s text is there.',
   'Speed on each change. Page speed is measured by hand, with PageSpeed Insights.',
   'Hidden headings.',
   'Whether Google has found, indexed or ranked a page.',
