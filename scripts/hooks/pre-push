@@ -65,6 +65,12 @@ fi
 echo "▶ pre-push gate: building…"
 npm run build
 
+# Every fact on /security is a claim with a source and a date. Reads the build made just above.
+if [ -f tests/check_security_page.sh ]; then
+  echo "▶ pre-push gate: security page claims…"
+  bash tests/check_security_page.sh
+fi
+
 if [ -f tests/check_seo.py ]; then
   echo "▶ pre-push gate: SEO checks…"
   python3 tests/check_seo.py

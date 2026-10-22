@@ -49,6 +49,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/what-it-runs-on': { term: 'what it runs on', body: ['tech stack'] },
   '/partner-assets': { term: 'partner assets' },
   '/about': { term: 'maintainer' },
+  '/security': { term: 'static website' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
