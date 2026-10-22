@@ -11,7 +11,8 @@
 #     "https://[" and "https://" fail;
 #   - Expires (2.5.5): exactly one, an RFC 3339 date-time whose parts are checked one by one (month
 #     1 to 12, day up to the length of that month, leap years included, hour 0 to 23, minute 0 to 59,
-#     second 0 to 60, where 60 is a leap second and counts as 59), and still in the future. The date
+#     second 0 to 59, or 60 for a leap second, valid only at 23:59:60 UTC on 30 June or 31 December and counted as 59: RFC 3339
+#     section 5.7), and still in the future. The date
 #     maths uses Date.UTC on those parts and not Date.parse, so no Node version can read a date
 #     differently (CI uses Node 24, this was written on Node 26; Node 24 was not available to run it);
 #   - Canonical (2.5.2): one of the lines is exactly SITE.url from src/config.ts plus
@@ -22,10 +23,16 @@
 #   - Encryption (2.5.4): an https URL, a dns: URI or an openpgp4fpr: URI (all three are in the RFC's
 #     examples); Hiring (2.5.6) and Acknowledgments (2.5.1): https URLs; Preferred-Languages (2.5.8):
 #     language tags, at most once.
-# On purpose, a file with a field the RFC does not define is rejected, and so is a clear-signed file
-# (the RFC recommends a signature, section 2.3; this site does not sign): a typo such as "Contct:"
-# must not pass. To allow another field or signing, add the field name to KNOWN in READER below
-# and a rule for its value next to the others, and add self-test files for it.
+# On purpose, a file with a field the RFC does not define is rejected: a typo such as "Contct:" must not
+# pass. To allow another field, add its name to KNOWN in READER below and a rule for its value next to
+# the others, and add self-test files for it.
+# A clear-signed file is rejected too (the RFC recommends a signature, section 2.3; this site does not
+# sign), and adding fields does not admit it. Its first line is the armor header
+# "-----BEGIN PGP SIGNED MESSAGE-----", which is not a "Field: value" line, and it carries a Hash: line, a
+# blank line, dash-escaped lines and a "-----BEGIN PGP SIGNATURE-----" block. To accept one, the reader
+# would first have to cut the armor header, the Hash line and the signature block, undo the dash-escaping
+# (RFC 4880 section 7.1, which the ABNF of RFC 9116 section 4 imports) and read the text in between. It
+# would also have to decide whether to verify the signature, which this script does not.
 #
 # Time to Expires, as elapsed time and not as counted days: 30 days or less is a WARNING, 7 days or
 # less is a FAILURE. Why not fail at 30: a red check blocks the pre-push hook, `npm run ship` and CI.
@@ -36,7 +43,7 @@
 # public/.well-known/security.txt), and `git push --no-verify` skips the hook for one push. A lapse is
 # found only when someone pushes: the site README's status table has the date to renew by.
 #
-# Before it looks at the real file it runs its own reader on about 70 hand-made files, covering
+# Before it looks at the real file it runs its own reader on about 80 hand-made files, covering
 # the field rules above, each date part, both Expires limits one second either side, and its own
 # matching helper. Needs bash and node. No network. It reads the file, src/config.ts and
 # tests/_helpers.ts, and writes the hand-made files to a temporary folder.
@@ -52,18 +59,24 @@ FILE=public/.well-known/security.txt
 WARN_DAYS=30
 FAIL_DAYS=7
 
-# This site's address from src/config.ts (the first url: inside SITE), as tests/check_analytics_gate.sh reads its pins.
-SITE_URL=$(awk '/^export const SITE = \{/{f=1} f && /^[[:space:]]*url:/{print; exit}' src/config.ts \
+# This site's address from src/config.ts: the first url: line inside the SITE block, which ends at the first line
+# that starts with a closing brace. tests/check_analytics_gate.sh reads its pins from the same file.
+SITE_URL=$(awk '/^export const SITE = \{/{f=1; next} f && /^\}/{exit} f && /^[[:space:]]*url:/{print; exit}' src/config.ts \
   | sed -nE "s/^[[:space:]]*url:[[:space:]]*['\"]([^'\"]*)['\"].*/\1/p")
 if [ -z "$SITE_URL" ]; then
   echo "security.txt check: no url: '...' line inside SITE in src/config.ts to read the site address from." >&2
   exit 1
 fi
-# The routes of the site, from PAGES in tests/_helpers.ts, as a comma-separated list.
-PAGES_CSV=$(awk '/^export const PAGES = \[/{f=1; next} f && /^\] as const/{exit} f' tests/_helpers.ts \
-  | grep -oE "'/[^']*'" | tr -d "'" | paste -sd, -)
+# The routes of the site, from PAGES in tests/_helpers.ts, as a comma-separated list. The list must end with a line
+# that starts with "] as const": any other end, or none before the next top-level declaration, stops the script
+# instead of reading later strings of the file as routes.
+if ! PAGES_BLOCK=$(awk '/^export const PAGES = \[/{f=1; next} f && /^\] as const/{closed=1; exit} f && /^(export|const|let|function) /{exit} f{print} END{if (!closed) exit 3}' tests/_helpers.ts); then
+  echo "security.txt check: PAGES in tests/_helpers.ts is missing, or does not end with a line starting \"] as const\"." >&2
+  exit 1
+fi
+PAGES_CSV=$(printf '%s\n' "$PAGES_BLOCK" | grep -oE "'/[^']*'" | tr -d "'" | paste -sd, - || true)
 if [ -z "$PAGES_CSV" ]; then
-  echo "security.txt check: no PAGES list found in tests/_helpers.ts." >&2
+  echo "security.txt check: no routes found in PAGES in tests/_helpers.ts." >&2
   exit 1
 fi
 
@@ -90,6 +103,13 @@ function parseRfc3339(v) {
     const oh = Number(m[9]), om = Number(m[10]);
     if (oh > 23 || om > 59) return null;
     offset = (m[8] === "-" ? -1 : 1) * (oh * 60 + om);
+  }
+  // Second 60 is a leap second. RFC 3339 section 5.7 (read 2026-10-22) allows it only at 23:59:60 UTC on 30 June or
+  // 31 December, shifted by the zone offset for any other zone, so the instant is taken to UTC before it is judged.
+  if (s === 60) {
+    const u = new Date(Date.UTC(y, mo - 1, d, h, mi, 59) - offset * 60000);
+    const endOfJuneOrDecember = (u.getUTCMonth() === 5 && u.getUTCDate() === 30) || (u.getUTCMonth() === 11 && u.getUTCDate() === 31);
+    if (!(u.getUTCHours() === 23 && u.getUTCMinutes() === 59 && endOfJuneOrDecember)) return null;
   }
   // A leap second (second 60) counts as 59.
   return Date.UTC(y, mo - 1, d, h, mi, Math.min(s, 59)) + (m[7] ? Math.round(Number(m[7]) * 1000) : 0) - offset * 60000;
@@ -127,8 +147,10 @@ if (all("contact").length === 0) fails.push("no Contact line (RFC 9116 section 2
 for (const n of ["canonical", "acknowledgments", "hiring"]) {
   for (const f of all(n)) if (!httpsUrl(f.value)) fails.push("line " + f.line + ": " + n + " must be an https URL with a host: " + f.value);
 }
+// RFC 9116 section 2.5.4: its examples are an https URL, a dns: URI and an openpgp4fpr: fingerprint, and a web URI
+// must begin with https://. A fingerprint is 40 hex digits (the RFC example) or 64 (a version 6 key).
 for (const f of all("encryption")) {
-  if (!(httpsUrl(f.value) || /^dns:\S+$/.test(f.value) || /^openpgp4fpr:[0-9A-Fa-f]{40,64}$/.test(f.value))) {
+  if (!(httpsUrl(f.value) || /^dns:\S+$/.test(f.value) || /^openpgp4fpr:([0-9A-Fa-f]{40}|[0-9A-Fa-f]{64})$/.test(f.value))) {
     fails.push("line " + f.line + ": encryption must be an https URL, a dns: URI or an openpgp4fpr: URI: " + f.value);
   }
 }
@@ -190,6 +212,15 @@ fail() { echo "  FAIL $1"; failures=$((failures + 1)); }
 NOW=2026-10-22T12:00:00Z
 GOOD_CONTACT='Contact: https://github.com/karero/croftweaver/security/advisories/new'
 GOOD_CANON="Canonical: $SITE_URL/.well-known/security.txt"
+# Fixture addresses come from SITE_URL and PAGES, so a change of site address does not break the self-test.
+HOST=${SITE_URL#https://}
+SITE_HTTP="http://$HOST"
+SITE_WWW="https://www.$HOST"
+ELSEWHERE=https://not-this-site.invalid
+ROUTE=$(printf '%s\n' "$PAGES_CSV" | tr ',' '\n' | grep -v '^/$' | head -1 || true)
+NOT_A_ROUTE=/no-such-page-for-the-self-test
+if [ -z "$ROUTE" ]; then echo "security.txt check: PAGES holds no route other than /, so there is no valid Policy path for the self-test." >&2; exit 1; fi
+case ",$PAGES_CSV," in *",$NOT_A_ROUTE,"*) echo "security.txt check: $NOT_A_ROUTE is a route in PAGES; the self-test needs a path that is not." >&2; exit 1 ;; esac
 
 # has TEXT WORDS: WORDS appear in TEXT as plain text, never as a pattern (a "." or "(" is itself).
 has() { grep -qF -- "$2" <<<"$1"; }
@@ -222,22 +253,25 @@ if has "42 day(s)" "(s)"; then pass "has: parentheses are plain"; else fail "has
 
 echo " valid files"
 make good 2027-04-22T00:00:00Z;                                  expect good pass
-make plus-mailto 2027-04-22T00:00:00Z 'Contact: mailto:security@croftweaver.com'; expect plus-mailto pass
+make plus-mailto 2027-04-22T00:00:00Z "Contact: mailto:security@$HOST"; expect plus-mailto pass
 make tel-contact 2027-04-22T00:00:00Z 'Contact: tel:+49-89-1234567'; expect tel-contact pass
 make lower-tz 2027-04-22t00:00:00z;                              expect lower-tz pass
 make offset 2027-04-22T02:00:00+02:00;                           expect offset pass
 make fraction 2027-04-22T00:00:00.250Z;                          expect fraction pass
+make fpr-64 2027-04-22T00:00:00Z 'Encryption: openpgp4fpr:5f2de5521c63a801ab59ccb603d49de44b29100f5f2de5521c63a801ab59ccb6'; expect fpr-64 pass
 make leap-second 2027-06-30T23:59:60Z;                           expect leap-second pass
+make leap-december 2026-12-31T23:59:60Z;                         expect leap-december pass
+make leap-offset-ok 2027-07-01T01:59:60+02:00;                   expect leap-offset-ok pass
 make comment-ok 2027-04-22T00:00:00Z '# a comment' '' ;          expect comment-ok pass
-make policy-route 2027-04-22T00:00:00Z 'Policy: https://croftweaver.com/support'; expect policy-route pass
-make policy-elsewhere 2027-04-22T00:00:00Z 'Policy: https://example.org/policy'; expect policy-elsewhere pass
-make enc-https 2027-04-22T00:00:00Z 'Encryption: https://croftweaver.com/pgp-key.txt'; expect enc-https pass
-make enc-dns 2027-04-22T00:00:00Z 'Encryption: dns:5d2d37ab76d47d36._openpgpkey.croftweaver.com?type=OPENPGPKEY'; expect enc-dns pass
+make policy-route 2027-04-22T00:00:00Z "Policy: $SITE_URL$ROUTE"; expect policy-route pass
+make policy-elsewhere 2027-04-22T00:00:00Z "Policy: $ELSEWHERE/policy"; expect policy-elsewhere pass
+make enc-https 2027-04-22T00:00:00Z "Encryption: $SITE_URL/pgp-key.txt"; expect enc-https pass
+make enc-dns 2027-04-22T00:00:00Z "Encryption: dns:5d2d37ab76d47d36._openpgpkey.$HOST?type=OPENPGPKEY"; expect enc-dns pass
 make enc-fpr 2027-04-22T00:00:00Z 'Encryption: openpgp4fpr:5f2de5521c63a801ab59ccb603d49de44b29100f'; expect enc-fpr pass
-make hiring-https 2027-04-22T00:00:00Z 'Hiring: https://croftweaver.com/about'; expect hiring-https pass
-make ack-https 2027-04-22T00:00:00Z 'Acknowledgments: https://croftweaver.com/thanks'; expect ack-https pass
+make hiring-https 2027-04-22T00:00:00Z "Hiring: $SITE_URL/about"; expect hiring-https pass
+make ack-https 2027-04-22T00:00:00Z "Acknowledgments: $SITE_URL/thanks"; expect ack-https pass
 make langs-ok 2027-04-22T00:00:00Z 'Preferred-Languages: en, de, pt-BR'; expect langs-ok pass
-make two-canonicals-one-right 2027-04-22T00:00:00Z 'Canonical: https://www.croftweaver.com/.well-known/security.txt'; expect two-canonicals-one-right pass
+make two-canonicals-one-right 2027-04-22T00:00:00Z "Canonical: $SITE_WWW/.well-known/security.txt"; expect two-canonicals-one-right pass
 make same-canonical-twice 2027-04-22T00:00:00Z "$GOOD_CANON"; expect same-canonical-twice pass
 printf '%s\r\nExpires: 2027-04-22T00:00:00Z\r\n%s\r\n' "$GOOD_CONTACT" "$GOOD_CANON" > "$tmp/crlf"; expect crlf pass
 
@@ -263,6 +297,10 @@ make feb29-leap 2028-02-29T00:00:00Z;                            expect feb29-le
 make hour24 2027-04-22T24:00:00Z;                                expect hour24 fail "real RFC 3339"
 make minute60 2027-04-22T12:60:00Z;                              expect minute60 fail "real RFC 3339"
 make second61 2027-04-22T12:00:61Z;                              expect second61 fail "real RFC 3339"
+make leap-noon 2027-04-22T12:00:60Z;                             expect leap-noon fail "real RFC 3339"
+make leap-2359-wrong-day 2027-04-22T23:59:60Z;                   expect leap-2359-wrong-day fail "real RFC 3339"
+make leap-june-noon 2027-06-30T12:00:60Z;                        expect leap-june-noon fail "real RFC 3339"
+make leap-offset-bad 2027-06-30T23:59:60+02:00;                  expect leap-offset-bad fail "real RFC 3339"
 make month13 2027-13-01T00:00:00Z;                               expect month13 fail "real RFC 3339"
 make month00 2027-00-10T00:00:00Z;                               expect month00 fail "real RFC 3339"
 make day32 2027-01-32T00:00:00Z;                                 expect day32 fail "real RFC 3339"
@@ -274,30 +312,32 @@ make no-expires "";                                              expect no-expir
 make two-expires 2027-04-22T00:00:00Z 'Expires: 2027-05-22T00:00:00Z'; expect two-expires fail "exactly once"
 
 echo " addresses and fields"
-raw no-contact 'Policy: https://croftweaver.com/support' 'Expires: 2027-04-22T00:00:00Z' "$GOOD_CANON"
+raw no-contact "Policy: $SITE_URL$ROUTE" 'Expires: 2027-04-22T00:00:00Z' "$GOOD_CANON"
 expect no-contact fail "no Contact"
 make http-contact 2027-04-22T00:00:00Z;                          sed -i.bak 's#Contact: https#Contact: http#' "$tmp/http-contact"; expect http-contact fail "Contact must be"
-make bare-contact 2027-04-22T00:00:00Z 'Contact: security@croftweaver.com'; expect bare-contact fail "Contact must be"
+make bare-contact 2027-04-22T00:00:00Z "Contact: security@$HOST"; expect bare-contact fail "Contact must be"
 make bad-tel 2027-04-22T00:00:00Z 'Contact: tel:call-me'; expect bad-tel fail "Contact must be"
 make bracket-contact 2027-04-22T00:00:00Z 'Contact: https://['; expect bracket-contact fail "Contact must be"
 make empty-host-contact 2027-04-22T00:00:00Z 'Contact: https://'; expect empty-host-contact fail "Contact must be"
 make bracket-policy 2027-04-22T00:00:00Z 'Policy: https://['; expect bracket-policy fail "policy must be an https URL"
 make empty-host-policy 2027-04-22T00:00:00Z 'Policy: https://'; expect empty-host-policy fail "policy must be an https URL"
-make http-policy 2027-04-22T00:00:00Z 'Policy: http://croftweaver.com/support'; expect http-policy fail "policy must be an https"
-make policy-not-a-page 2027-04-22T00:00:00Z 'Policy: https://croftweaver.com/no-such-page'; expect policy-not-a-page fail "not a page of this site"
-raw other-canonical "$GOOD_CONTACT" 'Expires: 2027-04-22T00:00:00Z' 'Canonical: https://example.com/.well-known/security.txt'
+make http-policy 2027-04-22T00:00:00Z "Policy: $SITE_HTTP$ROUTE"; expect http-policy fail "policy must be an https"
+make policy-not-a-page 2027-04-22T00:00:00Z "Policy: $SITE_URL$NOT_A_ROUTE"; expect policy-not-a-page fail "not a page of this site"
+raw other-canonical "$GOOD_CONTACT" 'Expires: 2027-04-22T00:00:00Z' "Canonical: $ELSEWHERE/.well-known/security.txt"
 expect other-canonical fail "no Canonical line equal"
 raw no-canonical "$GOOD_CONTACT" 'Expires: 2027-04-22T00:00:00Z'
 expect no-canonical fail "no Canonical line equal"
 make bracket-canonical 2027-04-22T00:00:00Z 'Canonical: https://['; expect bracket-canonical fail "canonical must be an https URL"
-make http-enc 2027-04-22T00:00:00Z 'Encryption: http://croftweaver.com/pgp-key.txt'; expect http-enc fail "encryption must be"
+make http-enc 2027-04-22T00:00:00Z "Encryption: $SITE_HTTP/pgp-key.txt"; expect http-enc fail "encryption must be"
 make key-in-enc 2027-04-22T00:00:00Z 'Encryption: -----BEGIN PGP PUBLIC KEY BLOCK-----'; expect key-in-enc fail "encryption must be"
 make short-fpr 2027-04-22T00:00:00Z 'Encryption: openpgp4fpr:abcd'; expect short-fpr fail "encryption must be"
-make http-hiring 2027-04-22T00:00:00Z 'Hiring: http://croftweaver.com/about'; expect http-hiring fail "hiring must be"
+make fpr-41 2027-04-22T00:00:00Z 'Encryption: openpgp4fpr:5f2de5521c63a801ab59ccb603d49de44b29100f1'; expect fpr-41 fail "encryption must be"
+make fpr-63 2027-04-22T00:00:00Z 'Encryption: openpgp4fpr:5f2de5521c63a801ab59ccb603d49de44b29100f5f2de5521c63a801ab59ccb'; expect fpr-63 fail "encryption must be"
+make http-hiring 2027-04-22T00:00:00Z "Hiring: $SITE_HTTP/about"; expect http-hiring fail "hiring must be"
 make langs-twice 2027-04-22T00:00:00Z 'Preferred-Languages: en' 'Preferred-Languages: de'; expect langs-twice fail "more than once"
 make langs-bad 2027-04-22T00:00:00Z 'Preferred-Languages: en,'; expect langs-bad fail "language tags"
 make typo 2027-04-22T00:00:00Z 'Contct: https://example.com';    expect typo fail "does not define"
-make no-space 2027-04-22T00:00:00Z 'Policy:https://croftweaver.com/support'; expect no-space fail "one space"
+make no-space 2027-04-22T00:00:00Z "Policy:$SITE_URL$ROUTE"; expect no-space fail "one space"
 raw clear-signed '-----BEGIN PGP SIGNED MESSAGE-----' 'Hash: SHA512' '' "$GOOD_CONTACT" 'Expires: 2027-04-22T00:00:00Z' "$GOOD_CANON" '-----BEGIN PGP SIGNATURE-----'
 expect clear-signed fail "is not"
 read_file "$tmp/missing-file" "$NOW"

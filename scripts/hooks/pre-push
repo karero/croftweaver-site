@@ -53,7 +53,7 @@ fi
 # Needs no build. A warning is printed again after the tests, so that it does not scroll away.
 sec_warn=""
 if [ -f tests/check_security_txt.sh ]; then
-  echo "▶ pre-push gate: security.txt…"
+  echo "▶ pre-push gate: security.txt (its self-test takes a few seconds)…"
   if ! sec_out=$(bash tests/check_security_txt.sh 2>&1); then
     printf '%s\n' "$sec_out"
     exit 1
