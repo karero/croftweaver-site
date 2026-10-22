@@ -228,6 +228,7 @@ is built.
 | Compare | `/compare` | alternatives | — | live |
 | Roadmap | `/roadmap` | roadmap | — | live |
 | From WordPress | `/from-wordpress` | WordPress to Astro | — | live |
+| AI-built website SEO checklist | `/ai-website-seo-checklist` | SEO checklist for AI-built websites (and "vibe coded website SEO issues" in the body) | — | live |
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
 | About | `/about` | maintainer | — | live |

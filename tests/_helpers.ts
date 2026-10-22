@@ -15,6 +15,7 @@ export const PAGES = [
   '/roadmap',
   '/established-sites',
   '/from-wordpress',
+  '/ai-website-seo-checklist',
   '/partner-assets',
   '/about',
   '/privacy',
