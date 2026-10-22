@@ -285,10 +285,11 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <p>On a Croftweaver site that means the build tools. Switch on Dependabot security updates, then merge the fix once the tests pass. Your site keeps its own lockfile, so no Croftweaver release patches it for you. Once a month, run <code>npm audit</code> and read what it says. On a PHP site it means PHP itself, the system and its plugins. For croftweaver.com on 22 October 2026:</p>
         <ul class="proof">
           <Claim as="li" id="site-audit">The audit lists no known flaws.</Claim>
-          <Claim as="li" id="site-outdated">Seven of the eight direct packages were behind the latest version. Five were a minor or patch step behind. Two were a major version or more behind: TypeScript 6 to 7, and @types/node 24 to 26. All of them are used to build and test the site.</Claim>
+          <Claim as="li" id="site-outdated">Four of the eight direct packages were behind the latest version. Two were a patch step behind: @astrojs/check and astro. Two were a major version behind: TypeScript 6 to 7, and @types/node 24 to 26. All of them are used to build and test the site.</Claim>
           <Claim as="li" id="toolkit-dependabot-ignores">The toolkit's own Dependabot file for the Astro starter ignores major updates of @types/node, which follows the Node major, and of typescript, because @astrojs/check 0.9.x does not accept version 7 yet. The file says so in comments.</Claim>
-          <Claim as="li" id="site-lockfile">The lockfile last changed on 21 October 2026, a version bump of the build tool vite.</Claim>
-          <Claim as="li" id="site-dependabot">Dependabot alerts and security updates are on for the repository (the command needs access to its settings). There is no routine version-update file, so Dependabot opens pull requests for security fixes only.</Claim>
+          <Claim as="li" id="site-lockfile">The lockfile last changed on 22 October 2026, when Dependabot updated six packages.</Claim>
+          <Claim as="li" id="site-dependabot">Dependabot alerts and security updates are on for the repository (the command needs access to its settings).</Claim>
+          <Claim as="li" id="site-dependabot-file">The repository also has a Dependabot file that asks for version updates once a month: one pull request for the minor and patch steps, and no major updates of @types/node or typescript.</Claim>
         </ul>
       </li>
       <li class="card">
