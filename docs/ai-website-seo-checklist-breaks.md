@@ -27,9 +27,10 @@ again when the toolkit changes. A row of the table is only as good as its break.
 
 ## The breaks
 
-The message column is an excerpt of what the failing assertion printed, shortened with "...", and with
-the arrows and the not-equal sign of the original written in ASCII (`->`, `!=`). Some messages start
-with a heading line first (the images tests print `image issues on /:`).
+The last column holds, depending on the row, an excerpt of the failing assertion's message, a timeout
+diagnostic (run 4), or the summary of a passing run (the controls and the tie). Excerpts are shortened
+with "...", with the arrows and the not-equal sign of the original written in ASCII (`->`, `!=`).
+Some messages start with a heading line first (the images tests print `image issues on /:`).
 
 | # | Check | The edit | Spec | Failing test | Message |
 |---|---|---|---|---|---|
