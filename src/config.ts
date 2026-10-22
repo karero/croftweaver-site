@@ -34,6 +34,54 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Quickstart', href: '/start' },
 ];
 
+// Footer navigation, in labelled columns, in order. Every page appears once, apart from the home
+// page, and GitHub is the one link that leaves the site. A page's pull request adds its own entry
+// here; header places are not part of that (the header is a curated subset). Like NAV, link only
+// to pages that exist: tests/navigation.spec.ts rejects a dead target, and its footer test
+// rejects a page that is built but left out.
+export const FOOTER: { heading: string; links: { label: string; href: string }[] }[] = [
+  {
+    heading: 'Toolkit',
+    links: [
+      { label: 'Skills', href: '/skills' },
+      { label: 'Checks', href: '/checks' },
+      { label: 'SEO checklist', href: '/ai-website-seo-checklist' },
+      { label: 'Quickstart', href: '/start' },
+      { label: 'Roadmap', href: '/roadmap' },
+      { label: 'GitHub', href: SITE.repo },
+    ],
+  },
+  {
+    heading: 'Why Croftweaver',
+    links: [
+      { label: 'Why', href: '/why' },
+      { label: 'Alternatives', href: '/compare' },
+      { label: 'Positioning', href: '/positioning' },
+      { label: 'Proof', href: '/proof' },
+      { label: 'More proof', href: '/more-proof' },
+      { label: 'Case study', href: '/case-study' },
+    ],
+  },
+  {
+    heading: 'Your site',
+    links: [
+      { label: 'Existing sites', href: '/established-sites' },
+      { label: 'From WordPress', href: '/from-wordpress' },
+    ],
+  },
+  {
+    heading: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Support', href: '/support' },
+      { label: 'Partner assets', href: '/partner-assets' },
+      { label: 'Imprint', href: '/imprint' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Use', href: '/terms' },
+    ],
+  },
+];
+
 // og:locale derivation — ONE implementation shared by Base.astro (emission)
 // and tests/seo.spec.ts (assertion), so they can't drift: 'de' → de_DE via
 // the map; regioned tags use base + region ('de-AT' → de_AT); unmapped bases

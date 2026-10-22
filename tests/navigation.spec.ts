@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
-import { SITE, NAV } from '../src/config';
+import { SITE, NAV, FOOTER } from '../src/config';
 
 // Every route in PAGES returns 200, and every internal link on it resolves to a
 // 200 with no redirect hop (clean URLs only). Links written as absolute production
@@ -512,3 +512,54 @@ test('footer credit: every page names GenAI Wednesday as the origin and links to
     await expect(link, `${path}: the credit does not link to genai-wednesday.de`).toHaveAttribute('href', 'https://genai-wednesday.de/');
   }
 });
+
+// Site-specific (not in the shipped suite): the footer. Its links are the FOOTER list in src/config.ts, in
+// labelled columns. orphans.spec.ts passes when any link anywhere reaches a page, so a page left out of the
+// footer would go unnoticed: this test fails it. PAGES is tied to the built pages by the sitemap drift alarm
+// in seo.spec.ts, so checking PAGES covers every indexable page. The header is a curated subset of the pages:
+// no test requires a page in it.
+const footerLinks = (page: import('@playwright/test').Page) => page.locator('.site-footer .footer-nav a[href]');
+
+test('footer — every page except home is linked from the footer, each once', async ({ page }) => {
+  await page.goto('/');
+  const hrefs = await footerLinks(page).evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));
+  for (const route of PAGES.filter((r) => r !== '/')) {
+    expect(hrefs.filter((h) => h === route).length, `${route} must be linked from the footer exactly once (add it to FOOTER in src/config.ts)`).toBe(1);
+  }
+});
+
+test('footer — the columns and links are the ones in FOOTER, each list named by its heading, the badge above them', async ({ page }) => {
+  await page.goto('/');
+  const lists = page.locator('.site-footer .footer-nav ul');
+  await expect(lists, 'the footer shows a different number of columns than FOOTER lists').toHaveCount(FOOTER.length);
+  for (const [i, column] of FOOTER.entries()) {
+    const list = lists.nth(i);
+    const labelId = await list.getAttribute('aria-labelledby');
+    expect(labelId, `the "${column.heading}" list has no accessible name`).toBeTruthy();
+    await expect(page.locator(`#${labelId}`), `the heading that names the "${column.heading}" list`).toHaveText(column.heading);
+    await expect(list.locator('a'), `the "${column.heading}" column's link texts`).toHaveText(column.links.map((l) => l.label));
+    expect(
+      await list.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href'))),
+      `the "${column.heading}" column's link targets`,
+    ).toEqual(column.links.map((l) => l.href));
+  }
+  for (const label of ['Imprint', 'Privacy Policy', 'Terms of Use']) {
+    await expect(page.locator('.site-footer .footer-nav').getByRole('link', { name: label, exact: true }), `the footer has no "${label}" link`).toHaveCount(1);
+  }
+  const badge = await page.locator('.site-footer a.badge').boundingBox();
+  const columns = await page.locator('.site-footer .footer-nav').boundingBox();
+  expect(badge, 'the badge is not drawn').not.toBeNull();
+  expect(columns, 'the footer columns are not drawn').not.toBeNull();
+  expect(badge!.y + badge!.height, 'the badge sits above the footer columns').toBeLessThanOrEqual(columns!.y + 1);
+});
+
+// The columns must not push the page sideways on a small phone ("Privacy Policy" and "Terms of Use" are the longest labels).
+for (const width of [360, 320]) {
+  test(`footer — a ${width} px phone does not scroll sideways`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    await page.goto('/');
+    await page.locator('.site-footer').scrollIntoViewIfNeeded();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow, `the page scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+  });
+}
