@@ -7,6 +7,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { makeDeck } from '../scripts/deck-slides.mjs';
+import { parse } from 'node-html-parser';
 
 // SEO contract + tag-consistency guardrail. Base.astro derives <title>, OG,
 // Twitter, canonical and the WebPage schema from a single (title, description)
@@ -661,9 +662,9 @@ test('seo — every link in the slide deck to this site points at a page that ex
 // tests/privacy-host.spec.ts (copied from the toolkit) compares every element marked
 // data-analytics-host with ANALYTICS.scriptHost. With no mark it finds nothing and passes, so
 // a mark lost in an edit would turn that suite into a check of nothing. This keeps one mark in place.
-// A mark is an attribute inside a start tag: not a comment, not a longer name such as data-analytics-host-old.
-const hasHostMark = (html: string) =>
-  /<[a-z][^<>]*\sdata-analytics-host(?=[\s=/>])[^<>]*>/i.test(html.replace(/<!--[\s\S]*?-->/g, ''));
+// A mark is an element that has the attribute: read with an HTML parser, so a comment, a longer
+// attribute name, the words inside an attribute value, a script's text or JSON-LD never count.
+const hasHostMark = (html: string) => parse(html).querySelector('[data-analytics-host]') !== null;
 
 test('seo — the privacy page names the analytics host in an element marked data-analytics-host', () => {
   expect(hasHostMark('<p><span data-analytics-host>a.example</span></p>'), 'a plain mark must count').toBe(true);
@@ -671,5 +672,7 @@ test('seo — the privacy page names the analytics host in an element marked dat
   expect(hasHostMark('<p><!-- <span data-analytics-host>a.example</span> --></p>'), 'a commented-out mark must not count').toBe(false);
   expect(hasHostMark('<p><span data-analytics-host-old>a.example</span></p>'), 'a longer attribute name must not count').toBe(false);
   expect(hasHostMark('<p>data-analytics-host</p>'), 'the words in the text must not count').toBe(false);
+  expect(hasHostMark('<p title="text data-analytics-host example">x</p>'), 'the words inside an attribute value must not count').toBe(false);
+  expect(hasHostMark('<script type="application/ld+json">{"x":"<span data-analytics-host>a.example</span>"}</script>'), 'a marker string inside JSON-LD must not count').toBe(false);
   expect(hasHostMark(distFile('privacy.html')), 'privacy.html has no element marked data-analytics-host: tests/privacy-host.spec.ts would check nothing').toBe(true);
 });
