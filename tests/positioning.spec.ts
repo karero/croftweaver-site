@@ -48,6 +48,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/ai-website-seo-checklist': { term: 'SEO checklist for AI-built websites', body: ['vibe coded website SEO issues'] },
   '/partner-assets': { term: 'partner assets' },
   '/about': { term: 'maintainer' },
+  '/security': { term: 'static website' },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,

@@ -43,6 +43,7 @@ export const PAGES = [
   '/imprint',
   '/terms',
   '/support',
+  '/security',
 ] as const;
 
 // a11y (and any visual check) runs in both themes; the toggle is driven by

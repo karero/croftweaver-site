@@ -88,5 +88,11 @@ jobs:
       - name: Analytics gate (src/config.ts)
         run: bash tests/check_analytics_gate.sh
       - run: npm run check
+      # The /security page check reads dist/security.html and refuses a stale build. No earlier step builds
+      # dist/: the analytics gate builds into temporary folders and leaves dist/ alone. So build it here for
+      # the check. (`npm test` builds again for Playwright.)
+      - run: npm run build
+      - name: /security claims (src/data/security.ts)
+        run: bash tests/check_security_page.sh
       - run: npx playwright install --with-deps chromium
       - run: npm test
