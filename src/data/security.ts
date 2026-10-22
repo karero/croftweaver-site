@@ -163,7 +163,7 @@ export const CLAIMS: Claim[] = [
   { id: 'site-outdated', kind: 'command', source: 'npm outdated', read: READ_REPO },
   { id: 'toolkit-dependabot-ignores', kind: 'url', source: `${TOOLKIT_AT}/.github/dependabot.yml#L3-L17`, label: 'the toolkit Dependabot file at 3b8a6c5f', read: READ_REPO },
   { id: 'site-lockfile', kind: 'command', source: "git log -1 --format='%cI %s' -- package-lock.json", read: READ_REPO },
-  { id: 'site-dependabot', kind: 'command', source: 'gh api repos/karero/croftweaver-site --jq .security_and_analysis', read: READ_REPO },
+  { id: 'site-dependabot', kind: 'command', source: 'gh api repos/karero/croftweaver-site --jq .security_and_analysis.dependabot_security_updates.status; gh api -i repos/karero/croftweaver-site/vulnerability-alerts | head -1', read: READ_REPO },
   { id: 'site-dependabot-file', kind: 'url', source: 'https://github.com/karero/croftweaver-site/blob/9b38eda/.github/dependabot.yml#L7-L29', label: 'the Dependabot file of croftweaver-site at 9b38eda', read: READ_REPO },
   { id: 'site-renewal', kind: 'command', source: "whois croftweaver.com | grep -i 'registry expiry'", read: READ_LIVE },
   { id: 'npm-attacks', kind: 'url', source: 'https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem', label: 'CISA alert, 23 September 2025', read: READ_NEWS },
