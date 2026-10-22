@@ -170,12 +170,12 @@ export const CLAIMS: Claim[] = [
   { id: 'rfc-9116', kind: 'url', source: 'https://www.rfc-editor.org/rfc/rfc9116', label: 'RFC 9116', read: READ_RFC },
 
   // ---- croftweaver.com's own results (#own on the page): update `result`, `status` and `read` from LIVE reads when a check changes ----
-  // tests/check_security_page.sh fails while own-security-txt says "not yet" and public/.well-known/security.txt exists: the
-  // three rows below are filled from live reads after the DNS steps and the first ship of the security.txt file.
+  // tests/check_security_page.sh fails while own-security-txt says "not yet" and public/.well-known/security.txt exists.
+  // own-dnssec and own-security-txt were filled from live reads on 2026-10-22, after the DS record appeared and the file shipped.
   { id: 'own-headers', kind: 'command', source: 'curl -sI https://croftweaver.com/', read: READ_LIVE, status: 'pass', result: 'Pass. All five headers from the template are sent, and so is HSTS, which is a Cloudflare setting.' },
   { id: 'own-dnssec', kind: 'command', source: 'dig +short DS croftweaver.com', read: READ_LIVE, status: 'pass', result: 'Pass. The answer holds a key tag and algorithm 13, so DNSSEC is on for croftweaver.com.' },
   { id: 'own-caa', kind: 'command', source: 'dig +short CAA croftweaver.com', read: READ_LIVE, status: 'optional', result: 'Not set. CAA is optional, and a wrong record can stop a certificate from being issued.' },
-  { id: 'own-security-txt', kind: 'command', source: 'curl -s https://croftweaver.com/.well-known/security.txt', read: READ_LIVE, status: 'not yet', result: 'Not yet. The live site answers 404 for this file.' },
+  { id: 'own-security-txt', kind: 'command', source: 'curl -s https://croftweaver.com/.well-known/security.txt', read: READ_LIVE, status: 'pass', result: 'Pass. The file is served, and it holds a Contact and an Expires date.' },
 ];
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
