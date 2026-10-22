@@ -14,6 +14,8 @@ const READ = '22 October 2026';
 const PRESS = 'https://www.cloudflare.com/press-releases/2026/cloudflare-acquires-astro-to-accelerate-the-future-of-high-performance-web-development/';
 const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
 const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
+const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
+const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
 ---
 <Base
   title="What it runs on: Astro, Cloudflare, GitHub"
@@ -37,20 +39,20 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
 
   <section class="wrap" id="picture">
     <h2>The picture</h2>
-    <ol class="places" role="list">
+    <ul class="places" role="list">
       <li class="place" data-place>
-        <h3>Your computer</h3>
-        <p>The folder with your site's files. Your assistant works here, and Astro builds a preview and runs the tests.</p>
+        <h3><a href="#folder">Your computer</a></h3>
+        <p>The folder with your site's files. Your assistant works here. Astro builds a preview, and the tests run here.</p>
       </li>
       <li class="place" data-place>
-        <h3>GitHub</h3>
+        <h3><a href="#github">GitHub</a></h3>
         <p>Your files and the history of every change. The checks run here again on every pull request.</p>
       </li>
       <li class="place" data-place>
-        <h3>Cloudflare</h3>
+        <h3><a href="#cloudflare">Cloudflare</a></h3>
         <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
       </li>
-    </ol>
+    </ul>
     <p class="aside">Your computer and GitHub exchange changes. Cloudflare builds from GitHub.</p>
   </section>
 
@@ -59,7 +61,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     <p>
       <a href="https://astro.build">Astro</a> is an open-source framework for content websites.
       It turns your text files and templates into plain HTML pages when the site is built. It
-      runs on your computer, for the preview and the tests, and again at Cloudflare each time
+      runs on your computer, to build the preview and the site the tests check, and again at Cloudflare each time
       Cloudflare builds the site from GitHub. A direct upload, which the toolkit also describes,
       builds on your computer only.
     </p>
@@ -72,7 +74,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     </p>
     <p>
       In January 2026, Cloudflare <a href={PRESS}>announced</a> that the Astro team is joining it
-      and that Astro will remain open source. Croftweaver is an independent project.
+      and that Astro will remain open source (read {READ}). Croftweaver is an independent project.
     </p>
   </section>
 
@@ -87,7 +89,10 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     <p>
       You choose the steps, as <a href="/why#steps">the four steps on the why page</a> say. In
       Claude Code, routine build commands, <code>git push</code> among them, run without asking.
-      That saves clicks and is not a safety fence: <a href={RUNS}>what the skills run</a> lists them.
+      That saves clicks and is not a safety fence. The <code>AGENTS.md</code> in a site tells the assistant
+      never to run <code>npm run ship</code> unasked, but that is a written rule, not something Claude Code
+      enforces. <a href={RUNS}>What the skills run</a> lists the commands; it was read from Claude Code's
+      documentation and not tried in a live session.
     </p>
   </section>
 
@@ -113,7 +118,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     <p>
       Codex in the browser needs no folder. Each task starts from a fresh copy of your repository
       on GitHub. An older task that you resume may be behind, as the instructions for assistants
-      in every Croftweaver site (<code>AGENTS.md</code>) warn.
+      that the toolkit gives a new site (<code>AGENTS.md</code>, <a href={AGENTS}>the template</a>) warn.
     </p>
   </section>
 
@@ -137,9 +142,8 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     <h2>Cloudflare</h2>
     <p>
       Cloudflare builds the site from GitHub and serves it. Every pull request from a branch in your
-      repository gets its own preview address. A pull request from a fork gets none, and every preview
-      build counts toward your monthly builds
-      (<a href="https://developers.cloudflare.com/pages/configuration/preview-deployments/">read {READ}</a>).
+      repository gets its own preview address; a pull request from a fork gets none
+      (<a href="https://developers.cloudflare.com/pages/configuration/preview-deployments/">Cloudflare's preview deployments, read {READ}</a>).
     </p>
     <h3>What the free plan covers</h3>
     <p>
@@ -149,22 +153,25 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     </p>
     <p>
       One small function runs on every request to a Croftweaver site. It keeps preview copies out of
-      search engines and sends the <code>pages.dev</code> address to your own domain. Cloudflare says that
+      search engines and sends the <code>pages.dev</code> address to your own domain, and in the optional
+      server mode for Plausible it also counts visits. Cloudflare says that
       once a Pages project has a function,
       <a href="https://developers.cloudflare.com/pages/functions/routing/">all requests invoke it by default</a>.
-      So the free plan's limit of 100,000 function requests a day
-      (<a href="https://developers.cloudflare.com/workers/platform/limits/">read {READ}</a>) counts the
-      whole site, not only pages that need a server. When the limit is used up, a project setting
-      decides: serve the pages without the function, or show an error page.
+      So the free plan's limit of 100,000 requests a day
+      (<a href="https://developers.cloudflare.com/workers/platform/limits/">Cloudflare's Workers limits, read {READ}</a>),
+      which the toolkit's guide says every Function and Worker in your account shares, counts the whole
+      site, not only pages that need a server. When the limit is used up, a project setting decides: serve
+      the pages without the function, or show an error page. The toolkit tells you to set it to serve the
+      pages, so the pages keep being served and the function's jobs pause until the limit resets.
     </p>
     <h3>Your domain</h3>
     <p>
-      Your domain's DNS can move to Cloudflare on the free plan. You change the name servers at the
+      Your domain's DNS can move to Cloudflare; the full setup is available on every plan. You change the name servers at the
       company where you bought the domain, and the domain stays registered there: Cloudflare's
       <a href="https://developers.cloudflare.com/dns/faq/">DNS FAQ</a> says you do not need to move away
-      from your registrar (read {READ}). The move has traps, mail records above all.
-      <a href="/roadmap">A checklist in the toolkit</a> walks you through them, record by record, before
-      anything is switched.
+      from your registrar (read {READ}). The move has two traps above all: mail records, and DNSSEC, which
+      has to be switched off at the old registrar first or the domain stops resolving.
+      <a href={DEPLOY}>A checklist in the toolkit</a> walks you through them before anything is switched.
     </p>
     <p>
       If the company that registered your domain forwards your mail today, check before the switch
@@ -172,7 +179,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
       because it depends on their own DNS.
       <a href="https://developers.cloudflare.com/email-service/get-started/route-emails/">Cloudflare Email
       Routing</a> is one replacement: it forwards incoming mail to a mailbox you already have, it is
-      available on the free plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own
+      available on every plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own
       (read {READ}).
     </p>
     <p>
@@ -188,7 +195,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
       Not as a fourth place. <a href="https://keystatic.com">Keystatic</a> is an optional editing screen
       for someone who would rather fill in a form than talk to an assistant, chosen when the site is first
       built. In local mode, the one the toolkit sets up, you open the editing screen in your browser on
-      your own computer. It writes ordinary Markdown files into the same folder, and you send the change
+      your own computer. It writes text files (Markdoc, a Markdown dialect) into the same folder, and you send the change
       to GitHub as usual. The published site contains no Keystatic.
     </p>
     <p>
@@ -209,11 +216,12 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
     <p>
       <strong>What enforces what.</strong> The hook can be skipped. The checks on GitHub report a
       result; they block nothing by themselves. Whether GitHub also refuses a merge until a check passes
-      depends on a branch rule that the owner switches on, and the toolkit's team setup describes it. On
+      depends on a branch rule that the owner switches on. The toolkit's team setup describes it and says a
+      free plan allows it only for a public repository. On
       the repository behind croftweaver.com it is on: a change reaches <code>main</code> only by a pull request that
       passes the <code>test</code> and <code>Cloudflare Pages</code> checks, and the rule has no bypass
-      list (read from GitHub's settings on {READ}). The push that publishes to <code>production</code> is
-      not checked in the same way.
+      list (read from GitHub's settings on {READ}). GitHub requires no passing check for the push that
+      publishes to <code>production</code>; only the hook runs, unless it is skipped.
       <a href="/checks">What each suite checks, and what a pass does not prove</a>.
     </p>
   </section>
@@ -229,8 +237,10 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
       Not free: your domain, at the price of whoever registers it; your AI assistant's own plan; and
       Plausible, if you switch it on. Plausible counts visits without cookies
       (<a href="https://plausible.io/data-policy">its data policy</a>). Its
-      <a href="https://plausible.io/#pricing">pricing page</a> showed paid plans from $9 a month for up to
-      10,000 page views on {READ}, and you can host it yourself instead
+      <a href="https://plausible.io/#pricing">pricing page</a> showed $9 a month for up to 10,000 page views
+      on {READ}. It did not show whether that price is for monthly or yearly billing, and the
+      <a href="/start#analytics">quickstart</a> gives it as 9 euros or US dollars, depending on where you are.
+      You can also host Plausible yourself
       (<a href="https://github.com/plausible/community-edition">the community edition</a>). Plausible stays
       off until you switch it on.
     </p>
@@ -265,8 +275,9 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
 </Base>
 
 <style>
-  /* The three places: side by side from 48rem, one under the other below it. minmax(0, 1fr) lets a long
-     word shrink the column instead of pushing the page sideways (tests/a11y.spec.ts checks 360 and 320 px). */
+  /* The three places: side by side from 48rem, one under the other below it. overflow-wrap: anywhere breaks
+     a long word inside its box, and minmax(0, 1fr) keeps the column from growing to fit one
+     (tests/a11y.spec.ts puts a long word in a box at 360 and 320 px). */
   .places { list-style: none; margin: 1rem 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
   .place { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
   .place h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }

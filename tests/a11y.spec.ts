@@ -737,7 +737,7 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
   });
 }
 
-// The picture on /what-it-runs-on is HTML and CSS, not a drawing, so there is no text scaling to
+// Site-specific (not in the shipped suite): the picture on /what-it-runs-on is HTML and CSS, not a drawing, so there is no text scaling to
 // measure. What can break is the layout: the three places must sit side by side on a desktop and
 // one under the other on a phone, and no box may push the page sideways at 360 or 320 px.
 test('a11y — the picture on /what-it-runs-on shows three places side by side on a desktop and one under the other on a phone', async ({ page }) => {
@@ -755,8 +755,11 @@ for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
     await page.setViewportSize({ width, height: 740 });
     await page.goto('/what-it-runs-on');
+    // The copy has no word long enough to push the page sideways, so put one in a box: without
+    // overflow-wrap: anywhere on the box, this is what a long future word would do.
+    await page.evaluate(() => { document.querySelector('[data-place] p')!.textContent += ' ' + 'x'.repeat(60); });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow, `/what-it-runs-on scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+    expect(overflow, `/what-it-runs-on scrolls sideways at ${width} px with a 60-character word in a box`).toBeLessThanOrEqual(0);
   });
 }
 
