@@ -11,8 +11,10 @@
 #     "https://[" and "https://" fail;
 #   - Expires (2.5.5): exactly one, an RFC 3339 date-time whose parts are checked one by one (month
 #     1 to 12, day up to the length of that month, leap years included, hour 0 to 23, minute 0 to 59,
-#     second 0 to 59, or 60 for a leap second, valid only at 23:59:60 UTC on 30 June or 31 December and counted as 59: RFC 3339
-#     section 5.7), and still in the future. The date
+#     second 0 to 59, or 60 for a leap second), and still in the future. A leap second is accepted only at
+#     23:59:60 UTC on 30 June or 31 December, and counted as 59. RFC 3339 section 5.7 names those two dates "to
+#     date" and does not say they are the only ones, so this is stricter than the RFC on purpose: every leap
+#     second so far fell on one of them. The date
 #     maths uses Date.UTC on those parts and not Date.parse, so no Node version can read a date
 #     differently (CI uses Node 24, this was written on Node 26; Node 24 was not available to run it);
 #   - Canonical (2.5.2): one of the lines is exactly SITE.url from src/config.ts plus
@@ -104,8 +106,10 @@ function parseRfc3339(v) {
     if (oh > 23 || om > 59) return null;
     offset = (m[8] === "-" ? -1 : 1) * (oh * 60 + om);
   }
-  // Second 60 is a leap second. RFC 3339 section 5.7 (read 2026-10-22) allows it only at 23:59:60 UTC on 30 June or
-  // 31 December, shifted by the zone offset for any other zone, so the instant is taken to UTC before it is judged.
+  // Second 60 is a leap second. RFC 3339 section 5.7 (read 2026-10-22) names 30 June and 31 December, at 23:59:60 UTC, as
+  // the dates "to date", shifted by the zone offset for any other zone. It does not say they are the only dates; this
+  // check accepts only them, which is stricter than the RFC on purpose (every leap second so far fell on one of them).
+  // The instant is taken to UTC before it is judged.
   if (s === 60) {
     const u = new Date(Date.UTC(y, mo - 1, d, h, mi, 59) - offset * 60000);
     const endOfJuneOrDecember = (u.getUTCMonth() === 5 && u.getUTCDate() === 30) || (u.getUTCMonth() === 11 && u.getUTCDate() === 31);
@@ -217,9 +221,10 @@ HOST=${SITE_URL#https://}
 SITE_HTTP="http://$HOST"
 SITE_WWW="https://www.$HOST"
 ELSEWHERE=https://not-this-site.invalid
+# The valid Policy path: the first route other than /, or / itself when PAGES holds nothing else.
 ROUTE=$(printf '%s\n' "$PAGES_CSV" | tr ',' '\n' | grep -v '^/$' | head -1 || true)
+if [ -z "$ROUTE" ]; then ROUTE=/; fi
 NOT_A_ROUTE=/no-such-page-for-the-self-test
-if [ -z "$ROUTE" ]; then echo "security.txt check: PAGES holds no route other than /, so there is no valid Policy path for the self-test." >&2; exit 1; fi
 case ",$PAGES_CSV," in *",$NOT_A_ROUTE,"*) echo "security.txt check: $NOT_A_ROUTE is a route in PAGES; the self-test needs a path that is not." >&2; exit 1 ;; esac
 
 # has TEXT WORDS: WORDS appear in TEXT as plain text, never as a pattern (a "." or "(" is itself).
