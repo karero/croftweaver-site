@@ -737,6 +737,29 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
   });
 }
 
+// The picture on /what-it-runs-on is HTML and CSS, not a drawing, so there is no text scaling to
+// measure. What can break is the layout: the three places must sit side by side on a desktop and
+// one under the other on a phone, and no box may push the page sideways at 360 or 320 px.
+test('a11y — the picture on /what-it-runs-on shows three places side by side on a desktop and one under the other on a phone', async ({ page }) => {
+  const tops = () => page.$$eval('[data-place]', (els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/what-it-runs-on');
+  const wide = await tops();
+  expect(wide, 'the picture must have three places').toHaveLength(3);
+  expect(new Set(wide).size, `the places are not in one row on a desktop (tops ${wide})`).toBe(1);
+  await page.setViewportSize({ width: 360, height: 740 });
+  const phone = await tops();
+  expect(phone[0] < phone[1] && phone[1] < phone[2], `the places do not stack on a phone (tops ${phone})`).toBe(true);
+});
+for (const width of [360, 320] as const) {
+  test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    await page.goto('/what-it-runs-on');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow, `/what-it-runs-on scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+  });
+}
+
 // Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider than
 // the one the layout was drawn in. So set the chart text in Verdana (macOS and Windows) or
 // DejaVu Sans (Linux), the widest common system fonts, and check that no text or mark leaves

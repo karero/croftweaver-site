@@ -1,0 +1,275 @@
+---
+// /what-it-runs-on — the technology behind a Croftweaver site, in plain words. Positioning term
+// (tests/positioning.spec.ts): "what it runs on", in the title, the description and the H1; "tech
+// stack" in the body. It builds the 5 October 2026 /stack spec (origin/docs/teams-page-spec) at this
+// address and adds Astro, the assistant, the checks and where a shop fits. Plan, review trail and the
+// source of every claim: the private hub's what-it-runs-on/ (PAGE-PLAN.md, REVIEW-plan-2026-10-22.md).
+// Every vendor figure is dated READ and linked; read them again before changing the page.
+// The page claims no ranking, no price a vendor does not state, no endorsement by a vendor, and
+// never "free" without its limits.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+const READ = '22 October 2026';
+const PRESS = 'https://www.cloudflare.com/press-releases/2026/cloudflare-acquires-astro-to-accelerate-the-future-of-high-performance-web-development/';
+const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
+const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
+---
+<Base
+  title="What it runs on: Astro, Cloudflare, GitHub"
+  description="What it runs on: Astro builds the pages, GitHub keeps the files, Cloudflare serves them. The tech stack of a Croftweaver site, what it costs, what you can swap."
+  image="/images/og/what-it-runs-on.jpg"
+>
+  <section class="wrap hero">
+    <h1>What it runs on: three places, all in your name</h1>
+    <p class="lead">
+      The tech stack of a Croftweaver site is three places: a folder on your computer,
+      your files on GitHub, and Cloudflare, which builds the site and serves it. Each one is
+      yours. Your AI assistant works in the first place. Astro, the framework that turns your
+      text files into pages, runs there and runs again at Cloudflare. This page says what each
+      part does, what it costs and what you can swap.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="picture">
+    <h2>The picture</h2>
+    <ol class="places" role="list">
+      <li class="place" data-place>
+        <h3>Your computer</h3>
+        <p>The folder with your site's files. Your assistant works here, and Astro builds a preview and runs the tests.</p>
+      </li>
+      <li class="place" data-place>
+        <h3>GitHub</h3>
+        <p>Your files and the history of every change. The checks run here again on every pull request.</p>
+      </li>
+      <li class="place" data-place>
+        <h3>Cloudflare</h3>
+        <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
+      </li>
+    </ol>
+    <p class="aside">Your computer and GitHub exchange changes. Cloudflare builds from GitHub.</p>
+  </section>
+
+  <section class="wrap" id="astro">
+    <h2>Astro builds the pages</h2>
+    <p>
+      <a href="https://astro.build">Astro</a> is an open-source framework for content websites.
+      It turns your text files and templates into plain HTML pages when the site is built. It
+      runs on your computer, for the preview and the tests, and again at Cloudflare each time
+      Cloudflare builds the site from GitHub. A direct upload, which the toolkit also describes,
+      builds on your computer only.
+    </p>
+    <p>
+      Astro makes static pages by default. It can build a page on request instead, with a small
+      add-on for the host (an adapter); its own documentation on
+      <a href="https://docs.astro.build/en/guides/on-demand-rendering/">on-demand rendering</a>
+      says how (read {READ}). Croftweaver sites are static: no cart, no accounts, no database.
+      The files Astro writes are ordinary HTML, and any web host can serve them.
+    </p>
+    <p>
+      In January 2026, Cloudflare <a href={PRESS}>announced</a> that the Astro team is joining it
+      and that Astro will remain open source. Croftweaver is an independent project.
+    </p>
+  </section>
+
+  <section class="wrap" id="assistant">
+    <h2>Your assistant does the typing</h2>
+    <p>
+      An AI coding assistant edits the files, runs the tests and, when you ask, publishes the
+      site. Croftweaver is developed and used with Claude Code. Codex and Antigravity have each
+      been tested from start to finish on one site (the maintainer's word, 18 October 2026; there
+      is no written record yet). There is a plugin for Claude Code and for Codex.
+    </p>
+    <p>
+      You choose the steps, as <a href="/why#steps">the four steps on the why page</a> say. In
+      Claude Code, routine build commands, <code>git push</code> among them, run without asking.
+      That saves clicks and is not a safety fence: <a href={RUNS}>what the skills run</a> lists them.
+    </p>
+  </section>
+
+  <section class="wrap" id="folder">
+    <h2>A folder on your computer</h2>
+    <p>
+      This is the working copy: a folder that mirrors the repository on GitHub. Your assistant
+      reads and changes the files there and runs the checks before anything leaves your computer.
+      Each person who works on the site has their own folder. GitHub is where the changes meet.
+    </p>
+    <p>
+      <strong>Keep that folder out of anything that syncs files.</strong> Git's own FAQ advises
+      against using a cloud syncing service for any part of a Git repository, because it can cause
+      corruption (<a href="https://git-scm.com/docs/gitfaq#sync-working-tree">the git FAQ</a>, read
+      {READ}). It names no product. iCloud Drive, OneDrive, Dropbox and Google Drive are examples of
+      such services. The toolkit's <a href={START}>getting-started guide</a> says to pick a folder
+      outside a Documents folder that syncs to iCloud or OneDrive.
+    </p>
+    <p>
+      A folder on a shared server or network drive is a different problem: two people working in
+      one folder overwrite each other, and GitHub is already where a team shares.
+    </p>
+    <p>
+      Codex in the browser needs no folder. Each task starts from a fresh copy of your repository
+      on GitHub. An older task that you resume may be behind, as the instructions for assistants
+      in every Croftweaver site (<code>AGENTS.md</code>) warn.
+    </p>
+  </section>
+
+  <section class="wrap" id="github">
+    <h2>GitHub</h2>
+    <p>
+      GitHub keeps your site's files and the history of every change, and it runs the checks on each
+      pull request. The account is yours, and the repository can be private or public. A free account
+      allows <a href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans">unlimited
+      public and private repositories</a> (read {READ}).
+    </p>
+    <p>
+      The checks run as GitHub Actions. They are
+      <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions">free on public
+      repositories</a> with GitHub's standard runners. Private repositories on the free plan get 2,000
+      minutes a month (read {READ}).
+    </p>
+  </section>
+
+  <section class="wrap" id="cloudflare">
+    <h2>Cloudflare</h2>
+    <p>
+      Cloudflare builds the site from GitHub and serves it. Every pull request from a branch in your
+      repository gets its own preview address. A pull request from a fork gets none, and every preview
+      build counts toward your monthly builds
+      (<a href="https://developers.cloudflare.com/pages/configuration/preview-deployments/">read {READ}</a>).
+    </p>
+    <h3>What the free plan covers</h3>
+    <p>
+      The free plan covers a small static site. For Pages it allows 500 builds a month, one build at a
+      time, 20,000 files per site, 25 MiB per file and 100 custom domains per project
+      (<a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare's limits, read {READ}</a>).
+    </p>
+    <p>
+      One small function runs on every request to a Croftweaver site. It keeps preview copies out of
+      search engines and sends the <code>pages.dev</code> address to your own domain. Cloudflare says that
+      once a Pages project has a function,
+      <a href="https://developers.cloudflare.com/pages/functions/routing/">all requests invoke it by default</a>.
+      So the free plan's limit of 100,000 function requests a day
+      (<a href="https://developers.cloudflare.com/workers/platform/limits/">read {READ}</a>) counts the
+      whole site, not only pages that need a server. When the limit is used up, a project setting
+      decides: serve the pages without the function, or show an error page.
+    </p>
+    <h3>Your domain</h3>
+    <p>
+      Your domain's DNS can move to Cloudflare on the free plan. You change the name servers at the
+      company where you bought the domain, and the domain stays registered there: Cloudflare's
+      <a href="https://developers.cloudflare.com/dns/faq/">DNS FAQ</a> says you do not need to move away
+      from your registrar (read {READ}). The move has traps, mail records above all.
+      <a href="/roadmap">A checklist in the toolkit</a> walks you through them, record by record, before
+      anything is switched.
+    </p>
+    <p>
+      If the company that registered your domain forwards your mail today, check before the switch
+      whether the forwarding keeps working once the DNS is elsewhere. With some companies it stops,
+      because it depends on their own DNS.
+      <a href="https://developers.cloudflare.com/email-service/get-started/route-emails/">Cloudflare Email
+      Routing</a> is one replacement: it forwards incoming mail to a mailbox you already have, it is
+      available on the free plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own
+      (read {READ}).
+    </p>
+    <p>
+      Cloudflare now recommends Workers for new projects. The toolkit deploys to Pages, which
+      Cloudflare still offers on every plan
+      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ}</a>).
+    </p>
+  </section>
+
+  <section class="wrap" id="keystatic">
+    <h2>Where Keystatic fits</h2>
+    <p>
+      Not as a fourth place. <a href="https://keystatic.com">Keystatic</a> is an optional editing screen
+      for someone who would rather fill in a form than talk to an assistant, chosen when the site is first
+      built. In local mode, the one the toolkit sets up, you open the editing screen in your browser on
+      your own computer. It writes ordinary Markdown files into the same folder, and you send the change
+      to GitHub as usual. The published site contains no Keystatic.
+    </p>
+    <p>
+      A GitHub mode serves the editing screen from the published site and saves straight to GitHub, so
+      nothing runs on the editor's computer. It needs a server part on Cloudflare, a GitHub App and stored
+      secrets. The toolkit describes it but does not set it up.
+    </p>
+  </section>
+
+  <section class="wrap" id="checks">
+    <h2>Checks before anything goes live</h2>
+    <p>
+      A hook builds the site and runs the test suites before every push. GitHub runs them again on every
+      pull request and on pushes to <code>main</code> and <code>production</code>. In the recommended
+      two-stage setup, a change appears first on a preview address that search engines are told to
+      ignore, and one command, <code>npm run ship</code>, publishes it.
+    </p>
+    <p>
+      <strong>What enforces what.</strong> The hook can be skipped. The checks on GitHub report a
+      result; they block nothing by themselves. Whether GitHub also refuses a merge until a check passes
+      depends on a branch rule that the owner switches on, and the toolkit's team setup describes it. On
+      the repository behind croftweaver.com it is on: a change reaches <code>main</code> only by a pull request that
+      passes the <code>test</code> and <code>Cloudflare Pages</code> checks, and the rule has no bypass
+      list (read from GitHub's settings on {READ}). The push that publishes to <code>production</code> is
+      not checked in the same way.
+      <a href="/checks">What each suite checks, and what a pass does not prove</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="costs">
+    <h2>What it costs</h2>
+    <p>
+      It is free to start: GitHub's free plan and Cloudflare's free plan, each with the limits above, as
+      read on {READ}. Croftweaver itself is MIT-licensed and charges nothing. Free here means free within
+      those limits, and plans change.
+    </p>
+    <p>
+      Not free: your domain, at the price of whoever registers it; your AI assistant's own plan; and
+      Plausible, if you switch it on. Plausible counts visits without cookies
+      (<a href="https://plausible.io/data-policy">its data policy</a>). Its
+      <a href="https://plausible.io/#pricing">pricing page</a> showed paid plans from $9 a month for up to
+      10,000 page views on {READ}, and you can host it yourself instead
+      (<a href="https://github.com/plausible/community-edition">the community edition</a>). Plausible stays
+      off until you switch it on.
+    </p>
+  </section>
+
+  <section class="wrap" id="swap">
+    <h2>What you can swap</h2>
+    <p>
+      The pages are static files, and any web host can serve them. The setup around them is written for
+      Cloudflare Pages: the publish script, the previews, the headers file, the small function and, if you
+      add it, Keystatic's GitHub mode. Another host means replacing those parts or doing without them.
+    </p>
+    <h3 id="shop">Where a shop fits</h3>
+    <p>
+      A shop stays on its own platform, such as Shopify. Croftweaver builds the content next to it: guides,
+      articles and landing pages that link to your products. It has no Shopify connection, and a cart,
+      accounts or checkout need a server part that Croftweaver does not build.
+    </p>
+  </section>
+
+  <section class="wrap" id="next">
+    <h2>Next step</h2>
+    <p>
+      The <a href="/start">quickstart</a> starts from nothing, and <a href="/checks">the test gate</a> lists
+      every suite. The code is on <a href={SITE.repo}>GitHub</a>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* The three places: side by side from 48rem, one under the other below it. minmax(0, 1fr) lets a long
+     word shrink the column instead of pushing the page sideways (tests/a11y.spec.ts checks 360 and 320 px). */
+  .places { list-style: none; margin: 1rem 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+  .place { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
+  .place h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
+  .place p { margin: 0; }
+  @media (min-width: 48rem) { .places { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
