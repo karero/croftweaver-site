@@ -70,6 +70,14 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Reads one file (public/.well-known/security.txt) and runs `node -e` for the date maths. Not for
+      # Dependabot's own pull requests: an Expires date that has run out must not hold up a security
+      # update (the script says why). It still runs on the push that merges them. The condition
+      # reads the pull request's author, as GitHub's Dependabot documentation does, and names the
+      # event first so that it never depends on what a missing pull request evaluates to.
+      - name: security.txt (public/.well-known/security.txt)
+        if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+        run: bash tests/check_security_txt.sh
       # Four builds with CF_PAGES_BRANCH set four ways: the Plausible script is on the live
       # build only. The Playwright run below builds once and cannot see a wrong switch.
       - name: Analytics gate (src/config.ts)

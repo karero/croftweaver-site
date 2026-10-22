@@ -48,6 +48,13 @@ if [ -f tests/check_export_own_site.sh ]; then
   bash tests/check_export_own_site.sh
 fi
 
+# The security.txt file: a contact, the canonical address, and an Expires date that has not run out.
+# Warns at 30 days, fails at 7 (see the script). Reads one file, so it needs no build.
+if [ -f tests/check_security_txt.sh ]; then
+  echo "▶ pre-push gate: security.txt…"
+  bash tests/check_security_txt.sh
+fi
+
 echo "▶ pre-push gate: building…"
 npm run build
 
