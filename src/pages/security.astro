@@ -158,8 +158,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     </div>
     <p class="legend">
       “Runs code” means code that belongs to the site and runs on a server for each visit. Cloudflare's own
-      network software runs in every case. A WordPress site that answers from a page cache skips the PHP,
-      WordPress, plugin and database steps for that request. Each step carries a label as well as a colour.
+      network software runs in every case. A response that a page cache serves before PHP runs does not run
+      PHP. Each step carries a label as well as a colour.
     </p>
     <ul class="proof">
       <Claim as="li" id="site-one-function">croftweaver.com has one function, <code>functions/_middleware.ts</code>. On its own domain it passes each request on unchanged. On its <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim>
@@ -175,7 +175,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
         <tbody>
           <tr>
             <th scope="row">Code that runs for a visit</th>
-            <td>PHP, WordPress and its plugins, unless a page cache answers the request.</td>
+            <td>PHP, WordPress and its plugins, except for a response that a page cache serves before PHP runs.</td>
             <td>croftweaver.com: one function. The template: two.</td>
           </tr>
           <tr>
@@ -254,7 +254,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <Claim as="li" id="site-publish-owner">The rule in AGENTS.md is that only the owner publishes live.</Claim>
           <li>The domain's DNS records and its renewal date.</li>
           <Claim as="li" id="site-hsts">HSTS, which tells browsers to use HTTPS only, is a Cloudflare dashboard switch and is not in <code>public/_headers</code>. On croftweaver.com it has been on since 12 October 2026, for six months, subdomains included.</Claim>
-          <Claim as="li" id="site-dashboard-switches">Other dashboard values on croftweaver.com, as the README records them after reading Cloudflare's API on 13 October 2026: Always Use HTTPS on, a minimum TLS version of 1.2, a rule that removes the NEL headers, and Bot Fight Mode off. The README also records that <code>CANONICAL_URL</code> is set, so that the <code>pages.dev</code> address sends visitors to the live domain.</Claim>
+          <Claim as="li" id="site-dashboard-switches">Other dashboard values on croftweaver.com, as the README records them after reading Cloudflare's API on 13 October 2026: Always Use HTTPS on, a minimum TLS version of 1.2, a rule that removes the NEL headers, and Bot Fight Mode off.</Claim>
+          <Claim as="li" id="site-canonical-url">The README records that <code>CANONICAL_URL</code> has been set in Cloudflare since 12 October 2026, so that the <code>pages.dev</code> address sends visitors to the live domain.</Claim>
           <Claim as="li" id="no-dnssec-caa-securitytxt-in-template">The template sets up none of DNSSEC, CAA records and a security.txt file: it holds no security.txt file, and DNS records are the owner's.</Claim>
           <li><a href="#own">The result for croftweaver.com</a> shows where it stands on those three.</li>
           <li>Optional add-ons, such as a form service, analytics or an editing tool. Each adds code or a login, and its own updates.</li>

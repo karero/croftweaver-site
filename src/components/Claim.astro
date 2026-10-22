@@ -1,7 +1,7 @@
 ---
 // One fact of /security with its source and the day it was read (src/data/security.ts). The element carries
-// data-claim="<id>"; the source line carries the kind and the source itself, so that
-// tests/check_security_page.sh can read the page back without knowing the data file's shape.
+// data-claim="<id>"; the source line carries data-kind and data-source, so that tests/check_security_page.sh can
+// compare the values the page rendered with the data file.
 import { claim, longDate, fileHref, linesLabel } from '../data/security';
 
 interface Props {

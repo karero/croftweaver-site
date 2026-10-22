@@ -55,7 +55,8 @@ import { readFileSync, existsSync } from "node:fs";
 
 const KINDS = ["url", "command", "file"];
 const SEC_TXT = "public/.well-known/security.txt";
-// A real day: month 13, day 32 and 30 February are not (Date.toISOString throws on an invalid date).
+// A real day: month 13, day 32 and 30 February are not. Date.parse gives NaN for month 13 and day 32 and rolls 30
+// February over into 2 March; the round trip through toISOString shows that the day changed.
 const realDay = (s) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
   const t = Date.parse(s + "T00:00:00Z");

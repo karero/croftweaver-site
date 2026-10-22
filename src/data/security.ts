@@ -9,8 +9,8 @@
 //   such as 'L216-L222' for the part that was read);
 // - `read` is the day the source was read or the command was run, as ISO 8601; it may be at most one day ahead of
 //   the check's UTC date. Each batch of sources has its own date below, so that re-reading one batch re-dates only it;
-// - this file is flat data: one object per claim, opened on its own line with the id as its first key. The check
-//   loads this file with the TypeScript compiler and compares what it finds with the built page.
+// - the check loads this file with the TypeScript compiler and compares each claim with the built page. The
+//   file is transpiled on its own, so it may use constants and functions but must not import anything.
 // To cut the dated PHP alert: delete the section #php-alert and the section #php-steps from the page (each has a
 // PHP-DATED comment above it) and the claims of the "PHP alert" group below. Nothing else names the alert: the
 // description, the share card, the first section, the "how this page was checked" section and public/llms.txt carry
@@ -55,6 +55,7 @@ const READ_NEWS = '2026-10-22'; // the PHP alert: CISA, php.net, the advisories,
 const READ_CLOUDFLARE = '2026-10-22'; // Cloudflare's documentation
 const READ_WORDPRESS = '2026-10-22'; // WordPress.org's pages
 const READ_REPO = '2026-10-22'; // files and commands in croftweaver-site, the template and the toolkit
+const READ_GITHUB_API = '2026-10-22'; // the GitHub API, for the main language of the 17 PHP systems' repositories
 const READ_LIVE = '2026-10-22'; // commands run against the live site, and the results in #own
 const READ_RFC = '2026-10-22'; // RFC 9116
 
@@ -117,12 +118,12 @@ export const CLAIMS: Claim[] = [
   // ---- PHP as a fact about systems, not news: stays when the dated alert is cut (section #safer) ----
   { id: 'php-share', kind: 'url', source: 'https://w3techs.com/technologies/details/pl-php', label: 'W3Techs', read: READ_NEWS },
   { id: 'php-systems-news', kind: 'url', source: KREBS, label: 'Krebs on Security', also: [{ label: 'Malwarebytes', url: MALWAREBYTES }], read: READ_NEWS },
-  { id: 'php-systems-repos', kind: 'command', source: `for r in ${SYSTEMS}; do echo "$r $(curl -s https://api.github.com/repos/$r | grep '"language"')"; done`, read: READ_REPO },
+  { id: 'php-systems-repos', kind: 'command', source: `for r in ${SYSTEMS}; do echo "$r $(curl -s https://api.github.com/repos/$r | grep '"language"')"; done`, read: READ_GITHUB_API },
 
   // ---- What runs: the Croftweaver template, croftweaver.com, and WordPress as its own documentation describes it ----
   { id: 'template-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver && cd croftweaver && git checkout 3b8a6c5f && find skills/new-website/templates/astro -name '*.php' | wc -l", read: READ_REPO },
   { id: 'site-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && git ls-files | grep -c '\\.php$'", read: READ_REPO },
-  { id: 'site-one-function', kind: 'file', source: 'functions/_middleware.ts', lines: 'L1-L17', read: READ_REPO },
+  { id: 'site-one-function', kind: 'file', source: 'functions/_middleware.ts', lines: 'L60-L74', read: READ_REPO },
   { id: 'template-two-functions', kind: 'url', source: `${TEMPLATE_AT}/functions`, label: 'the template at 3b8a6c5f', read: READ_REPO },
   { id: 'functions-all-requests', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/routing/', label: 'Cloudflare docs, Pages Functions routing', read: READ_CLOUDFLARE },
   { id: 'function-runs-on-static', kind: 'command', source: 'curl -sI https://main.croftweaver-site.pages.dev/favicon.svg | grep -i x-robots-tag', read: READ_LIVE },
@@ -154,6 +155,7 @@ export const CLAIMS: Claim[] = [
   { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L201', read: READ_REPO },
   { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L216-L222', read: READ_REPO },
   { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L216-L222', read: READ_REPO },
+  { id: 'site-canonical-url', kind: 'file', source: 'README.md', lines: 'L11-L14', read: READ_REPO },
   { id: 'no-dnssec-caa-securitytxt-in-template', kind: 'url', source: TEMPLATE_AT, label: 'the template at 3b8a6c5f', read: READ_REPO },
 
   // ---- Facts for the checklist ----
