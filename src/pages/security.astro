@@ -391,7 +391,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p>
       A Croftweaver page is built in advance and served as a file. The only server-side code that runs for a visit is one
       short function on Cloudflare's platform (see <a href="#runs">what runs</a>). Scripts that run in the
-      visitor's browser are a separate door, covered under "A script from someone else" below. So the ways into a static
+      visitor's browser are another way in, covered under <a href="#risk-scripts">A script from someone
+      else</a> below. So the ways into a static
       site are mostly about access: the accounts that can publish it, the DNS records that point to it, the
       build that makes it, and the scripts its pages load from elsewhere. We found no source that says whether
       static sites are taken over more or less often than other sites, and we make no claim about that. We also
@@ -423,7 +424,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <Claim as="li" id="tj-actions">In March 2025 CISA warned that the GitHub Action tj-actions/changed-files had been compromised and could disclose secrets such as access keys, GitHub tokens, npm tokens and private RSA keys; version 46.0.1 fixed it.</Claim>
         </ul>
       </div>
-      <div class="card">
+      <div class="card" id="risk-scripts">
         <h3>A script from someone else</h3>
         <p>A page that loads a script from another domain can run whatever that domain serves, on every visit. Check what your pages load, and remove what you do not need.</p>
         <ul class="proof">
