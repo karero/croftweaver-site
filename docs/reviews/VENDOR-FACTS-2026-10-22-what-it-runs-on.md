@@ -68,3 +68,11 @@ page's rules: `overflow-wrap: anywhere` on `.place`, and `minmax(0, 1fr)` on the
 
 Either rule alone is enough; the phone test in `tests/a11y.spec.ts` fails only when both are gone. An earlier
 comment credited `overflow-wrap: anywhere` alone, because the first check removed both rules at once.
+
+## 6. Added 2026-10-23: Cloudflare as one of the networks the web runs on (owner's request: two to five lines)
+
+- **W3Techs**, `w3techs.com/technologies/details/cn-cloudflare` (WebFetch, 2026-10-23): the page title is "Usage Statistics and Market Share of Cloudflare, October 2026"; it says "This is 27.8% of all websites"; Cloudflare "is used by" 85.9% of the websites whose reverse proxy service is known. The page shows no other date and says the reports are updated daily; its method is on W3Techs' technologies overview. The page on croftweaver.com uses the first figure only, as "October 2026 (read 23 October 2026)".
+- **Cloudflare's developer docs, "How Cloudflare works"**, `developers.cloudflare.com/fundamentals/concepts/how-cloudflare-works/` (WebFetch, 2026-10-23): Cloudflare as a DNS provider and reverse proxy that sits between visitors and the origin; CDN and caching (nearby users get locally stored copies); in the default full setup Cloudflare is the primary authoritative DNS; the anycast network helps protect against DDoS and other attacks. Workers is not on that page, so the paragraph does not mention it.
+- Cloudflare's marketing page `cloudflare.com/learning/what-is-cloudflare/` returned HTTP 403 to WebFetch and was not used.
+- **Not used, and why.** The Google summary's "generally trusted and safe": an opinion with no source, and the page makes no safety claim. The word "backbone": in networking it names the long-haul transit networks, a narrower thing than Cloudflare's service; the paragraph says "one of the companies a large part of the web runs on", which the W3Techs share supports. The Wikipedia sentences: not copied, the wording is the page's own. The company's headquarters and "ICANN-accredited": Cloudflare's own Registrar page does not say it, and only the pasted Wikipedia text does.
+- The paragraph's last sentence ("That also ties a site's availability to Cloudflare's") is the author's inference from the reverse-proxy design, not a vendor statement.
