@@ -1,5 +1,5 @@
 # DIFF review — branch feat/header-groups — the header navigation as links and groups of links
-Base `046d344` (origin/main, PR 119 merged) · depth: Normal (shipped markup, script, styles and test logic; nothing in the High row) · verdict: OPEN: one NIT (H19) waits for the owner's decision, otherwise clean for code head `8be42f9` (later commits touch `docs/reviews/` only) · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A for both (this session created the worktree `croftweaver-site-header` and the branch); POST AUTHORITY not used yet, there is no PR; GATED-THIS-DIFF: atom A, the reviewer input recorded against a chain of `(base, head)` pairs that still matches (round 1 in full, then three deltas, then one link); GLM holds the chain unbroken, Codex and fresh-eyes do not (see Notes)
+Base `046d344` (origin/main, PR 119 merged) · depth: Normal (shipped markup, script, styles and test logic; nothing in the High row) · verdict: CLEAN for code head `8be42f9` (later commits touch `docs/reviews/` only); one NIT (H19) waived by the owner · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A for both (this session created the worktree `croftweaver-site-header` and the branch); POST AUTHORITY: atom A once the PR exists (this session creates it) and atom B (the owner, 2026-10-23: "Yes: push feat/header-groups to karero/croftweaver-site and open the PR against main."); GATED-THIS-DIFF: atom A, the reviewer input recorded against a chain of `(base, head)` pairs that still matches (round 1 in full, then three deltas, then one link); GLM holds the chain unbroken, Codex and fresh-eyes do not (see Notes)
 
 | Round | Head | Artifact (full / delta since <sha>) | Reviewers: CLI version, model, effort, sandbox | seconds, tokens per seat | BUG/RISK/NIT |
 |---|---|---|---|---|---|
@@ -30,7 +30,7 @@ Tokens logged for the gate: about 572k with fresh-eyes (339,108 across eight scr
 | H16 | NIT | fresh-eyes | 1 | the complement fix had no regression test | fixed | a test reads both numbers from `Header.astro` and expects them equal; red when unequal (set I) |
 | H17 | NIT | fresh-eyes | 1 | config comment and guide disagreed about whose PR edits NAV | fixed in the code in round 1, in the guide in round 2 (J3) | both say "the navigation work's pull request that adds the second page's place" |
 | H18 | NIT | fresh-eyes | 1 | the CSP-refusal collector had no negative control | fixed | a control test loads an image from another origin and expects a refusal; red with a blind collector (set I) |
-| H19 | NIT | GLM | 1 | the current group is marked on the hidden button only, so on a phone the group name carries no mark | open: owner's decision | the current link is marked and highlighted in its list; the plan places the mark on the button only |
+| H19 | NIT | GLM | 1 | the current group is marked on the hidden button only, so on a phone the group name carries no mark | waived by the owner, 2026-10-23 | the current link is marked and highlighted in its list; the plan places the mark on the button only |
 | H20 | NIT | GLM | 1 | move focus to the button after an outside press | refuted | by then focus is where the user pressed; moving it back would take it from them |
 | H21 | NIT | GLM | 1 | the panel's links were not measured against 44 px | fixed | the window test measures them; red with a 30 px link (set I) |
 | H22 | NIT | GLM | 1 | a comment overstated what the width scan returns | fixed | the comment says "probed in steps of 4 px from 480 up to 1400 (it fails if none unfolds)" |
@@ -44,7 +44,7 @@ Tokens logged for the gate: about 572k with fresh-eyes (339,108 across eight scr
 | K2 | NIT | GLM | 3 | the row helper's comment said "tenths of a pixel row" | fixed; externally_reverified (link) | "in 10-pixel bands" |
 | K3 | NIT | GLM | 3 | the CSP helper's message read `under ""` before any path rule | fixed; externally_reverified (link) | "(no path rule above it)"; checked as code |
 
-Waivers and deferrals: H19 is not yet waived; it waits for the owner's decision (recommended: waive, reason above). No deferrals.
+Waivers and deferrals: H19 waived by the owner, in chat, 2026-10-23: "I waive H19: the current group needs no mark on the plain group name, because the current link is marked." Reason: on a phone and without JavaScript the current link is marked and highlighted in its open list, and the plan places the group mark on the button only. No deferrals.
 
 Follow-ups:
 - Footer text links keep today's size; BRAND.md asks 44 px targets (the plan's "Left as it is, on purpose").
