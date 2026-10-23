@@ -163,7 +163,7 @@ function slideList(f, s, logo) {
     { kicker: 'Reason 1: built in', title: 'Search basics, trust signals and AI readability come with every page.', body: `
       <ul class="cards four" role="list">
         ${card('Search basics', 'Titles and descriptions within set limits, structured data that says what each page is, a sitemap, internal links that resolve.')}
-        ${card('Trust signals', 'The structure that carries your experience, expertise, authority and trust: named authors, profile links, legal pages, sources. It cannot earn the reputation for you.')}
+        ${card('Trust signals', 'The structure that carries your experience, expertise, authority and trust: named authors, profile links, sources and draft legal pages for you to have reviewed. It cannot earn the reputation for you.')}
         ${card('AI answers', 'Pages are structured so that an AI assistant can read and quote them, and every site ships a file that maps it for assistants.')}
         ${card('Shared links', 'Every content page gets its own share card, and a content page without one fails a test.')}
       </ul>` },
