@@ -179,10 +179,12 @@ export const CLAIMS: Claim[] = [
   { id: 'gh-wildcard', kind: 'url', source: 'https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages', label: 'GitHub Docs, verifying a custom domain for Pages', read: READ_RISKS },
   { id: 'cf-detach', kind: 'url', source: 'https://developers.cloudflare.com/pages/configuration/custom-domains/', label: 'Cloudflare docs, Pages custom domains', read: READ_RISKS },
   { id: 'subdomailing', kind: 'url', source: 'https://thehackernews.com/2024/02/8000-subdomains-of-trusted-brands.html', label: 'The Hacker News, on Guardio Labs research', read: READ_RISKS },
+  { id: 'subdomailing-example', kind: 'url', source: 'https://thehackernews.com/2024/02/8000-subdomains-of-trusted-brands.html', label: 'The Hacker News, on Guardio Labs research', read: READ_RISKS },
   { id: 'tj-actions', kind: 'url', source: 'https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-github-action-cve-2025-30066', label: 'CISA alert, 18 March 2025', read: READ_RISKS },
   { id: 'polyfill', kind: 'url', source: 'https://sansec.io/research/polyfill-supply-chain-attack', label: 'Sansec, 25 June 2024', read: READ_RISKS },
   // What the attacker does with it, and what it costs afterwards
   { id: 'g-hacked-content', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
+  { id: 'g-code-injection', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
   { id: 'g-page-injection', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
   { id: 'g-content-injection', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
   { id: 'g-redirects', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
@@ -198,6 +200,7 @@ export const CLAIMS: Claim[] = [
   { id: 'astro-advisories', kind: 'command', source: "gh api '/advisories?ecosystem=npm&affects=astro&per_page=100' --paginate --jq '.[].published_at[0:4]' | sort | uniq -c", read: READ_RISKS },
   { id: 'astro-critical-range', kind: 'url', source: 'https://github.com/advisories/GHSA-26w7-cxv4-gfx2', label: 'GitHub Advisory Database, GHSA-26w7-cxv4-gfx2', read: READ_RISKS },
   { id: 'astro-cloudflare', kind: 'url', source: 'https://blog.cloudflare.com/astro-joins-cloudflare/', label: 'Cloudflare blog, 16 January 2026', read: READ_RISKS },
+  { id: 'astro-staff', kind: 'url', source: 'https://blog.cloudflare.com/astro-joins-cloudflare/', label: 'Cloudflare blog, 16 January 2026', read: READ_RISKS },
   { id: 'astro-portable', kind: 'url', source: 'https://astro.build/blog/joining-cloudflare/', label: 'Astro blog, the Astro Technology Company joins Cloudflare', read: READ_RISKS },
   { id: 'site-one-roof', kind: 'command', source: "whois croftweaver.com | grep -i -E 'registrar:|name server'", read: READ_RISKS },
 

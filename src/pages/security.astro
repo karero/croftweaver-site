@@ -411,7 +411,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
           <Claim as="li" id="gh-takeover">GitHub says a domain takeover can happen when a repository is deleted, a billing plan is downgraded or another change unlinks the custom domain, while the domain stays configured for GitHub Pages.</Claim>
           <Claim as="li" id="gh-wildcard">GitHub advises against wildcard DNS records, because they put a domain at immediate risk of takeover even when it is verified.</Claim>
           <Claim as="li" id="cf-detach">Cloudflare's Pages documentation says that detaching a custom domain from a project means changing the zone's DNS records: delete the project's CNAME record, then remove the domain from the project.</Claim>
-          <Claim as="li" id="subdomailing">In February 2024 The Hacker News reported research by Guardio Labs: more than 8,000 domains and 13,000 subdomains of well-known brands had been hijacked since at least September 2022. In the example the report examines, a subdomain's DNS record still pointed at another domain, so the subdomain inherited that domain's email policy, and the spam passed SPF, DKIM and DMARC.</Claim>
+          <Claim as="li" id="subdomailing">In February 2024 The Hacker News reported research by Guardio Labs: more than 8,000 domains and 13,000 subdomains of well-known brands had been hijacked since at least September 2022.</Claim>
+          <Claim as="li" id="subdomailing-example">In the one example the report examines, a subdomain's DNS record still pointed at another domain, so the subdomain inherited that domain's email policy.</Claim>
         </ul>
       </div>
       <div class="card">
@@ -431,9 +432,10 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     </div>
 
     <h3>What an attacker does with it</h3>
-    <p>Google describes four kinds of hacked content:</p>
+    <p>Google defines hacked content and lists four kinds of it:</p>
     <ul class="proof">
       <Claim as="li" id="g-hacked-content">Google defines hacked content as content placed on a site without permission, due to vulnerabilities in a site's security.</Claim>
+      <Claim as="li" id="g-code-injection">Google lists code injection: when hackers gain access to a site, they might inject malicious code into existing pages, often malicious JavaScript added directly or through iframes.</Claim>
       <Claim as="li" id="g-page-injection">Google lists page injection: hackers add new pages to a site that hold spammy or malicious content, and the existing pages might not show signs of hacking.</Claim>
       <Claim as="li" id="g-content-injection">Google lists content injection: hidden links or hidden text on existing pages, or cloaking, so that search engines see content that owners and visitors are less likely to notice.</Claim>
       <Claim as="li" id="g-redirects">Google lists redirects: injected code that sends some visitors to harmful or spammy pages, depending on the referrer, the browser or the device.</Claim>
@@ -441,9 +443,9 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
 
     <h3>What it costs afterwards</h3>
     <p>
-      The break-in can be over in an hour and the clean-up is not. Google wants the way in closed before it
-      reviews a site, and a hijacked domain can end up on blocklists. We found no source for how long the web
-      filters of companies take to forget such a domain.
+      The clean-up can take much longer than the break-in. Google wants the way in closed before it reviews a
+      site, and a hijacked domain can end up on blocklists. We found no source for how long the web filters of
+      companies take to forget such a domain.
     </p>
     <ul class="proof">
       <Claim as="li" id="g-before-review">Before it will review a hacked site, Google asks the owner to have verified ownership in Search Console, cleaned the site, corrected the vulnerability and put the clean site back online.</Claim>
@@ -500,6 +502,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <h3>One roof</h3>
     <ul class="proof">
       <Claim as="li" id="astro-cloudflare">On 16 January 2026 Cloudflare announced that The Astro Technology Company, the creators of Astro, is joining Cloudflare; Astro stays open source under the MIT licence, with a public roadmap and open governance.</Claim>
+      <Claim as="li" id="astro-staff">Cloudflare says that all full-time employees of The Astro Technology Company are now employees of Cloudflare and will continue to work on Astro.</Claim>
       <Claim as="li" id="astro-portable">Astro says it keeps supporting a wide set of deployment targets, not just Cloudflare.</Claim>
       <Claim as="li" id="site-one-roof">croftweaver.com is registered at Cloudflare, and its name servers are Cloudflare's.</Claim>
     </ul>
@@ -508,8 +511,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       in three separate ways. First, the owner says that for croftweaver.com the registrar, the DNS zone and the
       Pages project are in one Cloudflare account, so one stolen login would reach all three. Second, an outage
       or a policy change at Cloudflare would reach host, registrar and DNS together (see
-      <a href="#limits">Cloudflare is a dependency</a>). Third, Astro is now maintained by Cloudflare
-      employees, so a compromise of its release path would hit every Astro user on any host, not one account.
+      <a href="#limits">Cloudflare is a dependency</a>). Third, Astro's full-time team now works for
+      Cloudflare, so a compromise of Astro's release path would hit every Astro user on any host, not one account.
     </p>
   </section>
 
