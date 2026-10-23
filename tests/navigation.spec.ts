@@ -329,7 +329,7 @@ const groups = NAV.filter(isNavGroup);
 const groupButton = (page: PageT, label: string) => page.locator('.site-header nav').getByRole('button', { name: label, exact: true });
 const navLink = (page: PageT, href: string) => page.locator(`.site-header nav a[href="${href}"]`);
 const openGroups = (page: PageT) => page.locator('.site-header nav .group-button[aria-expanded="true"]');
-// How many rows the top-level items stand in: the distinct vertical centres, in tenths of a pixel row.
+// How many rows the top-level items stand in: the distinct vertical centres, in 10-pixel bands.
 const itemRows = (page: PageT) => page.locator('.site-header nav > ul > li').evaluateAll((lis) =>
   new Set(lis.map((li) => { const b = li.getBoundingClientRect(); return Math.round((b.top + b.height / 2) / 10); })).size);
 
@@ -346,7 +346,7 @@ function siteCspPolicies(): string[] {
     if (/^\S/.test(line) && !line.startsWith('#')) rule = line.trim();
     const m = line.match(/^\s+Content-Security-Policy:\s*(.+)$/);
     if (!m) continue;
-    expect(rule, `public/_headers has a Content-Security-Policy under "${rule}": withSiteCsp only handles the global /* rule`).toBe('/*');
+    expect(rule, `public/_headers has a Content-Security-Policy under "${rule || '(no path rule above it)'}": withSiteCsp only handles the global /* rule`).toBe('/*');
     policies.push(m[1]!);
   }
   expect(policies.length, 'public/_headers has no Content-Security-Policy under /*').toBeGreaterThan(0);
@@ -493,7 +493,7 @@ for (const group of groups) {
 }
 
 // A plain link of NAV (not in a group): on its own page it is the current page, and no group is marked. Read from NAV,
-// so a link that later moves into a group is covered by the per-link tests below instead.
+// so a link that later moves into a group is covered by the per-link tests above instead.
 for (const plain of NAV.filter((item): item is NavLink => !isNavGroup(item))) {
   test(`header — the plain link ${plain.label} is the current page on ${plain.href}, and no group is marked`, async ({ page }) => {
     await page.setViewportSize(DESKTOP);
