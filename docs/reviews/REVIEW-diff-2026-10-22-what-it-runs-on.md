@@ -131,6 +131,24 @@ setup and assertion are as described, and that both layout protections and the s
 `overflow-wrap: break-word` are in the code. It listed the layout claims as unverifiable in its sandbox, which
 is the measurement in the facts record, section 5.
 
+## Second merge of `main` (footer columns), 2026-10-23
+
+After the push, GitHub reported a conflict with `main`, which had gained PR #119 (the footer, rebuilt as four
+labelled columns from a `FOOTER` list in `src/config.ts`, with a test that every page is in it) and PR #120.
+The conflict was in `src/layouts/Base.astro`: my one hand-typed footer link against `main`'s rewrite. Resolved by
+Auto-fix on the app's report: `Base.astro` is `main`'s version byte for byte, and the page's entry went into
+`FOOTER` ("Your site", between From WordPress and Security), which is what the plan's D5 said to do when
+`FOOTER` exists. Merge commit `b4b58df`; 376 tests passed before the commit and again in the pre-push gate;
+`astro check` clean.
+
+The merge link (`merge_link.sh`, with `tests/navigation.spec.ts` passed as an extra path) was 195 lines, almost
+all of it `main`'s own footer code, which PR #119's gate had reviewed; the prior-findings record said so and
+named the three checks that mattered (my one entry; `Base.astro` equal to `main`'s; no stale text about a
+hand-typed link). One Codex seat read it: `reviewers: codex OK`, `timings: codex 113s (36175 tokens)`. **No
+BUG/RISK/NIT findings.** One cross-model seat is enough for the stamp (SKILL, closeout): Codex's chain is
+unbroken from round 1; GLM's chain ended at the first merge link. Gate total: 659,828 tokens logged.
+
 Closed 2026-10-22: no BUG open; head `78de238` (plus the record commit, which `merge_link.sh` and the skill
-exclude as `docs/reviews/`). Not pushed; the owner's ship hold applies to any publish.
+exclude as `docs/reviews/`). Pushed on 2026-10-23 on the owner's go (the pre-push gate: 372 passed in 1.2
+minutes); PR karero/croftweaver-site#121 opened. The owner's ship hold applies to any publish.
 
