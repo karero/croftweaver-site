@@ -221,3 +221,48 @@ this stretch); 38 fixed, 2 refuted (D19, D30), 1 out of scope (D32). Tokens: 938
 (through the third confirmation); the fixes, the host's own work and the fresh-eyes seat in round 1 are not in
 that figure. Full suite on `ce5b570`: 377 passed; `astro check` 0 errors. Not pushed at the time of writing:
 the push of these commits waits on the owner. The ship hold stands.
+
+
+## Analytics, the two dashboards and Keystatic's makers (2026-10-23): a review of the delta
+
+The owner asked for an analytics section above Keystatic (Plausible as the optional second tool, with the two
+dashboards of the example site genai-wednesday and a few words on who is behind Plausible and where), a closing
+point that analytics is optional and needs no cookie banner, and a few words on who is behind Keystatic (commits
+`e479c59`, `299d2e1`; the readings are in the facts record, section 9). New claims about third parties: the pair
+read the 179-line page, test and image delta with no note to the reviewers.
+
+One thing the owner may not have known, found while checking: the Cloudflare screenshot is of
+genai-wednesday.com, which answers 302 and forwards to genai-wednesday.de, the site Plausible counts. The page
+says so in the text under the pictures and calls the comparison rough. The question of a like-for-like
+screenshot (the .de overview) went to the owner with the wrap-up of this stretch.
+
+`reviewers: codex OK, melious OK`; `timings: codex 204s (69608 tokens), melious 105s (11965 tokens)`. No BUG.
+
+| # | Kind | Seat | Finding | Check | Disposition |
+|---|---|---|---|---|---|
+| D43 | RISK | Codex | the server-mode claims (counts visitors who block scripts, skips most crawlers, reads nothing from the device) have no implementation or test behind them in the review | the guide (`SKILL.md`, "Script or server mode") says blockers, scroll depth, IP, quota, device; it does **not** say crawlers: that is the function's own comment on `navigationSkip()`, which no toolkit test traces | fixed: the crawler claim now says "many crawlers and scripts", not "most", and cites the function's code; the facts record gives the rule line by line and says no test covers it |
+| D44 | RISK | Codex | zone-analytics rules (crawlers and threats counted) applied to the pictured Overview metric, which the record leaves open | the docs name the Analytics app's HTTP Traffic metrics; neither docs page read describes the Overview chart | fixed by hedge: the page says Cloudflare's documentation states it for its free-plan figures and that this "can account for part of the gap; the screenshots cannot show how much"; the gap in the record stays |
+| D45 | RISK | Codex (GLM NIT) | the "two dashboards" test counts figures only; a broken image path passes | mutation: a wrong `src` left the test green | fixed: each figure must hold one image that loads (`naturalWidth > 0`, polled after scrolling to it); the same mutation now fails the test |
+| D46 | NIT | GLM | the Cloudflare alt says "23 September to 23 October", the caption "30 days to 23 October" | the screenshot reads "30 Days" and "23 September — 23 October" | fixed: the alt gives the date range, the caption the 30 days; the numbers live in the caption only |
+| D47 | NIT | GLM | each alt repeats its caption, so a screen reader reads the figures twice | the old alts | fixed: the alts describe what is shown; the captions give site, period and figures as text |
+| D48 | BUG | Codex (confirmation) | the new Plausible alt says "six totals", but views per visit, bounce rate and visit duration are rates, not totals | the screenshot: six labelled metrics | fixed in `ce88f39`: "six metrics" |
+
+Unverifiable lists (Plausible, Keystatic and Thinkmill, screenshot provenance): met by section 9 of the facts
+record, which was read from the raw pages (the price in a real browser), not from a small model's rendering. The
+owner's screenshots cannot be verified from the repository; Codex compared the captions with the pixels of the two
+WebP files (domains, periods, figures matched).
+
+An earlier confirmation run stalled for over two hours (Codex read Playwright's source in `node_modules` while the
+machine's load average sat above 35); it was stopped by hand after checking that it was this session's own process, and
+rerun.
+
+Confirmation (Codex, one seat) on the fix delta `e479c59..299d2e1`: `timings: codex 147s (58865 tokens)`; one BUG (D48, above):
+the alt I wrote in the fix said "six totals". It is fixed in `ce88f39`. That one-word alt correction got no second
+model pass: the gate is named here, the wording was checked against the screenshot, and the suite passed (378). The
+rest of the confirmation's notes repeat the unverifiable lists above and the crawler-header generalisation that the
+page already words as "many".
+
+Totals after this stretch: 4 rounds, two merge links, and the confirmations of the earlier stretches; the analytics
+review was a review of new claims and, with no BUG found, needed no new round, only the confirmation above. 47
+findings in all (41 before, 6 here, D43 to D48); 44 fixed, 2 refuted (D19, D30), 1 out of scope (D32).
+Tokens: 1,079,014 logged for the gate through this confirmation (the stalled run, stopped by hand, has no figure in it). Not pushed at the time of writing; the ship hold stands.
