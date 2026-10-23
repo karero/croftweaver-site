@@ -160,7 +160,7 @@ h2, h3 { scroll-margin-top: 1.5rem; }
     position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
   }
   .table-wrap.stack tbody tr { padding: 1rem 0; border-bottom: 1px solid var(--line); }
-  .table-wrap.stack tbody th { width: auto; padding: 0 0 0.35rem; border: 0; font-size: 1.05rem; font-weight: 600; }
+  .table-wrap.stack tbody th, .table-wrap.stack.long-head tbody th { width: auto; padding: 0 0 0.35rem; border: 0; font-size: 1.05rem; font-weight: 600; }
   .table-wrap.stack td, .table-wrap.stack td:last-child { padding: 0.35rem 0; border: 0; }
   .table-wrap.stack td::before {
     content: attr(data-label); display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted);

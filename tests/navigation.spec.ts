@@ -514,7 +514,7 @@ for (const width of [360, 320]) {
         const wrap = tables.nth(i);
         const where = `${path}, text table ${i}`;
         const wrapWidth = await wrap.evaluate((el) => el.clientWidth);
-        const widths = await wrap.locator('tbody td').evaluateAll((tds) => tds.map((td) => td.getBoundingClientRect().width));
+        const widths = await wrap.locator('tbody th, tbody td').evaluateAll((cells) => cells.map((c) => c.getBoundingClientRect().width));
         expect(widths.length, `${where} has no cells`).toBeGreaterThan(0);
         for (const w of widths) {
           expect(w, `${where}: a cell is squeezed to ${Math.round(w)} px in a ${Math.round(wrapWidth)} px table`).toBeGreaterThan(wrapWidth * 0.8);
