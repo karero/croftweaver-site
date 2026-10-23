@@ -163,7 +163,8 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   /* The fold: up to 53.99rem (863px) the navigation folds behind the Menu button (the phone block at the
      end); above it, it stands in the header. 54rem is where the items fit one row with at least 40px to spare in
      a wide system font (Verdana, close to DejaVu Sans on a Linux machine: the items need about 809px of
-     window, 864px leaves about 55px; it was 52rem before the Technology group's longer label). The wide block
+     window on the home page and about 824px on a page whose current link is bold, so 864px leaves 40 to 55px;
+     it was 52rem before the Technology group's longer label). The wide block
      below is the exact complement of that query, so no width, a fractional one from browser zoom included,
      falls between the two; tests/navigation.spec.ts keeps the two numbers equal. */
 
