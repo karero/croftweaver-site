@@ -16,7 +16,7 @@ Tokens logged for the gate: 80,334. Both seats of the standard pair ran: `review
 
 Not done, on purpose: a test that asserts one row in a wide font (Codex's fix for T1). Verdana is not installed on the Linux CI runner, so such a test would pass or fail by the runner's fonts, not by the code; the narrowest-unfolded-width row test stays in the default font. The measurement above is the check, kept in the plan's hub (`site-navigation/measure-header.cjs`). The owner can overrule this; it is a judgment, not a measured fact.
 
-Waivers and deferrals: none.
+Waivers and deferrals: the wide-font row test (T1's suggested fix) waived by the owner, in chat, 2026-10-23: "I accept T1 as fixed and the wide-font test left out (waived)." Reason: Verdana is not on the CI runner, so such a test would follow the runner's fonts, not the code. No deferrals.
 
 Follow-ups:
 - At 864 px the header has 40 px to spare in Verdana on a page whose current link is bold. A seventh header item or a longer label needs the fold raised again; the plan's step list holds no such item.
