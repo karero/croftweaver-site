@@ -751,14 +751,15 @@ test('a11y — the picture on /what-it-runs-on shows three places side by side o
   const phone = await tops();
   expect(phone[0] < phone[1] && phone[1] < phone[2], `the places do not stack on a phone (tops ${phone})`).toBe(true);
 });
-// The picture says what each place is made of: every place lists at least three technologies, and the
+// The picture says what each place is made of: every place lists at least three entries, and the
 // box for the visitors' browsers sits below the three places, across the full width, on a desktop.
 test('a11y — each place in the /what-it-runs-on picture lists what it is made of, and the visitors sit below them', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/what-it-runs-on');
-  const counts = await page.$$eval('[data-place]', (els) => els.map((el) => el.querySelectorAll('.made li').length));
+  const counts = await page.$$eval('[data-place]', (els) =>
+    els.map((el) => [...el.querySelectorAll('.made li')].filter((li) => (li.textContent ?? '').trim() !== '').length));
   expect(counts.length, 'the picture must have three places').toBe(3);
-  for (const n of counts) expect(n, `a place lists ${n} technologies (counts ${counts})`).toBeGreaterThanOrEqual(3);
+  for (const n of counts) expect(n, `a place lists ${n} entries (counts ${counts})`).toBeGreaterThanOrEqual(3);
   const box = await page.evaluate(() => {
     const places = [...document.querySelectorAll('[data-place]')].map((el) => el.getBoundingClientRect());
     const v = document.querySelector('.visitors')!.getBoundingClientRect();

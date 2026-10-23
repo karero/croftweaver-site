@@ -46,7 +46,7 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       <div class="place" data-place>
         <h3><a href="#folder">Your computer</a></h3>
         <p>The folder with your site's files. Your assistant works here. Astro builds a preview, and the tests run here.</p>
-        <ul class="made" aria-label="Made of">
+        <ul class="made" role="list" aria-label="Made of">
           <li>Claude Code or Codex</li>
           <li>Astro, Vite and Node.js</li>
           <li>Astro pages, Markdown</li>
@@ -60,7 +60,7 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       <div class="place" data-place>
         <h3><a href="#github">GitHub</a></h3>
         <p>Your files and the history of every change. The checks run here again on every pull request.</p>
-        <ul class="made" aria-label="Made of">
+        <ul class="made" role="list" aria-label="Made of">
           <li>Git: every change</li>
           <li>Pull requests, review</li>
           <li>Actions run the checks</li>
@@ -72,7 +72,7 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       <div class="place" data-place>
         <h3><a href="#cloudflare">Cloudflare</a></h3>
         <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
-        <ul class="made" aria-label="Made of">
+        <ul class="made" role="list" aria-label="Made of">
           <li>Pages: build and host</li>
           <li>CDN and DNS</li>
           <li>A small function</li>
@@ -167,14 +167,16 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       own description</a>, read {READ_2}). Two things matter for a site:
     </p>
     <ul class="steps">
-      <li><strong>Version control.</strong> Git records every change to a project's files. If a change breaks
-        the site, you can undo a merged pull request: GitHub makes a new pull request that reverses it
+      <li><strong>Version control.</strong> Git keeps a history of the changes that are committed to a project's
+        files. If a change breaks the site, you can usually undo a merged pull request: with write access,
+        GitHub's Revert button makes a new pull request that reverses it, and if that conflicts, individual
+        commits can be reverted with Git
         (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request">reverting a pull request</a>,
         read {READ_2}).</li>
       <li><strong>Collaboration.</strong> Several people can work on the same site at once, each on their own
-        copy. They propose a change in a pull request, others review it, and it is merged. Changes to
-        different lines merge on their own; if two changes touch the same line, GitHub will not merge until a
-        person settles it
+        copy. They propose a change in a pull request, others review it, and it is merged. Git usually merges
+        changes to different lines on its own. When changes conflict, for example when two people change the
+        same line, GitHub will not merge until a person settles it
         (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts">about merge conflicts</a>,
         read {READ_2}).</li>
     </ul>
