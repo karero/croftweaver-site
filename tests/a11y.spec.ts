@@ -838,6 +838,9 @@ test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its
   expect(s.noteText, 'the footnote must say what it does not know about courts').toMatch(/knows of no ruling on analytics without cookies/);
   // A visitor figure from Plausible is a count of visitor-days, not of distinct people; the page says so.
   await expect(page.locator('#analytics')).toContainText('a person who returns on another day counts again');
+  // The plain option stays on the page: no analytics at all, with what a site without a banner still needs.
+  await expect(page.locator('#analytics')).toContainText('do not count at all');
+  await expect(page.locator('#analytics')).toContainText('processing contract with Cloudflare');
 });
 for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
