@@ -106,29 +106,35 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 .card h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
 .aside { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); }
 
-/* Tables. One style for every table on the site, so a page carries no table CSS of its own (the
-   FAQ answers, which are HTML from src/data/established-faq.ts, get it too). Markup: a .table-wrap
-   with role="region", an aria-label and tabindex="0" around the table, a <th scope="col"> for each
-   column and a <th scope="row"> for each row.
-   Two kinds, told apart by what the cells hold:
-   - Text tables (sentences in the cells) add class "stack". Above 40rem they are a table. Below it
-     each row stacks, as in the checklist on /ai-website-seo-checklist: the row header as a title, then
-     each cell under its own label, which comes from data-label and must equal the column header's text
-     (tests/navigation.spec.ts reads both). Four columns of prose cannot share 320px.
-   - Figure tables (short numbers, add class "figures", and "num" on a number cell) stay a table on a
-     phone. They must fit in 320px without scrolling; the test fails if one does not, and the fix is
-     then "stack", not a scroll bar.
-   A stacked table is no longer display: table, which drops its meaning for some screen readers,
-   so the markup of a stacked table carries the ARIA roles (role="table", "rowgroup", "row",
-   "columnheader", "rowheader", "cell"), as the checklist table does.
-   Words are never hyphenated here: the body's hyphens: auto squeezed the first column of /established-sites
+/* Tables. One style for every table on the site, so a page carries no layout CSS for a table (the
+   FAQ answers, which are HTML from src/data/established-faq.ts, get it too). A page may still style its own
+   rows: the status bar of /security, the bold last row of /proof. Markup: a .table-wrap with role="region",
+   an aria-label and tabindex="0" around the table, a <th scope="col"> for each column and a <th scope="row">
+   for each row. Every .table-wrap says which kind it is (tests/navigation.spec.ts checks it):
+   - "stack": the table holds sentences. Above 40rem it is a table. Below it each row stacks, as in the
+     checklist on /ai-website-seo-checklist: the row header as a title, then each cell under its own label,
+     which comes from data-label and must equal the column header's text (the test reads both). Four columns
+     of prose cannot share 320px.
+   - "figures": the table holds short numbers (a "num" cell is right-aligned). It is narrower and its row
+     header is a plain label. Alone, it stays a table on a phone and must fit in 320px without scrolling;
+     the test fails if it does not, and the fix is then "stack", not a scroll bar. "stack figures" together
+     (the weekly table on /case-study) is the figures look with the stacked layout, the numbers on the line
+     of their label.
+   - "long-head" (with "stack"): the row headers are long, so the first column is wider.
+   - Two cell classes: "nowrap" keeps a short value on one line, "tap" (on a link that stands alone in a
+     cell) makes it a 44px tap target on a phone.
+   A stacked table is no longer display: table. In Chromium its accessibility tree keeps the table, its rows,
+   headers and cells either way (measured 2026-10-23: without roles only the tbody rowgroup drops out); the
+   roles (role="table", "rowgroup", "row", "columnheader", "rowheader", "cell") are there because the checklist
+   table has them and Safari with VoiceOver is reported to drop the table otherwise. That is not checked here.
+   Words are not hyphenated in cells: the body's hyphens: auto squeezed the first column of /established-sites
    down to "An-thropic". */
 .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 60rem; }
 .table-wrap.figures { max-width: 46rem; }
 .table-wrap table { width: 100%; border-collapse: collapse; }
 .table-wrap th, .table-wrap td {
   text-align: left; vertical-align: top; padding: 0.7rem 1rem 0.7rem 0;
-  border-bottom: 1px solid var(--line); line-height: 1.5; hyphens: manual;
+  border-bottom: 1px solid var(--line); line-height: 1.5; -webkit-hyphens: manual; hyphens: manual;
 }
 .table-wrap th:last-child, .table-wrap td:last-child { padding-right: 0; }
 .table-wrap thead th { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
@@ -137,6 +143,8 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 .table-wrap.figures tbody th { font-weight: 400; }
 /* The row header of a text table gets a share of the width, or the long cells squeeze it to its longest word. */
 .table-wrap.stack tbody th { width: 28%; }
+/* A table whose row headers run to a sentence (the FAQ's) gives them more. */
+.table-wrap.stack.long-head tbody th { width: 38%; }
 .table-wrap .nowrap { white-space: nowrap; }
 .table-wrap .num { text-align: right; font-variant-numeric: tabular-nums; }
 .table-wrap th.num, .table-wrap td.num { padding-right: 0.2rem; padding-left: 1rem; }
@@ -158,10 +166,10 @@ h2, h3 { scroll-margin-top: 1.5rem; }
     content: attr(data-label); display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted);
   }
   /* A number sits on the line of its label, so a row of three figures is four lines, not seven. */
-  .table-wrap.stack td.num { display: flex; justify-content: space-between; gap: 1rem; padding-left: 0; white-space: nowrap; }
+  .table-wrap.stack td.num { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; white-space: nowrap; }
   .table-wrap.stack td.num::before { white-space: normal; text-align: left; }
   /* A link that stands alone in a cell is a tap target (BRAND.md): 44px tall, as the header links are. */
-  .table-wrap a.tap { display: inline-flex; align-items: center; min-height: 44px; }
+  .table-wrap a.tap { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
 }
 
 .site-footer {

@@ -494,7 +494,7 @@ for (const width of [360, 320]) {
     await page.setViewportSize({ width, height: 740 });
     for (const path of PAGES) {
       await page.goto(path);
-      // The FAQ answers are folded away until opened: lay them out too.
+      // Open any <details> so that nothing a visitor can unfold is left out of the measure (none is folded today).
       await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `${path} scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
@@ -541,20 +541,22 @@ test('tables — on a phone a link that stands alone in a cell is a 44px tap tar
       as.map((a) => {
         const cell = a.closest('td, th')!;
         const rest = [...cell.querySelectorAll('a')].reduce((t, l) => t.replace(l.textContent ?? '', ''), cell.textContent ?? '');
-        return { text: (a.textContent ?? '').trim(), alone: rest.replace(/\band\b/g, '').trim() === '', height: a.getBoundingClientRect().height };
+        const box = a.getBoundingClientRect();
+        return { text: (a.textContent ?? '').trim(), alone: rest.replace(/\band\b/g, '').trim() === '', height: box.height, width: box.width };
       }));
     for (const l of links.filter((x) => x.alone)) {
       standalone++;
       expect(l.height, `${path}: the link "${l.text}" is ${Math.round(l.height)} px tall, under the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
+      expect(l.width, `${path}: the link "${l.text}" is ${Math.round(l.width)} px wide, under the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
     }
   }
-  expect(standalone, 'no standalone link was found in a table, so nothing was checked').toBeGreaterThan(20);
+  expect(standalone, 'too few standalone links were found in tables, so the check has lost its target').toBeGreaterThan(10);
 });
 
 // Wide screens. The same text tables are tables again, the header row shows, and the cells of a row sit side by side.
 // No word is split across two lines (the body hyphenates, which squeezed the first column of /established-sites
 // down to "An-thropic"), and a row header takes few lines: three for a short one, four for a long one.
-for (const width of [768, 1280, 1920]) {
+for (const width of [641, 768, 1280, 1920]) {
   test(`tables — at ${width} px every text table is a table again: the header row shows and the cells sit side by side`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     for (const path of Object.keys(STACKED)) {
@@ -566,6 +568,7 @@ for (const width of [768, 1280, 1920]) {
         const where = `${path}, text table ${i}`;
         const head = await wrap.locator('thead').boundingBox();
         expect(head?.height ?? 0, `${where}: the header row is hidden or clipped at ${width} px`).toBeGreaterThan(20);
+        expect(await wrap.locator('thead').evaluate((el) => getComputedStyle(el).clipPath), `${where}: the header row is clipped at ${width} px`).toBe('none');
         const tops = await wrap.locator('tbody tr').first().locator('th, td').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
         expect(new Set(tops).size, `${where}: the cells of a row are stacked at ${width} px (tops ${tops.join(', ')})`).toBe(1);
       }
