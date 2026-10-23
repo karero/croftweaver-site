@@ -32,7 +32,9 @@
 # pre-push gate, and ship.sh reads that gate's output, so a nested line must never pass for
 # the outer publish's own (ship.sh leaves those lines out of everything it checks).
 #
-# template-version: 0.22   (keep in step with scripts/ship.sh's marker)
+# template-version: 0.22 plus site additions   (keep in step with scripts/ship.sh's marker)
+#   This copy adds one block to 0.22, marked "site addition": a check that this site's own
+#   pre-push hook clears git's repository variables first. Keep it when taking a newer copy.
 set -euo pipefail
 CDPATH= cd -- "$(dirname -- "$0")/.."
 ship="$PWD/scripts/ship.sh"
@@ -740,13 +742,22 @@ fi
 # Pushed from ship.sh's throwaway worktree, git hands the hook GIT_DIR, and a step that runs git
 # from a subfolder or in a scratch repo would then find the wrong repository. The toolkit's hook
 # test covers only the template's hook, and this site's differs, so check here that its first
-# command (after comments, blank lines and `set`) is the line that clears them.
+# command (after comments, blank lines and `set` lines that only set options) is the line that
+# clears them.
 hook="$PWD/scripts/hooks/pre-push"
 hook_clear='unset $(git rev-parse --local-env-vars)'
+hook_first_of() {
+  awk '!/^[ \t]*(#|$)/ && !/^set([ \t]+([-+][a-zA-Z]*o[ \t]+[a-z]+|[-+][a-zA-Z]+))*[ \t]*$/ { print; exit }' "$1"
+}
+# The filter's own counterexample: a `set` line that also runs a command is a step.
+printf '#!/bin/sh\nset -e; echo early\n%s\n' "$hook_clear" > "$work/hook-probe"
+if [ "$(hook_first_of "$work/hook-probe")" != "set -e; echo early" ]; then
+  echo "✗ ship push gate: the hook check skipped a 'set' line that also runs a command."; fail=1
+fi
 if [ ! -f "$hook" ]; then
   echo "✗ ship push gate: scripts/hooks/pre-push is missing, so its first step cannot be checked."; fail=1
 else
-  hook_first="$(awk '!/^[[:space:]]*(#|$)/ && !/^set -/ { print; exit }' "$hook")"
+  hook_first="$(hook_first_of "$hook")"
   if [ "$hook_first" != "$hook_clear" ]; then
     echo "✗ ship push gate: scripts/hooks/pre-push must clear git's repository variables before its first"
     echo "  step, with the line:  $hook_clear"
