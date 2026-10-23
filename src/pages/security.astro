@@ -389,8 +389,9 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
   <section class="wrap" id="risks">
     <h2>What can still go wrong with a static website</h2>
     <p>
-      A Croftweaver page is built in advance and served as a file. The only code that runs for a visit is one
-      short function on Cloudflare's platform (see <a href="#runs">what runs</a>). So the ways into a static
+      A Croftweaver page is built in advance and served as a file. The only server-side code that runs for a visit is one
+      short function on Cloudflare's platform (see <a href="#runs">what runs</a>). Scripts that run in the
+      visitor's browser are a separate door, covered under "A script from someone else" below. So the ways into a static
       site are mostly about access: the accounts that can publish it, the DNS records that point to it, the
       build that makes it, and the scripts its pages load from elsewhere. We found no source that says whether
       static sites are taken over more or less often than other sites, and we make no claim about that. We also
@@ -417,14 +418,14 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       </div>
       <div class="card">
         <h3>A build step or a token</h3>
-        <p>The build runs other people's code with your secrets within reach. The npm warning under <a href="#limits">where this advice runs out</a> is another case.</p>
+        <p>The build can run other people's code with your secrets within reach. The npm warning under <a href="#limits">where this advice runs out</a> is another case.</p>
         <ul class="proof">
           <Claim as="li" id="tj-actions">In March 2025 CISA warned that the GitHub Action tj-actions/changed-files had been compromised and could disclose secrets such as access keys, GitHub tokens, npm tokens and private RSA keys; version 46.0.1 fixed it.</Claim>
         </ul>
       </div>
       <div class="card">
         <h3>A script from someone else</h3>
-        <p>A page that loads a script from another domain runs whatever that domain serves, on every visit. Check what your pages load, and remove what you do not need.</p>
+        <p>A page that loads a script from another domain can run whatever that domain serves, on every visit. Check what your pages load, and remove what you do not need.</p>
         <ul class="proof">
           <Claim as="li" id="polyfill">In June 2024 Sansec reported that a company had bought the polyfill.io domain and its GitHub account in February, that the domain then injected malware through sites that embedded it, and that more than 100,000 sites embedded it.</Claim>
         </ul>
@@ -490,7 +491,7 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <ul class="proof">
       <Claim as="li" id="wp-vulns-2025">Patchstack, a company that sells WordPress protection, counted 11,334 new vulnerabilities in the WordPress ecosystem in 2025, 42% more than in 2024; 91% were in plugins and six vulnerabilities were in WordPress core.</Claim>
       <Claim as="li" id="wp-high-2025">Patchstack counted 1,966 of those (17%) as high severity, meaning likely to be exploited in automated mass-scale attacks.</Claim>
-      <Claim as="li" id="astro-advisories">The GitHub Advisory Database lists 29 reviewed security advisories for the astro package: 3 published in 2024, 11 in 2025 and 15 in 2026 up to 23 October, one rated critical (remote code execution through AVIF image optimization, September 2026).</Claim>
+      <Claim as="li" id="astro-advisories">The GitHub Advisory Database lists 29 reviewed security advisories for the astro package: 3 published in 2024, 11 in 2025 and 15 in 2026 up to 23 October, one of them rated critical.</Claim>
       <Claim as="li" id="astro-critical-range">The critical Astro advisory, remote code execution through AVIF image optimization (8 September 2026), affects astro versions before 7.2.8; version 7.2.8 fixed it.</Claim>
     </ul>
     <p>
@@ -507,12 +508,12 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       <Claim as="li" id="site-one-roof">croftweaver.com is registered at Cloudflare, and its name servers are Cloudflare's.</Claim>
     </ul>
     <p>
-      Shared ownership does not show that a site is safer, and we do not say so. It adds one point of failure,
-      in three separate ways. First, the owner says that for croftweaver.com the registrar, the DNS zone and the
+      Shared ownership does not show that a site is safer, and we do not say so. It adds three separate points
+      of failure under one roof. First, the owner says that for croftweaver.com the registrar, the DNS zone and the
       Pages project are in one Cloudflare account, so one stolen login would reach all three. Second, an outage
-      or a policy change at Cloudflare would reach host, registrar and DNS together (see
+      or a policy change at Cloudflare could expose host, registrar and DNS to the same incident (see
       <a href="#limits">Cloudflare is a dependency</a>). Third, Astro's full-time team now works for
-      Cloudflare, so a compromise of Astro's release path would hit every Astro user on any host, not one account.
+      Cloudflare, so a compromise of Astro's release path could reach any site that builds with the compromised release, on any host, not one account.
     </p>
   </section>
 

@@ -197,7 +197,7 @@ export const CLAIMS: Claim[] = [
   // How the risk compares with WordPress, and the shared roof
   { id: 'wp-vulns-2025', kind: 'url', source: 'https://patchstack.com/whitepaper/state-of-wordpress-security-in-2026/', label: 'Patchstack, State of WordPress Security in 2026 (a vendor of WordPress protection)', read: READ_RISKS },
   { id: 'wp-high-2025', kind: 'url', source: 'https://patchstack.com/whitepaper/state-of-wordpress-security-in-2026/', label: 'Patchstack, State of WordPress Security in 2026 (a vendor of WordPress protection)', read: READ_RISKS },
-  { id: 'astro-advisories', kind: 'command', source: "gh api '/advisories?ecosystem=npm&affects=astro&per_page=100' --paginate --jq '.[].published_at[0:4]' | sort | uniq -c", read: READ_RISKS },
+  { id: 'astro-advisories', kind: 'command', source: "gh api '/advisories?ecosystem=npm&affects=astro&per_page=100' --paginate --jq '.[] | .published_at[0:4] + \" \" + .severity' | sort | uniq -c", read: READ_RISKS },
   { id: 'astro-critical-range', kind: 'url', source: 'https://github.com/advisories/GHSA-26w7-cxv4-gfx2', label: 'GitHub Advisory Database, GHSA-26w7-cxv4-gfx2', read: READ_RISKS },
   { id: 'astro-cloudflare', kind: 'url', source: 'https://blog.cloudflare.com/astro-joins-cloudflare/', label: 'Cloudflare blog, 16 January 2026', read: READ_RISKS },
   { id: 'astro-staff', kind: 'url', source: 'https://blog.cloudflare.com/astro-joins-cloudflare/', label: 'Cloudflare blog, 16 January 2026', read: READ_RISKS },
