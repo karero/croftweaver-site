@@ -182,3 +182,42 @@ Confirmation (Codex, one seat) on the 23-line delta `61dbda1..5931e75`: `timings
 Totals after round 3: 3 rounds, two merge links and two one-seat confirmations; 34 findings (32 before, 2 in
 this round); 31 fixed, 2 refuted (D19, D30), 1 out of scope (D32). Tokens: 708,658 logged through round 3,
 plus 52,759 for the confirmation. Not pushed at the time of writing: the push of this change waits on the owner.
+
+
+## The GitHub text and the picture (2026-10-23): a review of the delta, then round 4
+
+The owner asked for a paragraph on what GitHub is, two items (version control, collaboration), and the picture
+rebuilt as HTML and CSS with arrows, the technologies under each place and a box for the visitors' browsers
+(commits `8f124f5`, `fd1d778`; sources and what was left out in the facts record, sections 7 and 8). New claims
+about third parties earn a review: the pair read the page delta with no note to the reviewers, then, after the
+fixes, read the fix delta `a6aa2a3..2c5a090` with `prior-diff-findings-r5.md` (the findings and the
+dispositions below). The script's ledger counts the delta review inside round 3 and the check of the fixes as
+round 4, earned by "overclaim" (`--earned-by overclaim`).
+
+Delta review: `reviewers: codex OK, melious OK`; `timings: codex 309s (71985 tokens), melious 105s (13897
+tokens)`. Check of the fixes: `reviewers: codex OK, melious OK`; `timings: codex 136s (38133 tokens), melious
+187s (8613 tokens)`.
+
+| # | Kind | Seat | Finding | Check | Disposition |
+|---|---|---|---|---|---|
+| D36 | BUG | Codex | "Git records every change to a project's files" promises recovery of changes that were never committed | GitHub's page says Git "keeps a history of changes"; uncommitted edits are not in it | fixed: "keeps a history of the changes that are committed"; the check of the fixes found the same promise in three more places (D41) |
+| D37 | BUG | Codex (GLM unverifiable) | "Changes to different lines merge on their own" read as a rule; Codex reproduced adjacent different-line edits that conflict (`git merge-file`, exit 1) | GitHub's merge-conflict page says Git "usually" merges them; my sentence dropped "usually" | fixed: "usually", conflicts as examples; both seats confirmed in round 4 |
+| D38 | RISK | Codex | the rollback was stated unconditionally | GitHub's page needs write permission and names two cases where individual commits are needed | fixed: "usually", "with write access", and a fallback; the second fallback case came back as D42 |
+| D39 | NIT | GLM | the technology lists are real lists with `list-style: none` and no `role="list"`; Safari with VoiceOver drops list semantics from that combination | the earlier markup carried `role="list"` for the same reason | fixed: `role="list"` on all three; the effect in Safari is **not traced** (Chromium only here) |
+| D40 | NIT | GLM | the test comment says "technologies" but counts list items; three empty items would pass | the test as written | fixed: counts non-empty entries; Codex ran the counting callback on empty, blank, mixed and valid fixtures |
+| D41 | BUG | Codex, GLM | D36 only partly fixed: "the history of every change" in the GitHub card, "Git: every change" in its list and the same words in the GitHub section | `rg "every change"` on the page: three hits left | fixed: "the history of the changes you push" (card and section), "Git: the history of commits"; GitHub receives pushed commits only |
+| D42 | NIT | GLM | the revert fallback names "if that conflicts" but GitHub's page names two cases (it conflicts, or the pull request was not merged on GitHub) | the facts record, section 7 | fixed: both cases |
+
+GLM's side question, whether another list on the page is styled `list-style: none` without `role="list"`,
+checked with `rg list-style` on the page: it appears once, on `.made`; the `.steps` list keeps its markers.
+
+Confirmation (Codex, one seat) on the fix delta `2c5a090..ce5b570`: `timings: codex 92s (44531 tokens)`;
+**No BUG/RISK/NIT findings.** Its unverifiable list (GitHub's Revert behaviour, the non-GitHub-merge fallback,
+Git's reversion semantics) rests on the author's dated readings in the facts record, which record a small
+model's rendering of each page, not a captured copy; a reader who wants more reads the linked GitHub pages.
+
+Totals after round 4: 4 rounds, two merge links and three one-seat confirmations; 41 findings (34 before, 7 in
+this stretch); 38 fixed, 2 refuted (D19, D30), 1 out of scope (D32). Tokens: 938,576 logged for the gate
+(through the third confirmation); the fixes, the host's own work and the fresh-eyes seat in round 1 are not in
+that figure. Full suite on `ce5b570`: 377 passed; `astro check` 0 errors. Not pushed at the time of writing:
+the push of these commits waits on the owner. The ship hold stands.
