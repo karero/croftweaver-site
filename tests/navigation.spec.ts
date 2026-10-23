@@ -329,14 +329,32 @@ const groups = NAV.filter(isNavGroup);
 const groupButton = (page: PageT, label: string) => page.locator('.site-header nav').getByRole('button', { name: label, exact: true });
 const navLink = (page: PageT, href: string) => page.locator(`.site-header nav a[href="${href}"]`);
 const openGroups = (page: PageT) => page.locator('.site-header nav .group-button[aria-expanded="true"]');
+// How many rows the top-level items stand in: the distinct vertical centres, in tenths of a pixel row.
+const itemRows = (page: PageT) => page.locator('.site-header nav > ul > li').evaluateAll((lis) =>
+  new Set(lis.map((li) => { const b = li.getBoundingClientRect(); return Math.round((b.top + b.height / 2) / 10); })).size);
 
 // `astro preview` does not send public/_headers, so the header tests that open a group run on pages served with the
 // site's own Content-Security-Policy, read from that file, and collect what the browser refuses.
+//
+// The policies are those under the `/*` rule of the file, joined with a comma (the browser enforces each policy of such a
+// header). A policy under any other path would need matching logic, so it is refused here instead of being applied to
+// pages it is not for.
+function siteCspPolicies(): string[] {
+  const policies: string[] = [];
+  let rule = '';
+  for (const line of readFileSync(new URL('../public/_headers', import.meta.url), 'utf8').split('\n')) {
+    if (/^\S/.test(line) && !line.startsWith('#')) rule = line.trim();
+    const m = line.match(/^\s+Content-Security-Policy:\s*(.+)$/);
+    if (!m) continue;
+    expect(rule, `public/_headers has a Content-Security-Policy under "${rule}": withSiteCsp only handles the global /* rule`).toBe('/*');
+    policies.push(m[1]!);
+  }
+  expect(policies.length, 'public/_headers has no Content-Security-Policy under /*').toBeGreaterThan(0);
+  return policies;
+}
+
 async function withSiteCsp(page: PageT): Promise<string[]> {
-  // Every Content-Security-Policy line of the file, joined with a comma: the browser enforces each policy of such a header.
-  const lines = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8').match(/^\s*Content-Security-Policy:\s*(.+)$/gm) ?? [];
-  expect(lines.length, 'public/_headers has no Content-Security-Policy').toBeGreaterThan(0);
-  const csp = lines.map((l) => l.replace(/^\s*Content-Security-Policy:\s*/, '')).join(', ');
+  const csp = siteCspPolicies().join(', ');
   const refused: string[] = [];
   page.on('console', (m) => { if (/content security policy|refused to/i.test(m.text())) refused.push(m.text()); });
   await page.route('**/*', async (route) => {
@@ -347,7 +365,7 @@ async function withSiteCsp(page: PageT): Promise<string[]> {
   return refused;
 }
 
-// The narrowest width, probed in steps of 4 px from 480, at which the Menu button is gone and the items stand in the header (the fold).
+// The narrowest width, probed in steps of 4 px from 480 up to 1400 (it fails if none unfolds), at which the Menu button is gone and the items stand in the header (the fold).
 async function narrowestUnfolded(page: PageT): Promise<number> {
   for (let width = 480; width <= 1400; width += 4) {
     await page.setViewportSize({ width, height: 800 });
@@ -453,21 +471,29 @@ test('header — on a wide screen the top-level items show, each group opens on 
     for (const link of group.items) await expect(navLink(page, link.href), `${link.label} does not show in its open group`).toBeVisible();
     await expect(openGroups(page), 'more than one group is open').toHaveCount(1);
     await expect(page.locator('.site-header nav .group-list:visible'), 'more than one list shows').toHaveCount(1);
-  }
-  // On a page reached through a group (the first link of the first group, read from NAV): its link is the one marked as
-  // the current page, and the group that holds it is marked as the current group; no other link or group is.
-  const holder = groups[0]!;
-  const there = holder.items[0]!;
-  await page.goto(there.href);
-  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText([there.label]);
-  await expect(groupButton(page, holder.label), 'the group holding the current page is not marked').toHaveAttribute('aria-current', 'true');
-  for (const group of groups.filter((g) => g !== holder)) {
-    await expect(groupButton(page, group.label), `the "${group.label}" group is marked as current on another group's page`).not.toHaveAttribute('aria-current', 'true');
+    // On a wide screen the group's name is hidden, and the open list is still named by it (aria-labelledby).
+    await expect(nav.getByRole('list', { name: group.label, exact: true }), `the open list of "${group.label}" has no accessible name`).toBeVisible();
   }
 });
 
+// A link inside a group (every one, read from NAV): on its own page it is the current page, and the group that holds it is
+// marked as the current group; no other link or group is.
+for (const group of groups) {
+  for (const link of group.items) {
+    test(`header — ${link.href} is the current page in "${group.label}", and that group is marked`, async ({ page }) => {
+      await page.setViewportSize(DESKTOP);
+      await page.goto(link.href);
+      await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText([link.label]);
+      await expect(groupButton(page, group.label), 'the group holding the current page is not marked').toHaveAttribute('aria-current', 'true');
+      for (const other of groups.filter((g) => g !== group)) {
+        await expect(groupButton(page, other.label), `the "${other.label}" group is marked as current on another group's page`).not.toHaveAttribute('aria-current', 'true');
+      }
+    });
+  }
+}
+
 // A plain link of NAV (not in a group): on its own page it is the current page, and no group is marked. Read from NAV,
-// so a link that later moves into a group is covered by the test above instead.
+// so a link that later moves into a group is covered by the per-link tests below instead.
 for (const plain of NAV.filter((item): item is NavLink => !isNavGroup(item))) {
   test(`header — the plain link ${plain.label} is the current page on ${plain.href}, and no group is marked`, async ({ page }) => {
     await page.setViewportSize(DESKTOP);
@@ -484,11 +510,19 @@ for (const width of [768, 800, 900, 960, 1024, 1280]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/');
     if (await page.locator('.site-header .menu-button').isVisible()) return;
-    const rows = await page.locator('.site-header nav > ul > li').evaluateAll((lis) =>
-      new Set(lis.map((li) => { const b = li.getBoundingClientRect(); return Math.round((b.top + b.height / 2) / 10); })).size);
+    const rows = await itemRows(page);
     expect(rows, `the header items wrap onto ${rows} rows at ${width} px`).toBe(1);
   });
 }
+
+// The tightest width: the narrowest at which the items are not folded, wherever the fold is. The fixed widths above can all
+// sit on one side of it.
+test('header — at the narrowest width where the items are not folded they stand in one row', async ({ page }) => {
+  await page.goto('/');
+  const width = await narrowestUnfolded(page);
+  const rows = await itemRows(page);
+  expect(rows, `the header items wrap onto ${rows} rows at ${width} px, the narrowest width where they are not folded`).toBe(1);
+});
 
 test('header — a group closes on Escape, on a click elsewhere and when another opens, and a link in it is followed', async ({ page }) => {
   await page.setViewportSize(DESKTOP);
