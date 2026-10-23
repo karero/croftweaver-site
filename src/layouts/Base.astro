@@ -14,7 +14,7 @@
 //   - <slot name="head" /> lets a page add its own <head> tags.
 import '../styles/global.css';
 import Header from '../components/Header.astro';
-import { SITE, COMPANY, ANALYTICS, SAME_AS, KNOWS_ABOUT, ogLocaleFor, schemaId } from '../config';
+import { SITE, COMPANY, ANALYTICS, SAME_AS, KNOWS_ABOUT, FOOTER, ogLocaleFor, schemaId } from '../config';
 import { RELEASE } from '../data/skills';
 
 interface Props {
@@ -92,6 +92,9 @@ const robots = noindex
 // config.ogLocaleFor (unmapped bases omit the tag; a wrong en_US would
 // contradict inLanguage).
 const ogLocale = ogLocaleFor(lang);
+// The id that names a footer column's list (aria-labelledby). The column heading is a paragraph, not an h2: four
+// boilerplate headings would repeat in the outline of every page. The list is named through aria-labelledby instead.
+const footerId = (heading: string) => 'footer-' + heading.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 ---
 <!doctype html>
 <html lang={lang}>
@@ -158,21 +161,19 @@ const ogLocale = ogLocaleFor(lang);
         <img class="badge-light" src="/brand/badge/built-with-croftweaver-light.svg" alt="Built with Croftweaver" width="179" height="32" loading="lazy" decoding="async" />
         <img class="badge-dark" src="/brand/badge/built-with-croftweaver-dark.svg" alt="Built with Croftweaver" width="179" height="32" loading="lazy" decoding="async" />
       </a>
-      <a href="https://github.com/karero/croftweaver">GitHub</a>
-      <a href="/why">Why</a>
-      <a href="/compare">Alternatives</a>
-      <a href="/from-wordpress">From WordPress</a>
-      <a href="/ai-website-seo-checklist">SEO checklist</a>
-      <a href="/positioning">Positioning</a>
-      <a href="/more-proof">More proof</a>
-      <a href="/roadmap">Roadmap</a>
-      <a href="/partner-assets">Partner assets</a>
-      <a href="/about">About</a>
-      <a href="/imprint">Imprint</a>
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Use</a>
-      <a href="/security">Security</a>
-      <a href="/support">Support</a>
+      <!-- Every page once, in labelled columns, from FOOTER in src/config.ts. -->
+      <nav class="footer-nav" aria-label="Footer">
+        {FOOTER.map((column) => (
+          <div class="footer-column">
+            <p class="footer-heading" id={footerId(column.heading)}>{column.heading}</p>
+            <ul aria-labelledby={footerId(column.heading)}>
+              {column.links.map((link) => (
+                <li><a href={link.href}>{link.label}</a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
       <!-- The current toolkit release, read from src/data/skills.ts, so it changes with the release update there.
            The home page's SoftwareSourceCode node carries the same version. -->
       <p class="release">Current release: Croftweaver {RELEASE.version}, released <time datetime={RELEASE.iso}>{RELEASE.label}</time>. <a href={`${SITE.repo}/releases/tag/v${RELEASE.version}`}>Release notes on GitHub</a>.</p>
