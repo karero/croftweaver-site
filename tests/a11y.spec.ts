@@ -830,6 +830,11 @@ test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its
   expect(s.noteText, 'the footnote must say whose position it is').toMatch(/Plausible's own position/);
   expect(s.noteText, 'the footnote must name the EDPB guidelines').toMatch(/EDPB Guidelines 2\/2023/);
   expect(s.noteText, 'the footnote must name the German authorities').toMatch(/Germany's data protection authorities/);
+  expect(s.noteText, 'the footnote must name the Baden-Württemberg authority and its conditions').toMatch(/Baden-Württemberg[\s\S]*fully anonymised[\s\S]*not\s+anonymisation/);
+  expect(s.noteText, 'the footnote must name the two German court rulings').toMatch(/OLG Frankfurt[\s\S]*OLG Dresden/);
+  expect(s.noteText, 'the footnote must say what it does not know about courts').toMatch(/knows of no ruling on analytics without cookies/);
+  // A visitor figure from Plausible is a count of visitor-days, not of distinct people; the page says so.
+  await expect(page.locator('#analytics')).toContainText('a person who returns on another day counts again');
 });
 for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {

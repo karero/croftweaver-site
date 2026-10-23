@@ -283,7 +283,10 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
       The two differ a lot, and neither is the true number. Cloudflare's documentation says its free-plan
       figures include crawlers and threats, and Plausible's script counts only the browsers that run it, so a
       visitor who blocks it is missed. That can account for part of the gap; the screenshots cannot show how
-      much. The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
+      much. Plausible also counts a visitor once per day, from a hash that changes every 24 hours, so it stores no
+      IP address; a person who returns on another day counts again
+      (<a href="https://plausible.io/docs/metrics-definitions">its metrics definitions</a> and
+      <a href="https://plausible.io/data-policy">data policy</a>, read {READ_2}). The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
       shows genai-wednesday.com, an address that forwards to genai-wednesday.de, the site Plausible counts.
     </p>
     <p>
@@ -325,7 +328,17 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
       whether audience measurement may be used without consent, and that an answer is possible at most for a
       precisely defined set-up and purpose
       (<a href="https://www.datenschutz-berlin.de/fileadmin/user_upload/pdf/publikationen/DSK/orientierungshilfen/2024_DSK-OH_Digitale-Dienste.pdf">their guidance of November 2024</a>,
-      paragraphs 87 to 89; both read {READ_2}). Ask your own adviser.
+      paragraphs 87 to 89; both read {READ_2}). The authority of Baden-Württemberg says that server-side tracking
+      without cookies can rest on legitimate interest and fall outside the German cookie rule, but only if the data
+      are fully anonymised before they go to a tracking provider; swapping identifiers for hashes is not
+      anonymisation, and neither is following a visitor beyond one session
+      (<a href="https://www.baden-wuerttemberg.datenschutz.de/faq-zu-cookies-und-tracking-2/">its FAQ on cookies and tracking</a>,
+      answer 3.2, read {READ_2}). German courts have awarded damages for tracking without consent:
+      in a case about analysis cookies placed through other companies' websites
+      (<a href="https://www.beck-aktuell.de/heute-im-recht/rechtsprechung/olg-ffm-6u81-23-schmerzensgeld-cookies-drittwebsites-unternehmen-2026-01-06">OLG Frankfurt, 11 December 2025</a>)
+      and in cases about the tools Meta offers companies for their websites
+      (<a href="https://medienservice.sachsen.de/medien/news/1094746/download_pdf">OLG Dresden, 3 February 2026</a>;
+      both read {READ_2}). This page knows of no ruling on analytics without cookies. Ask your own adviser.
     </p>
   </section>
 

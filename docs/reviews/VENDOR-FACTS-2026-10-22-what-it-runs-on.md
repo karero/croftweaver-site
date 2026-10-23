@@ -234,3 +234,22 @@ rendering, marked below) except the Saxony press release, whose text layer was r
     Plausible (guide: "forwards the visitor's IP to Plausible") and Plausible hashes it; it does not truncate before
     forwarding. The page says "passes the visitor's IP address on to Plausible". Also in the summary: "anonymised, so the
     GDPR does not apply" next to "rely on legitimate interest" (Art. 6 (1) (f)); the two do not go together.
+- LfDI Baden-Württemberg (the state data protection authority), "FAQ zu Cookies und Tracking", answer 3.2 "Was ist
+  serverseitiges Tracking und kann ich damit Vorgaben des TTDSG oder der DS-GVO umgehen?" (the PDF, version 2.0.1 of
+  March 2022, from its text layer, and the live web page `.../faq-zu-cookies-und-tracking-2/`, raw; the passage is the
+  same in both). Found through a pasted Perplexity answer and a blog (dr-datenschutz.de) that both name it. The
+  passage: server-side tracking without cookies, where the usage data are "vollständig anonymisiert" **before** they
+  are passed to a tracking provider, "kann ... ggf. auf ein berechtigtes Interesse nach Artikel 6 Absatz 1 Buchstabe
+  f DS-GVO gestützt werden und eine Anwendung des TTDSG scheidet aus". Then the conditions: "das bloße Ersetzen von
+  Identifizierungsmerkmalen durch andere wie User-IDs oder Hashes ... keine Pseudonymisierung und auch keine
+  Anonymisierung"; user paths individualised beyond a session are not anonymous either; cookies or fingerprinting
+  open the TTDSG; if identifying features are processed or passed on, the GDPR applies and the risks must be weighed.
+  **How it bears on Plausible (for the owner, not on the page):** Plausible's daily identifier is a salted hash that
+  spans a day, and hosted Plausible receives the visitor's IP address before it hashes it, so two of the authority's
+  conditions ("before passing on", "not beyond a session") are not plainly met; whether a processor's hashing counts
+  is not answered by the text. The page states the authority's conditions and applies none of them to Plausible.
+- Also in the Perplexity paste, not used: CJEU C-413/23 P (EDPS v SRB, 4 September 2025): the paste says pseudonymised
+  data "regelmäßig weiterhin personenbezogen"; five law-firm summaries read in search results describe a
+  recipient-relative approach (pseudonymised data need not be personal data for a recipient who cannot reasonably
+  re-identify), and disagree on how far the Court itself went; the judgment was not read. LG Köln 31 O 395/26 (2026),
+  LG Dresden 1a O 1582/18 (2019): named only in the paste; not checked; not about cookieless analytics.
