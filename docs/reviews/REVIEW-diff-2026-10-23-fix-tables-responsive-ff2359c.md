@@ -10,6 +10,7 @@ Degraded: the standard pair did not run in any round. Round 1: Codex and the fre
 | 1 | `ff2359c` | full change (`046d344...ff2359c`, 52,842 bytes) | codex-cli gpt-6.1-sol, config effort, read-only; fresh-eyes Claude Sonnet sub-agent, read-only by instruction, ran no tests; GLM 5.3 melious FAILED; ollama-cloud FAILED | codex 401 s / 110,228; fresh-eyes 336 s / 157,831 | Codex 3 / 2 / 0; fresh-eyes 0 / 0 / 8 |
 | 2 | `3ce5836` | delta `ff2359c..3ce5836` (17,112 bytes, `--verify`) | Codex medium, read-only | codex 197 s / 56,243 | 1 / 0 / 0 |
 | 3 | `7cd4f45` | delta `3ce5836..7cd4f45` (`--verify`) | Codex medium, read-only | codex 115 s / 47,066 | 0 / 0 / 0 |
+| merge link | `40faaa1` | `merge_link.sh 046d344 7cd4f45 0e1b175` (main merged in: PR 122, the header groups; one conflict, in `tests/navigation.spec.ts`, resolved by keeping both) | Codex medium, read-only | 47 to 60 s, tokens not recorded | 1 / 2 / 0 outside my change (see below), 1 / 0 / 0 in it |
 
 Tokens logged for the gate: 371,368 over four counted seat runs (the failed seats gave no figure). No round past 3.
 
@@ -29,6 +30,8 @@ Tokens logged for the gate: 371,368 over four counted seat runs (the failed seat
 | T12 | NIT | fresh-eyes | 1 | the report counted 14 tables, the source has 13 | fixed in the report | 13 `<table` in `src` and in `dist`: nine stacked, four figures |
 | T13 | NIT | fresh-eyes | 1 | `tabindex="0"` on regions that no longer scroll on a phone | follow-up: the owner's choice | kept: the pattern of the nine existing tables; a stop that does nothing on a phone |
 | T14 | BUG | Codex | 2 | `.stack.long-head tbody th` (width 38%) outranks the phone reset `width: auto`: the FAQ row titles stay 38% wide on a phone | fixed; externally_reverified (round 3) | reproduced first: the phone test, extended to measure `th` as well as `td`, failed ("a cell is squeezed to 122 px in a 320 px table"); the reset now names `.stack.long-head` and the suite passes |
+
+Merge link (head `40faaa1`, after main moved to `0e1b175`): one finding in my change, fixed in the next commit: the comment above the table tests said a table of figures stays a table, untrue for the case-study's `stack figures` (T15, BUG, fixed; comment only). Three more, none in my change: they sit in the header tests that PR 122 brought in (the CSP comment at `navigation.spec.ts` line 336, a `second!.label` access that crashes when a group has fewer than two groups, and a 4 px step in the breakpoint scan). They are PR 122's code, reviewed in its own gate: reported to its owner, not fixed here.
 
 Follow-ups:
 - T13: whether to drop `tabindex="0"` from regions that cannot scroll on a phone.

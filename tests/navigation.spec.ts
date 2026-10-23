@@ -696,7 +696,7 @@ test('checklist table — on a wide screen it is still a table: the header row s
 
 // Site-specific (not in the shipped suite): every table on the site. One style (src/styles/global.css,
 // "Tables"), two kinds. A text table (sentences in its cells) is a table above 40rem and stacks below it,
-// each row a title with every cell under its own label. A table of figures stays a table, and has to fit.
+// each row a title with every cell under its own label. A table of figures without "stack" stays a table, and has to fit.
 // Phones come first (BRAND.md: design at 360px up), and the phone cases run on every page.
 //
 // The text tables, by page. A page that gains or loses one must say so here: the count is the guard against
