@@ -58,6 +58,7 @@ const READ_REPO = '2026-10-22'; // files and commands in croftweaver-site, the t
 const READ_GITHUB_API = '2026-10-22'; // the GitHub API, for the main language of the 17 PHP systems' repositories
 const READ_LIVE = '2026-10-22'; // commands run against the live site, and the results in #own
 const READ_RFC = '2026-10-22'; // RFC 9116
+const READ_RISKS = '2026-10-23'; // the section #risks: Google, Spamhaus, CISA, GitHub, Cloudflare, Astro, Patchstack, Sansec, the news report on SubdoMailing, the GitHub Advisory Database
 
 const CISA = 'https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching';
 const PHPNET = 'https://www.php.net/archive/2026.php#2026-10-21-5';
@@ -170,6 +171,35 @@ export const CLAIMS: Claim[] = [
   { id: 'npm-attacks', kind: 'url', source: 'https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem', label: 'CISA alert, 23 September 2025', read: READ_NEWS },
   { id: 'site-csp-inline', kind: 'command', source: 'curl -sI https://croftweaver.com/ | grep -i content-security-policy', read: READ_LIVE },
   { id: 'rfc-9116', kind: 'url', source: 'https://www.rfc-editor.org/rfc/rfc9116', label: 'RFC 9116', read: READ_RFC },
+
+  // ---- What can still go wrong (section #risks): cut with the section, see the note at the top of src/pages/security.astro ----
+  // Four ways in
+  { id: 'cisa-dns', kind: 'url', source: 'https://www.cisa.gov/news-events/directives/ed-19-01-mitigate-dns-infrastructure-tampering', label: 'CISA, Emergency Directive 19-01 (22 January 2019)', read: READ_RISKS },
+  { id: 'gh-takeover', kind: 'url', source: 'https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages', label: 'GitHub Docs, verifying a custom domain for Pages', read: READ_RISKS },
+  { id: 'gh-wildcard', kind: 'url', source: 'https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages', label: 'GitHub Docs, verifying a custom domain for Pages', read: READ_RISKS },
+  { id: 'cf-detach', kind: 'url', source: 'https://developers.cloudflare.com/pages/configuration/custom-domains/', label: 'Cloudflare docs, Pages custom domains', read: READ_RISKS },
+  { id: 'subdomailing', kind: 'url', source: 'https://thehackernews.com/2024/02/8000-subdomains-of-trusted-brands.html', label: 'The Hacker News, on Guardio Labs research', read: READ_RISKS },
+  { id: 'tj-actions', kind: 'url', source: 'https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-github-action-cve-2025-30066', label: 'CISA alert, 18 March 2025', read: READ_RISKS },
+  { id: 'polyfill', kind: 'url', source: 'https://sansec.io/research/polyfill-supply-chain-attack', label: 'Sansec, 25 June 2024', read: READ_RISKS },
+  // What the attacker does with it, and what it costs afterwards
+  { id: 'g-hacked-content', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
+  { id: 'g-page-injection', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
+  { id: 'g-content-injection', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
+  { id: 'g-redirects', kind: 'url', source: 'https://developers.google.com/search/docs/essentials/spam-policies', label: 'Google Search Central, spam policies', read: READ_RISKS },
+  { id: 'g-before-review', kind: 'url', source: 'https://web.dev/articles/request-a-review', label: 'Google, request a review (web.dev)', read: READ_RISKS },
+  { id: 'g-review-weeks', kind: 'url', source: 'https://web.dev/articles/request-a-review', label: 'Google, request a review (web.dev)', read: READ_RISKS },
+  { id: 'g-warnings-72h', kind: 'url', source: 'https://web.dev/articles/request-a-review', label: 'Google, request a review (web.dev)', read: READ_RISKS },
+  { id: 'g-reinfected', kind: 'url', source: 'https://support.google.com/websearch/answer/190597', label: 'Google Search Help, the hacked-site warning', read: READ_RISKS },
+  { id: 'sh-hijacked', kind: 'url', source: 'https://www.spamhaus.org/blocklists/domain-blocklist/', label: 'Spamhaus, Domain Blocklist', read: READ_RISKS },
+  { id: 'sh-expire-relist', kind: 'url', source: 'https://www.spamhaus.org/blocklists/domain-blocklist/', label: 'Spamhaus, Domain Blocklist', read: READ_RISKS },
+  // How the risk compares with WordPress, and the shared roof
+  { id: 'wp-vulns-2025', kind: 'url', source: 'https://patchstack.com/whitepaper/state-of-wordpress-security-in-2026/', label: 'Patchstack, State of WordPress Security in 2026 (a vendor of WordPress protection)', read: READ_RISKS },
+  { id: 'wp-high-2025', kind: 'url', source: 'https://patchstack.com/whitepaper/state-of-wordpress-security-in-2026/', label: 'Patchstack, State of WordPress Security in 2026 (a vendor of WordPress protection)', read: READ_RISKS },
+  { id: 'astro-advisories', kind: 'command', source: "gh api '/advisories?ecosystem=npm&affects=astro&per_page=100' --paginate --jq '.[].published_at[0:4]' | sort | uniq -c", read: READ_RISKS },
+  { id: 'astro-critical-range', kind: 'url', source: 'https://github.com/advisories/GHSA-26w7-cxv4-gfx2', label: 'GitHub Advisory Database, GHSA-26w7-cxv4-gfx2', read: READ_RISKS },
+  { id: 'astro-cloudflare', kind: 'url', source: 'https://blog.cloudflare.com/astro-joins-cloudflare/', label: 'Cloudflare blog, 16 January 2026', read: READ_RISKS },
+  { id: 'astro-portable', kind: 'url', source: 'https://astro.build/blog/joining-cloudflare/', label: 'Astro blog, the Astro Technology Company joins Cloudflare', read: READ_RISKS },
+  { id: 'site-one-roof', kind: 'command', source: "whois croftweaver.com | grep -i -E 'registrar:|name server'", read: READ_RISKS },
 
   // ---- croftweaver.com's own results (#own on the page): update `result`, `status` and `read` from LIVE reads when a check changes ----
   // tests/check_security_page.sh fails while own-security-txt says "not yet" and public/.well-known/security.txt exists.

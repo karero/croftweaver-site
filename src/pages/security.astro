@@ -14,6 +14,10 @@
 //   the "PHP alert" group in src/data/security.ts. Nothing else names the alert (the description, the share
 //   card, the first section, "how this page was checked" and public/llms.txt carry no mention of it); the
 //   build, tests/check_security_page.sh and the /security tests passed on the cut page (tried 2026-10-22);
+// - the section on what can still go wrong (#risks, a RISKS comment above it) is cut together with the claims of
+//   the "What can still go wrong" group in src/data/security.ts: delete the section, the group and READ_RISKS, and
+//   set the paragraph in "how this page was checked" back to "on 22 October 2026", without the search-tool sentence.
+//   It gives one labelled judgment (a typical WordPress site, one question, no figure) and no overall ranking;
 // - croftweaver.com's own results (#own) list what fails, and are filled from LIVE reads by hand in
 //   src/data/security.ts; the check fails while the security.txt row says "not yet" and the file exists;
 // - advice and reasoning stand outside the claim elements, and a claim states one sourced fact.
@@ -381,6 +385,134 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     </div>
   </section>
 
+  <!-- RISKS: this section and the "What can still go wrong" group of claims in src/data/security.ts. See the note at the top. -->
+  <section class="wrap" id="risks">
+    <h2>What can still go wrong with a static website</h2>
+    <p>
+      A Croftweaver page is built in advance and served as a file. The only code that runs for a visit is one
+      short function on Cloudflare's platform (see <a href="#runs">what runs</a>). So the ways into a static
+      site are mostly about access: the accounts that can publish it, the DNS records that point to it, the
+      build that makes it, and the scripts its pages load from elsewhere. We found no source that says whether
+      static sites are taken over more or less often than other sites, and we make no claim about that. We also
+      do not claim that a flaw in Astro or in its packages cannot reach a static site.
+    </p>
+    <div class="grid two">
+      <div class="card">
+        <h3>A DNS or registrar account</h3>
+        <p>Whoever can change your DNS records can send your visitors, and your mail, somewhere else.</p>
+        <ul class="proof">
+          <Claim as="li" id="cisa-dns">CISA described the attack on DNS accounts: the attacker takes over an account that can change DNS records, points records such as A, MX or NS at addresses the attacker controls, and can then obtain valid certificates for the domain, so visitors see no warning.</Claim>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>A left-over DNS record</h3>
+        <p>A record that still points at a service you stopped using can be claimed by someone else. Remove the record when you remove the service, and avoid wildcard records.</p>
+        <ul class="proof">
+          <Claim as="li" id="gh-takeover">GitHub says a domain takeover can happen when a repository is deleted, a billing plan is downgraded or another change unlinks the custom domain, while the domain stays configured for GitHub Pages.</Claim>
+          <Claim as="li" id="gh-wildcard">GitHub advises against wildcard DNS records, because they put a domain at immediate risk of takeover even when it is verified.</Claim>
+          <Claim as="li" id="cf-detach">Cloudflare's Pages documentation says that detaching a custom domain from a project means changing the zone's DNS records: delete the project's CNAME record, then remove the domain from the project.</Claim>
+          <Claim as="li" id="subdomailing">In February 2024 The Hacker News reported research by Guardio Labs: more than 8,000 domains and 13,000 subdomains of well-known brands had been hijacked since at least September 2022. In the example the report examines, a subdomain's DNS record still pointed at another domain, so the subdomain inherited that domain's email policy, and the spam passed SPF, DKIM and DMARC.</Claim>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>A build step or a token</h3>
+        <p>The build runs other people's code with your secrets within reach. The npm warning under <a href="#limits">where this advice runs out</a> is another case.</p>
+        <ul class="proof">
+          <Claim as="li" id="tj-actions">In March 2025 CISA warned that the GitHub Action tj-actions/changed-files had been compromised and could disclose secrets such as access keys, GitHub tokens, npm tokens and private RSA keys; version 46.0.1 fixed it.</Claim>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>A script from someone else</h3>
+        <p>A page that loads a script from another domain runs whatever that domain serves, on every visit. Check what your pages load, and remove what you do not need.</p>
+        <ul class="proof">
+          <Claim as="li" id="polyfill">In June 2024 Sansec reported that a company had bought the polyfill.io domain and its GitHub account in February, that the domain then injected malware through sites that embedded it, and that more than 100,000 sites embedded it.</Claim>
+        </ul>
+      </div>
+    </div>
+
+    <h3>What an attacker does with it</h3>
+    <p>Google describes four kinds of hacked content:</p>
+    <ul class="proof">
+      <Claim as="li" id="g-hacked-content">Google defines hacked content as content placed on a site without permission, due to vulnerabilities in a site's security.</Claim>
+      <Claim as="li" id="g-page-injection">Google lists page injection: hackers add new pages to a site that hold spammy or malicious content, and the existing pages might not show signs of hacking.</Claim>
+      <Claim as="li" id="g-content-injection">Google lists content injection: hidden links or hidden text on existing pages, or cloaking, so that search engines see content that owners and visitors are less likely to notice.</Claim>
+      <Claim as="li" id="g-redirects">Google lists redirects: injected code that sends some visitors to harmful or spammy pages, depending on the referrer, the browser or the device.</Claim>
+    </ul>
+
+    <h3>What it costs afterwards</h3>
+    <p>
+      The break-in can be over in an hour and the clean-up is not. Google wants the way in closed before it
+      reviews a site, and a hijacked domain can end up on blocklists. We found no source for how long the web
+      filters of companies take to forget such a domain.
+    </p>
+    <ul class="proof">
+      <Claim as="li" id="g-before-review">Before it will review a hacked site, Google asks the owner to have verified ownership in Search Console, cleaned the site, corrected the vulnerability and put the clean site back online.</Claim>
+      <Claim as="li" id="g-reinfected">Google tells the owner of a hacked site to fix the security issue that allowed the infection, and says that otherwise the site is likely to be reinfected; it asks for a review only when the entire site is clean and secure.</Claim>
+      <Claim as="li" id="g-review-weeks">Google says a review of a site hacked with spam can take up to several weeks.</Claim>
+      <Claim as="li" id="g-warnings-72h">Once Google finds the site clean, it removes the warnings in browsers and search results within 72 hours.</Claim>
+      <Claim as="li" id="sh-hijacked">Spamhaus's Domain Blocklist covers hijacked domains that were otherwise used for legitimate purposes.</Claim>
+      <Claim as="li" id="sh-expire-relist">Spamhaus says a listing expires without intervention once the domain stops matching the criteria, and that a domain may be listed again if it is detected again.</Claim>
+    </ul>
+    <p>
+      <strong>From the owner of croftweaver.com, not independently checkable:</strong> a WordPress site of his
+      was compromised. In March 2021 Google's Search Console emailed him that hacked content had been found on
+      the site, and applied a manual action that warns visitors in search results. Hidden pages with spam
+      titles had been added to the site, and spam mail pointed at them. He restored a backup to remove the
+      pages, but the spammer got back in and put them up again; he believes the way in had not been closed. By
+      his own recollection it took about two years until the domain was off the spam lists that companies use,
+      and he cannot name a single list. Afterwards the site ran two WordPress security plugins, one paid and
+      one free.
+    </p>
+    <p>
+      Restoring a backup can bring back the old files, and any flaw in them. Google's advice above is to fix
+      what let the attacker in.
+    </p>
+    <h3>If it happens to you</h3>
+    <ol class="steps">
+      <li>Verify the site in Google Search Console and read its Security Issues report.</li>
+      <li>Clean the site, and close the way in before anything else: the attacker came through something.</li>
+      <li>Put the clean site back online, then ask Google for a review.</li>
+      <li>Look the domain up at <a href="https://check.spamhaus.org">check.spamhaus.org</a>, Spamhaus's own checker.</li>
+    </ol>
+
+    <h3>How the risk compares with WordPress</h3>
+    <p>
+      <strong>Our judgment, not a measurement.</strong> On one question, how likely a break-in is to come
+      through the site's own software, we think a typical WordPress site is exposed to much more than a
+      Cloudflare and Astro site: a database and a public login, plugins, and thousands of new plugin flaws a
+      year. We make no comparison for other PHP systems. The accounts, DNS records and scripts above reach both
+      kinds of site, and we have no data on what a break-in costs or how long recovery takes on either. No
+      source measures the difference, so we give no figure, and we still give no overall ranking.
+    </p>
+    <p>What we know on each side:</p>
+    <ul class="proof">
+      <Claim as="li" id="wp-vulns-2025">Patchstack, a company that sells WordPress protection, counted 11,334 new vulnerabilities in the WordPress ecosystem in 2025, 42% more than in 2024; 91% were in plugins and six vulnerabilities were in WordPress core.</Claim>
+      <Claim as="li" id="wp-high-2025">Patchstack counted 1,966 of those (17%) as high severity, meaning likely to be exploited in automated mass-scale attacks.</Claim>
+      <Claim as="li" id="astro-advisories">The GitHub Advisory Database lists 29 reviewed security advisories for the astro package: 3 published in 2024, 11 in 2025 and 15 in 2026 up to 23 October, one rated critical (remote code execution through AVIF image optimization, September 2026).</Claim>
+      <Claim as="li" id="astro-critical-range">The critical Astro advisory, remote code execution through AVIF image optimization (8 September 2026), affects astro versions before 7.2.8; version 7.2.8 fixed it.</Claim>
+    </ul>
+    <p>
+      The audit in <a href="#checklist">the checklist</a> checks the version the site runs; the advisory list
+      covers all versions. A count of flaws in a whole ecosystem is not the exposure of one site, so we compare
+      no counts with each other.
+    </p>
+
+    <h3>One roof</h3>
+    <ul class="proof">
+      <Claim as="li" id="astro-cloudflare">On 16 January 2026 Cloudflare announced that The Astro Technology Company, the creators of Astro, is joining Cloudflare; Astro stays open source under the MIT licence, with a public roadmap and open governance.</Claim>
+      <Claim as="li" id="astro-portable">Astro says it keeps supporting a wide set of deployment targets, not just Cloudflare.</Claim>
+      <Claim as="li" id="site-one-roof">croftweaver.com is registered at Cloudflare, and its name servers are Cloudflare's.</Claim>
+    </ul>
+    <p>
+      Shared ownership does not show that a site is safer, and we do not say so. It adds one point of failure,
+      in three separate ways. First, the owner says that for croftweaver.com the registrar, the DNS zone and the
+      Pages project are in one Cloudflare account, so one stolen login would reach all three. Second, an outage
+      or a policy change at Cloudflare would reach host, registrar and DNS together (see
+      <a href="#limits">Cloudflare is a dependency</a>). Third, Astro is now maintained by Cloudflare
+      employees, so a compromise of its release path would hit every Astro user on any host, not one account.
+    </p>
+  </section>
+
   <section class="wrap" id="limits">
     <h2>Where this advice runs out</h2>
     <ul class="steps">
@@ -415,7 +547,8 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <h2>How this page was checked</h2>
     <p>
       Each dated fact above carries its source and the day we read it. An AI assistant read each source
-      directly on 22 October 2026, without a summary tool, and kept a log of what each one says. A test,
+      directly on 22 and 23 October 2026, without a summary tool, and kept a log of what each one says. On
+      23 October it used a search tool only to find sources, never to read them. A test,
       <code>tests/check_security_page.sh</code>, checks that every registered claim has a source and a date
       and that the page shows what the data lists. It cannot check that a source says what the sentence
       says. Editorial review covers that, and everything on this page that is not a registered claim.
