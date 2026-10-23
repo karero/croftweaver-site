@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
-import { SITE, NAV, FOOTER } from '../src/config';
+import { SITE, NAV, NAV_LINKS, FOOTER, isNavGroup } from '../src/config';
 
 // Every route in PAGES returns 200, and every internal link on it resolves to a
 // 200 with no redirect hop (clean URLs only). Links written as absolute production
@@ -316,8 +316,43 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
 // button is switched on by a script: without JavaScript the links must simply stay visible,
 // or a visitor with scripts off would have no way to any page. Every item stays a 44px tap
 // target (BRAND.md), and the open menu must not make a 320px phone scroll sideways.
+//
+// Some items are groups (NAV in src/config.ts): a button opens a list of links under it. The lists are in the HTML
+// at load, hidden by CSS, so the dead-link suite reads their links and they stay reachable without JavaScript. On a
+// phone and without JavaScript the group's name is a plain label and its links are always shown, and no group
+// button is.
 const PHONE = { width: 360, height: 740 };
-const headerLinks = (page: import('@playwright/test').Page) => page.locator('.site-header nav a');
+const DESKTOP = { width: 1280, height: 800 };
+type PageT = import('@playwright/test').Page;
+const headerLinks = (page: PageT) => page.locator('.site-header nav a');
+const groups = NAV.filter(isNavGroup);
+const groupButton = (page: PageT, label: string) => page.locator('.site-header nav').getByRole('button', { name: label, exact: true });
+const navLink = (page: PageT, href: string) => page.locator(`.site-header nav a[href="${href}"]`);
+const openGroups = (page: PageT) => page.locator('.site-header nav .group-button[aria-expanded="true"]');
+
+// `astro preview` does not send public/_headers, so the header tests that open a group run on pages served with the
+// site's own Content-Security-Policy, read from that file, and collect what the browser refuses.
+async function withSiteCsp(page: PageT): Promise<string[]> {
+  const csp = readFileSync(new URL('../public/_headers', import.meta.url), 'utf8').match(/^\s*Content-Security-Policy:\s*(.+)$/m)?.[1];
+  expect(csp, 'public/_headers has no Content-Security-Policy').toBeTruthy();
+  const refused: string[] = [];
+  page.on('console', (m) => { if (/content security policy|refused to/i.test(m.text())) refused.push(m.text()); });
+  await page.route('**/*', async (route) => {
+    if (route.request().resourceType() !== 'document') return route.continue();
+    const response = await route.fetch();
+    await route.fulfill({ response, headers: { ...response.headers(), 'content-security-policy': csp! } });
+  });
+  return refused;
+}
+
+// The narrowest desktop width at which the Menu button is gone and the items stand in the header (the fold).
+async function narrowestUnfolded(page: PageT): Promise<number> {
+  for (let width = 480; width <= 1400; width += 4) {
+    await page.setViewportSize({ width, height: 800 });
+    if (await page.evaluate(() => getComputedStyle(document.querySelector('.site-header .menu-button')!).display === 'none')) return width;
+  }
+  throw new Error('the Menu button shows at every width up to 1400 px');
+}
 
 test('header — on a phone the menu is folded, opens on its button and closes on Escape', async ({ page }) => {
   await page.setViewportSize(PHONE);
@@ -330,9 +365,13 @@ test('header — on a phone the menu is folded, opens on its button and closes o
 
   await button.click();
   await expect(button).toHaveAttribute('aria-expanded', 'true');
-  for (const item of NAV) {
+  for (const item of NAV_LINKS) {
     await expect(nav.getByRole('link', { name: item.label, exact: true }), `${item.label} is not in the open menu`).toBeVisible();
   }
+  for (const group of groups) {
+    await expect(nav.locator('.group-label', { hasText: group.label }), `the name "${group.label}" is not shown above its links`).toBeVisible();
+  }
+  await expect(nav.locator('.group-button:visible'), 'a group button shows on a phone').toHaveCount(0);
   await expect(nav.getByRole('link', { name: 'Get it on GitHub', exact: true })).toHaveAttribute('href', SITE.repo);
   for (const target of [button, ...(await headerLinks(page).all())]) {
     const box = await target.boundingBox();
@@ -380,17 +419,145 @@ for (const width of [360, 320]) {
   }
 }
 
-test('header — on a wide screen every link shows, the established-sites page among them, with no menu button', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
+test('header — every group in NAV holds at least two links (one page stays a plain link)', () => {
+  for (const group of groups) {
+    expect(group.items.length, `the "${group.label}" group holds one link: a group needs two pages, one stays a plain link`).toBeGreaterThanOrEqual(2);
+  }
+});
+
+test('header — on a wide screen the top-level items show, each group opens on its button, and the current page is marked', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
   await page.goto('/');
+  const nav = page.locator('.site-header nav');
   await expect(page.locator('.site-header .menu-button')).toBeHidden();
   for (const item of NAV) {
-    await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true })).toBeVisible();
+    if (isNavGroup(item)) {
+      await expect(groupButton(page, item.label), `the "${item.label}" button is not shown`).toBeVisible();
+      await expect(groupButton(page, item.label)).toHaveAttribute('aria-expanded', 'false');
+      for (const link of item.items) {
+        await expect(navLink(page, link.href), `${link.label} is not in the page at all`).toHaveCount(1);
+        await expect(navLink(page, link.href), `${link.label} shows before its group is opened`).toBeHidden();
+      }
+    } else {
+      await expect(nav.getByRole('link', { name: item.label, exact: true })).toBeVisible();
+    }
   }
-  await expect(page.locator('.site-header nav a[href="/established-sites"]'), 'the page for established sites is not in the menu').toBeVisible();
-  // On that page its own link is the marked one, and only it.
+  // Open each group in turn: its links show, and only its.
+  for (const group of groups) {
+    await groupButton(page, group.label).click();
+    await expect(groupButton(page, group.label)).toHaveAttribute('aria-expanded', 'true');
+    for (const link of group.items) await expect(navLink(page, link.href), `${link.label} does not show in its open group`).toBeVisible();
+    await expect(openGroups(page), 'more than one group is open').toHaveCount(1);
+  }
+  // On the page for established sites: its link is the one marked as the current page, and the group that holds it
+  // is marked as the current group; no other link or group is.
   await page.goto('/established-sites');
   await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Existing Sites']);
+  await expect(groupButton(page, 'For your site'), 'the group holding the current page is not marked').toHaveAttribute('aria-current', 'true');
+  for (const group of groups.filter((g) => g.label !== 'For your site')) {
+    await expect(groupButton(page, group.label), `the "${group.label}" group is marked as current on another group's page`).not.toHaveAttribute('aria-current', 'true');
+  }
+});
+
+test('header — a plain link is the current page on its own page (/security)', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto('/security');
+  await expect(page.locator('.site-header nav a[aria-current="page"]')).toHaveText(['Security']);
+  await expect(page.locator('.site-header nav .group-button[aria-current="true"]'), 'a group is marked as current on a plain link\'s page').toHaveCount(0);
+});
+
+// Where the top-level items sit: the Menu button is shown and they are folded behind it, or they stand in ONE row.
+// Rows, not pixels: the height of a row depends on the machine's fonts.
+for (const width of [768, 800, 900, 960, 1024, 1280]) {
+  test(`header — at ${width} px the items are folded behind the Menu button or stand in one row`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    if (await page.locator('.site-header .menu-button').isVisible()) return;
+    const rows = await page.locator('.site-header nav > ul > li').evaluateAll((lis) =>
+      new Set(lis.map((li) => { const b = li.getBoundingClientRect(); return Math.round((b.top + b.height / 2) / 10); })).size);
+    expect(rows, `the header items wrap onto ${rows} rows at ${width} px`).toBe(1);
+  });
+}
+
+test('header — a group closes on Escape, on a click elsewhere and when another opens, and a link in it is followed', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const refused = await withSiteCsp(page);
+  await page.goto('/');
+  const [first, second] = groups;
+  const b1 = groupButton(page, first!.label);
+  const b2 = groupButton(page, second!.label);
+  const firstLink = navLink(page, first!.items[0]!.href);
+
+  await b1.click();
+  await expect(b1).toHaveAttribute('aria-expanded', 'true');
+  await expect(firstLink).toBeVisible();
+
+  // Escape with focus on the button, then with focus on a link in the list: focus ends on the button.
+  await page.keyboard.press('Escape');
+  await expect(b1, 'Escape did not close the group').toHaveAttribute('aria-expanded', 'false');
+  await expect(firstLink).toBeHidden();
+  await b1.click();
+  await firstLink.focus();
+  await page.keyboard.press('Escape');
+  await expect(b1).toHaveAttribute('aria-expanded', 'false');
+  await expect(b1, 'focus was lost with the hidden link').toBeFocused();
+
+  // A click elsewhere closes it.
+  await b1.click();
+  await expect(b1).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('.site-header .claim').click();
+  await expect(b1, 'a click elsewhere did not close the group').toHaveAttribute('aria-expanded', 'false');
+
+  // Opening another group closes the first: never two open.
+  await b1.click();
+  await b2.click();
+  await expect(b1, 'the first group stayed open when the second opened').toHaveAttribute('aria-expanded', 'false');
+  await expect(b2).toHaveAttribute('aria-expanded', 'true');
+  await expect(openGroups(page)).toHaveCount(1);
+  // The button closes what it opened.
+  await b2.click();
+  await expect(b2).toHaveAttribute('aria-expanded', 'false');
+
+  // A click on a link in the list follows the link.
+  await b1.click();
+  await firstLink.click();
+  await expect(page, 'the link in the open group was not followed').toHaveURL(new RegExp(`${first!.items[0]!.href}$`));
+  expect(refused, 'the browser refused something under the site\'s Content-Security-Policy').toEqual([]);
+});
+
+test('header — with the keyboard: Enter or Space opens a group, Tab goes through its links, and Tab past the last closes it', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto('/');
+  const first = groups[0]!;
+  const button = groupButton(page, first.label);
+  await button.focus();
+  await page.keyboard.press('Enter');
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Enter');
+  await expect(button, 'a second Enter did not close the group').toHaveAttribute('aria-expanded', 'false');
+  await page.keyboard.press('Space');
+  await expect(button, 'Space did not open the group').toHaveAttribute('aria-expanded', 'true');
+  for (const link of first.items) {
+    await page.keyboard.press('Tab');
+    await expect(navLink(page, link.href), `${link.label} did not take focus in turn`).toBeFocused();
+  }
+  await page.keyboard.press('Tab');
+  await expect(button, 'Tab past the last link did not close the group').toHaveAttribute('aria-expanded', 'false');
+});
+
+test('header — an open group sits inside the window at every width where the items are not folded', async ({ page }) => {
+  await page.goto('/');
+  const narrowest = await narrowestUnfolded(page);
+  const last = groups[groups.length - 1]!;
+  for (const width of [narrowest, 900, 960, 1024, 1280].filter((w) => w >= narrowest)) {
+    await page.setViewportSize({ width, height: 800 });
+    await groupButton(page, last.label).click();
+    const box = await page.locator(`.site-header nav a[href="${last.items[0]!.href}"]`).locator('xpath=ancestor::ul[1]').boundingBox();
+    expect(box, `the open "${last.label}" list is not drawn at ${width} px`).not.toBeNull();
+    expect(box!.x, `the open list starts left of the window at ${width} px`).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width, `the open list runs past the right edge at ${width} px`).toBeLessThanOrEqual(width);
+    await groupButton(page, last.label).click();
+  }
 });
 
 // Site-specific (not in the shipped suite): the checklist table on /ai-website-seo-checklist. On a wide
@@ -426,16 +593,18 @@ test('checklist table — on a wide screen it is still a table: the header row s
   expect(new Set(tops).size, `the cells of a row are stacked on a wide screen (tops ${tops.join(', ')})`).toBe(1);
 });
 
-test('header — without JavaScript a phone still shows every link', async ({ browser, baseURL }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: PHONE, baseURL });
-  const page = await context.newPage();
-  await page.goto('/skills');
-  await expect(page.locator('.site-header .menu-button'), 'a button that cannot work is showing').toBeHidden();
-  for (const item of NAV) {
-    await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true })).toBeVisible();
-  }
-  await context.close();
-});
+for (const [name, viewport] of [['phone', PHONE], ['desktop', DESKTOP]] as const) {
+  test(`header — without JavaScript a ${name} still shows every link, and no button`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false, viewport, baseURL });
+    const page = await context.newPage();
+    await page.goto('/skills');
+    await expect(page.locator('.site-header button:visible'), 'a button that cannot work is showing').toHaveCount(0);
+    for (const item of NAV_LINKS) {
+      await expect(page.locator('.site-header nav').getByRole('link', { name: item.label, exact: true }), `${item.label} is not shown`).toBeVisible();
+    }
+    await context.close();
+  });
+}
 
 // The line under the logo says what Croftweaver is for, on every page a visitor can land on.
 // It is the line that opens the toolkit's README (POSITIONING.md, header line).

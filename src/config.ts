@@ -26,13 +26,42 @@ export const SITE = {
 // Link only to pages and anchors that exist: tests/navigation.spec.ts and
 // tests/anchors.spec.ts reject a dead target. A home-page anchor becomes a page link
 // in the pull request that adds that page.
-export const NAV: { label: string; href: string }[] = [
+//
+// An item is a link, or a group of links that opens under its name. A group needs two
+// pages: while only one page of a set is on main it stays a plain link under its own label
+// (Security, for the Technology set, until a second Technology page exists), and the pull
+// request that adds the second page turns the link into the group. Header places are the
+// navigation work's; a page's own pull request adds only its FOOTER entry (below). The
+// header is a curated subset of the pages: tests/navigation.spec.ts checks that every group
+// holds at least two links, and that every link resolves.
+export type NavLink = { label: string; href: string };
+export type NavGroup = { label: string; items: NavLink[] };
+export type NavItem = NavLink | NavGroup;
+export const isNavGroup = (item: NavItem): item is NavGroup => 'items' in item;
+
+export const NAV: NavItem[] = [
   { label: 'Proof', href: '/proof' },
-  { label: 'Checks', href: '/checks' },
-  { label: 'Skills', href: '/skills' },
-  { label: 'Existing Sites', href: '/established-sites' },
+  {
+    label: 'Skills & checks',
+    items: [
+      { label: 'Skills', href: '/skills' },
+      { label: 'Checks', href: '/checks' },
+      { label: 'SEO Checklist', href: '/ai-website-seo-checklist' },
+    ],
+  },
+  { label: 'Security', href: '/security' },
+  {
+    label: 'For your site',
+    items: [
+      { label: 'Existing Sites', href: '/established-sites' },
+      { label: 'From WordPress', href: '/from-wordpress' },
+    ],
+  },
   { label: 'Quickstart', href: '/start' },
 ];
+
+// Every link in NAV, the groups' links included, in order.
+export const NAV_LINKS: NavLink[] = NAV.flatMap((item) => (isNavGroup(item) ? item.items : [item]));
 
 // Footer navigation, in labelled columns, in order. Every page appears once, apart from the home
 // page, and GitHub is the one link that leaves the site. A page's pull request adds its own entry
