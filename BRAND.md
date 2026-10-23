@@ -115,6 +115,12 @@ Mirror these into the theme-token block. Every text/background pair MUST pass
 - **Every image has descriptive `alt`** (or `alt=""` if purely decorative).
 - **Mobile first:** design at 360px up; tap targets ≥ 44px; no horizontal
   scroll; test at 360 / 768 / 1280.
+- **Tables:** one style, in `src/styles/global.css` ("Tables"); a page carries no
+  table CSS of its own. A table of sentences gets class `stack`: a table above 40rem,
+  and below it each row stacks, the row header as a title and each cell under its
+  column's name (`data-label`, the same text as the header). A table of short figures
+  gets class `figures` and stays a table; it must fit in 320px. No table scrolls
+  sideways on a phone, and `tests/navigation.spec.ts` checks it on every page.
 
 ## OG / share image spec (1200 × 630)
 

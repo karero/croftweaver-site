@@ -116,7 +116,7 @@ const maintainerSchema = {
       too, not a Google metric. They are not rankings, they vary from run to run, and they
       do not show that an assistant would recommend the site. The site belongs to the maintainer of Croftweaver.
     </p>
-    <div class="table-wrap" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
+    <div class="table-wrap figures" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
         <thead>
           <tr><th scope="col">Assistant</th><th scope="col" class="num">SEO</th><th scope="col" class="num">GEO</th></tr>
@@ -509,13 +509,6 @@ const maintainerSchema = {
   .checks li::before { content: '✓'; position: absolute; left: 0; color: var(--pass); font-weight: 700; }
   .plain li::before { content: '·'; position: absolute; left: 0.4rem; font-weight: 700; }
 
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
-  thead th { font-size: 0.9rem; color: var(--muted); }
-  tbody th { font-weight: 400; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
-  tr.avg th, tr.avg td { font-weight: 700; }
   .note { font-size: 0.9rem; color: var(--muted); }
 
   /* The quote is the customer's own voice: tests/tone.spec.ts leaves a blockquote alone. */
