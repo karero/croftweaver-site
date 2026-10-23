@@ -694,6 +694,191 @@ test('checklist table — on a wide screen it is still a table: the header row s
   expect(new Set(tops).size, `the cells of a row are stacked on a wide screen (tops ${tops.join(', ')})`).toBe(1);
 });
 
+// Site-specific (not in the shipped suite): every table on the site. One style (src/styles/global.css,
+// "Tables"), two kinds. A text table (sentences in its cells) is a table above 40rem and stacks below it,
+// each row a title with every cell under its own label. A table of figures without "stack" stays a table, and has to fit.
+// Phones come first (BRAND.md: design at 360px up), and the phone cases run on every page.
+//
+// The text tables, by page. A page that gains or loses one must say so here: the count is the guard against
+// a table that silently falls back to a scroll bar.
+const STACKED: Record<string, number> = {
+  '/established-sites': 2,
+  '/from-wordpress': 1,
+  '/security': 2,
+  '/positioning': 1,
+  '/proof': 1,
+  '/case-study': 1,
+  '/ai-website-seo-checklist': 1,
+};
+
+const stacked = (page: import('@playwright/test').Page) => page.locator('.table-wrap.stack');
+
+test('tables — every table is in a labelled scroll region of the shared style', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const bad = await page.evaluate(() =>
+      [...document.querySelectorAll('table')].flatMap((t, i) => {
+        const wrap = t.closest('.table-wrap');
+        if (!wrap) return [`table ${i} is not inside a .table-wrap`];
+        const problems: string[] = [];
+        if (wrap.getAttribute('role') !== 'region') problems.push(`table ${i}: its .table-wrap has no role="region"`);
+        if (!wrap.getAttribute('aria-label')) problems.push(`table ${i}: its .table-wrap has no aria-label`);
+        if (wrap.getAttribute('tabindex') !== '0') problems.push(`table ${i}: its .table-wrap has no tabindex="0"`);
+        if (!wrap.classList.contains('stack') && !wrap.classList.contains('figures')) problems.push(`table ${i}: its .table-wrap is neither "stack" nor "figures"`);
+        if (t.querySelectorAll('thead th[scope="col"]').length === 0) problems.push(`table ${i} has no column headers`);
+        return problems;
+      }));
+    expect(bad, `${path}: ${bad.join('; ')}`).toEqual([]);
+    expect(await stacked(page).count(), `${path}: the number of text tables that stack has changed (see STACKED)`).toBe(STACKED[path] ?? 0);
+  }
+});
+
+test('tables — a stacked table keeps its table meaning: roles on every part, a label on every cell', async ({ page }) => {
+  for (const path of Object.keys(STACKED)) {
+    await page.goto(path);
+    const bad = await page.evaluate(() =>
+      [...document.querySelectorAll('.table-wrap.stack table')].flatMap((t, i) => {
+        const problems: string[] = [];
+        const want: [string, string, string][] = [
+          ['table', 'role', 'table'], ['thead', 'role', 'rowgroup'], ['tbody', 'role', 'rowgroup'],
+          ['tr', 'role', 'row'], ['thead th', 'role', 'columnheader'], ['tbody th', 'role', 'rowheader'], ['td', 'role', 'cell'],
+        ];
+        for (const [sel, attr, value] of want) {
+          const els = sel === 'table' ? [t] : [...t.querySelectorAll(sel)];
+          const wrong = els.filter((e) => e.getAttribute(attr) !== value).length;
+          if (wrong > 0) problems.push(`table ${i}: ${wrong} of ${els.length} "${sel}" lack ${attr}="${value}"`);
+        }
+        const unlabelled = [...t.querySelectorAll('td')].filter((td) => !td.getAttribute('data-label')).length;
+        if (unlabelled > 0) problems.push(`table ${i}: ${unlabelled} cells have no data-label`);
+        return problems;
+      }));
+    expect(bad, `${path}: ${bad.join('; ')}`).toEqual([]);
+  }
+});
+
+// Phone widths. 360 is the design width (BRAND.md), 320 the narrowest phone still in use.
+for (const width of [360, 320]) {
+  test(`tables — at ${width} px no page scrolls sideways and no table scrolls inside its region`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    for (const path of PAGES) {
+      await page.goto(path);
+      // Open any <details> so that nothing a visitor can unfold is left out of the measure (none is folded today).
+      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, `${path} scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
+      const scrolling = await page.locator('.table-wrap').evaluateAll((wraps) =>
+        wraps.map((w, i) => ({ i, by: w.scrollWidth - w.clientWidth })).filter((w) => w.by > 1));
+      expect(scrolling, `${path}: a table scrolls sideways inside its region at ${width} px (by how many px, per table)`).toEqual([]);
+    }
+  });
+
+  test(`tables — at ${width} px every text table stacks: full-width cells, each with the label of its column`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    for (const path of Object.keys(STACKED)) {
+      await page.goto(path);
+      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      const tables = stacked(page);
+      for (let i = 0; i < (await tables.count()); i++) {
+        const wrap = tables.nth(i);
+        const where = `${path}, text table ${i}`;
+        const wrapWidth = await wrap.evaluate((el) => el.clientWidth);
+        const widths = await wrap.locator('tbody th, tbody td').evaluateAll((cells) => cells.map((c) => c.getBoundingClientRect().width));
+        expect(widths.length, `${where} has no cells`).toBeGreaterThan(0);
+        for (const w of widths) {
+          expect(w, `${where}: a cell is squeezed to ${Math.round(w)} px in a ${Math.round(wrapWidth)} px table`).toBeGreaterThan(wrapWidth * 0.8);
+        }
+        const headers = (await wrap.locator('thead th').allTextContents()).map((h) => h.trim());
+        const rows = await wrap.locator('tbody tr').evaluateAll((trs) =>
+          trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => getComputedStyle(td, '::before').content)));
+        for (const labels of rows) {
+          expect(labels, `${where}: a cell shows no label, or one that is not its column header`).toEqual(headers.slice(1).map((h) => `"${h}"`));
+        }
+      }
+    }
+  });
+}
+
+// On a phone a link that stands alone in a cell is something to tap. A link inside a sentence is not held to it:
+// it would break the line (the same exception the rest of the site makes for links in text).
+test('tables — on a phone a link that stands alone in a cell is a 44px tap target', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  let standalone = 0;
+  for (const path of Object.keys(STACKED)) {
+    await page.goto(path);
+    const links = await page.locator('.table-wrap.stack a').evaluateAll((as) =>
+      as.map((a) => {
+        const cell = a.closest('td, th')!;
+        const rest = [...cell.querySelectorAll('a')].reduce((t, l) => t.replace(l.textContent ?? '', ''), cell.textContent ?? '');
+        const box = a.getBoundingClientRect();
+        return { text: (a.textContent ?? '').trim(), alone: rest.replace(/\band\b/g, '').trim() === '', height: box.height, width: box.width };
+      }));
+    for (const l of links.filter((x) => x.alone)) {
+      standalone++;
+      expect(l.height, `${path}: the link "${l.text}" is ${Math.round(l.height)} px tall, under the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
+      expect(l.width, `${path}: the link "${l.text}" is ${Math.round(l.width)} px wide, under the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
+    }
+  }
+  expect(standalone, 'too few standalone links were found in tables, so the check has lost its target').toBeGreaterThan(10);
+});
+
+// Wide screens. The same text tables are tables again, the header row shows, and the cells of a row sit side by side.
+// No word is split across two lines (the body hyphenates, which squeezed the first column of /established-sites
+// down to "An-thropic"), and a row header takes few lines: three for a short one, four for a long one.
+for (const width of [641, 768, 1280, 1920]) {
+  test(`tables — at ${width} px every text table is a table again: the header row shows and the cells sit side by side`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of Object.keys(STACKED)) {
+      await page.goto(path);
+      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      const tables = stacked(page);
+      for (let i = 0; i < (await tables.count()); i++) {
+        const wrap = tables.nth(i);
+        const where = `${path}, text table ${i}`;
+        const head = await wrap.locator('thead').boundingBox();
+        expect(head?.height ?? 0, `${where}: the header row is hidden or clipped at ${width} px`).toBeGreaterThan(20);
+        expect(await wrap.locator('thead').evaluate((el) => getComputedStyle(el).clipPath), `${where}: the header row is clipped at ${width} px`).toBe('none');
+        const tops = await wrap.locator('tbody tr').first().locator('th, td').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
+        expect(new Set(tops).size, `${where}: the cells of a row are stacked at ${width} px (tops ${tops.join(', ')})`).toBe(1);
+      }
+    }
+  });
+
+  test(`tables — at ${width} px no word in any table is broken across lines, and a row header takes few lines`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of PAGES) {
+      await page.goto(path);
+      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      const found = await page.evaluate(() => {
+        const broken: string[] = [];
+        const tall: string[] = [];
+        for (const cell of document.querySelectorAll('.table-wrap th, .table-wrap td')) {
+          const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+          for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+            // A word is split at a hyphen or a space on purpose; what is left is one piece that must stay on one line.
+            for (const m of (n.textContent ?? '').matchAll(/[^\s\-–]+/g)) {
+              const range = document.createRange();
+              range.setStart(n, m.index!);
+              range.setEnd(n, m.index! + m[0].length);
+              if (range.getClientRects().length > 1) broken.push(m[0]);
+            }
+          }
+        }
+        for (const th of document.querySelectorAll('.table-wrap tbody th')) {
+          // The lines of the text itself: a row header is as tall as its row, so its own height says nothing.
+          const range = document.createRange();
+          range.selectNodeContents(th);
+          const lines = new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size;
+          const text = (th.textContent ?? '').trim();
+          if (lines > (text.length <= 40 ? 3 : 4)) tall.push(`"${text.slice(0, 40)}" (${lines} lines)`);
+        }
+        return { broken, tall };
+      });
+      expect(found.broken, `${path}: words broken across lines at ${width} px`).toEqual([]);
+      expect(found.tall, `${path}: row headers with too many lines at ${width} px`).toEqual([]);
+    }
+  });
+}
+
 for (const [name, viewport] of [['phone', PHONE], ['desktop', DESKTOP]] as const) {
   test(`header — without JavaScript a ${name} still shows every link, and no button`, async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: false, viewport, baseURL });

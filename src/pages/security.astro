@@ -169,29 +169,35 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     </ul>
 
     <h3>Side by side</h3>
-    <div class="table-wrap" role="region" aria-label="A WordPress site and a Croftweaver site, side by side" tabindex="0">
-      <table>
-        <thead><tr><th scope="col">Area</th><th scope="col">A WordPress site</th><th scope="col">A Croftweaver site</th></tr></thead>
-        <tbody>
-          <tr>
-            <th scope="row">Code that runs for a visit</th>
-            <td>PHP, WordPress and its plugins, except for a response that a page cache serves before PHP runs.</td>
-            <td>croftweaver.com: one function. The template: two.</td>
+    <div class="table-wrap stack" role="region" aria-label="A WordPress site and a Croftweaver site, side by side" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Area</th>
+            <th scope="col" role="columnheader">A WordPress site</th>
+            <th scope="col" role="columnheader">A Croftweaver site</th>
           </tr>
-          <tr>
-            <th scope="row">Where the content is kept</th>
-            <td>In a database, MariaDB or MySQL.</td>
-            <td>As files in a Git repository.</td>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th scope="row" role="rowheader">Code that runs for a visit</th>
+            <td role="cell" data-label="A WordPress site">PHP, WordPress and its plugins, except for a response that a page cache serves before PHP runs.</td>
+            <td role="cell" data-label="A Croftweaver site">croftweaver.com: one function. The template: two.</td>
           </tr>
-          <tr>
-            <th scope="row">A login on the site</th>
-            <td>An administration area at <code>/wp-admin/</code>, with a login screen.</td>
-            <td>No page named admin or login on croftweaver.com. The pages change when someone edits the files and publishes.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader">Where the content is kept</th>
+            <td role="cell" data-label="A WordPress site">In a database, MariaDB or MySQL.</td>
+            <td role="cell" data-label="A Croftweaver site">As files in a Git repository.</td>
           </tr>
-          <tr>
-            <th scope="row">What needs updates</th>
-            <td>WordPress, its plugins, and PHP.</td>
-            <td>The packages that build the site (see <a href="#checklist">the checklist</a>). Not PHP.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader">A login on the site</th>
+            <td role="cell" data-label="A WordPress site">An administration area at <code>/wp-admin/</code>, with a login screen.</td>
+            <td role="cell" data-label="A Croftweaver site">No page named admin or login on croftweaver.com. The pages change when someone edits the files and publishes.</td>
+          </tr>
+          <tr role="row">
+            <th scope="row" role="rowheader">What needs updates</th>
+            <td role="cell" data-label="A WordPress site">WordPress, its plugins, and PHP.</td>
+            <td role="cell" data-label="A Croftweaver site">The packages that build the site (see <a href="#checklist">the checklist</a>). Not PHP.</td>
           </tr>
         </tbody>
       </table>
@@ -363,14 +369,19 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       One row per check, as seen from outside on the date shown. A check that fails is listed as failing. We
       update this table by hand when a check changes.
     </p>
-    <div class="table-wrap" role="region" aria-label="Results of the four checks for croftweaver.com" tabindex="0">
-      <table>
-        <thead><tr><th scope="col">Check</th><th scope="col">Result, and how to run the check</th></tr></thead>
-        <tbody>
+    <div class="table-wrap stack" role="region" aria-label="Results of the four checks for croftweaver.com" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Check</th>
+            <th scope="col" role="columnheader">Result, and how to run the check</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
           {own.map((c) => (
-            <tr class={`claim own ${statusClass(c.status)}`} data-claim={c.id}>
-              <th scope="row">{ownLabel[c.id]}</th>
-              <td>
+            <tr role="row" class={`claim own ${statusClass(c.status)}`} data-claim={c.id}>
+              <th scope="row" role="rowheader">{ownLabel[c.id]}</th>
+              <td role="cell" data-label="Result, and how to run the check">
                 {c.result}
                 <span class="own-src" data-kind={c.kind} data-source={c.source}>{c.kind === 'command' ? 'Command: ' : 'Source: '}<code>{c.source}</code>, {c.kind === 'command' ? 'run' : 'read'} <time datetime={c.read}>{longDate(c.read)}</time></span>
               </td>
@@ -475,11 +486,6 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
   .step.is-file { border-left-color: var(--pass); }
   .tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); min-width: 5.5em; }
 
-  .table-wrap { overflow-x: auto; margin: 1rem 0; }
-  table { width: 100%; max-width: 60rem; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
-  thead th { font-size: 0.85rem; color: var(--muted); }
-  tbody th { font-weight: 600; }
   tr.own td:first-of-type { border-left: 4px solid var(--line); padding-left: 0.8rem; }
   tr.own.is-pass td:first-of-type { border-left-color: var(--pass); }
   tr.own.is-open td:first-of-type { border-left-color: var(--warn); }

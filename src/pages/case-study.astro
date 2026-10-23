@@ -11,6 +11,8 @@ import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, dayLabel, DAILY, SEARCH, AI_DAYS,
 const named = (n: number, of: number) => `${n} of ${of}`;
 const assistants = (n: number) => `${n} ${n === 1 ? 'assistant' : 'assistants'}`;
 const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
+// The column headers are also the labels of the stacked rows on a phone (data-label), so they are written once.
+const aiCols = ['Day', 'With search: named', 'croftweaver.com among the sources', 'Without search: named'];
 ---
 <Base
   title="Croftweaver case study: its own site"
@@ -42,23 +44,23 @@ const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
       returned in {named(latestAi.withSearch.sources, latestAi.withSearch.answers)}. Without web search,
       {named(latestAi.withoutSearch.named, latestAi.withoutSearch.answers)} named it.
     </p>
-    <div class="table-wrap" role="region" aria-label="The weekly AI check for croftweaver.com" tabindex="0">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Day</th>
-            <th scope="col" class="num">With search: named</th>
-            <th scope="col" class="num">croftweaver.com among the sources</th>
-            <th scope="col" class="num">Without search: named</th>
+    <div class="table-wrap stack figures" role="region" aria-label="The weekly AI check for croftweaver.com" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">{aiCols[0]}</th>
+            <th scope="col" role="columnheader" class="num">{aiCols[1]}</th>
+            <th scope="col" role="columnheader" class="num">{aiCols[2]}</th>
+            <th scope="col" role="columnheader" class="num">{aiCols[3]}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {AI_DAYS.map((d) => (
-            <tr>
-              <th scope="row"><time datetime={d.date}>{d.label}</time>{BREAK_DAYS.has(d.date) && ' ‡'}</th>
-              <td class="num">{named(d.withSearch.named, d.withSearch.answers)}</td>
-              <td class="num">{named(d.withSearch.sources, d.withSearch.answers)}</td>
-              <td class="num">{named(d.withoutSearch.named, d.withoutSearch.answers)}</td>
+            <tr role="row">
+              <th scope="row" role="rowheader"><time datetime={d.date}>{d.label}</time>{BREAK_DAYS.has(d.date) && ' ‡'}</th>
+              <td role="cell" class="num" data-label={aiCols[1]}>{named(d.withSearch.named, d.withSearch.answers)}</td>
+              <td role="cell" class="num" data-label={aiCols[2]}>{named(d.withSearch.sources, d.withSearch.answers)}</td>
+              <td role="cell" class="num" data-label={aiCols[3]}>{named(d.withoutSearch.named, d.withoutSearch.answers)}</td>
             </tr>
           ))}
         </tbody>
@@ -83,7 +85,7 @@ const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
       {SEARCH.impressions} {SEARCH.impressions === 1 ? 'time' : 'times'} in Google's results and was clicked {SEARCH.clicks}
       {SEARCH.clicks === 1 ? 'time' : 'times'}.
     </p>
-    <div class="table-wrap" role="region" aria-label="Daily clicks and appearances in Google for croftweaver.com" tabindex="0">
+    <div class="table-wrap figures" role="region" aria-label="Daily clicks and appearances in Google for croftweaver.com" tabindex="0">
       <table>
         <thead>
           <tr><th scope="col">Day</th><th scope="col" class="num">Clicks</th><th scope="col" class="num">Appearances</th></tr>
@@ -150,10 +152,6 @@ const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
   section p { max-width: 46rem; line-height: 1.7; hyphens: manual; }
   .lead { font-size: 1.15rem; color: var(--muted); }
   .note, .aside { font-size: 0.9rem; color: var(--muted); }
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
   .log { list-style: none; padding: 0; margin: 0; max-width: 46rem; }
   .log li { border-left: 3px solid var(--line); padding: 0.2rem 0 0.8rem 1rem; margin-bottom: 1rem; }
   .log li.change { border-left-color: var(--accent, var(--pass)); }

@@ -118,7 +118,7 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
       The checklist works by hand on any site; the tests come with a site built from the Croftweaver
       starter, which needs a coding assistant and a terminal.
     </p>
-    <div class="table-wrap" role="region" aria-label="The checks, the suite behind each, and what a pass does not prove" tabindex="0">
+    <div class="table-wrap stack" role="region" aria-label="The checks, the suite behind each, and what a pass does not prove" tabindex="0">
       <table role="table">
         <thead role="rowgroup">
           <tr role="row">
@@ -134,7 +134,7 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
               <th scope="row" role="rowheader">{c.check}</th>
               <td role="cell" data-label="Suite">
                 {checkedSuites(c).map((s, i) => (
-                  <>{i > 0 && ' and '}<a href={`/checks#${s.group}`}>{s.name}</a></>
+                  <>{i > 0 && ' and '}<a class="tap" href={`/checks#${s.group}`}>{s.name}</a></>
                 ))}
               </td>
               <td role="cell" data-label="When we broke it">{c.broke}</td>
@@ -247,20 +247,7 @@ const BOLT_NEWSTACK = 'https://thenewstack.io/how-developers-are-using-bolt-a-fa
   .steps li { margin-bottom: 0.6rem; }
   .card p { margin: 0; }
   .say { color: var(--muted); }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; max-width: 64rem; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
-  tbody th { font-weight: 600; }
-  /* Below 40rem four columns of prose would share 320px or less, so each row stacks: the check as a title,
-     then each cell under its own label. The header row stays in the page for screen readers. */
-  @media (max-width: 40rem) {
-    table, tbody, tr, th, td { display: block; }
-    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    tbody tr { padding: 1rem 0; border-bottom: 1px solid var(--line, currentColor); }
-    tbody th { padding: 0 0 0.35rem; border: 0; font-size: 1.05rem; }
-    td { padding: 0.35rem 0; border: 0; }
-    td::before { content: attr(data-label); display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
-  }
+  /* The table takes the shared table style in global.css, which stacks it below 40rem. */
   .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
   .faq-item h3 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
   .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }

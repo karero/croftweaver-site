@@ -85,6 +85,9 @@ const steps = [
   },
 ];
 
+// The column headers are also the labels of the stacked rows on a phone (data-label), so they are written once.
+const needsCols = ['Item', 'Steps', 'Note'];
+
 const needs = [
   { item: 'Search Console access to the site', steps: '1, 3, 6', note: 'One-time setup: a Google Cloud project and a read-only sign-in. You may need to sign in again later. The token is stored on the computer that runs the skills.' },
   { item: 'OpenAI, Anthropic and Perplexity keys', steps: '2', note: 'Recommended for a large site. The country you set is sent with each search. If an OpenRouter key is also set, it takes over all four assistants unless you name the ones that should use their own key.' },
@@ -257,12 +260,22 @@ const weeks = [
 
   <section class="wrap" id="needs">
     <h2>What your team needs</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Item</th><th scope="col">Steps</th><th scope="col">Note</th></tr></thead>
-        <tbody>
+    <div class="table-wrap stack" role="region" aria-label="What your team needs: each item, the steps that use it, and a note" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">{needsCols[0]}</th>
+            <th scope="col" role="columnheader">{needsCols[1]}</th>
+            <th scope="col" role="columnheader">{needsCols[2]}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
           {needs.map((n) => (
-            <tr><th scope="row">{n.item}</th><td>{n.steps}</td><td>{n.note}</td></tr>
+            <tr role="row">
+              <th scope="row" role="rowheader">{n.item}</th>
+              <td role="cell" class="nowrap" data-label={needsCols[1]}>{n.steps}</td>
+              <td role="cell" data-label={needsCols[2]}>{n.note}</td>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -431,12 +444,8 @@ const weeks = [
   }
   .card p { margin: 0; color: var(--muted); line-height: 1.6; max-width: none; }
   .loop .card p.skills { color: inherit; }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; max-width: 52rem; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); }
-  tbody th { font-weight: 600; }
   /* The FAQ answers are HTML from src/data/established-faq.ts, so their elements carry no scope
-     attribute: :global() reaches them. */
+     attribute: :global() reaches them. (Their tables take the shared table style in global.css.) */
   .faq-group { margin-top: 2rem; }
   .faq-group h3 { margin: 0 0 0.3rem; font-size: 1.2rem; }
   .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
@@ -444,11 +453,4 @@ const weeks = [
   .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }
   .faq-answer :global(ul) { margin: 0 0 0.7rem; padding-left: 1.3rem; max-width: 46rem; }
   .faq-answer :global(li) { margin-bottom: 0.4rem; line-height: 1.6; }
-  .faq-answer :global(.table-wrap) { overflow-x: auto; margin: 0.4rem 0 0.9rem; }
-  .faq-answer :global(table) { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.95rem; }
-  .faq-answer :global(th), .faq-answer :global(td) {
-    text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line);
-  }
-  .faq-answer :global(thead th) { font-size: 0.85rem; color: var(--muted); }
-  .faq-answer :global(tbody th) { font-weight: 600; }
 </style>

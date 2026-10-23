@@ -74,7 +74,7 @@ const rerun = (url: string) =>
       and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
       these numbers are AI opinions, not a Google metric.
     </p>
-    <div class="table-wrap" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
+    <div class="table-wrap figures" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
         <thead>
           <tr>
@@ -178,11 +178,4 @@ const rerun = (url: string) =>
   .scores dt { font-size: 0.85rem; color: var(--muted); }
   .scores dd { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
 
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
-  thead th { font-size: 0.9rem; color: var(--muted); }
-  tbody th { font-weight: 400; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
-  tr.avg th, tr.avg td { font-weight: 700; }
 </style>
