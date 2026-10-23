@@ -752,8 +752,10 @@ hook_first_of() {
 # The filter's own counterexample: a `set` line with only a comment after it is not a step, one
 # that also runs a command is.
 printf '#!/bin/sh\nset -e  # stop on error\nset -e; echo early\n%s\n' "$hook_clear" > "$work/hook-probe"
-if [ "$(hook_first_of "$work/hook-probe")" != "set -e; echo early" ]; then
-  echo "✗ ship push gate: the hook check skipped a 'set' line that also runs a command."; fail=1
+hook_probe_first="$(hook_first_of "$work/hook-probe")"
+if [ "$hook_probe_first" != "set -e; echo early" ]; then
+  echo "✗ ship push gate: the hook check's filter is off: on a probe hook it took '$hook_probe_first'"
+  echo "  for the first step, where 'set -e; echo early' is (the line before it only sets an option)."; fail=1
 fi
 if [ ! -f "$hook" ]; then
   echo "✗ ship push gate: scripts/hooks/pre-push is missing, so its first step cannot be checked."; fail=1
