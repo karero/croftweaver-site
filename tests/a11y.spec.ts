@@ -821,11 +821,14 @@ test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its
       hasLine: !!line,
       noteText: note?.textContent?.trim() ?? '',
       noteAfterLine: !!line && !!note && !!(line.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING),
+      // The claim and its caveat stay together: the footnote is the very next element and closes the section.
+      noteAdjacent: !!line && !!note && line.closest('p')?.nextElementSibling === note && sec.lastElementChild === note,
     };
   });
   expect(s.heading, 'the analytics heading must not carry the cookie-banner claim').not.toMatch(/cookie|banner/i);
   expect(s.hasLine, 'the analytics section must end with the "No cookie banner*" line').toBe(true);
   expect(s.noteAfterLine, 'the footnote must follow the "No cookie banner*" line').toBe(true);
+  expect(s.noteAdjacent, 'the footnote must come right after the "No cookie banner*" line and be the last element of the section').toBe(true);
   expect(s.noteText, 'the footnote must start with the asterisk').toMatch(/^\*/);
   expect(s.noteText, 'the footnote must say whose position it is').toMatch(/Plausible's own position/);
   expect(s.noteText, 'the footnote must name the EDPB guidelines').toMatch(/EDPB Guidelines 2\/2023/);
