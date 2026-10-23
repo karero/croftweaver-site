@@ -153,3 +153,65 @@ fills it in with a script.
   scanners and most crawlers send neither" Fetch Metadata header. **Not traced by a test in the toolkit** (a search
   for `navigationSkip` finds only the two functions that use it), so the page says "many crawlers and scripts", cites
   the code, and does not say "most". The `SKILL.md` paragraph says nothing about crawlers, so it is not cited for that.
+
+## 10. Added 2026-10-23: the "No cookie banner*" line, the authorities and the courts (host)
+
+Method. The EDPB and DSK texts were downloaded as PDF into a scratch folder and read from their text layer
+(`pdftotext -layout`), not from a model's rendering. The court reports were read through WebFetch (a small model's
+rendering, marked below) except the Saxony press release, whose text layer was read directly.
+
+- EDPB, Guidelines 2/2023 on the technical scope of Art. 5(3) ePrivacy Directive, version 2.0, adopted 7 October 2024,
+  section 3.3 "Tracking based on IP only", paragraphs 54 to 56. 54: some providers rely on the IP address alone to
+  track navigation, "in some case across multiple domains"; Art. 5(3) "could apply". 55: gaining access to IP
+  addresses triggers Art. 5(3) "only ... where this information originates from the terminal equipment" (a static
+  outbound IPv4 from a user's router, and IPv6 as it is partly defined by the host; not systematically, for example
+  under CGNAT); unless the entity can ensure that it does not, it has to take all the steps under Art. 5(3). 56: the
+  applicability of Art. 5(3) "does not systematically mean that consent needs to be collected"; each case is
+  assessed for consent or an exemption. The toolkit's guide cites "paras 54-56" for IP-based tracking: correct.
+- DSK (German data protection authorities), Orientierungshilfe der Aufsichtsbehörden für Anbieter:innen von digitalen
+  Diensten, version 1.2, November 2024. Paragraph 24: it counts as access to the device when properties are read
+  "aktiv, beispielsweise mittels JavaScript-Code" and sent to a server (the fingerprinting passage). Paragraph 87:
+  operators would like a statement whether audience measurement may in principle be used without consent under
+  § 25 (2) no. 2 TDDDG; "Aus mehreren Gründen finden sich in dieser Orientierungshilfe keine derartigen Aussagen."
+  Paragraph 88: a plain page-impression count (log files without personal data, or a simple counting pixel of the
+  directly called service that captures no further user data) versus third-party services that process far more.
+  Paragraph 89: a determination whether audience measurement is lawful without consent can "allenfalls für eine genau
+  definierte Konfiguration und Zweckbestimmung" be made, and it lapses when more information or a further result
+  is added. The page's footnote says exactly this and no more. **Not read:** the older 2021 guidance, which a secondary
+  source (GDD) says separates passively received browser data from active reading; the page does not use it.
+- Plausible, how unique visitors are counted (`plausible.io/docs/metrics-definitions` and `plausible.io/data-policy`,
+  raw): "If a person visits from multiple devices or on multiple days, they are counted as separate visitors. Within
+  the same day, a person counts as one unique visitor even if they have multiple sessions." The identifier is
+  `hash(daily_salt + website_domain + ip_address + user_agent)`; "The salt is rotated and deleted every 24 hours.
+  Raw IP addresses and User-Agent data are never stored." So visitors are counted without storing an IP, per day;
+  a returning person counts again on each day.
+- Court decisions found (searched 2026-10-23, six searches and the sources below; the search tool is US-only and
+  `juris`, `curia.europa.eu` and the courts' own databases were not searched). None decides whether cookieless
+  first-party analytics, or server-side analytics of the Plausible kind, needs consent.
+  - OLG Frankfurt am Main, 6th Civil Senate, 11 December 2025, Az. 6 U 81/23 (beck-aktuell of 6 January 2026 and
+    piltz.legal, both read through WebFetch): a user sued a technology and analytics company whose cookies were set
+    through third-party websites; § 25 (1) TDDDG applies to anyone who causes the storage or access; the Landgericht
+    had awarded 1,500 euros, the OLG reduced it to 100 euros under Art. 82 GDPR ("Gefühl des Überwachtwerdens", relying on
+    BGH VI ZR 10/24); an injunction under §§ 1004, 823 (2) BGB. Cookies, not server-side. The reports do not say
+    whether a revision was allowed. A pasted summary (the owner, from a search assistant) gave "BGH I ZR 5/26 pending"
+    and said the court spoke of access "im Browser oder über die nachgelagerte Datenverarbeitung": **neither is in
+    the two reports; not used.**
+  - OLG Dresden, 4th Civil Senate, 3 February 2026, four parallel proceedings (Az. 4 U 196/25, 4 U 292/25, 4 U 293/25,
+    4 U 296/25, from a law firm's page read through WebFetch): Meta ordered to pay 1,500 euros each and to stop
+    processing the plaintiffs' data obtained through the "Business Tools". **Primary: the court's press release of
+    4 February 2026** (read from its text layer): "Programmschnittstellen", which Meta offers to companies for their
+    websites, "dienen dazu, personenbezogene Daten der Webseitennutzer zu sammeln"; no valid consents and no other
+    justification; the loss of control and a feeling of comprehensive surveillance justify damages under Art. 82 GDPR
+    even without psychological harm; revision not allowed, so the judgments are final. The press release names no
+    server-side interface and no file numbers. Meta's advertising tools, not analytics.
+  - OLG Naumburg, 5 February 2026, Az. 9 U 124/24 and 9 U 44/25: named only by one law firm's article (KNPP, through
+    WebFetch); **not corroborated** by my own search, which found no Naumburg ruling. Not used.
+  - CJEU Planet49 (C-673/17, 1 October 2019), BGH I ZR 7/16 (28 May 2020) and LG München I 33 O 14776/19
+    (29 November 2022): known from search summaries, not read; all concern cookies.
+- `taggrs.io/de/server-side-tracking/gdpr/` (WebFetch): a vendor of server-side tracking hosting; it says server-side
+  tracking "erfordert ... die ausdrückliche Einwilligung" and does not remove the need for consent banners; it names
+  no court decision and no authority guidance, and its structured data says "ist zu 100% legal". It is about
+  advertising and analytics tags (Google, Meta), not Plausible. Not used.
+- Decision, 2026-10-23: the page's footnote makes **no claim about courts**; it says whose position it is and what
+  the two authorities say. Whether to add a sentence about the German damages rulings (cookies, advertising tools)
+  is the owner's call (asked in chat).

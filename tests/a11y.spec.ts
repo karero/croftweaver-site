@@ -806,6 +806,31 @@ test('a11y — /what-it-runs-on: analytics sits above Keystatic, and each dashbo
   const phone = await figs();
   expect(phone[0].top < phone[1].top, 'the dashboards do not stack on a phone').toBe(true);
 });
+// "No cookie banner*" is Plausible's own position, not a finding of any court or authority, and the owner chose a
+// closing line with an asterisk over a claim in the heading. So: the heading stays free of the claim, the line
+// is followed by its footnote, and the footnote names whose position it is and the two authorities that
+// give no blanket answer (EDPB Guidelines 2/2023 and the German DSK guidance).
+test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its footnote and the heading stays neutral', async ({ page }) => {
+  await page.goto('/what-it-runs-on');
+  const s = await page.evaluate(() => {
+    const sec = document.getElementById('analytics')!;
+    const line = [...sec.querySelectorAll('strong')].find((e) => /no cookie banner\*/i.test(e.textContent ?? ''));
+    const note = sec.querySelector('.footnote');
+    return {
+      heading: sec.querySelector('h2')?.textContent ?? '',
+      hasLine: !!line,
+      noteText: note?.textContent?.trim() ?? '',
+      noteAfterLine: !!line && !!note && !!(line.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING),
+    };
+  });
+  expect(s.heading, 'the analytics heading must not carry the cookie-banner claim').not.toMatch(/cookie|banner/i);
+  expect(s.hasLine, 'the analytics section must end with the "No cookie banner*" line').toBe(true);
+  expect(s.noteAfterLine, 'the footnote must follow the "No cookie banner*" line').toBe(true);
+  expect(s.noteText, 'the footnote must start with the asterisk').toMatch(/^\*/);
+  expect(s.noteText, 'the footnote must say whose position it is').toMatch(/Plausible's own position/);
+  expect(s.noteText, 'the footnote must name the EDPB guidelines').toMatch(/EDPB Guidelines 2\/2023/);
+  expect(s.noteText, 'the footnote must name the German authorities').toMatch(/Germany's data protection authorities/);
+});
 for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
     await page.setViewportSize({ width, height: 740 });
