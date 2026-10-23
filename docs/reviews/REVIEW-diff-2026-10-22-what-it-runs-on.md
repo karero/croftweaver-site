@@ -266,3 +266,31 @@ Totals after this stretch: 4 rounds, two merge links, and the confirmations of t
 review was a review of new claims and, with no BUG found, needed no new round, only the confirmation above. 47
 findings in all (41 before, 6 here, D43 to D48); 44 fixed, 2 refuted (D19, D30), 1 out of scope (D32).
 Tokens: 1,079,014 logged for the gate through this confirmation (the stalled run, stopped by hand, has no figure in it). Not pushed at the time of writing; the ship hold stands.
+
+
+## The "No cookie banner*" line, the footnote and the counting sentence (2026-10-23): a review of the delta, one seat
+
+At the owner's choice (option B) the analytics section ends with a bold "No cookie banner*" line and a footnote; at
+his go it also gained a sentence on German damages rulings, a sentence on how Plausible counts visitors, and the
+Baden-Württemberg authority's conditions (commits `cceb06b`, `f2ad8a0`; the readings are in the facts record,
+sections 9 and 10). Reviewed once, over the whole 105-line delta, as he asked.
+
+**Degraded round, named as such.** `reviewers: codex OK, melious FAILED (error mid-stream (HTTP 200): Insufficient
+balance for request. Required: 92, Available: 0), ollama-cloud FAILED (429, weekly usage limit)`. `timings: codex 315s
+(93456 tokens)`. Per the rules no other model goes to melious and Kimi runs on ollama only, so there was no second
+seat. One cross-model seat read the delta; gate total 1,172,470 tokens logged. The page is prose and tests; no BUG.
+
+| # | Kind | Seat | Finding | Check | Disposition |
+|---|---|---|---|---|---|
+| D49 | RISK | Codex | the counting sentence and "stores no IP address" are stated as facts, backed by notes, not implementation | the claim is Plausible's own (its data policy and metrics definitions, read raw 2026-10-23); the repository's README records the v3.2.1 source: a new salt at midnight UTC, salts older than 48 hours deleted, a visit still open at midnight continues under the previous day's identifier | fixed: "Plausible says it counts ... and stores no IP address"; the source reading stays in the README, not on the page |
+| D50 | RISK | Codex | the "must end" test checks that the claim exists, not that the footnote stays beside it | mutation: a paragraph inserted between them left the test green | fixed in `248c4fe`: the footnote must be the very next element after the claim and the last element of the section; the same mutation now fails the test |
+
+Unverifiable lists (the EDPB, the DSK, the Baden-Württemberg FAQ, the court reports, the toolkit's server mode, the
+owner's preference for the asterisk line): met by the facts record, sections 9 and 10, which quote the authority
+texts from their PDF text layers and the court press release; the court reports are small-model readings and are
+marked so there. The owner's instruction for the asterisk line is in the chat of 2026-10-23.
+
+The two fixes (an attribution in one sentence, a tighter test) got no second model pass: there is no second seat to
+ask while melious has no balance and ollama is at its weekly limit, and both fixes were checked by mutation and by the
+full suite (379 passed, `astro check` 0 errors). Findings in all: 49 before this stretch's two, 2 here: 51 total; 48
+fixed, 2 refuted, 1 out of scope.
