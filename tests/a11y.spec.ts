@@ -31,6 +31,28 @@ for (const path of PAGES) {
   }
 }
 
+// Site-specific (not in the shipped suite): the closed pages are scanned above, so a header group that is OPEN
+// is scanned here, in both themes: its button, its list and the colours of both. A group is a button that opens a
+// list of links under it (NAV in src/config.ts); axe sees the list only while it is open.
+for (const theme of THEMES) {
+  test(`a11y — an open header group [${theme}]`, async ({ page }) => {
+    await page.addInitScript((t) => {
+      try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
+    }, theme);
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/skills');
+    await page.evaluate(() => document.fonts.ready);
+    const button = page.locator('.site-header nav .group-button').first();
+    await button.click();
+    await expect(button).toHaveAttribute('aria-expanded', 'true');
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
+      .analyze();
+    const summary = results.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length }));
+    expect(JSON.stringify(summary, null, 2)).toBe('[]');
+  });
+}
+
 // Site-specific (not in the shipped suite): the header logo is an inline SVG whose ink is
 // currentColor, so it follows the theme. Axe checks text contrast, not a graphic's
 // colours, and a logo file exported with a fixed colour would vanish on one theme. So, per

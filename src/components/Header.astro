@@ -2,10 +2,17 @@
 // Site header: the horizontal logo lockup (BRAND.md), the claim under it, and the main
 // navigation from NAV in src/config.ts. A language switcher mounts here later.
 //
+// An item of NAV is a link, or a group: a button that opens a list of links under it. The
+// lists are in the page at load, hidden by CSS and never made on a click, so the dead-link
+// suite reads their links and they stay reachable without JavaScript.
+//
 // On a phone the navigation folds behind a "Menu" button. The button is switched on by a
 // script, so without JavaScript the links simply stay visible, as they were before. The
 // first script below runs before the list is drawn, so nothing flashes open and shut.
-import { SITE, NAV } from '../config';
+// Where a group shows as a button (JavaScript on, the navigation not folded) and where it
+// shows as a plain name with its links (a phone: above them; no JavaScript: above or beside
+// them) is the style block's job: see "The fold" there.
+import { SITE, NAV, isNavGroup } from '../config';
 // The theme-ready lockup: its ink is currentColor, set by .brand below, so it follows the
 // light and dark theme and the visitor's toggle. How it is made from the design files:
 // BRAND.md, Logo. tests/a11y.spec.ts checks it renders in the theme's colour.
@@ -25,7 +32,22 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
   <nav id="main-nav" aria-label="Main">
     <ul>
-      {NAV.map((item) => (
+      {NAV.map((item, i) => isNavGroup(item) ? (
+        <li class="group">
+          <button
+            class="group-button" type="button" aria-expanded="false" aria-controls={`nav-group-${i}`}
+            aria-current={item.items.some((link) => isCurrent(link.href)) ? 'true' : undefined}
+          >{item.label}<span class="chevron" aria-hidden="true">▾</span></button>
+          <span class="group-label" id={`nav-group-label-${i}`}>{item.label}</span>
+          <ul class="group-list" id={`nav-group-${i}`} aria-labelledby={`nav-group-label-${i}`}>
+            {item.items.map((link) => (
+              <li>
+                <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ) : (
         <li>
           <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
         </li>
@@ -50,6 +72,49 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
       set(false);
       if (inMenu) button.focus();
     });
+
+    // Groups. A button opens the list under it; one list is open at a time. The buttons only show
+    // where the style block says so (JavaScript on, the navigation not folded); elsewhere the lists
+    // are always shown. The handlers run at every width, so a list left open is closed again when the
+    // window goes below the fold (resize) and when the browser restores the page from its back/forward
+    // cache, instead of showing open by itself later.
+    var groups = nav.querySelectorAll('.group');
+    function groupButton(group) { return group.querySelector('.group-button'); }
+    function isOpen(group) { return groupButton(group).getAttribute('aria-expanded') === 'true'; }
+    function setGroup(group, open) { groupButton(group).setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    function closeGroups() { Array.prototype.forEach.call(groups, function (group) { setGroup(group, false); }); }
+    Array.prototype.forEach.call(groups, function (group) {
+      // Opening a group closes the others without code of its own: the press on this button is outside
+      // them, so the pointerdown handler below closes them.
+      groupButton(group).addEventListener('click', function () { setGroup(group, !isOpen(group)); });
+      // Focus moving to something outside the group closes it. A null target does not: Safari and
+      // Firefox on macOS do not focus a link on click, and closing then could remove the list before
+      // the click lands. (Tab out of the page leaves it open; Escape or a click elsewhere closes it.)
+      group.addEventListener('focusout', function (e) {
+        if (e.relatedTarget && !group.contains(e.relatedTarget)) setGroup(group, false);
+      });
+    });
+    // A press outside a group closes it (pointerdown, not click: iOS Safari may not send a click to the
+    // document for a tap on text). A press on another group's button also closes this one first.
+    document.addEventListener('pointerdown', function (e) {
+      Array.prototype.forEach.call(groups, function (group) {
+        if (isOpen(group) && !group.contains(e.target)) setGroup(group, false);
+      });
+    });
+    window.addEventListener('resize', function () {
+      if (groups.length && getComputedStyle(groupButton(groups[0])).display === 'none') closeGroups();
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) closeGroups(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      Array.prototype.forEach.call(groups, function (group) {
+        if (!isOpen(group)) return;
+        // Focus on a link that is about to be hidden would be lost: hand it to the button.
+        var inGroup = group.contains(document.activeElement);
+        setGroup(group, false);
+        if (inGroup) groupButton(group).focus();
+      });
+    });
   })();
 </script>
 
@@ -70,7 +135,7 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer;
   }
-  nav ul {
+  nav > ul {
     list-style: none; margin: 0; padding: 0;
     display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.4rem;
   }
@@ -81,8 +146,42 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--surface); font-weight: 600;
   }
+
+  /* A group, as the baseline (no JavaScript, or a phone): its name as a plain label with its links
+     under or beside it, all shown, and no button. */
+  .group { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; }
+  .group-button {
+    display: none; min-height: 44px; align-items: center; gap: 0.3rem; padding: 0 0.1rem;
+    border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer;
+  }
+  .group-label { font-weight: 600; color: var(--muted); }
+  .group-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1rem; }
+  .group-button:hover { color: var(--link); text-decoration: underline; }
+  .group-button[aria-current='true'] { color: var(--link); font-weight: 600; }
+  .chevron { font-size: 0.8em; }
+
+  /* The fold: up to 51.99rem (831px) the navigation folds behind the Menu button (the phone block at the
+     end); above it, it stands in the header. 52rem is where the items fit one row with room to spare in a
+     wide system font (Verdana, close to DejaVu Sans on a Linux machine, needs about 769px). The wide block
+     below is the exact complement of that query, so no width, a fractional one from browser zoom included,
+     falls between the two; tests/navigation.spec.ts keeps the two numbers equal. */
+
+  /* Wide, with JavaScript: a group is a button that opens its list as a panel under it. */
+  @media not all and (max-width: 51.99rem) {
+    :global(html.js) .group { display: block; position: relative; }
+    :global(html.js) .group-button { display: inline-flex; }
+    :global(html.js) .group-label { display: none; }
+    :global(html.js) .group-list {
+      display: none; position: absolute; top: 100%; left: 0; z-index: 20;
+      flex-direction: column; flex-wrap: nowrap; gap: 0; min-width: 12rem;
+      padding: 0.35rem; background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    :global(html.js) .group-list a { width: 100%; padding: 0 0.75rem; box-sizing: border-box; white-space: nowrap; }
+    :global(html.js) .group-button[aria-expanded='true'] ~ .group-list { display: flex; }
+  }
   /* Phones: the list folds behind the button and opens as one column under the logo. */
-  @media (max-width: 47.99rem) {
+  @media (max-width: 51.99rem) {
     /* The logo is a little smaller here, so logo and button share the first row down to 320px. */
     .site-header { column-gap: 0.75rem; }
     .brand :global(svg) { height: 1.5rem; }
@@ -90,8 +189,12 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     :global(html.js) .menu-button { display: inline-flex; }
     :global(html.js) nav { flex-basis: 100%; }
     :global(html.js) .menu-button[aria-expanded='false'] + nav { display: none; }
-    :global(html.js) nav ul { flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 0.5rem; }
+    :global(html.js) nav > ul { flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 0.5rem; }
     :global(html.js) nav li a { width: 100%; }
     :global(html.js) nav li .repo { justify-content: center; margin-top: 0.5rem; }
+    /* A group on a phone: its name, then its links in a column. */
+    :global(html.js) .group { display: block; padding-top: 0.5rem; }
+    :global(html.js) .group-label { display: block; }
+    :global(html.js) .group-list { display: block; padding-left: 0.75rem; }
   }
 </style>
