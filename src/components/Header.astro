@@ -81,11 +81,9 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     function isOpen(group) { return groupButton(group).getAttribute('aria-expanded') === 'true'; }
     function setGroup(group, open) { groupButton(group).setAttribute('aria-expanded', open ? 'true' : 'false'); }
     Array.prototype.forEach.call(groups, function (group) {
-      groupButton(group).addEventListener('click', function () {
-        var opening = !isOpen(group);
-        Array.prototype.forEach.call(groups, function (other) { if (other !== group) setGroup(other, false); });
-        setGroup(group, opening);
-      });
+      // Opening a group closes the others without code of its own: the click is outside them, so the
+      // document handler below closes them.
+      groupButton(group).addEventListener('click', function () { setGroup(group, !isOpen(group)); });
       // Focus moving to something outside the group closes it. A null target does not: Safari and
       // Firefox on macOS do not focus a link on click, and closing then could remove the list before
       // the click lands. (Tab out of the page leaves it open; Escape or a click elsewhere closes it.)
