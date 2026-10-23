@@ -7,7 +7,7 @@ One gate for three site copies, as the toolkit's plan names them: Site A, Site B
 |---|---|---|---|---|---|
 | 1 | 4741f28 / 4691274 / 904fe5e | full divergence | codex-cli 0.164.0 (gpt-6.1-sol, effort from config, read-only); fresh-eyes Opus 5.5 sub-agent; melious FAILED (balance 0), ollama stand-in FAILED (weekly limit) | codex 493 s, 145,294; fresh-eyes 575 s, 213,041 | 4 / 4 / 5 (13 after dedup) |
 | 2 | e0fdec1 / e604ee4 / f3ebd2d | delta since round 1 | codex; fresh-eyes Opus; melious and ollama FAILED as above | codex 514 s, 81,572; fresh-eyes 1,202 s, 169,111 | 2 / 2 / 3, plus 1 unverifiable |
-| 3 | f9ba460 / 184e1d1 / 6b4f348 | delta since round 2 | codex; fresh-eyes Opus; melious and ollama FAILED | codex 471 s, 91,261; fresh-eyes 410 s, 143,652 | 1 / 1 / 6 |
+| 3 | f9ba460 / 184e1d1 / 6b4f348 | delta since round 2 | codex; fresh-eyes Opus; melious and ollama FAILED | codex 471 s, 91,261; fresh-eyes 410 s, 143,652 | 1 / 1 / 6 (one a re-raise of G7) |
 | 4 | 2d79f16 / baa8604 / 07cf41f | delta since round 3 | codex only (fresh-eyes runs rounds 1 to 3 at High); melious and ollama FAILED | codex 284 s, 60,996 | 1 / 0 / 0 |
 | 5 | 2d79f16 / f1f377f / 07cf41f | delta since round 4 (Site B only) | codex; GLM 5.3 on melious | codex 336 s, 73,398; melious 74 s, 11,448 | 0 / 0 / 2 |
 | final full read | 2d79f16 / 34cd461 / 07cf41f | full divergence, current heads | GLM 5.3 on melious (had not read the whole artifact) | 539 s, 79,457 | 0 / 2 / 2 |
@@ -51,6 +51,8 @@ One gate for three site copies, as the toolkit's plan names them: Site A, Site B
 
 UNVERIFIABLE entries were asked in several rounds (curl's code after a redirect to a dead host, a browser's reading of odd comments, CI timings); none was confirmed as a finding.
 
+34 findings in all (the table above; round 3's re-raise of G7 is not counted again). 8 BUG, all fixed.
+
 Waivers and deferrals: none.
 Follow-ups: G7 (B BUGLOG row); H7 (C locals); L2 (C probe host prefix); G3 (C BUGLOG row, added in this PR).
 Notes:
@@ -58,4 +60,4 @@ Notes:
 - Round 4 was earned by H1 (kind smoke-import-guard, BUG) and H2 (kind probe-strip-test, earning RISK), with a cut. Round 5 was earned by J1 (smoke-import-guard again), with `--cut "the word rule replaced by an exact list of allowed lines"`.
 - The convergence stop (a kind back after its cut) was met at J1. The exact list is the strictest form of that guard; had round 5 broken it, the guard would have come out and the item gone to the maintainer.
 - Final full read: GLM 5.3 over the whole divergence at the current heads. A first attempt got an artifact cut short by a builder error (another session had moved Site A's `main`), so the builder now diffs from the merge base.
-- No wording pass ran: the record prose (this trail, the PR text, the plan's row 4) was written after the last round and has had no reviewer's read.
+- Wording pass (Codex, `--seat codex`) over this trail, the three PR descriptions and the plan's row 4: three contradictions fixed (the worktree is removed on its way out, not on every exit; 34 findings, not 35; "kept" added to the dispositions). Its two RISKs are follow-ups: the smoke test's dependencies (checked in F4 by a run under Node) and the two test-port statements (port 4725 seen held by another checkout with `lsof`; Site C's port comes from its checkout's folder, per its playwright.config.ts).
