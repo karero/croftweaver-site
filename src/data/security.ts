@@ -12,9 +12,10 @@
 // - the check loads this file with the TypeScript compiler and compares each claim with the built page. The
 //   file is transpiled on its own, so it may use constants and functions but must not import anything.
 // To cut the dated PHP alert: delete the section #php-alert and the section #php-steps from the page (each has a
-// PHP-DATED comment above it) and the claims of the "PHP alert" group below. Nothing else names the alert: the
-// description, the share card, the first section, the "how this page was checked" section and public/llms.txt carry
-// no mention of it, and the page, this file and tests/check_security_page.sh pass without them (tried on 2026-10-22).
+// PHP-DATED comment above it) and the claims of the "PHP alert" group below. The alert is also named, in words that
+// stand alone, by the labelled judgment in #safer and the claims ai-exploit-tools and ai-exploit-none-yet; those stay.
+// The description, the share card, the "how this page was checked" section and public/llms.txt carry no mention of
+// it, and the page, this file and tests/check_security_page.sh pass without the panel (tried on 2026-10-23).
 // A reading says what a source says, not that it still says it: Cloudflare, W3Techs and the news pages change.
 // Re-read a source before changing its date.
 
