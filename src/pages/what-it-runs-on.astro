@@ -5,7 +5,7 @@
 // address and adds Astro, the assistant, the checks and where a shop fits. Plan, review trail and the
 // source of every claim: the private hub's what-it-runs-on/ (PAGE-PLAN.md, REVIEW-plan-2026-10-22.md);
 // the vendor readings and the DIFF-gate trail are in this repository, under docs/reviews/.
-// Every vendor figure is dated READ (READ_STATS for the W3Techs share) and linked; read them again before
+// Every vendor figure is dated READ (22 October) or READ_2 (23 October) and linked; read them again before
 // changing the page.
 // The page claims no ranking, no price a vendor does not state, no endorsement by a vendor, and
 // never "free" without its limits.
@@ -13,7 +13,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 const READ = '22 October 2026';
-const READ_STATS = '23 October 2026'; // the W3Techs share and the "how Cloudflare works" page, read on this day
+const READ_2 = '23 October 2026'; // the second day of reading: W3Techs, "how Cloudflare works", GitHub and Git
 const PRESS = 'https://www.cloudflare.com/press-releases/2026/cloudflare-acquires-astro-to-accelerate-the-future-of-high-performance-web-development/';
 const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
 const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
@@ -128,6 +128,27 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
   <section class="wrap" id="github">
     <h2>GitHub</h2>
     <p>
+      GitHub is a web service that hosts software projects and lets people work on them together. It is
+      built on <a href="https://git-scm.com/">Git</a>, a free and open-source version control system. Git is
+      the open tool; GitHub is a company's service on top of it, and
+      <a href="https://blogs.microsoft.com/blog/2018/10/26/microsoft-completes-github-acquisition/">has belonged to
+      Microsoft since October 2018</a>. Other services host Git repositories too, and Croftweaver's setup is written
+      for GitHub (<a href="https://docs.github.com/en/get-started/start-your-journey/about-github-and-git">GitHub's
+      own description</a>, read {READ_2}). Two things matter for a site:
+    </p>
+    <ul class="steps">
+      <li><strong>Version control.</strong> Git records every change to a project's files. If a change breaks
+        the site, you can undo a merged pull request: GitHub makes a new pull request that reverses it
+        (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request">reverting a pull request</a>,
+        read {READ_2}).</li>
+      <li><strong>Collaboration.</strong> Several people can work on the same site at once, each on their own
+        copy. They propose a change in a pull request, others review it, and it is merged. Changes to
+        different lines merge on their own; if two changes touch the same line, GitHub will not merge until a
+        person settles it
+        (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts">about merge conflicts</a>,
+        read {READ_2}).</li>
+    </ul>
+    <p>
       GitHub keeps your site's files and the history of every change, and it runs the checks on each
       pull request. The account is yours, and the repository can be private or public. A free account
       allows <a href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans">unlimited
@@ -147,10 +168,10 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       Cloudflare is one of the companies a large part of the web runs on.
       <a href="https://w3techs.com/technologies/details/cn-cloudflare">W3Techs</a>, which surveys the
       technology behind websites, found Cloudflare's service on 27.8% of all websites in October 2026
-      (read {READ_STATS}). It sits between visitors and a site: it delivers pages from servers near the
+      (read {READ_2}). It sits between visitors and a site: it delivers pages from servers near the
       visitor, can answer DNS requests for the domain and helps protect against attacks
       (<a href="https://developers.cloudflare.com/fundamentals/concepts/how-cloudflare-works/">how Cloudflare
-      works</a>, read {READ_STATS}). That also ties a site's availability to Cloudflare's.
+      works</a>, read {READ_2}). That also ties a site's availability to Cloudflare's.
     </p>
     <p>
       Cloudflare builds the site from GitHub and serves it. Every pull request from a branch in your
