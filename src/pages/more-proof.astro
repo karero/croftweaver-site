@@ -74,7 +74,7 @@ const rerun = (url: string) =>
       and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
       these numbers are AI opinions, not a Google metric.
     </p>
-    <div class="table-wrap" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
+    <div class="table-wrap figures" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>
         <thead>
           <tr>
@@ -125,11 +125,11 @@ const rerun = (url: string) =>
     <p>
       The skills build in structured data that names the organisation and links to
       profiles that are really yours, a named author with a short bio where a page has
-      one, cited sources, an imprint, a privacy page and links that work. Tests cover
-      part of this: every page must carry structured data a machine can read, and
-      links inside the site that are written from the start of the address must work.
-      Outside links and profiles are not tested, and no test can tell whether a claim
-      is true.
+      one, cited sources, a draft imprint and a draft privacy page for you to have
+      reviewed, and links that work. Tests cover part of this: every page must carry
+      structured data a machine can read, and links inside the site that are written
+      from the start of the address must work. Outside links and profiles are not
+      tested, and no test can tell whether a claim is true.
       <a href="/positioning#trust">Positioning first</a> says more.
     </p>
   </section>
@@ -178,11 +178,4 @@ const rerun = (url: string) =>
   .scores dt { font-size: 0.85rem; color: var(--muted); }
   .scores dd { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
 
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
-  thead th { font-size: 0.9rem; color: var(--muted); }
-  tbody th { font-weight: 400; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
-  tr.avg th, tr.avg td { font-weight: 700; }
 </style>

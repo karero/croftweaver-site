@@ -58,6 +58,9 @@ const reasons = [
   },
 ];
 
+// The column headers are also the labels of the stacked rows on a phone (data-label), so they are written once.
+const changesCols = ['Area', 'With Croftweaver', 'The limit'];
+
 const changes = [
   { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare Pages. No database, no admin login, no plugins running on a server.', limit: 'A small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day. The site also depends on packages from npm, which still need security updates.' },
   { item: 'Updates', text: 'A new site names three packages directly, about 350 with everything they bring along. The launch checklist switches on GitHub’s security alerts for them.', limit: 'Fewer moving parts, not none. Version updates are not automatic.' },
@@ -165,12 +168,22 @@ const cannotSee = [
 
   <section class="wrap" id="changes">
     <h2>What changes on a static Astro site</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Area</th><th scope="col">With Croftweaver</th><th scope="col">The limit</th></tr></thead>
-        <tbody>
+    <div class="table-wrap stack" role="region" aria-label="What changes on a static Astro site: the area, what Croftweaver does, and the limit" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">{changesCols[0]}</th>
+            <th scope="col" role="columnheader">{changesCols[1]}</th>
+            <th scope="col" role="columnheader">{changesCols[2]}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
           {changes.map((c) => (
-            <tr><th scope="row">{c.item}</th><td>{c.text}</td><td>{c.limit}</td></tr>
+            <tr role="row">
+              <th scope="row" role="rowheader">{c.item}</th>
+              <td role="cell" data-label={changesCols[1]}>{c.text}</td>
+              <td role="cell" data-label={changesCols[2]}>{c.limit}</td>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -303,10 +316,6 @@ const cannotSee = [
   .loop > li h3::before { content: counter(step) ". "; color: var(--accent); }
   .loop .card p { max-width: 46rem; line-height: 1.6; margin: 0 0 0.6rem; }
   .loop .say { margin: 0; color: var(--muted); }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; max-width: 60rem; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--line, currentColor); line-height: 1.55; }
-  tbody th { font-weight: 600; }
   .faq-item { padding: 1.1rem 0; border-top: 1px solid var(--line); }
   .faq-item h3 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.35; }
   .faq-answer :global(p) { margin: 0 0 0.7rem; max-width: 46rem; line-height: 1.7; hyphens: manual; }

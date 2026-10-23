@@ -26,6 +26,9 @@ const failure = [
 const ownFile = 'https://github.com/karero/croftweaver-site/blob/main/POSITIONING.md';
 const ownStory = 'https://github.com/karero/croftweaver-site/blob/main/STORY.md';
 
+// The column headers are also the labels of the stacked rows on a phone (data-label), so they are written once.
+const spineCols = ['Page', 'Term'];
+
 // Plain links, no tag. Checked by hand when the page was built (CONTENT_GUIDE.md).
 const books = [
   {
@@ -112,16 +115,16 @@ const books = [
       This site is built the same way. <a href={ownFile}>Its own positioning file</a>
       is public, and these are the terms its pages carry today:
     </p>
-    <div class="table-wrap" role="region" aria-label="The positioning term of each page of this site" tabindex="0">
-      <table>
-        <thead>
-          <tr><th scope="col">Page</th><th scope="col">Term</th></tr>
+    <div class="table-wrap stack" role="region" aria-label="The positioning term of each page of this site" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader">{spineCols[0]}</th><th scope="col" role="columnheader">{spineCols[1]}</th></tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {SPINE.map((row) => (
-            <tr>
-              <th scope="row"><a href={row.path}><code>{row.path}</code></a></th>
-              <td>
+            <tr role="row">
+              <th scope="row" role="rowheader" class="nowrap"><a class="tap" href={row.path}><code>{row.path}</code></a></th>
+              <td role="cell" data-label={spineCols[1]}>
                 {row.term}
                 {row.body.length > 0 && <span class="also"> (in the text also: {row.body.join('; ')})</span>}
               </td>
@@ -187,7 +190,7 @@ const books = [
       <li>Structured data: labels in the page that a search engine reads. They name the organisation behind the site and link to profiles that are really yours.</li>
       <li>A named author with a short bio, where a page has one.</li>
       <li>Sources, cited where a page makes claims.</li>
-      <li>An imprint, a privacy page and a clear way to reach you.</li>
+      <li>A draft imprint and a draft privacy page, for you to have reviewed, and a clear way to reach you.</li>
       <li>Links that work.</li>
     </ul>
     <p class="aside">
@@ -271,11 +274,6 @@ const books = [
   .steps { padding-left: 1.3rem; }
   .steps li { margin-bottom: 0.5rem; }
 
-  .table-wrap { overflow-x: auto; margin: 1.2rem 0; max-width: 46rem; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); line-height: 1.5; }
-  thead th { font-size: 0.9rem; color: var(--muted); }
-  tbody th { font-weight: 400; white-space: nowrap; }
   .also { color: var(--muted); }
 
   /* The failure message is prose-width text: it wraps instead of scrolling. */
