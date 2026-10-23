@@ -66,6 +66,20 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       applies to servers that run an affected PHP version.
     </p>
     <p>
+      <strong>Our judgment, not a measurement: this will not be the last critical flaw in PHP.</strong> Tools
+      that find flaws are getting faster, and they work on every language. PHP runs on a very large number of
+      servers, with a great deal of application and plugin code on top of it. Flaws will also be found in newer
+      code, Astro's included (counts under <a href="#risks">what can still go wrong</a>). What differs is how
+      much code a visit runs.
+    </p>
+    <ul class="proof">
+      <Claim as="li" id="ai-php-scan">The PHP Foundation says that earlier this year it worked with Alpha-Omega to scan PHP with Anthropic's Claude Mythos, and that it has since added other tools, including OpenAI's Daybreak Red.</Claim>
+      <Claim as="li" id="ai-php-reports">The PHP Foundation says the growth of AI-assisted research means its security team receives far more reports than before.</Claim>
+      <Claim as="li" id="ai-wiz-found">Wiz says that frontier AI helped it find and fix vulnerabilities that had remained hidden in the PHP codebase for more than a decade.</Claim>
+      <Claim as="li" id="ai-exploit-tools">watchTowr told The Record that it is observing exploitation of the PHP flaws in the wild with proof-of-concept tools written with the help of AI.</Claim>
+      <Claim as="li" id="php-new-advisory">PHP published an informational advisory on 23 October 2026 for CVE-2026-115560, which it calls an unlikely remote-code-execution vector that needs an unusual combination of configuration and application code; it will publish a full advisory with the next release.</Claim>
+    </ul>
+    <p>
       We give no overall ranking. No single fact about what runs on a server settles one, and every site depends on its accounts. A
       WordPress site has a database and plugins besides WordPress itself, and WordPress.org tells its
       owners to keep WordPress and the plugins up to date. A Croftweaver site has build tools to keep up
@@ -523,6 +537,14 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <ul class="steps">
       <li><strong>Accounts matter for both kinds of site.</strong> A Croftweaver site depends on your domain registrar, GitHub and Cloudflare. A WordPress site depends on the same kinds of account, and on its own administration login. If an account is taken over, the whole site goes with it.</li>
       <li><strong>Cloudflare is a dependency.</strong> An outage on its side takes the site offline for as long as it lasts, and a flaw in its isolates would reach every site that runs on them.</li>
+      <li><strong>On a free plan the function has a daily allowance.</strong> Cloudflare counts static files and function calls differently, and says what happens when the allowance is used up:
+        <ul class="proof">
+          <Claim as="li" id="cf-static-free">Cloudflare says that on both free and paid plans, requests to static assets are free and unlimited, and that a request is static when it does not invoke Functions.</Claim>
+          <Claim as="li" id="cf-functions-quota">Cloudflare says that on the Workers Free plan, requests that invoke Pages Functions count towards a quota of 100,000 requests a day, which resets at midnight UTC.</Claim>
+          <Claim as="li" id="cf-fail-open">Cloudflare says that on the Workers Free plan you can set what Pages does when the daily Functions allowance is used up: fail open, where static assets keep being served, or fail closed, where an error page is returned.</Claim>
+        </ul>
+        The page says above that every request calls the function by default unless a routes file leaves some out (see <a href="#runs">what runs</a>), so on a free plan the allowance is worth knowing. Whether and when it applies to your site depends on your plan and on that setting.
+      </li>
       <li><strong>Headers help only so far.</strong> <Claim as="span" id="site-csp-inline">The content security policy of croftweaver.com still allows inline scripts.</Claim> A strict policy would limit more.</li>
       <li><strong>Installing packages runs other people's code on your computer.</strong> <Claim as="span" id="npm-attacks">In September 2025 CISA warned of a worm in the npm registry that had compromised over 500 packages.</Claim> Updating the day a release appears can pick up a bad one, so we think security-only updates are a sensible middle path.</li>
       <li><strong>Anything you add brings its own risk.</strong> A form service, an analytics script and an editing tool are each outside this comparison.</li>

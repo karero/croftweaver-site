@@ -59,6 +59,8 @@ const READ_GITHUB_API = '2026-10-22'; // the GitHub API, for the main language o
 const READ_LIVE = '2026-10-22'; // commands run against the live site, and the results in #own
 const READ_RFC = '2026-10-22'; // RFC 9116
 const READ_RISKS = '2026-10-23'; // the section #risks: Google, Spamhaus, CISA, GitHub, Cloudflare, Astro, Patchstack, Sansec, the news report on SubdoMailing, the GitHub Advisory Database
+const READ_AI = '2026-10-23'; // the evergreen judgment in #safer: the PHP Foundation, Wiz, The Record, php.net's news of 23 October
+const READ_CF_LIMITS = '2026-10-23'; // Cloudflare's Pages pricing and routing pages, for the daily allowance in #limits
 
 const CISA = 'https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching';
 const PHPNET = 'https://www.php.net/archive/2026.php#2026-10-21-5';
@@ -120,6 +122,12 @@ export const CLAIMS: Claim[] = [
   { id: 'php-share', kind: 'url', source: 'https://w3techs.com/technologies/details/pl-php', label: 'W3Techs', read: READ_NEWS },
   { id: 'php-systems-news', kind: 'url', source: KREBS, label: 'Krebs on Security', also: [{ label: 'Malwarebytes', url: MALWAREBYTES }], read: READ_NEWS },
   { id: 'php-systems-repos', kind: 'command', source: `for r in ${SYSTEMS}; do echo "$r $(curl -s https://api.github.com/repos/$r | grep '"language"')"; done`, read: READ_GITHUB_API },
+  // ---- AI-assisted finding of flaws, a labelled judgment in the evergreen section #safer (stays when the dated alert is cut) ----
+  { id: 'ai-php-scan', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
+  { id: 'ai-php-reports', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
+  { id: 'ai-wiz-found', kind: 'url', source: 'https://www.wiz.io/blog/php2shell-php-rce', label: 'Wiz Research', read: READ_AI },
+  { id: 'ai-exploit-tools', kind: 'url', source: RECORD, label: 'The Record', read: READ_AI },
+  { id: 'php-new-advisory', kind: 'url', source: 'https://www.php.net/archive/2026.php#2026-10-23-1', label: 'php.net news, 23 October 2026', read: READ_AI },
 
   // ---- What runs: the Croftweaver template, croftweaver.com, and WordPress as its own documentation describes it ----
   { id: 'template-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver && cd croftweaver && git checkout 3b8a6c5f && find skills/new-website/templates/astro -name '*.php' | wc -l", read: READ_REPO },
@@ -146,6 +154,10 @@ export const CLAIMS: Claim[] = [
   { id: 'cf-2fa', kind: 'url', source: 'https://developers.cloudflare.com/fundamentals/user-profiles/2fa/', label: 'Cloudflare docs, two-factor authentication (updated 20 April 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-dnssec', kind: 'url', source: 'https://developers.cloudflare.com/dns/dnssec/', label: 'Cloudflare docs, DNSSEC (updated 24 June 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-caa', kind: 'url', source: 'https://developers.cloudflare.com/ssl/edge-certificates/caa-records/', label: 'Cloudflare docs, CAA records (updated 21 April 2026)', also: [{ label: 'Pages custom domains, known issues (updated 21 April 2026)', url: 'https://developers.cloudflare.com/pages/configuration/custom-domains/' }], read: READ_CLOUDFLARE },
+  // ---- Cloudflare's daily allowance for Pages Functions (an item in #limits) ----
+  { id: 'cf-static-free', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/pricing/', label: 'Cloudflare docs, Pages Functions pricing (updated 8 September 2026)', read: READ_CF_LIMITS },
+  { id: 'cf-functions-quota', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/pricing/', label: 'Cloudflare docs, Pages Functions pricing (updated 8 September 2026)', read: READ_CF_LIMITS },
+  { id: 'cf-fail-open', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/routing/', label: 'Cloudflare docs, Pages Functions routing', read: READ_CF_LIMITS },
 
   // ---- What the template and the toolkit set up, and what the owner switches on ----
   { id: 'template-headers', kind: 'url', source: `${TEMPLATE_AT}/public/_headers`, label: 'the template at 3b8a6c5f', read: READ_REPO },
