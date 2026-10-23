@@ -215,7 +215,9 @@ const aiDesc =
     <p>
       The check does not ask Gemini with web search
       (<a href={`${SITE.repo}/blob/v0.31/skills/search-console-insights/references/geo-check.md`}>the toolkit's guide to the check</a>
-      says why), so the maintainer of the site asked the Gemini app by hand. On
+      says why). Google AI Mode, which Google builds on Gemini, is the nearest the table
+      comes; it is Google's search answer and not the Gemini app, so it has its own row. To
+      see the app itself, the maintainer of the site asked it by hand. On
       <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time>, signed in on a
       phone, the question was <q lang="de">{p.ai.byHand.question}</q>. The app (model shown:
       {p.ai.byHand.model}) listed four events, then named GenAI Wednesday first among the

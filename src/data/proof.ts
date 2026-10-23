@@ -261,6 +261,12 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
+// Gemini's cell with web search points to Google AI Mode, which Google builds on Gemini. It is a
+// search product and not the Gemini app, so it keeps its own row, and the pointer needs that row.
+const GEMINI_POINTER = ' Google AI Mode, built on Gemini, has its own row.';
+if (NOT_ASKED_WITH_SEARCH.includes('gemini') && !ENGINES.some(([id]) => id === 'google-ai-mode')) {
+  throw new Error('src/data/proof.ts: the Gemini cell points to the Google AI Mode row, but ENGINES has none. Restore the row or change GEMINI_POINTER.');
+}
 // /proof also says in a sentence that the check does not ask Gemini with web search. A file
 // that has such rows would make the table contradict that sentence, so it stops the build.
 const askedAfterAll = checks.find((c) => c.mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(c.engine));
@@ -292,7 +298,7 @@ const cell = (engine: string, mode: Mode) => {
       const last = lastAnswered(engine, mode);
       return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}` : 'Not run that day.';
     }
-    return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
+    return why === 'search-only' ? 'Always searches.' : `Not asked with web search.${engine === 'gemini' ? GEMINI_POINTER : ''}`;
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
