@@ -113,6 +113,16 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 }
 /* The release line and the credit line each take a row of their own under the links. */
 .site-footer .release, .site-footer .credit { flex-basis: 100%; margin: 0; color: var(--muted); }
+/* The footer links, in labelled columns (FOOTER in src/config.ts). The nav takes a row of its own, so the badge
+   stands above it. The columns share the width and drop to fewer per row as it narrows: two on a 360px phone,
+   one on 320px (with the footer's 1.25rem side padding). The link text keeps the size it had in the flat footer. */
+.site-footer .footer-nav {
+  flex-basis: 100%;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1.25rem 1.5rem;
+}
+.site-footer .footer-heading { margin: 0 0 0.4rem; font-weight: 600; color: var(--heading); }
+.site-footer .footer-nav ul { list-style: none; margin: 0; padding: 0; }
+.site-footer .footer-nav li + li { margin-top: 0.3rem; }
 /* The "Built with Croftweaver" badge (public/brand/badge, the partner kit). Each variant is a pill with its
    own background, so either reads on either theme; the one that matches the theme is shown. The link is
    44px tall like the header links (BRAND.md, mobile rules). */
