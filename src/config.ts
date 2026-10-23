@@ -29,9 +29,9 @@ export const SITE = {
 //
 // An item is a link, or a group of links that opens under its name. A group needs two
 // pages: while only one page of a set is on main it stays a plain link under its own label
-// (Security, for the Technology set, until a second Technology page exists), and the pull
-// request that adds the second page turns the link into the group. Header places are the
-// navigation work's; a page's own pull request adds only its FOOTER entry (below). The
+// (Security, for the Technology set, until a second Technology page exists), and the navigation
+// work's pull request that adds the second page's place turns the link into the group. Header
+// places are the navigation work's; a page's own pull request adds only its FOOTER entry (below). The
 // header is a curated subset of the pages: tests/navigation.spec.ts checks that every group
 // holds at least two links, and that every link resolves.
 export type NavLink = { label: string; href: string };
