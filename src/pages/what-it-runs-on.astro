@@ -59,9 +59,9 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       </div>
       <div class="place" data-place>
         <h3><a href="#github">GitHub</a></h3>
-        <p>Your files and the history of every change. The checks run here again on every pull request.</p>
+        <p>Your files and the history of the changes you push. The checks run here again on every pull request.</p>
         <ul class="made" role="list" aria-label="Made of">
-          <li>Git: every change</li>
+          <li>Git: the history of commits</li>
           <li>Pull requests, review</li>
           <li>Actions run the checks</li>
         </ul>
@@ -169,8 +169,8 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
     <ul class="steps">
       <li><strong>Version control.</strong> Git keeps a history of the changes that are committed to a project's
         files. If a change breaks the site, you can usually undo a merged pull request: with write access,
-        GitHub's Revert button makes a new pull request that reverses it, and if that conflicts, individual
-        commits can be reverted with Git
+        GitHub's Revert button makes a new pull request that reverses it, and if that conflicts, or the pull
+        request was not merged on GitHub, individual commits can be reverted with Git
         (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request">reverting a pull request</a>,
         read {READ_2}).</li>
       <li><strong>Collaboration.</strong> Several people can work on the same site at once, each on their own
@@ -181,7 +181,7 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
         read {READ_2}).</li>
     </ul>
     <p>
-      GitHub keeps your site's files and the history of every change, and it runs the checks on each
+      GitHub keeps your site's files and the history of the changes you push to it, and it runs the checks on each
       pull request. The account is yours, and the repository can be private or public. A free account
       allows <a href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans">unlimited
       public and private repositories</a> (read {READ}).
