@@ -759,6 +759,124 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
   });
 }
 
+// Site-specific (not in the shipped suite): the picture on /what-it-runs-on is HTML and CSS, not a drawing, so there is no text scaling to
+// measure. What can break is the layout: the three places must sit side by side on a desktop and
+// one under the other on a phone, and no box may push the page sideways at 360 or 320 px.
+test('a11y — the picture on /what-it-runs-on shows three places side by side on a desktop and one under the other on a phone', async ({ page }) => {
+  const tops = () => page.$$eval('[data-place]', (els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/what-it-runs-on');
+  const wide = await tops();
+  expect(wide, 'the picture must have three places').toHaveLength(3);
+  expect(new Set(wide).size, `the places are not in one row on a desktop (tops ${wide})`).toBe(1);
+  await page.setViewportSize({ width: 360, height: 740 });
+  const phone = await tops();
+  expect(phone[0] < phone[1] && phone[1] < phone[2], `the places do not stack on a phone (tops ${phone})`).toBe(true);
+});
+// The picture says what each place is made of: every place lists at least three entries, and the
+// box for the visitors' browsers sits below the three places, across the full width, on a desktop.
+test('a11y — each place in the /what-it-runs-on picture lists what it is made of, and the visitors sit below them', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/what-it-runs-on');
+  const counts = await page.$$eval('[data-place]', (els) =>
+    els.map((el) => [...el.querySelectorAll('.made li')].filter((li) => (li.textContent ?? '').trim() !== '').length));
+  expect(counts.length, 'the picture must have three places').toBe(3);
+  for (const n of counts) expect(n, `a place lists ${n} entries (counts ${counts})`).toBeGreaterThanOrEqual(3);
+  const box = await page.evaluate(() => {
+    const places = [...document.querySelectorAll('[data-place]')].map((el) => el.getBoundingClientRect());
+    const v = document.querySelector('.visitors')!.getBoundingClientRect();
+    return { belowAll: places.every((p) => v.top >= p.bottom), spans: v.left <= places[0].left + 1 && v.right >= places[2].right - 1 };
+  });
+  expect(box.belowAll, 'the visitors box must sit below all three places').toBe(true);
+  expect(box.spans, 'the visitors box must span the width of the three places').toBe(true);
+});
+// The analytics section holds two real dashboards. A screenshot alone cannot be read aloud or searched, and
+// a number without its site and period proves nothing, so each caption states the site, the period and the
+// figure as text. The section sits above Keystatic, as the owner asked, and the two dashboards sit side by
+// side on a desktop and one under the other on a phone.
+test('a11y — /what-it-runs-on: analytics sits above Keystatic, and each dashboard is captioned with its site, period and figure', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/what-it-runs-on');
+  const before = await page.evaluate(() => {
+    const a = document.getElementById('analytics'), k = document.getElementById('keystatic');
+    return !!a && !!k && !!(a.compareDocumentPosition(k) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(before, '#analytics must come before #keystatic').toBe(true);
+  const figs = () => page.$$eval('#analytics figure', (els) => els.map((f) => ({
+    caption: f.querySelector('figcaption')?.textContent ?? '',
+    top: Math.round(f.getBoundingClientRect().top),
+  })));
+  const wide = await figs();
+  expect(wide, 'the analytics section must show two dashboards').toHaveLength(2);
+  // A caption over a missing picture is a page that claims a dashboard it does not show: each figure holds one
+  // image that loads (the images are lazy, so scroll to them first).
+  await page.locator('#analytics figure').last().scrollIntoViewIfNeeded();
+  await expect.poll(
+    () => page.$$eval('#analytics figure', (els) => els.map((f) => {
+      const imgs = f.querySelectorAll('img');
+      return imgs.length === 1 && (imgs[0] as HTMLImageElement).naturalWidth > 0;
+    })),
+    { message: 'each analytics figure must hold one image that loads' },
+  ).toEqual([true, true]);
+  for (const f of wide) {
+    expect(f.caption, `a dashboard caption names no site (${f.caption})`).toMatch(/[a-z0-9-]+\.(de|com)/);
+    expect(f.caption, `a dashboard caption gives no period (${f.caption})`).toMatch(/\b\d+ days\b/);
+    expect(f.caption, `a dashboard caption gives no visitor figure (${f.caption})`).toMatch(/[\d.,]+k? unique visitors/i);
+  }
+  expect(wide[0].top, 'the dashboards are not side by side on a desktop').toBe(wide[1].top);
+  await page.setViewportSize({ width: 360, height: 740 });
+  const phone = await figs();
+  expect(phone[0].top < phone[1].top, 'the dashboards do not stack on a phone').toBe(true);
+});
+// "No cookie banner*" is Plausible's own position, not a finding of any court or authority, and the owner chose a
+// closing line with an asterisk over a claim in the heading. So: the heading stays free of the claim, the line
+// is followed by its footnote, and the footnote names whose position it is and the two authorities that
+// give no blanket answer (EDPB Guidelines 2/2023 and the German DSK guidance).
+test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its footnote and the heading stays neutral', async ({ page }) => {
+  await page.goto('/what-it-runs-on');
+  const s = await page.evaluate(() => {
+    const sec = document.getElementById('analytics')!;
+    const line = [...sec.querySelectorAll('strong')].find((e) => /no cookie banner\*/i.test(e.textContent ?? ''));
+    const note = sec.querySelector('.footnote');
+    return {
+      heading: sec.querySelector('h2')?.textContent ?? '',
+      hasLine: !!line,
+      noteText: note?.textContent?.trim() ?? '',
+      noteAfterLine: !!line && !!note && !!(line.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING),
+      // The claim and its caveat stay together: the footnote is the very next element and closes the section.
+      noteAdjacent: !!line && !!note && line.closest('p')?.nextElementSibling === note && sec.lastElementChild === note,
+    };
+  });
+  expect(s.heading, 'the analytics heading must not carry the cookie-banner claim').not.toMatch(/cookie|banner/i);
+  expect(s.hasLine, 'the analytics section must end with the "No cookie banner*" line').toBe(true);
+  expect(s.noteAfterLine, 'the footnote must follow the "No cookie banner*" line').toBe(true);
+  expect(s.noteAdjacent, 'the footnote must come right after the "No cookie banner*" line and be the last element of the section').toBe(true);
+  expect(s.noteText, 'the footnote must start with the asterisk').toMatch(/^\*/);
+  expect(s.noteText, 'the footnote must say whose position it is').toMatch(/Plausible's own position/);
+  expect(s.noteText, 'the footnote must name the EDPB guidelines').toMatch(/EDPB Guidelines 2\/2023/);
+  expect(s.noteText, 'the footnote must name the German authorities').toMatch(/Germany's data protection authorities/);
+  expect(s.noteText, 'the footnote must name the Baden-Württemberg authority and its conditions').toMatch(/Baden-Württemberg[\s\S]*fully anonymised[\s\S]*not\s+anonymisation/);
+  expect(s.noteText, 'the footnote must name the two German court rulings').toMatch(/OLG Frankfurt[\s\S]*OLG Dresden/);
+  expect(s.noteText, 'the footnote must say what it does not know about courts').toMatch(/knows of no ruling on analytics without cookies/);
+  // A visitor figure from Plausible is a count of visitor-days, not of distinct people; the page says so.
+  await expect(page.locator('#analytics')).toContainText('a person who returns on another day counts again');
+  // The plain option stays on the page: Plausible left off, with Cloudflare's own counts still there and what a site without a banner still needs.
+  await expect(page.locator('#analytics')).toContainText('leave Plausible off and add nothing');
+  await expect(page.locator('#analytics')).toContainText('processing contract with Cloudflare');
+});
+for (const width of [360, 320] as const) {
+  test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 });
+    await page.goto('/what-it-runs-on');
+    // The copy has no word long enough to push the page sideways, so put one in a box. The page stays
+    // inside the screen while either overflow-wrap: anywhere (on the box) or minmax(0, 1fr) (on the
+    // column) is in place; this fails only when both are gone.
+    await page.evaluate(() => { document.querySelector('[data-place] p')!.textContent += ' ' + 'x'.repeat(60); });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow, `/what-it-runs-on scrolls sideways at ${width} px with a 60-character word in a box`).toBeLessThanOrEqual(0);
+  });
+}
+
 // Text in a drawing is cut off at the edge of its box, and a visitor's font can be wider than
 // the one the layout was drawn in. So set the chart text in Verdana (macOS and Windows) or
 // DejaVu Sans (Linux), the widest common system fonts, and check that no text or mark leaves

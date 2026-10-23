@@ -46,6 +46,7 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/established-sites': { term: 'established sites' },
   '/from-wordpress': { term: 'WordPress to Astro' },
   '/ai-website-seo-checklist': { term: 'SEO checklist for AI-built websites', body: ['vibe coded website SEO issues'] },
+  '/what-it-runs-on': { term: 'what it runs on', body: ['tech stack'] },
   '/partner-assets': { term: 'partner assets' },
   '/about': { term: 'maintainer' },
   '/security': { term: 'static website' },

@@ -1,0 +1,467 @@
+---
+// /what-it-runs-on — the technology behind a Croftweaver site, in plain words. Positioning term
+// (tests/positioning.spec.ts): "what it runs on", in the title, the description and the H1; "tech
+// stack" in the body. It builds the 5 October 2026 /stack spec (origin/docs/teams-page-spec) at this
+// address and adds Astro, the assistant, the checks and where a shop fits. Plan, review trail and the
+// source of every claim: the private hub's what-it-runs-on/ (PAGE-PLAN.md, REVIEW-plan-2026-10-22.md);
+// the vendor readings and the DIFF-gate trail are in this repository, under docs/reviews/.
+// Every vendor figure is dated READ (22 October) or READ_2 (23 October) and linked; read them again before
+// changing the page.
+// The page claims no ranking, no price a vendor does not state, no endorsement by a vendor, and
+// never "free" without its limits.
+// The two dashboard screenshots in #analytics are the owner's own, of genai-wednesday.de (Plausible) and
+// genai-wednesday.com (Cloudflare; the .com address forwards to the .de site), taken on 23 October 2026.
+// Their figures are in the captions as text. Replace them as a pair, with the same domain, when updating.
+import Base from '../layouts/Base.astro';
+import { SITE } from '../config';
+
+const READ = '22 October 2026';
+const READ_2 = '23 October 2026'; // the second day of reading: W3Techs, "how Cloudflare works", GitHub and Git, Plausible, Keystatic
+const PRESS = 'https://www.cloudflare.com/press-releases/2026/cloudflare-acquires-astro-to-accelerate-the-future-of-high-performance-web-development/';
+const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
+const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
+const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
+const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
+const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
+const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/astro/functions/_middleware.ts`; // navigationSkip()
+---
+<Base
+  title="What it runs on: Astro, Cloudflare, GitHub"
+  description="What it runs on: Astro builds the pages, GitHub keeps the files, Cloudflare serves them. The tech stack of a Croftweaver site, what it costs, what you can swap."
+  image="/images/og/what-it-runs-on.jpg"
+>
+  <section class="wrap hero">
+    <h1>What it runs on: three places, all in your name</h1>
+    <p class="lead">
+      The tech stack of a Croftweaver site is three places: a folder on your computer,
+      your files on GitHub, and Cloudflare, which builds the site and serves it. Each one is
+      yours. Your AI assistant works in the first place. Astro, the framework that turns your
+      text files into pages, runs there and runs again at Cloudflare. This page says what each
+      part does, what it costs and what you can swap.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+
+  <section class="wrap" id="picture">
+    <h2>The picture</h2>
+    <div class="places">
+      <div class="place" data-place>
+        <h3><a href="#folder">Your computer</a></h3>
+        <p>The folder with your site's files. Your assistant works here. Astro builds a preview, and the tests run here.</p>
+        <ul class="made" role="list" aria-label="Made of">
+          <li>Claude Code or Codex</li>
+          <li>Astro, Vite and Node.js</li>
+          <li>Astro pages, Markdown</li>
+          <li>TypeScript checks</li>
+          <li>Tests: Playwright, axe</li>
+        </ul>
+      </div>
+      <div class="link" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M7 1.5 2 6l5 4.5M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="place" data-place>
+        <h3><a href="#github">GitHub</a></h3>
+        <p>Your files and the history of the changes you push. The checks run here again on every pull request.</p>
+        <ul class="made" role="list" aria-label="Made of">
+          <li>Git: the history of commits</li>
+          <li>Pull requests, review</li>
+          <li>Actions run the checks</li>
+        </ul>
+      </div>
+      <div class="link" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="place" data-place>
+        <h3><a href="#cloudflare">Cloudflare</a></h3>
+        <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
+        <ul class="made" role="list" aria-label="Made of">
+          <li>Pages: build and host</li>
+          <li>CDN and DNS</li>
+          <li>A small function</li>
+        </ul>
+      </div>
+      <div class="link down" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="visitors">
+        <h3>Your visitors' browsers</h3>
+        <p>They receive plain HTML and CSS and a little JavaScript.</p>
+      </div>
+    </div>
+    <p class="aside">Your computer and GitHub exchange changes. Cloudflare builds from GitHub.</p>
+  </section>
+
+  <section class="wrap" id="astro">
+    <h2>Astro builds the pages</h2>
+    <p>
+      <a href="https://astro.build">Astro</a> is an open-source framework for content websites.
+      It turns your text files and templates into plain HTML pages when the site is built. It
+      runs on your computer, to build the preview and the site the tests check, and again at Cloudflare each time
+      Cloudflare builds the site from GitHub. A direct upload, which the toolkit also describes,
+      builds on your computer only.
+    </p>
+    <p>
+      Astro makes static pages by default. It can build a page on request instead, with a small
+      add-on for the host (an adapter); its own documentation on
+      <a href="https://docs.astro.build/en/guides/on-demand-rendering/">on-demand rendering</a>
+      says how (read {READ}). Croftweaver sites are static: no cart, no accounts, no database.
+      The files Astro writes are ordinary HTML, and any web host can serve them.
+    </p>
+    <p>
+      In January 2026, Cloudflare <a href={PRESS}>announced</a> that the Astro team is joining it
+      and that Astro will remain open source (read {READ}). Croftweaver is an independent project.
+    </p>
+  </section>
+
+  <section class="wrap" id="assistant">
+    <h2>Your assistant does the typing</h2>
+    <p>
+      An AI coding assistant edits the files, runs the tests and, when you ask, publishes the
+      site. Croftweaver is developed and used with Claude Code. Codex and Antigravity have each
+      been tested from start to finish on one site (the maintainer's word, 18 October 2026; there
+      is no written record yet). There is a plugin for Claude Code and for Codex.
+    </p>
+    <p>
+      You choose the steps, as <a href="/why#steps">the four steps on the why page</a> say. In
+      Claude Code, routine build commands, <code>git push</code> among them, run without asking.
+      That saves clicks and is not a safety fence. The <code>AGENTS.md</code> in a site tells the assistant
+      never to run <code>npm run ship</code> unasked, but that is a written rule, not something Claude Code
+      enforces. <a href={RUNS}>What the skills run</a> lists the commands. The list of what runs without
+      asking was read from Claude Code's documentation and not tried in a live session.
+    </p>
+  </section>
+
+  <section class="wrap" id="folder">
+    <h2>A folder on your computer</h2>
+    <p>
+      This is the working copy: a folder that mirrors the repository on GitHub. Your assistant
+      reads and changes the files there and runs the checks before anything leaves your computer.
+      Each person who works on the site has their own folder. GitHub is where the changes meet.
+    </p>
+    <p>
+      <strong>Keep that folder out of anything that syncs files.</strong> Git's own FAQ advises
+      against using a cloud syncing service for any part of a Git repository, because it can cause
+      corruption (<a href="https://git-scm.com/docs/gitfaq#sync-working-tree">the git FAQ</a>, read
+      {READ}). It names no product. iCloud Drive, OneDrive, Dropbox and Google Drive are examples of
+      such services. The toolkit's <a href={START}>getting-started guide</a> says to pick a folder
+      outside a Documents folder that syncs to iCloud or OneDrive.
+    </p>
+    <p>
+      A folder on a shared server or network drive is a different problem: two people working in
+      one folder overwrite each other, and GitHub is already where a team shares.
+    </p>
+    <p>
+      Codex in the browser needs no folder. Each task starts from a fresh copy of your repository
+      on GitHub. An older task that you resume may be behind, as the instructions for assistants
+      that the toolkit gives a new site (<code>AGENTS.md</code>, <a href={AGENTS}>the template</a>) warn.
+    </p>
+  </section>
+
+  <section class="wrap" id="github">
+    <h2>GitHub</h2>
+    <p>
+      GitHub is a web service that hosts software projects and lets people work on them together. It is
+      built on <a href="https://git-scm.com/">Git</a>, a free and open-source version control system. Git is
+      the open tool; GitHub is a company's service on top of it, and
+      <a href="https://blogs.microsoft.com/blog/2018/10/26/microsoft-completes-github-acquisition/">has belonged to
+      Microsoft since October 2018</a>. Other services host Git repositories too, and Croftweaver's setup is written
+      for GitHub (<a href="https://docs.github.com/en/get-started/start-your-journey/about-github-and-git">GitHub's
+      own description</a>, read {READ_2}). Two things matter for a site:
+    </p>
+    <ul class="steps">
+      <li><strong>Version control.</strong> Git keeps a history of the changes that are committed to a project's
+        files. If a change breaks the site, you can usually undo a merged pull request: with write access,
+        GitHub's Revert button makes a new pull request that reverses it, and if that conflicts, or the pull
+        request was not merged on GitHub, individual commits can be reverted with Git
+        (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request">reverting a pull request</a>,
+        read {READ_2}).</li>
+      <li><strong>Collaboration.</strong> Several people can work on the same site at once, each on their own
+        copy. They propose a change in a pull request, others review it, and it is merged. Git usually merges
+        changes to different lines on its own. When changes conflict, for example when two people change the
+        same line, GitHub will not merge until a person settles it
+        (<a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts">about merge conflicts</a>,
+        read {READ_2}).</li>
+    </ul>
+    <p>
+      GitHub keeps your site's files and the history of the changes you push to it, and it runs the checks on each
+      pull request. The account is yours, and the repository can be private or public. A free account
+      allows <a href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans">unlimited
+      public and private repositories</a> (read {READ}).
+    </p>
+    <p>
+      The checks run as GitHub Actions. They are
+      <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions">free on public
+      repositories</a> with GitHub's standard runners. Private repositories on the free plan get 2,000
+      minutes a month (read {READ}).
+    </p>
+  </section>
+
+  <section class="wrap" id="cloudflare">
+    <h2>Cloudflare</h2>
+    <p>
+      Cloudflare is one of the companies a large part of the web runs on.
+      <a href="https://w3techs.com/technologies/details/cn-cloudflare">W3Techs</a>, which surveys the
+      technology behind websites, found Cloudflare's service on 27.8% of all websites in October 2026
+      (read {READ_2}). It sits between visitors and a site: it delivers pages from servers near the
+      visitor, can answer DNS requests for the domain and helps protect against attacks
+      (<a href="https://developers.cloudflare.com/fundamentals/concepts/how-cloudflare-works/">how Cloudflare
+      works</a>, read {READ_2}). That also ties a site's availability to Cloudflare's.
+    </p>
+    <p>
+      Cloudflare builds the site from GitHub and serves it. Every pull request from a branch in your
+      repository gets its own preview address; a pull request from a fork gets none
+      (<a href="https://developers.cloudflare.com/pages/configuration/preview-deployments/">Cloudflare's preview deployments, read {READ}</a>).
+    </p>
+    <h3>What the free plan covers</h3>
+    <p>
+      The free plan covers a small static site. For Pages it allows 500 builds a month, one build at a
+      time, 20,000 files per site, 25 MiB per file and 100 custom domains per project
+      (<a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare's limits, read {READ}</a>).
+    </p>
+    <p>
+      One small function runs on every request to a Croftweaver site. It keeps preview copies out of
+      search engines and sends the <code>pages.dev</code> address to your own domain, and in the optional
+      server mode for Plausible it also counts visits. Cloudflare says that
+      once a Pages project has a function,
+      <a href="https://developers.cloudflare.com/pages/functions/routing/">all requests invoke it by default</a>.
+      So the free plan's limit of 100,000 requests a day
+      (<a href="https://developers.cloudflare.com/workers/platform/limits/">Cloudflare's Workers limits, read {READ}</a>),
+      which <a href={DEPLOY}>the toolkit's guide</a> says every Function and Worker in your account shares, counts the whole
+      site, not only pages that need a server. When the limit is used up, a project setting decides: serve
+      the pages without the function, or show an error page. The toolkit tells you to set it to serve the
+      pages, so the pages keep being served and the function's jobs pause until the limit resets.
+    </p>
+    <h3>Your domain</h3>
+    <p>
+      Your domain's DNS can move to Cloudflare; the full setup is available on every plan
+      (<a href="https://developers.cloudflare.com/dns/zone-setups/full-setup/">Cloudflare's DNS setup, read {READ}</a>). You change the name servers at the
+      company where you bought the domain, and the domain stays registered there: Cloudflare's
+      <a href="https://developers.cloudflare.com/dns/faq/">DNS FAQ</a> says you do not need to move away
+      from your registrar (read {READ}). The move has two traps above all: mail records, and DNSSEC, which
+      has to be switched off at the old registrar first or the domain stops resolving.
+      <a href={DEPLOY}>A checklist in the toolkit</a> walks you through them before anything is switched.
+    </p>
+    <p>
+      If the company that registered your domain forwards your mail today, check before the switch
+      whether the forwarding keeps working once the DNS is elsewhere. With some companies it stops,
+      because it depends on their own DNS.
+      <a href="https://developers.cloudflare.com/email-service/get-started/route-emails/">Cloudflare Email
+      Routing</a> (read {READ}) is one replacement: it forwards incoming mail to a mailbox you already have, it is
+      available on every plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own.
+    </p>
+    <p>
+      Cloudflare now recommends Workers for new projects. The toolkit deploys to Pages, which
+      Cloudflare still offers on every plan
+      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ}</a>).
+    </p>
+  </section>
+
+  <section class="wrap" id="analytics">
+    <h2>Analytics, if you want it</h2>
+    <p>
+      Cloudflare already counts traffic and needs nothing added to the site: requests, bandwidth and unique
+      visitors, taken from its edge logs. On the free plan, Cloudflare says, these metrics include legitimate
+      user requests as well as crawlers and threats
+      (<a href="https://developers.cloudflare.com/analytics/account-and-zone-analytics/zone-analytics/">Cloudflare's analytics documentation</a>,
+      read {READ_2}). It is a sparse view. If it is not enough, Plausible is the optional second tool. Here are
+      both for one example site, as screenshots of 23 October 2026:
+    </p>
+    <div class="dash">
+      <figure>
+        <img src="/images/analytics/plausible-genai-wednesday-28-days.webp" alt="Screenshot of the Plausible dashboard for genai-wednesday.de: six metrics above a line chart of visitors per day." width="1000" height="927" loading="lazy" decoding="async">
+        <figcaption>Plausible, genai-wednesday.de, last 28 days: 230 unique visitors, 238 visits, 383 page views.</figcaption>
+      </figure>
+      <figure>
+        <img src="/images/analytics/cloudflare-genai-wednesday-30-days.webp" alt="Screenshot of the Cloudflare overview for genai-wednesday.com: the unique visitors total beside a line chart of visitors per day, 23 September to 23 October." width="1000" height="570" loading="lazy" decoding="async">
+        <figcaption>Cloudflare overview, genai-wednesday.com, 30 days to 23 October: 1.77k unique visitors.</figcaption>
+      </figure>
+    </div>
+    <p>
+      The two differ a lot, and neither is the true number. Cloudflare's documentation says its free-plan
+      figures include crawlers and threats, and Plausible's script counts only the browsers that run it, so a
+      visitor who blocks it is missed. That can account for part of the gap; the screenshots cannot show how
+      much. Plausible says it counts a visitor once per day, from a hash that changes daily, and stores no IP
+      address; a person who returns on another day counts again
+      (<a href="https://plausible.io/docs/metrics-definitions">its metrics definitions</a> and
+      <a href="https://plausible.io/data-policy">data policy</a>, read {READ_2}). The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
+      shows genai-wednesday.com, an address that forwards to genai-wednesday.de, the site Plausible counts.
+    </p>
+    <p>
+      <a href="https://plausible.io">Plausible</a> is made by Plausible Insights OÜ in Tartu, Estonia
+      (<a href="https://plausible.io/imprint">its imprint</a>). Uku Täht started it in December 2018 and Marko
+      Saric joined in 2020. It is open source, built and hosted in the EU, and funded by its subscribers
+      (<a href="https://plausible.io/about">its about page</a>, both read {READ_2}).
+    </p>
+    <p>
+      Hosted by Plausible, the Starter plan for up to 10,000 page views a month costs 9 euros a month, or 9 US
+      dollars where Plausible shows dollars, on monthly billing; yearly billing is 90 euros. A 30-day free trial
+      needs no credit card (<a href="https://plausible.io/#pricing">its pricing page</a>, read {READ_2}).
+      You can also run it on your own server: the Community Edition is free, and you manage everything
+      yourself (<a href="https://plausible.io/docs/self-hosting">Plausible's self-hosting guide</a>, read {READ_2}).
+    </p>
+    <p>
+      There are two ways to count. By default a small script in the visitor's browser sends the visit to
+      Plausible. In the optional server mode no script runs on the visitor's device: the site's Cloudflare
+      function sends each page view instead. Server mode also counts visitors who block scripts, and it skips
+      requests that do not look like a browser opening a page, which keeps out many crawlers and scripts
+      (<a href={SERVER_FUNCTION}>the function's code</a>). In return it loses scroll depth and engaged time, it
+      passes the visitor's IP address on to Plausible, and it uses the function's daily request allowance
+      (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
+    </p>
+    <p>
+      There is also a third way: leave Plausible off and add nothing. Cloudflare's own counts, described above,
+      stay, and with no analytics tool of your own there is no analytics consent to ask for; other features of a
+      site can still need consent. The toolkit's privacy-page draft can say so, and your assistant removes its
+      Plausible paragraphs. A site without a banner still needs its privacy page, an imprint in Germany and Austria, and a
+      processing contract with Cloudflare (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
+    </p>
+    <p>
+      Plausible says it uses no cookies and no persistent identifiers
+      (<a href="https://plausible.io/data-policy">its data policy</a>, read {READ_2}). The toolkit's guide calls
+      server mode, which reads nothing from the visitor's device, a stronger position, and not a way out of a
+      review. Analytics is optional: it stays off until you switch it on.
+    </p>
+    <p class="verdict"><strong>No cookie banner*</strong></p>
+    <p class="footnote">
+      * This is Plausible's own position (<a href="https://plausible.io/data-policy">its data policy</a>, read
+      {READ_2}), not legal advice. The EU data protection authorities' guidelines say that tracking by IP address
+      alone can fall under the ePrivacy rule when the address comes from the visitor's own equipment, and that this
+      does not by itself mean consent is needed
+      (<a href="https://edpb.europa.eu/system/files/2024-10/edpb_guidelines_202302_technical_scope_art_53_eprivacydirective_v2_en_0.pdf">EDPB Guidelines 2/2023</a>,
+      paragraphs 54 to 56). Germany's data protection authorities say their guidance gives no general answer on
+      whether audience measurement may be used without consent, and that an answer is possible at most for a
+      precisely defined set-up and purpose
+      (<a href="https://www.datenschutz-berlin.de/fileadmin/user_upload/pdf/publikationen/DSK/orientierungshilfen/2024_DSK-OH_Digitale-Dienste.pdf">their guidance of November 2024</a>,
+      paragraphs 87 to 89; both read {READ_2}). The authority of Baden-Württemberg says that server-side tracking
+      without cookies can rest on legitimate interest and fall outside the German cookie rule, but only if the data
+      are fully anonymised before they go to a tracking provider; swapping identifiers for hashes is not
+      anonymisation, and neither is following a visitor beyond one session
+      (<a href="https://www.baden-wuerttemberg.datenschutz.de/faq-zu-cookies-und-tracking-2/">its FAQ on cookies and tracking</a>,
+      answer 3.2, read {READ_2}). German courts have awarded damages for tracking without consent:
+      in a case about analysis cookies placed through other companies' websites
+      (<a href="https://www.beck-aktuell.de/heute-im-recht/rechtsprechung/olg-ffm-6u81-23-schmerzensgeld-cookies-drittwebsites-unternehmen-2026-01-06">OLG Frankfurt, 11 December 2025</a>)
+      and in cases about the tools Meta offers companies for their websites
+      (<a href="https://medienservice.sachsen.de/medien/news/1094746/download_pdf">OLG Dresden, 3 February 2026</a>;
+      both read {READ_2}). This page knows of no ruling on analytics without cookies. Ask your own adviser.
+    </p>
+  </section>
+
+  <section class="wrap" id="keystatic">
+    <h2>Where Keystatic fits</h2>
+    <p>
+      Not as a fourth place. <a href="https://keystatic.com">Keystatic</a> is an optional editing screen
+      for someone who would rather fill in a form than talk to an assistant, chosen when the site is first
+      built. In local mode, the one the toolkit sets up, you open the editing screen in your browser on
+      your own computer. It writes text files (Markdoc, a Markdown dialect) into the same folder, and you send the change
+      to GitHub as usual. The published site contains no Keystatic.
+    </p>
+    <p>
+      Keystatic is a Thinkmill project, made in Australia
+      (<a href="https://keystatic.com">Keystatic's site</a>). Thinkmill builds software for other companies, and
+      its own site gives its address as Sydney (<a href="https://thinkmill.com.au">Thinkmill's site</a>, both
+      read {READ_2}).
+    </p>
+    <p>
+      A GitHub mode serves the editing screen from the published site and saves straight to GitHub, so
+      nothing runs on the editor's computer. It needs a server part on Cloudflare, a GitHub App and stored
+      secrets. The toolkit describes it but does not set it up.
+    </p>
+  </section>
+
+  <section class="wrap" id="checks">
+    <h2>Checks before anything goes live</h2>
+    <p>
+      A hook builds the site and runs the test suites before every push. GitHub runs them again on every
+      pull request and on pushes to <code>main</code> and <code>production</code>. In the recommended
+      two-stage setup, a change appears first on a preview address that search engines are told to
+      ignore, and one command, <code>npm run ship</code>, publishes it.
+    </p>
+    <p>
+      <strong>What enforces what.</strong> The hook can be skipped. The checks on GitHub report a
+      result; they block nothing by themselves. Whether GitHub also refuses a merge until a check passes
+      depends on a branch rule that the owner switches on. The toolkit's team setup describes it and says a
+      free plan allows it only for a public repository. On
+      the repository behind croftweaver.com it is on: a change reaches <code>main</code> only by a pull request that
+      passes the <code>test</code> and <code>Cloudflare Pages</code> checks, and the rule has no bypass
+      list (read from GitHub's settings on {READ}). GitHub requires no passing check for the push that
+      publishes to <code>production</code>; only the hook runs, unless it is skipped.
+      <a href="/checks">What each suite checks, and what a pass does not prove</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="costs">
+    <h2>What it costs</h2>
+    <p>
+      It is free to start: GitHub's free plan and Cloudflare's free plan, each with the limits above, as
+      read on {READ}. Croftweaver itself is MIT-licensed and charges nothing. Free here means free within
+      those limits, and plans change.
+    </p>
+    <p>
+      Not free: your domain, at the price of whoever registers it; your AI assistant's own plan; and
+      Plausible, if you switch it on. Its price, and the free edition you host yourself, are under
+      <a href="#analytics">Analytics</a>.
+    </p>
+  </section>
+
+  <section class="wrap" id="swap">
+    <h2>What you can swap</h2>
+    <p>
+      The pages are static files, and any web host can serve them. The setup around them is written for
+      Cloudflare Pages: the publish script, the previews, the headers file, the small function and, if you
+      add it, Keystatic's GitHub mode. Another host means replacing those parts or doing without them.
+    </p>
+    <h3 id="shop">Where a shop fits</h3>
+    <p>
+      A shop stays on its own platform, such as Shopify. Croftweaver builds the content next to it: guides,
+      articles and landing pages that link to your products. It has no Shopify connection, and a cart,
+      accounts or checkout need a server part that Croftweaver does not build.
+    </p>
+  </section>
+
+  <section class="wrap" id="next">
+    <h2>Next step</h2>
+    <p>
+      The <a href="/start">quickstart</a> starts from nothing, and <a href="/checks">the test gate</a> lists
+      every suite. The code is on <a href={SITE.repo}>GitHub</a>.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="/start">Quickstart</a>
+      <a class="btn" href={SITE.repo}>Get Croftweaver on GitHub</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* The two dashboards: side by side from 48rem, one under the other below it. The images keep their own ratio. */
+  .dash { margin: 1rem 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .dash figure { margin: 0; }
+  .dash img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .dash figcaption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+  .verdict { margin: 1.4rem 0 0.4rem; font-size: 1.15rem; }
+  .footnote { margin: 0; font-size: 0.9rem; color: var(--muted); }
+  @media (min-width: 48rem) { .dash { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+  /* The three places: side by side from 48rem, one under the other below it. A long word stays inside the
+     screen if the box can shrink: overflow-wrap: anywhere on the box lets it, and so does minmax(0, 1fr) on
+     the column together with the site's overflow-wrap: break-word. Either is enough and the page has both
+     (measured at 360 and 320 px). tests/a11y.spec.ts puts a long word in a box and fails when neither is left. */
+  .places { margin: 1rem 0; display: grid; grid-template-columns: minmax(0, 1fr); }
+  .place, .visitors { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
+  .place h3, .visitors h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
+  .place p, .visitors p { margin: 0; }
+  .made { list-style: none; margin: 0.8rem 0 0; padding: 0.7rem 0 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  .made li { margin: 0.2rem 0; }
+  /* The arrows between the boxes: drawn for a row and turned to point down when the boxes stack. */
+  .link { display: flex; align-items: center; justify-content: center; min-height: 2.75rem; color: var(--muted); }
+  .link svg { width: 2.25rem; height: 0.75rem; transform: rotate(90deg); }
+  @media (min-width: 48rem) {
+    .places { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); }
+    .link { min-height: 0; padding: 0 0.6rem; }
+    .link svg { transform: none; }
+    .link.down { grid-column: 5; min-height: 2.75rem; padding: 0; }
+    .link.down svg { transform: rotate(90deg); }
+    .visitors { grid-column: 1 / -1; }
+  }
+</style>
