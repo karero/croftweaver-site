@@ -215,3 +215,22 @@ rendering, marked below) except the Saxony press release, whose text layer was r
 - Decision, 2026-10-23: the page's footnote makes **no claim about courts**; it says whose position it is and what
   the two authorities say. Whether to add a sentence about the German damages rulings (cookies, advertising tools)
   is the owner's call (asked in chat).
+- Two more summaries pasted by the owner (2026-10-23, from a search assistant, no sources of their own that held):
+  - "BGH im September 2026 ... IP-Adressen sind personenbezogene Daten" (heise.de, through WebFetch): the article is
+    dated 16 September 2026 and reports BGH VI. Zivilsenat, Az. VI ZR 144/23, judgment "vom 21. Juli" (year not in
+    the text read). An online shop's cloud setup redirected the visitor's browser to third-party servers, so the IP
+    address reached them; the visitor sued for an injunction. Holding as reported: the GDPR does not block claims under
+    national civil law (§§ 823, 1004 BGB, right of personality); the BGH set aside the OLG Frankfurt's ruling and sent
+    the case back. **Not decided, as reported:** whether passing an IP address on needs consent; nothing on server-side
+    or cookieless analytics. The summary's use of it overstates it.
+  - "Reine Logdaten: kein Zugriff auf das Endgerät [itmr-legal.de]": the cited article (first 100,000 of 126,418
+    characters read through WebFetch) says no such thing; it says "Welche Information gespeichert wird, spielt keine
+    Rolle" and counts even an anonymised IP address and a pseudonymous ID as information under § 25, citing OLG
+    Frankfurt 6 U 81/23, Gründe II. 4. f) (1). That is a wide reading of "information", not an answer to whether passively
+    received request data is "access". The question stays open; the page's footnote does not answer it either way.
+  - The "privacy proxy" architecture (truncate the IP, coarse geolocation, reduced user agent, no click IDs, an
+    ephemeral daily hash, then forward) is a design description without a source. Plausible's documented counting
+    (section 10, above) follows the daily-hash part. The toolkit's server mode sends the **full** visitor IP to
+    Plausible (guide: "forwards the visitor's IP to Plausible") and Plausible hashes it; it does not truncate before
+    forwarding. The page says "passes the visitor's IP address on to Plausible". Also in the summary: "anonymised, so the
+    GDPR does not apply" next to "rely on legitimate interest" (Art. 6 (1) (f)); the two do not go together.
