@@ -742,15 +742,16 @@ fi
 # Pushed from ship.sh's throwaway worktree, git hands the hook GIT_DIR, and a step that runs git
 # from a subfolder or in a scratch repo would then find the wrong repository. The toolkit's hook
 # test covers only the template's hook, and this site's differs, so check here that its first
-# command (after comments, blank lines and `set` lines that only set options) is the line that
-# clears them.
+# command (after comments, blank lines and `set` lines that only set options, a trailing comment
+# allowed) is the line that clears them.
 hook="$PWD/scripts/hooks/pre-push"
 hook_clear='unset $(git rev-parse --local-env-vars)'
 hook_first_of() {
-  awk '!/^[ \t]*(#|$)/ && !/^set([ \t]+([-+][a-zA-Z]*o[ \t]+[a-z]+|[-+][a-zA-Z]+))*[ \t]*$/ { print; exit }' "$1"
+  awk '!/^[ \t]*(#|$)/ && !/^set([ \t]+([-+][a-zA-Z]*o[ \t]+[a-z]+|[-+][a-zA-Z]+))*([ \t]+#.*)?[ \t]*$/ { print; exit }' "$1"
 }
-# The filter's own counterexample: a `set` line that also runs a command is a step.
-printf '#!/bin/sh\nset -e; echo early\n%s\n' "$hook_clear" > "$work/hook-probe"
+# The filter's own counterexample: a `set` line with only a comment after it is not a step, one
+# that also runs a command is.
+printf '#!/bin/sh\nset -e  # stop on error\nset -e; echo early\n%s\n' "$hook_clear" > "$work/hook-probe"
 if [ "$(hook_first_of "$work/hook-probe")" != "set -e; echo early" ]; then
   echo "✗ ship push gate: the hook check skipped a 'set' line that also runs a command."; fail=1
 fi
