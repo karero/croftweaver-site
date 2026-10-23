@@ -454,7 +454,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
   const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
   // The words are typed here, not read from the page's source, so the page cannot change them unseen. Gemini's
-  // cell points to the row of Google AI Mode (built on Gemini): the only Gemini-based answer with web search.
+  // cell points to the row of Google AI Mode (built on Gemini), the nearest the table comes to Gemini with web search.
   const notAskedCell = (engine: string) => 'Not asked with web search.' + (engine === 'gemini' ? ' Google AI Mode, built on Gemini, has its own row.' : '');
   const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
   expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
@@ -486,8 +486,11 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   }
   if (notAsked.includes('gemini')) {
     expect(labels.some((l) => l.engine === 'google-ai-mode' && l.text === 'Google AI Mode'), "Gemini's cell points to a Google AI Mode row that the table does not have").toBe(true);
-    await expect(page.locator('#ai p').filter({ hasText: 'The check does not ask Gemini with web search' }), "the paragraph about Gemini does not say that Google AI Mode is not the Gemini app")
-      .toContainText("Google AI Mode, which Google builds on Gemini, is the nearest the table comes; it is Google's search answer and not the Gemini app, so it has its own row.");
+    const aboutGemini = page.locator('#ai p').filter({ hasText: 'The check does not ask Gemini with web search' });
+    await expect(aboutGemini, "the paragraph about Gemini does not say that Google AI Mode is not the Gemini app")
+      .toContainText("Google AI Mode is the nearest the table comes: Google said on 20 May 2025 that AI Mode uses a custom version of Gemini 2.5. It is Google's search answer and not the Gemini app, so it has its own row.");
+    await expect(aboutGemini.getByRole('link', { name: /20 May 2025/ }), "the claim that AI Mode uses Gemini has no link to Google's statement")
+      .toHaveAttribute('href', 'https://blog.google/products-and-platforms/products/search/google-search-ai-mode-update/');
   }
 
   // Nobody named the site from memory: the page says why, next to the number, and only while that is
