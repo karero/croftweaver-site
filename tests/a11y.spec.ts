@@ -453,6 +453,9 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   // assistants declared not run on the latest day. The last must be exactly those with no rows.
   const searchOnly = listIn('const SEARCH_ONLY = \\[([^\\]]*)\\]');
   const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
+  // The words are typed here, not read from the page's source, so the page cannot change them unseen. Gemini's
+  // cell points to the row of Google AI Mode (built on Gemini), the nearest the table comes to Gemini with web search.
+  const notAskedCell = (engine: string) => 'Not asked with web search.' + (engine === 'gemini' ? ' Google AI Mode, built on Gemini, has its own row.' : '');
   const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
   expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
   let notRunSaid = '';
@@ -468,11 +471,26 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     for (const engine of notRunEngines) {
       for (const mode of ['with_search', 'without_search']) {
         const expectedCell = mode === 'without_search' && searchOnly.includes(engine) ? 'Always searches.'
-          : mode === 'with_search' && notAsked.includes(engine) ? 'Not asked with web search.'
+          : mode === 'with_search' && notAsked.includes(engine) ? notAskedCell(engine)
           : `Not run that day.${lastResult(engine, mode)}`;
         await expect(tableCellOf(engine, mode), `${engine}, ${mode}: the cell of an assistant that was not run`).toHaveText(expectedCell);
       }
     }
+  }
+
+  // An assistant the check does not ask with web search says so in its cell on every day, not only on a day it was
+  // declared not run (the loop above reads that case). Gemini's cell points to Google AI Mode, so that row must be in
+  // the table, and the paragraph about Gemini says why the row is a separate thing and not the Gemini app.
+  for (const engine of notAsked.filter((e) => !notRunEngines.includes(e))) {
+    await expect(tableCellOf(engine, 'with_search'), `${engine}: the cell of an assistant the check does not ask with web search`).toHaveText(notAskedCell(engine));
+  }
+  if (notAsked.includes('gemini')) {
+    expect(labels.some((l) => l.engine === 'google-ai-mode' && l.text === 'Google AI Mode'), "Gemini's cell points to a Google AI Mode row that the table does not have").toBe(true);
+    const aboutGemini = page.locator('#ai p').filter({ hasText: 'The check does not ask Gemini with web search' });
+    await expect(aboutGemini, "the paragraph about Gemini does not say that Google AI Mode is not the Gemini app")
+      .toContainText("Google AI Mode is the nearest the table comes: Google said on 20 May 2025 that AI Mode uses a custom version of Gemini 2.5. It is Google's search answer and not the Gemini app, so it has its own row.");
+    await expect(aboutGemini.getByRole('link', { name: /20 May 2025/ }), "the claim that AI Mode uses Gemini has no link to Google's statement")
+      .toHaveAttribute('href', 'https://blog.google/products-and-platforms/products/search/google-search-ai-mode-update/');
   }
 
   // Nobody named the site from memory: the page says why, next to the number, and only while that is

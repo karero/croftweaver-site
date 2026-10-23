@@ -261,6 +261,9 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
+// Gemini's cell with web search points to the Google AI Mode row. That row stays separate: it is a
+// search product, not the Gemini app. tests/a11y.spec.ts fails if the row goes.
+const GEMINI_POINTER = ' Google AI Mode, built on Gemini, has its own row.';
 // /proof also says in a sentence that the check does not ask Gemini with web search. A file
 // that has such rows would make the table contradict that sentence, so it stops the build.
 const askedAfterAll = checks.find((c) => c.mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(c.engine));
@@ -292,7 +295,7 @@ const cell = (engine: string, mode: Mode) => {
       const last = lastAnswered(engine, mode);
       return last ? `Not run that day. On ${label(last.date)} it ${sentence(last.t, 'named')}${failedClause(last.t)}` : 'Not run that day.';
     }
-    return why === 'search-only' ? 'Always searches.' : 'Not asked with web search.';
+    return why === 'search-only' ? 'Always searches.' : `Not asked with web search.${engine === 'gemini' ? GEMINI_POINTER : ''}`;
   }
   if (now.answers === 0) {
     const last = lastAnswered(engine, mode);
