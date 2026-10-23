@@ -9,16 +9,20 @@
 // changing the page.
 // The page claims no ranking, no price a vendor does not state, no endorsement by a vendor, and
 // never "free" without its limits.
+// The two dashboard screenshots in #analytics are the owner's own, of genai-wednesday.de (Plausible) and
+// genai-wednesday.com (Cloudflare; the .com address forwards to the .de site), taken on 23 October 2026.
+// Their figures are in the captions as text. Replace them as a pair, with the same domain, when updating.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 const READ = '22 October 2026';
-const READ_2 = '23 October 2026'; // the second day of reading: W3Techs, "how Cloudflare works", GitHub and Git
+const READ_2 = '23 October 2026'; // the second day of reading: W3Techs, "how Cloudflare works", GitHub and Git, Plausible, Keystatic
 const PRESS = 'https://www.cloudflare.com/press-releases/2026/cloudflare-acquires-astro-to-accelerate-the-future-of-high-performance-web-development/';
 const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
 const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
 const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
 const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
+const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
 ---
 <Base
   title="What it runs on: Astro, Cloudflare, GitHub"
@@ -254,6 +258,62 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
     </p>
   </section>
 
+  <section class="wrap" id="analytics">
+    <h2>Analytics, if you want it</h2>
+    <p>
+      Cloudflare already counts traffic and needs nothing added to the site: requests, bandwidth and unique
+      visitors, taken from its edge logs. On the free plan, Cloudflare says, these metrics include legitimate
+      user requests as well as crawlers and threats
+      (<a href="https://developers.cloudflare.com/analytics/account-and-zone-analytics/zone-analytics/">Cloudflare's analytics documentation</a>,
+      read {READ_2}). It is a sparse view. If it is not enough, Plausible is the optional second tool. Here are
+      both for one example site, as screenshots of 23 October 2026:
+    </p>
+    <div class="dash">
+      <figure>
+        <img src="/images/analytics/plausible-genai-wednesday-28-days.webp" alt="Plausible dashboard for genai-wednesday.de, last 28 days: 230 unique visitors, 238 visits and 383 page views, with a line chart of visitors per day." width="1000" height="927" loading="lazy" decoding="async">
+        <figcaption>Plausible, genai-wednesday.de, last 28 days: 230 unique visitors, 238 visits, 383 page views.</figcaption>
+      </figure>
+      <figure>
+        <img src="/images/analytics/cloudflare-genai-wednesday-30-days.webp" alt="Cloudflare overview for genai-wednesday.com, 23 September to 23 October: 1.77k unique visitors, with a line chart of visitors per day." width="1000" height="570" loading="lazy" decoding="async">
+        <figcaption>Cloudflare overview, genai-wednesday.com, 30 days to 23 October: 1.77k unique visitors.</figcaption>
+      </figure>
+    </div>
+    <p>
+      The two differ a lot, and neither is the true number. Cloudflare counts the requests that reach it,
+      crawlers included. Plausible's script counts only the browsers that run it, and misses a visitor who
+      blocks it. The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
+      shows genai-wednesday.com, an address that forwards to genai-wednesday.de, the site Plausible counts.
+    </p>
+    <p>
+      <a href="https://plausible.io">Plausible</a> is made by Plausible Insights OÜ in Tartu, Estonia
+      (<a href="https://plausible.io/imprint">its imprint</a>). Uku Täht started it in December 2018 and Marko
+      Saric joined in 2020. It is open source, built and hosted in the EU, and funded by its subscribers
+      (<a href="https://plausible.io/about">its about page</a>, both read {READ_2}).
+    </p>
+    <p>
+      Hosted by Plausible, the Starter plan for up to 10,000 page views a month costs 9 euros a month, or 9 US
+      dollars where Plausible shows dollars, on monthly billing; yearly billing is 90 euros. A 30-day free trial
+      needs no credit card (<a href="https://plausible.io/#pricing">its pricing page</a>, read {READ_2}).
+      You can also run it on your own server: the Community Edition is free, and you manage everything
+      yourself (<a href="https://plausible.io/docs/self-hosting">Plausible's self-hosting guide</a>, read {READ_2}).
+    </p>
+    <p>
+      There are two ways to count. By default a small script in the visitor's browser sends the visit to
+      Plausible. In the optional server mode no script runs on the visitor's device: the site's Cloudflare
+      function sends each page view instead. Server mode also counts visitors who block scripts, and it skips
+      requests that are not a person opening a page, such as most crawlers. In return it loses scroll depth and
+      engaged time, it passes the visitor's IP address on to Plausible, and it uses the function's daily request
+      allowance (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
+    </p>
+    <p>
+      Plausible says it uses no cookies and no persistent identifiers, and that you need no cookie banner for it
+      (<a href="https://plausible.io/data-policy">its data policy</a>, read {READ_2}). Whether that is enough for
+      your site is a legal question that the vendor's word does not settle. The toolkit's guide calls server mode,
+      which reads nothing from the visitor's device, a stronger position, and not a way out of a review. Analytics
+      is optional: it stays off until you switch it on.
+    </p>
+  </section>
+
   <section class="wrap" id="keystatic">
     <h2>Where Keystatic fits</h2>
     <p>
@@ -262,6 +322,12 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
       built. In local mode, the one the toolkit sets up, you open the editing screen in your browser on
       your own computer. It writes text files (Markdoc, a Markdown dialect) into the same folder, and you send the change
       to GitHub as usual. The published site contains no Keystatic.
+    </p>
+    <p>
+      Keystatic is a Thinkmill project, made in Australia
+      (<a href="https://keystatic.com">Keystatic's site</a>). Thinkmill builds software for other companies, and
+      its own site gives its address as Sydney (<a href="https://thinkmill.com.au">Thinkmill's site</a>, both
+      read {READ_2}).
     </p>
     <p>
       A GitHub mode serves the editing screen from the published site and saves straight to GitHub, so
@@ -300,14 +366,8 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
     </p>
     <p>
       Not free: your domain, at the price of whoever registers it; your AI assistant's own plan; and
-      Plausible, if you switch it on. Plausible counts visits without cookies
-      (<a href="https://plausible.io/data-policy">its data policy</a>). Its
-      <a href="https://plausible.io/#pricing">pricing page</a> showed $9 for up to 10,000 page views
-      on {READ} and did not say whether that is billed monthly or yearly. The
-      <a href="/start#analytics">quickstart</a> gives the Starter plan as 9 euros or US dollars a month, depending on where you are.
-      You can also host Plausible yourself
-      (<a href="https://github.com/plausible/community-edition">the community edition</a>). Plausible stays
-      off until you switch it on.
+      Plausible, if you switch it on. Its price, and the free edition you host yourself, are under
+      <a href="#analytics">Analytics</a>.
     </p>
   </section>
 
@@ -340,6 +400,12 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
 </Base>
 
 <style>
+  /* The two dashboards: side by side from 48rem, one under the other below it. The images keep their own ratio. */
+  .dash { margin: 1rem 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .dash figure { margin: 0; }
+  .dash img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .dash figcaption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+  @media (min-width: 48rem) { .dash { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
   /* The three places: side by side from 48rem, one under the other below it. A long word stays inside the
      screen if the box can shrink: overflow-wrap: anywhere on the box lets it, and so does minmax(0, 1fr) on
      the column together with the site's overflow-wrap: break-word. Either is enough and the page has both

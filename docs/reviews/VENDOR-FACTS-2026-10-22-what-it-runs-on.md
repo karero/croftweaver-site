@@ -95,3 +95,54 @@ comment credited `overflow-wrap: anywhere` alone, because the first check remove
 - Markdown: the starter's pages are `.astro` files; Markdown is the default content workflow (`skills/new-website/SKILL.md`: "no CMS (default; markdown + …)"; `keystatic-setup`: "Markdown-in-git"). This site's own text is in `.astro` files and there is no `src/content`. Hence the box says "Astro pages, Markdown".
 - Playwright and axe: `@playwright/test`, `@axe-core/playwright`; the tests run in Chromium. TypeScript: the `typescript` devDependency, used by `astro check` (0 errors). Claude Code or Codex: a plugin exists for both (`src/data/skills.ts`, release 0.32 text).
 - Pages, CDN, DNS, the small function, Git, pull requests, Actions: sections 1, 6 and 7 of this record.
+
+## 9. Added 2026-10-23: analytics (Cloudflare, Plausible) and who is behind Keystatic (host)
+
+Method. Each page below was fetched raw with `curl` (user agent `Mozilla/5.0`) and the phrases were found with
+`rg` in the page text, not taken from a small model's rendering (the WebFetch rendering was read first and then
+checked against the raw page). The price was read in a real browser (the Browser pane), because the pricing page
+fills it in with a script.
+
+- Cloudflare zone analytics (`developers.cloudflare.com/analytics/account-and-zone-analytics/zone-analytics/`):
+  "Analytics are based on Cloudflare's edge logs, with no need for third party scripts or trackers." Under the
+  heading for the Free plan: "These metrics include legitimate user requests as well as crawlers and threats."
+  The Web Traffic panel lists Requests, Bandwidth and Unique Visitors. **Not read:** a definition of "unique
+  visitors" (the page gives none), and whether the dashboard's Overview chart (the owner's screenshot) uses the same
+  logs as the Analytics tab; the page says "Cloudflare's analytics" and calls the screenshot "overview", and claims
+  no more. The screenshot's zone carries the "free" label.
+- Plausible, about (`plausible.io/about`): "an independent, open source analytics company based in the EU"; "Built
+  and hosted in the EU"; "Funded entirely by our subscribers"; Uku Taht started it in December 2018, alone; Marko
+  Saric joined in 2020. Imprint (`plausible.io/imprint`): Plausible Insights OÜ, Västriku tn 2, 50403 Tartu, Estonia,
+  registration number 14709274, represented by Uku Täht. The terms say Estonian law governs.
+- Plausible, data policy (`plausible.io/data-policy`): "We do not use cookies, browser cache or local storage."
+  "We do not generate persistent identifiers." "By using Plausible, you do not need cookie banners for analytics or to
+  collect consent for tracking." The page does not mention bot filtering. This is the vendor's statement, not a legal
+  finding; the page says so.
+- Plausible, pricing (`plausible.io/#pricing`, in a browser with a German locale on 2026-10-23): Starter, up to 10k
+  monthly pageviews: **€9 /month** on the monthly view (the view the page opens on); after choosing Yearly: **€90 /year**
+  (€7.50 a month, with the €9 struck), and the label "2 months free". The currency comes from a script
+  (`currency=data.currency` in the page source): a fetch from a US address showed "$9 /month". The yearly price in
+  dollars was **not read**; the page gives the yearly price in euros only. "30-day free trial · No credit card
+  required" is on the home page and the self-hosting page.
+- Plausible, self-hosting (`plausible.io/docs/self-hosting`): "Plausible Community Edition (CE) is the free,
+  self-hosted, AGPL-licensed release: you run it on your own server and manage everything yourself." The Community
+  Edition's GitHub README, in a small model's rendering, said "MIT license" and did not say "free"; the two disagree
+  on the licence, so the page names no licence for it and cites the docs page for "free".
+- Keystatic (`keystatic.com`, raw): "Keystatic is a Thinkmill project"; footer: "Made with ♥ in Australia by a team
+  from 30 countries." Thinkmill (`thinkmill.com.au`, raw): the structured data gives the address as Level 10, 191
+  Clarence St, Sydney, New South Wales 2000, AU; the page lists AI Development ("Custom apps and tools built with
+  AI-enabled engineering"), Product Design & Engineering, API Platforms and Design Systems. The page says "builds
+  software for other companies", not "agency" or "software house". A web search also found secondary sources that call
+  Thinkmill a Sydney-based company behind Keystone and Keystatic; the page does not rely on them.
+- The owner's screenshots (2026-10-23, from the chat): Plausible, genai-wednesday.de, last 28 days: 230 unique
+  visitors (+10%), 238 visits, 383 pageviews; Cloudflare overview, genai-wednesday.com, 23 September to 23 October,
+  "free": 1.77k unique visitors. `curl -I https://genai-wednesday.com/` on 2026-10-23: **302, location
+  https://genai-wednesday.de** (so the Cloudflare figure is for the forwarding address, not the site Plausible
+  counts). `https://genai-wednesday.de/` loads Plausible's script from a subdomain of its own (script mode). The page
+  says both facts and calls the comparison rough. **Open question for the owner:** a screenshot of the Cloudflare
+  overview of genai-wednesday.de would make the pair like for like.
+- The toolkit's guide (`skills/new-website/SKILL.md` on `origin/main` of the public repo, f680e440, "Script or server
+  mode" paragraph): server mode sends each page view from the site's Cloudflare Function; loses scroll depth and
+  engaged time; counts visitors who block scripts; skips requests without Fetch Metadata for a page navigation (most
+  crawlers); forwards the visitor's IP; uses the Functions quota; "a stronger position, not a way out of a review"
+  (the EDPB's Guidelines 2/2023 on IP-based tracking).

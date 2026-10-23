@@ -768,6 +768,34 @@ test('a11y — each place in the /what-it-runs-on picture lists what it is made 
   expect(box.belowAll, 'the visitors box must sit below all three places').toBe(true);
   expect(box.spans, 'the visitors box must span the width of the three places').toBe(true);
 });
+// The analytics section holds two real dashboards. A screenshot alone cannot be read aloud or searched, and
+// a number without its site and period proves nothing, so each caption states the site, the period and the
+// figure as text. The section sits above Keystatic, as the owner asked, and the two dashboards sit side by
+// side on a desktop and one under the other on a phone.
+test('a11y — /what-it-runs-on: analytics sits above Keystatic, and each dashboard is captioned with its site, period and figure', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/what-it-runs-on');
+  const before = await page.evaluate(() => {
+    const a = document.getElementById('analytics'), k = document.getElementById('keystatic');
+    return !!a && !!k && !!(a.compareDocumentPosition(k) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(before, '#analytics must come before #keystatic').toBe(true);
+  const figs = () => page.$$eval('#analytics figure', (els) => els.map((f) => ({
+    caption: f.querySelector('figcaption')?.textContent ?? '',
+    top: Math.round(f.getBoundingClientRect().top),
+  })));
+  const wide = await figs();
+  expect(wide, 'the analytics section must show two dashboards').toHaveLength(2);
+  for (const f of wide) {
+    expect(f.caption, `a dashboard caption names no site (${f.caption})`).toMatch(/[a-z0-9-]+\.(de|com)/);
+    expect(f.caption, `a dashboard caption gives no period (${f.caption})`).toMatch(/\b\d+ days\b/);
+    expect(f.caption, `a dashboard caption gives no visitor figure (${f.caption})`).toMatch(/[\d.,]+k? unique visitors/i);
+  }
+  expect(wide[0].top, 'the dashboards are not side by side on a desktop').toBe(wide[1].top);
+  await page.setViewportSize({ width: 360, height: 740 });
+  const phone = await figs();
+  expect(phone[0].top < phone[1].top, 'the dashboards do not stack on a phone').toBe(true);
+});
 for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
     await page.setViewportSize({ width, height: 740 });
