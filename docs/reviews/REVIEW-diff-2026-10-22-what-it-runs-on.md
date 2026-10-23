@@ -152,3 +152,33 @@ Closed 2026-10-22: no BUG open; head `78de238` (plus the record commit, which `m
 exclude as `docs/reviews/`). Pushed on 2026-10-23 on the owner's go (the pre-push gate: 372 passed in 1.2
 minutes); PR karero/croftweaver-site#121 opened. The owner's ship hold applies to any publish.
 
+
+## Round 3 (2026-10-23): a paragraph on Cloudflare, at the owner's request
+
+The owner asked for two to five lines about Cloudflare being one of the backbones of the internet. The page now
+has a four-line paragraph (commit `61dbda1`): W3Techs' 27.8% of all websites (October 2026), what Cloudflare
+does between visitors and a site (Cloudflare's developer docs), and one stated inference (a site shares
+Cloudflare's availability). The sources, and what was left out (the word "backbone", "generally trusted and
+safe", Workers, the headquarters, "ICANN-accredited"), are in the facts record, section 6. A new claim about a
+third party earns a round, so the pair read the 37-line page delta with `prior-diff-findings-r4.md`; no note to
+the reviewers this time.
+
+`reviewers: codex OK, melious FAILED (output is not a review), ollama-cloud OK`. The melious seat's reply was
+judged not a review by the script, so the ollama GLM 5.3 seat stood in, as the rules say. `timings: codex 84s
+(41690 tokens), melious 54s (7140 tokens), ollama-cloud 175s` (no token figure). 708,658 tokens logged for the
+gate to here. Codex: **No BUG/RISK/NIT findings.**
+
+| # | Kind | Seat | Finding | Check | Disposition |
+|---|---|---|---|---|---|
+| D34 | NIT | GLM (ollama) | "answers DNS requests for the domain" drops the qualifier Cloudflare's docs carry (the default full setup); DNS on Cloudflare is optional | the docs as read: "applies to the default full setup"; the page says in its own DNS paragraph that DNS can move | fixed: "can answer" (commit `5931e75`) |
+| D35 | NIT, outside scope | GLM (ollama) | the header comment names only the private hub, which cannot cover a paragraph read on 2026-10-23 | the facts record, section 6 | fixed: the header names `docs/reviews/` |
+
+Both seats' unverifiable lists (W3Techs and Cloudflare's docs have no primary capture in the repository) are
+met by the author's dated readings in section 6.
+
+Confirmation (Codex, one seat) on the 23-line delta `61dbda1..5931e75`: `timings: codex 63s (52759 tokens)`;
+**No BUG/RISK/NIT findings.**
+
+Totals after round 3: 3 rounds, two merge links and two one-seat confirmations; 34 findings (32 before, 2 in
+this round); 31 fixed, 2 refuted (D19, D30), 1 out of scope (D32). Tokens: 708,658 logged through round 3,
+plus 52,759 for the confirmation. Not pushed at the time of writing: the push of this change waits on the owner.
