@@ -127,6 +127,7 @@ export const CLAIMS: Claim[] = [
   { id: 'ai-php-reports', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
   { id: 'ai-wiz-found', kind: 'url', source: 'https://www.wiz.io/blog/php2shell-php-rce', label: 'Wiz Research', read: READ_AI },
   { id: 'ai-exploit-tools', kind: 'url', source: RECORD, label: 'The Record', read: READ_AI },
+  { id: 'ai-exploit-none-yet', kind: 'url', source: RECORD, label: 'The Record', read: READ_AI },
   { id: 'php-new-advisory', kind: 'url', source: 'https://www.php.net/archive/2026.php#2026-10-23-1', label: 'php.net news, 23 October 2026', read: READ_AI },
 
   // ---- What runs: the Croftweaver template, croftweaver.com, and WordPress as its own documentation describes it ----
