@@ -42,20 +42,50 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
 
   <section class="wrap" id="picture">
     <h2>The picture</h2>
-    <ul class="places" role="list">
-      <li class="place" data-place>
+    <div class="places">
+      <div class="place" data-place>
         <h3><a href="#folder">Your computer</a></h3>
         <p>The folder with your site's files. Your assistant works here. Astro builds a preview, and the tests run here.</p>
-      </li>
-      <li class="place" data-place>
+        <ul class="made" aria-label="Made of">
+          <li>Claude Code or Codex</li>
+          <li>Astro, Vite and Node.js</li>
+          <li>Astro pages, Markdown</li>
+          <li>TypeScript checks</li>
+          <li>Tests: Playwright, axe</li>
+        </ul>
+      </div>
+      <div class="link" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M7 1.5 2 6l5 4.5M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="place" data-place>
         <h3><a href="#github">GitHub</a></h3>
         <p>Your files and the history of every change. The checks run here again on every pull request.</p>
-      </li>
-      <li class="place" data-place>
+        <ul class="made" aria-label="Made of">
+          <li>Git: every change</li>
+          <li>Pull requests, review</li>
+          <li>Actions run the checks</li>
+        </ul>
+      </div>
+      <div class="link" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="place" data-place>
         <h3><a href="#cloudflare">Cloudflare</a></h3>
         <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
-      </li>
-    </ul>
+        <ul class="made" aria-label="Made of">
+          <li>Pages: build and host</li>
+          <li>CDN and DNS</li>
+          <li>A small function</li>
+        </ul>
+      </div>
+      <div class="link down" aria-hidden="true">
+        <svg viewBox="0 0 36 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6H34M29 1.5 34 6l-5 4.5"/></svg>
+      </div>
+      <div class="visitors">
+        <h3>Your visitors' browsers</h3>
+        <p>They receive plain HTML and CSS and a little JavaScript.</p>
+      </div>
+    </div>
     <p class="aside">Your computer and GitHub exchange changes. Cloudflare builds from GitHub.</p>
   </section>
 
@@ -312,9 +342,21 @@ const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_
      screen if the box can shrink: overflow-wrap: anywhere on the box lets it, and so does minmax(0, 1fr) on
      the column together with the site's overflow-wrap: break-word. Either is enough and the page has both
      (measured at 360 and 320 px). tests/a11y.spec.ts puts a long word in a box and fails when neither is left. */
-  .places { list-style: none; margin: 1rem 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
-  .place { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
-  .place h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
-  .place p { margin: 0; }
-  @media (min-width: 48rem) { .places { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .places { margin: 1rem 0; display: grid; grid-template-columns: minmax(0, 1fr); }
+  .place, .visitors { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
+  .place h3, .visitors h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
+  .place p, .visitors p { margin: 0; }
+  .made { list-style: none; margin: 0.8rem 0 0; padding: 0.7rem 0 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  .made li { margin: 0.2rem 0; }
+  /* The arrows between the boxes: drawn for a row and turned to point down when the boxes stack. */
+  .link { display: flex; align-items: center; justify-content: center; min-height: 2.75rem; color: var(--muted); }
+  .link svg { width: 2.25rem; height: 0.75rem; transform: rotate(90deg); }
+  @media (min-width: 48rem) {
+    .places { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); }
+    .link { min-height: 0; padding: 0 0.6rem; }
+    .link svg { transform: none; }
+    .link.down { grid-column: 5; min-height: 2.75rem; padding: 0; }
+    .link.down svg { transform: rotate(90deg); }
+    .visitors { grid-column: 1 / -1; }
+  }
 </style>
