@@ -17,7 +17,7 @@ export const PROOF = [
 
 // ── The AI panel, on the home page and on /more-proof ───────────────────────────
 // Four AI assistants were given the same prompt about genai-wednesday.de by the Builder
-// Lab (https://genai-wednesday.de/builder-lab, second round). Copied from that page on
+// Lab (https://genai-wednesday.de/croftweaver, second round). Copied from that page on
 // 2026-10-08. They are opinions: GEO and E-E-A-T have no official scorer, and the Lab
 // says so on its own page, together with a second caveat: scores are not comparable
 // across assistants. Scores are stored in tenths so sums are exact; the averages are
@@ -45,7 +45,7 @@ for (const column of ['seo', 'geo', 'eeat'] as const) {
 export const fmtScore = (tenths: number) => (tenths / 10).toFixed(1);
 
 export const PANEL = {
-  lab: 'https://genai-wednesday.de/builder-lab',
+  lab: 'https://genai-wednesday.de/croftweaver',
   readOn: { iso: '2026-10-08', label: '8 October 2026' },
   date: { iso: '2026-08-20', label: '20 August 2026' },
   firstRound: { iso: '2026-06-19', label: '19 June 2026' },
@@ -355,7 +355,7 @@ if (POSITIONS_PERIOD.from !== blocks.at(-1)!.from || POSITIONS_PERIOD.to !== blo
 export const SITE_PROOF = {
   site: 'genai-wednesday.de',
   url: 'https://genai-wednesday.de/',
-  lab: 'https://genai-wednesday.de/builder-lab',
+  lab: 'https://genai-wednesday.de/croftweaver',
   launched: { iso: LAUNCHED, label: label(LAUNCHED) },
   // Stamp in the site's repository (.claude/skills/SUITE-VERSION).
   toolkit: { commit: '41cc760', copied: { iso: '2026-07-09', label: '9 July 2026' } },
