@@ -27,7 +27,7 @@
 - [Security](https://croftweaver.com/security): what a static website changes for security: what runs on a visit, what Cloudflare handles, what Croftweaver sets up and what stays with the owner, a checklist for any website, four checks a reader can run, and the result for croftweaver.com, each dated fact with its source and the day it was read.
 - [Privacy](https://croftweaver.com/privacy): privacy policy (GDPR).
 - [Imprint](https://croftweaver.com/imprint): legal disclosure (German § 5 DDG).
-- [Terms of Use](https://croftweaver.com/terms): the terms for using Croftweaver: free software under the MIT licence, given as it is; the services you sign up for have their own terms.
+- [Terms of Use](https://croftweaver.com/terms): the terms for using Croftweaver: free software under the MIT licence, given as it is; the imprint and privacy pages it drafts for your site are starting points, not legal advice; the services you sign up for have their own terms.
 - [Support](https://croftweaver.com/support): how to get help: GitHub issues for questions and bugs, email, and private reporting for security problems.
 
 ## Facts
