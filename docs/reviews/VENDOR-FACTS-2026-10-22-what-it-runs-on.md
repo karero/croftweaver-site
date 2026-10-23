@@ -146,3 +146,10 @@ fills it in with a script.
   engaged time; counts visitors who block scripts; skips requests without Fetch Metadata for a page navigation (most
   crawlers); forwards the visitor's IP; uses the Functions quota; "a stronger position, not a way out of a review"
   (the EDPB's Guidelines 2/2023 on IP-based tracking).
+- The skip rule for server mode, from code (`skills/new-website/templates/astro/functions/_middleware.ts` on `origin/main`,
+  f680e440): `navigationSkip()` skips a request that is not a GET, that names itself a prefetch, prerender or preview
+  (`Sec-Purpose`, `Purpose`, `X-Purpose`, `X-Moz`), whose `Sec-Fetch-Dest` is present and not `document` or absent,
+  whose `Sec-Fetch-Mode` is present and not `navigate`, or that has no `User-Agent`. Its comment says: "curl, scripts,
+  scanners and most crawlers send neither" Fetch Metadata header. **Not traced by a test in the toolkit** (a search
+  for `navigationSkip` finds only the two functions that use it), so the page says "many crawlers and scripts", cites
+  the code, and does not say "most". The `SKILL.md` paragraph says nothing about crawlers, so it is not cited for that.

@@ -23,6 +23,7 @@ const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
 const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
 const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
 const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
+const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/astro/functions/_middleware.ts`; // navigationSkip()
 ---
 <Base
   title="What it runs on: Astro, Cloudflare, GitHub"
@@ -270,18 +271,19 @@ const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; /
     </p>
     <div class="dash">
       <figure>
-        <img src="/images/analytics/plausible-genai-wednesday-28-days.webp" alt="Plausible dashboard for genai-wednesday.de, last 28 days: 230 unique visitors, 238 visits and 383 page views, with a line chart of visitors per day." width="1000" height="927" loading="lazy" decoding="async">
+        <img src="/images/analytics/plausible-genai-wednesday-28-days.webp" alt="Screenshot of the Plausible dashboard for genai-wednesday.de: six totals above a line chart of visitors per day." width="1000" height="927" loading="lazy" decoding="async">
         <figcaption>Plausible, genai-wednesday.de, last 28 days: 230 unique visitors, 238 visits, 383 page views.</figcaption>
       </figure>
       <figure>
-        <img src="/images/analytics/cloudflare-genai-wednesday-30-days.webp" alt="Cloudflare overview for genai-wednesday.com, 23 September to 23 October: 1.77k unique visitors, with a line chart of visitors per day." width="1000" height="570" loading="lazy" decoding="async">
+        <img src="/images/analytics/cloudflare-genai-wednesday-30-days.webp" alt="Screenshot of the Cloudflare overview for genai-wednesday.com: the unique visitors total beside a line chart of visitors per day, 23 September to 23 October." width="1000" height="570" loading="lazy" decoding="async">
         <figcaption>Cloudflare overview, genai-wednesday.com, 30 days to 23 October: 1.77k unique visitors.</figcaption>
       </figure>
     </div>
     <p>
-      The two differ a lot, and neither is the true number. Cloudflare counts the requests that reach it,
-      crawlers included. Plausible's script counts only the browsers that run it, and misses a visitor who
-      blocks it. The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
+      The two differ a lot, and neither is the true number. Cloudflare's documentation says its free-plan
+      figures include crawlers and threats, and Plausible's script counts only the browsers that run it, so a
+      visitor who blocks it is missed. That can account for part of the gap; the screenshots cannot show how
+      much. The comparison is also rough: the periods differ by two days, and the Cloudflare screenshot
       shows genai-wednesday.com, an address that forwards to genai-wednesday.de, the site Plausible counts.
     </p>
     <p>
@@ -301,9 +303,10 @@ const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; /
       There are two ways to count. By default a small script in the visitor's browser sends the visit to
       Plausible. In the optional server mode no script runs on the visitor's device: the site's Cloudflare
       function sends each page view instead. Server mode also counts visitors who block scripts, and it skips
-      requests that are not a person opening a page, such as most crawlers. In return it loses scroll depth and
-      engaged time, it passes the visitor's IP address on to Plausible, and it uses the function's daily request
-      allowance (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
+      requests that do not look like a browser opening a page, which keeps out many crawlers and scripts
+      (<a href={SERVER_FUNCTION}>the function's code</a>). In return it loses scroll depth and engaged time, it
+      passes the visitor's IP address on to Plausible, and it uses the function's daily request allowance
+      (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
     </p>
     <p>
       Plausible says it uses no cookies and no persistent identifiers, and that you need no cookie banner for it

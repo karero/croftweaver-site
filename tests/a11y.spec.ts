@@ -786,6 +786,16 @@ test('a11y — /what-it-runs-on: analytics sits above Keystatic, and each dashbo
   })));
   const wide = await figs();
   expect(wide, 'the analytics section must show two dashboards').toHaveLength(2);
+  // A caption over a missing picture is a page that claims a dashboard it does not show: each figure holds one
+  // image that loads (the images are lazy, so scroll to them first).
+  await page.locator('#analytics figure').last().scrollIntoViewIfNeeded();
+  await expect.poll(
+    () => page.$$eval('#analytics figure', (els) => els.map((f) => {
+      const imgs = f.querySelectorAll('img');
+      return imgs.length === 1 && (imgs[0] as HTMLImageElement).naturalWidth > 0;
+    })),
+    { message: 'each analytics figure must hold one image that loads' },
+  ).toEqual([true, true]);
   for (const f of wide) {
     expect(f.caption, `a dashboard caption names no site (${f.caption})`).toMatch(/[a-z0-9-]+\.(de|com)/);
     expect(f.caption, `a dashboard caption gives no period (${f.caption})`).toMatch(/\b\d+ days\b/);
