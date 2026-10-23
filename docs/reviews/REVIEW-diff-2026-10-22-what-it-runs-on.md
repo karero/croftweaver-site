@@ -294,3 +294,20 @@ The two fixes (an attribution in one sentence, a tighter test) got no second mod
 ask while melious has no balance and ollama is at its weekly limit, and both fixes were checked by mutation and by the
 full suite (379 passed, `astro check` 0 errors). Findings in all: 49 before this stretch's two, 2 here: 51 total; 48
 fixed, 2 refuted, 1 out of scope.
+
+
+### Addendum: the third way, one more seat (2026-10-23)
+
+The owner asked for a line on serving visitors without tracking and a privacy declaration saying so (commit
+`077ba78`). One Codex seat read it with the two fixes above: `timings: codex 254s (69319 tokens)`; gate total
+1,241,789 tokens logged. No BUG; two RISK, both on the new paragraph, both right:
+
+| # | Kind | Seat | Finding | Check | Disposition |
+|---|---|---|---|---|---|
+| D51 | RISK | Codex | "with no analytics there is nothing to ask consent for" is a site-wide guarantee | other features (an embed) can need consent | fixed in `97683c4`: limited to analytics, with "other features of a site can still need consent" |
+| D52 | RISK | Codex | "do not count at all" contradicts the section's own first paragraph: Cloudflare counts traffic with nothing added | the section opens with Cloudflare's edge counts | fixed: "leave Plausible off and add nothing. Cloudflare's own counts, described above, stay" |
+
+The owner's wording, "100% on the safe side", was not used: a site without analytics still logs requests through
+Cloudflare, and the page says what such a site still needs (privacy page, imprint in Germany and Austria, a processing
+contract with Cloudflare; the toolkit's guide, `SKILL.md` on `origin/main`). The two wording fixes got no further model
+pass (no second seat; see above); the suite passed (379). Findings in all: 53; 50 fixed, 2 refuted, 1 out of scope.
