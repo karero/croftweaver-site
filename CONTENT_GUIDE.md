@@ -245,4 +245,9 @@ of `POSITIONING.md`, reachable by links from `/`.
 - [ ] Any linked PDF in `public/` has a descriptive doc-title set via
       `scripts/set_pdf_title.py` — not the authoring placeholder (see website-seo-geo)
 - [ ] In sitemap; internal links clean (no `.html`)
+- [ ] Added to `FOOTER` in `src/config.ts` (a test fails an indexable page that is missing there)
 - [ ] EEAT: author/date where relevant; sources cited
+
+### How a page joins the navigation
+
+The footer lists every page once (`FOOTER` in `src/config.ts`). A page's own pull request adds its entry there, and a test fails an indexable page that is missing. The header (`NAV`) is a curated subset: an item is a link, or a group of links that opens under its name. A group needs two pages, so while only one page of a set is on `main` it stays a plain link under its own label, and the navigation work's pull request that adds the second page's place turns the link into the group. Header places belong to the navigation work, not to a page's pull request; a page that should have one says so in its pull request. Nothing fails when a header place is missing, so the status table of the navigation work is what keeps track.
