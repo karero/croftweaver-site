@@ -59,7 +59,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
 
   { name: 'search-console-setup', stage: 'launch', does: 'Registers the live site with Google Search Console and Bing, submits the sitemap, turns on IndexNow.' },
   { name: 'business-listings-setup', stage: 'launch', optional: true, does: 'For a business with listings: claims Google Business Profile, Bing Places and directory entries, and checks that the profile links resolve.' },
-  { name: 'wordpress-inspector', stage: 'launch', optional: true, does: 'For a move from WordPress: counts the old site\'s posts, pages and addresses before the move, then names each old address that is missing on the new site or sent to its home page. It reads only and moves nothing.' },
+  { name: 'wordpress-inspector', stage: 'launch', optional: true, does: 'For a move from WordPress: counts the old site\'s posts, pages and addresses before the move, writes the redirect lines from your decisions, then names each old address that is missing on the new site, sent to its home page or not where you decided. It only reads the old site and changes nothing there.' },
   { name: 'website-team-setup', stage: 'launch', optional: true, does: 'Readies the repository for several people and assistants: collaborators, a rule that changes arrive as pull requests, automatic checks, previews.' },
 
   { name: 'search-console-insights', stage: 'grow', does: 'Reads your Search Console data: where you rank, what sits just below the first page, which pages are seen but not clicked. Also runs the optional weekly AI check.' },

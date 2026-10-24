@@ -14,8 +14,8 @@ import { SITE } from '../config';
 import { WORDPRESS_FAQ, wordpressFaqSchema, EMDASH_POST } from '../data/wordpress-faq';
 import { PROOF, PROOF_MEASURED } from '../data/proof';
 
-// The page describes the helper as released in 0.32, so the link is pinned to that tag.
-const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector';
+// Pinned to 0.33, the release whose redirect writer the steps describe; the test links below stay on 0.32.
+const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.33/skills/wordpress-inspector';
 
 // The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
 const scores = PROOF.map((p) => p.performance);
