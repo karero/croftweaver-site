@@ -503,7 +503,7 @@ for (const plain of NAV.filter((item): item is NavLink => !isNavGroup(item))) {
   });
 }
 
-// The current page shows at a glance: a thick underline on its link, or on the button of the group that holds it, and on no
+// The current page shows at a glance: a thick underline on its link, or on the name of the group that holds it, and on no
 // other item. Colour and weight alone were easy to miss (owner, 2026-10-24). Read from NAV, so a new link is covered.
 const underline = (el: Element) => { const s = getComputedStyle(el); return `${s.textDecorationLine} ${s.textDecorationThickness}`; };
 for (const link of NAV_LINKS) {
@@ -511,13 +511,22 @@ for (const link of NAV_LINKS) {
     await page.setViewportSize(DESKTOP);
     await page.goto(link.href);
     const group = groups.find((g) => g.items.includes(link));
-    const marked = group ? groupButton(page, group.label) : navLink(page, link.href);
-    await expect(marked).toBeVisible();
-    expect(await marked.evaluate(underline), `the current item on ${link.href} is not underlined`).toBe('underline 3px');
-    // Every item that shows without a click: the top-level links (GitHub included) and the group buttons.
-    const items = page.locator('.site-header nav > ul > li > a, .site-header nav .group-button');
+    if (group) {
+      const button = groupButton(page, group.label);
+      await expect(button).toBeVisible();
+      expect(await button.locator('.group-name').evaluate(underline), `the group name on ${link.href} is not underlined`).toBe('underline 3px');
+      // An underline on the button itself would break at the arrow: the name and the arrow are separate boxes.
+      expect(await button.evaluate(underline), 'the underline is on the whole button, not on its name').toMatch(/^none /);
+      await button.click();
+      expect(await navLink(page, link.href).evaluate(underline), `the current link in the open "${group.label}" list is not underlined`).toBe('underline 3px');
+    } else {
+      await expect(navLink(page, link.href)).toBeVisible();
+      expect(await navLink(page, link.href).evaluate(underline), `the current link on ${link.href} is not underlined`).toBe('underline 3px');
+    }
+    // Every item that shows without a click: the top-level links (GitHub included) and the groups' names.
+    const items = page.locator('.site-header nav > ul > li > a, .site-header nav .group-name');
     const plainItems = await items.evaluateAll((els) => els
-      .filter((el) => !el.hasAttribute('aria-current'))
+      .filter((el) => !el.closest('[aria-current]'))
       .map((el) => `${el.textContent?.trim()}: ${getComputedStyle(el).textDecorationLine}`));
     expect(plainItems.length, 'no other item was checked').toBeGreaterThan(0);
     for (const item of plainItems) expect(item, 'an item that is not current is underlined').toMatch(/: none$/);
@@ -525,14 +534,16 @@ for (const link of NAV_LINKS) {
 }
 
 // On a phone the open menu shows the current link with the same underline, under its group's name.
-test('header — on a phone the open menu underlines the current link', async ({ page }) => {
-  await page.setViewportSize(PHONE);
-  await page.goto('/security');
-  await page.locator('.site-header .menu-button').click();
-  const current = navLink(page, '/security');
-  await expect(current).toBeVisible();
-  expect(await current.evaluate(underline)).toBe('underline 3px');
-});
+for (const link of NAV_LINKS) {
+  test(`header — on a phone the open menu underlines the current link on ${link.href}`, async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(link.href);
+    await page.locator('.site-header .menu-button').click();
+    const current = navLink(page, link.href);
+    await expect(current).toBeVisible();
+    expect(await current.evaluate(underline)).toBe('underline 3px');
+  });
+}
 
 // Where the top-level items sit: the Menu button is shown and they are folded behind it, or they stand in ONE row.
 // Rows, not pixels: the height of a row depends on the machine's fonts.
