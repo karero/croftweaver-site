@@ -69,6 +69,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          check-latest: true  # the newest 24.x, not a cached one older than the engines floor
           cache: npm
       - run: npm ci
       # Reads public/.well-known/security.txt, src/config.ts and tests/_helpers.ts, and runs `node` for the
