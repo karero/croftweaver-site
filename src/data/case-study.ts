@@ -7,7 +7,7 @@
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 
-export const UPDATED = { iso: '2026-10-21', label: '21 October 2026' } as const;
+export const UPDATED = { iso: '2026-10-24', label: '24 October 2026' } as const;
 export const LAUNCH = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 const realDay = (s: string) => {
@@ -67,6 +67,45 @@ export const LOG: readonly Entry[] = [
   { kind: 'change', date: '2026-10-21', title: 'The same, on genai-wednesday.de',
     asked: 'Add “Already have a website?” to the Croftweaver page on genai-wednesday.de, in English and German.',
     pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/53', checks: '298 tests; reviewed together with the change above' },
+  { kind: 'change', date: '2026-10-22', title: 'A checklist of SEO checks for sites an AI assistant built',
+    asked: 'Add a page for people whose site an AI assistant built: eight SEO checks, the Croftweaver test behind each, what happened when each was broken on purpose, and what a passing test does not prove.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/112', checks: '337 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-22', title: 'A security.txt that says where to report a flaw',
+    asked: 'Publish a security.txt with a contact for reporting a security flaw, and add a check that keeps the file valid.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/114', checks: 'a check of the file; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-22', title: 'A page on what a static website changes for security',
+    asked: 'Answer “Is Croftweaver safer than WordPress?” on a page of its own, with a source and a reading date for every claim.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/118', checks: '352 tests and a check of its 67 claims; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A footer that lists every page',
+    asked: 'Draw the footer as four labelled columns that list every page once, and add a test that fails when a page is missing.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/119', checks: '361 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A header with groups of links',
+    asked: 'Group the header links under names that open a list, such as “Skills & checks” and “For your site”.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/122', checks: '387 tests; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A page on what a Croftweaver site runs on',
+    asked: 'Explain the technology behind a Croftweaver site in plain words: the three places it lives, what each costs and its limits, and what can be swapped.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/121', checks: '372 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'One table style, stacked on a phone',
+    asked: 'Give every table on the site one style, and turn text tables into labelled rows on a phone instead of letting them scroll sideways.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/124', checks: '376 tests; review by one outside model, 3 rounds' },
+  { kind: 'change', date: '2026-10-24', title: 'A Croftweaver site next to a shop',
+    asked: 'Say that a shop needs a shop platform, and that a Croftweaver site can sit next to it with guides and articles on the topics of its products.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/130', checks: '420 tests; merged before its review' },
+  { kind: 'change', date: '2026-10-24', title: 'Two more AI check days on /proof',
+    asked: 'Add the AI check runs of 12 and 19 October for genai-wednesday.de to the page that measures that site.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/132', checks: '420 tests; review by two outside models, 1 round' },
+  { kind: 'change', date: '2026-10-24', title: 'genai-wednesday.de: what Search Console shows now',
+    asked: 'Replace “keeps climbing” on the Croftweaver pages of genai-wednesday.de with the figures Search Console shows now.',
+    pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/57', checks: '300 tests; one review, not by an outside model' },
+  { kind: 'change', date: '2026-10-24', title: 'genai-wednesday.de: skills for AI coding assistants',
+    asked: 'Call Croftweaver “website skills for AI coding assistants” on four more pages of genai-wednesday.de, instead of “Claude Code skills”.',
+    pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/58', checks: '300 tests; reviewed together with the change above' },
+  { kind: 'observation', date: '2026-10-24', title: 'What went live, and when',
+    seen: 'The checklist page and security.txt went live on 22 October; /security, /what-it-runs-on, the new header and footer and the table style on 23 October; the shop wording, the two check days on /proof and the header’s Technology group on 24 October.',
+    source: 'Cloudflare Pages, production deployments, read on 24 October' },
+  { kind: 'observation', date: '2026-10-24', title: 'Croftweaver 0.33 is released',
+    seen: 'Release 0.33 of the toolkit came out. Three of its changes are also on this site: one table style, monthly Dependabot updates with a read-only token for the checks, and a publish script that can take main straight from GitHub.',
+    source: 'the 0.33 release notes on GitHub; this site’s pull requests 124, 111 and 127' },
 ];
 
 const PR = /^https:\/\/github\.com\/([A-Za-z0-9-]+\/[A-Za-z0-9.-]+)\/pull\/(\d+)$/;
