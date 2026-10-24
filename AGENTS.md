@@ -103,8 +103,11 @@ applies there; instead of steps 2 to 4, only this:
 
   The assistant merges only when the owner asks for that pull request in chat, and
   only when the conditions above hold. The owner's request settles the third condition,
-  whoever opened the pull request. If the checks are still running, the assistant
-  merges only once they are green; if they are red, it reports that and does not merge.
+  whoever opened the pull request. The owner's approval of a plan, quoted word for word
+  in the brief of a session started for one step of that plan, counts as the owner
+  asking in chat for the pull requests the plan names (since 2026-10-24). If the checks
+  are still running, the assistant merges only once they are green; if they are red, it
+  reports that and does not merge.
   It merges as the button does, with a merge commit and not a squash or a rebase
   (`gh pr merge <number> --merge`), and never with a flag that passes over the checks
   (`--admin`). When the owner has not asked, merging stays the person's step on GitHub,
