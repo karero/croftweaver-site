@@ -7,7 +7,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 // Edit both by hand, and only after re-reading this page against that release.
-const REVIEWED = { version: '0.32', iso: '2026-10-20', label: '20 October 2026' } as const;
+const REVIEWED = { version: '0.33', iso: '2026-10-24', label: '24 October 2026' } as const;
 
 const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
@@ -68,14 +68,14 @@ const out = [
   </section>
 
   <section class="wrap" id="done">
-    <h2>Done in release 0.32</h2>
+    <h2>Done in release 0.33</h2>
     <ul class="steps">
-      <li><strong>A standard way to count enquiries.</strong> With Plausible on, your site counts each click on your email address as one <code>Email Tap</code>. With the usual script, it also counts each time the contact form asks the browser to open the visitor's mail program. Whether the visitor then writes and sends the mail, the site cannot know. New sites start with analytics off, so you switch Plausible on first.</li>
-      <li><strong>An install without Node.</strong> As a Claude Code plugin, Croftweaver needs no Node, no script and no folder to keep. A Codex plugin came with it. <a href="/start#install">The quickstart</a> has the commands.</li>
+      <li><strong>Forwarding for a move off WordPress.</strong> For each old address you write its new address, "keep" or "let go". The helper writes the redirect lines from that, and the check after the move names any address that lands somewhere other than you decided. <a href="/from-wordpress">Moving from WordPress</a> has the steps.</li>
+      <li><strong>Tables that fit a phone, and photos that take turns.</strong> Tables share one style that fits a small screen. An optional helper shows a few photos at the top of a page, one after another.</li>
     </ul>
     <p>
       The rest of what the release brought is in
-      <a href={`${SITE.repo}/releases/tag/v0.32`}>its release notes</a>.
+      <a href={`${SITE.repo}/releases/tag/v0.33`}>its release notes</a>.
     </p>
   </section>
 

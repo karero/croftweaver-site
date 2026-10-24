@@ -95,12 +95,12 @@ const move = [
   },
   {
     title: 'Write the redirects',
-    text: 'Every old address that moves gets a permanent redirect in the site’s redirect file. Your assistant writes the lines from the decisions in step 2; no script builds them yet.',
+    text: 'Every old address that moves gets a permanent redirect in the site’s redirect file. Since release 0.33 the helper writes the lines from the decisions in step 2, and refuses any the file cannot hold.',
     say: 'Write a 301 redirect for each old address we decided to move.',
   },
   {
     title: 'Check each address on the list',
-    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
+    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent, and, given your decisions, each address that lands somewhere other than decided.',
     say: 'Check each address on the list against the preview.',
   },
   {
