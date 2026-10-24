@@ -5,8 +5,9 @@ Base `6d56daa` (origin/main, PR 135 merged) · depth: Normal (shipped markup and
 |---|---|---|---|---|---|
 | 1 | `2e552c2` | full change (`6d56daa...2e552c2`, 2 files, +36) | Codex gpt-6.1-sol, config effort, read-only; GLM 5.3 on melious.ai, HTTP, text only; fresh-eyes Claude Sonnet sub-agent, read-only, ran the tests and took screenshots | codex 182 s / 64,575; GLM 102 s / 11,885; fresh-eyes 85 s / 100,253 | 1 / 2 / 4 (de-duplicated) |
 | 2 | `9c616ce` | the fixes (`2e552c2..9c616ce`), with the round 1 findings | Codex gpt-6.1-sol, medium effort, read-only; GLM 5.3 on melious.ai | codex 79 s / 40,627; GLM 125 s / 12,653 | 0 / 0 / 1 |
+| re-gate (not a round) | `bdbcec6` | the F7 fix (`9c616ce..bdbcec6`, the review record excluded) | the same two seats | codex 40 s / 48,416; GLM 24 s / 3,581 | 0 / 0 / 0 |
 
-Both seats of the standard pair ran in both rounds: `reviewers: codex OK, melious OK`. Tokens logged for the gate: 229,993 (the script's count, fresh-eyes included).
+Both seats of the standard pair ran in both rounds: `reviewers: codex OK, melious OK`. Tokens logged for the gate: 229,993 in the two rounds (fresh-eyes included), plus 51,997 for the re-gate.
 
 | id | Sev | Source | Round | Finding | Status | Evidence |
 |---|---|---|---|---|---|---|
@@ -16,7 +17,7 @@ Both seats of the standard pair ran in both rounds: `reviewers: codex OK, meliou
 | F4 | NIT | GLM | 1 | the current link inside the open group was never checked on a wide screen | fixed, externally re-verified | the test opens the group and checks that link |
 | F5 | NIT | GLM | 1 | the phone test checked `/security` only | fixed, externally re-verified | it runs on every NAV page |
 | F6 | NIT | fresh-eyes | 1 | a computed-style check cannot see a split underline | fixed, externally re-verified | on a grouped page the test asserts that the button itself has no underline and only its name does. Mutation check: the underline moved back onto the whole button fails the 7 grouped-page tests; with no underline, all 18 fail |
-| F7 | NIT | GLM | 2 | after the click, the current link's underline was read without checking that the list had opened | fixed, locally verified; closing edit not externally re-verified | `toBeVisible()` before the check; 439 tests pass |
+| F7 | NIT | GLM | 2 | after the click, the current link's underline was read without checking that the list had opened | fixed, externally re-verified (re-gate) | `toBeVisible()` before the check; 439 tests pass |
 | H1 | — | host | 1 | hovering the current group would have drawn the button's thin hover underline and the name's thick one together | fixed, externally re-verified | the same move to `.group-name`; screenshot with the pointer on "Technology": one bar |
 
 Checks: `npm run check` 0 errors, 0 warnings; `npm test` 421 passed on `7afae6c` (main just before PR 135, which changed only `AGENTS.md` and added its own review record), 439 passed on `9e10288`.
@@ -27,5 +28,5 @@ Follow-ups: none.
 
 Notes:
 - The owner's request, quoted: "Yes: underline the current menu item (and its group). Park the breadcrumbs until I've seen it on my phone." Before that: "I feel a bit disoriented on the page. I do not know which tab I am on."
-- No wording pass: nothing changed after round 2 except F7, one assertion in a test.
+- No wording pass: nothing changed after round 2 except F7, one assertion in a test, which both seats re-gated.
 - Daniel looks at the change on the pull request's Cloudflare preview before it is merged.
