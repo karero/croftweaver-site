@@ -11,7 +11,7 @@ Base `7afae6c` (`main`) · depth: **High** (the rule decides when an agent may m
 | full read | `4a863ef` | full, `7afae6c...4a863ef` | fresh Opus sub-agent (Kimi on ollama failed: weekly quota) | 144 s / 108,808 | 0 / 2 / 4 |
 | 5 | `bf6a5eb` | delta since `4a863ef` | codex, melious | codex 102 s / 48,597 · melious 37 s / 6,733 | 0 / 0 / 1 |
 
-Gate total from the cost log: 5 rounds, 259,658 tokens for the scripted seats; the Opus seats add 502,707.
+Gate total from the cost log: 5 rounds, 259,658 tokens for the scripted seats; the Opus seats add 402,707.
 
 ## Findings
 
