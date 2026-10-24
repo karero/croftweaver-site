@@ -13,7 +13,7 @@ const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
   { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Next are listings in Anthropic's and OpenAI's own plugin directories." },
-  { title: 'Import of an existing site', text: 'Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests.' },
+  { title: 'Import of an existing site', text: "Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests. Four parts are still to build: taking the content out, including what a count from outside cannot see; bringing it in as pages, with its images; rebuilding the old page layouts and the brand; and settling how the old site's forms and regularly updated records, such as events, work after the move. They will be built during the first real moves, and what a second move repeats goes into Croftweaver." },
 ];
 const later = [
   'A pipeline for regular posts.',
@@ -55,7 +55,7 @@ const out = [
     <ul class="steps">
       <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
       <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
-      <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
+      <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. For WordPress, a helper counts what a site holds before a move, writes the forwarding from your decisions, and after the move checks each old address it found; moving the content itself is still done by hand, with your assistant. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
       <li><strong>Codex and Antigravity on more than one site.</strong> Each has been tested from start to finish on one site; Claude Code is the assistant Croftweaver is developed and used with.</li>
     </ul>
   </section>
