@@ -77,7 +77,7 @@ export const LOG: readonly Entry[] = [
     asked: 'Answer “Is Croftweaver safer than WordPress?” on a page of its own, with a source and a reading date for every claim.',
     pr: 'https://github.com/karero/croftweaver-site/pull/118', checks: '352 tests and a check of its 67 claims; review by two outside models, 3 rounds' },
   { kind: 'change', date: '2026-10-23', title: 'A footer that lists the pages in four columns',
-    asked: 'Draw the footer as four labelled columns that list every page except the home page once, and add a test that fails when one is missing.',
+    asked: 'Draw the footer as four labelled columns that list every page except the home page and the error page once, and add a test that fails when one is missing.',
     pr: 'https://github.com/karero/croftweaver-site/pull/119', checks: '361 tests; review by two outside models, 2 rounds' },
   { kind: 'change', date: '2026-10-23', title: 'A header with groups of links',
     asked: 'Group the header links under names that open a list, such as “Skills & checks” and “For your site”.',
