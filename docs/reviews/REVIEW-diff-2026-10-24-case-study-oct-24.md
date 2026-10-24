@@ -6,7 +6,7 @@ The reviewers have no network, so rounds 1 and 2 sent the diff with an evidence 
 
 | Round | Artifact | BUG/RISK/NIT | Timings |
 |---|---|---|---|
-| 1 | `c2c98ef...f466e25` with appendix | Codex 3/0/0; GLM 1/0/3; fresh-eyes 2/3/2 | codex 429 s / 131,594; GLM 156 s / 27,414; fresh-eyes 153,019 tokens |
+| 1 | `86d77e7...f466e25` with appendix | Codex 3/0/0; GLM 1/0/3; fresh-eyes 2/3/2 | codex 429 s / 131,594; GLM 156 s / 27,414; fresh-eyes 153,019 tokens |
 | 2 (verify) | `f466e25..29733d7` with appendix | Codex 1/0/0; GLM 0/0/0 | codex 90 s / 63,696; GLM 79 s / 13,472 |
 | 3 (verify) | `29733d7..3771ab9` | Codex 0/0/0; GLM 0/1/1 | codex 74 s / 34,794; GLM 93 s / 10,781 |
 
