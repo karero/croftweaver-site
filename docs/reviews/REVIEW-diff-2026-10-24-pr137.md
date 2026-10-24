@@ -18,7 +18,7 @@ Round 1 timings: codex 177s (76473 tokens), melious 56s (10553 tokens).
 
 ## Round 2 (verify) — 0 BUG, 5 RISK, 2 NIT
 
-Timings: codex 83s (32682 tokens), melious 88s (13544 tokens) or codex 92s (42357 tokens), melious 146s (22821 tokens) — the two PRs ran together and the script printed both lines without a label.
+Timings: codex 92s (42357 tokens), melious 146s (22821 tokens).
 
 | # | Seat | Finding | Disposition |
 |---|---|---|---|
