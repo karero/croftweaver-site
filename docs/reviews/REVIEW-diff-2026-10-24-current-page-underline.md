@@ -1,5 +1,5 @@
 # DIFF review — branch feat/current-page-underline — the current menu item gets a 3px underline
-Base `6d56daa` (origin/main, PR 135 merged) · depth: Normal (shipped markup and styles; nothing in the High row) · verdict: CLEAN for code head `9e10288`; one BUG (fixed), two RISKs (one fixed, one refuted), five NITs (fixed; one is the same as a RISK) · two rounds; round 2 found no BUG or RISK, so no third · authority: this session created the worktree `croftweaver-site-breadcrumbs-base` and the branch; the owner asked for the change in chat (quoted in Notes)
+Base `6d56daa` (origin/main, PR 135 merged) · depth: Normal (shipped markup and styles; nothing in the High row) · verdict: CLEAN for code head `9e10288`; one BUG (fixed), two RISKs (one fixed, one refuted), four NITs (fixed), and one finding of the host's (fixed): 8 in all · two rounds; round 2 found no BUG or RISK, so no third · authority: this session created the worktree `croftweaver-site-breadcrumbs-base` and the branch; the owner asked for the change in chat (quoted in Notes)
 
 | Round | Head | Artifact | Reviewers: CLI version, model, effort, sandbox | seconds, tokens per seat | BUG/RISK/NIT |
 |---|---|---|---|---|---|
