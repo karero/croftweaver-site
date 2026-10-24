@@ -104,16 +104,16 @@ applies there; instead of steps 2 to 4, only this:
   The assistant merges only when the owner asks for that pull request in chat, and
   only when the conditions above hold. The owner's request settles the third condition,
   whoever opened the pull request. Since 2026-10-24, the owner's approval of a plan,
-  given in chat or quoted word for word in the brief of a session started for one step
-  of that plan, counts as the owner asking in chat to merge that session's own pull
-  requests into `main` for its part of the plan, once the review is clean on the commit
-  merged (a later commit may only add that review's record under `docs/reviews/`). It
-  does not cover auto-merge, a check of the owner's own that the plan names, a failed
-  step, a change of scope, or a pull request that publishes the live site or touches
-  permissions (this file included), logins, user data, money, data deletion or a
-  schema: for those the owner asks in chat. If the checks are still running, the
-  assistant merges only once they are green; if they are red, it reports that and does
-  not merge.
+  given to a session in chat or quoted word for word in the brief of a session started
+  for one step of that plan, counts as the owner asking in chat to merge that session's
+  own pull requests into `main` for its part of the plan, once the review is clean on
+  the commit merged (a later commit may only add that review's record under
+  `docs/reviews/`). It does not cover auto-merge, a check of the owner's own that the
+  plan names, a failed step, a change of scope, or a pull request that publishes the
+  live site or touches permissions (this file included), logins, user data, money, data
+  deletion or a schema: for those the owner asks in chat. If the checks are still
+  running, the assistant merges only once they are green; if they are red, it reports
+  that and does not merge.
   It merges as the button does, with a merge commit and not a squash or a rebase
   (`gh pr merge <number> --merge`), and never with a flag that passes over the checks
   (`--admin`). When the owner has not asked, merging stays the person's step on GitHub,
