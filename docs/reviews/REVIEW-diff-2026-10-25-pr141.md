@@ -24,3 +24,12 @@ Codex timings: 70s (51359 tokens). Fixes 2, 3, 7 and 8 confirmed.
 |---|---|---|---|
 | 9 | Codex | BUG: the breaks notes' "Running them again" still asks for all eighteen runs when the template's tests or `package.json` change, against the new shortcut | Fixed by dropping the shortcut: the breaks were run again at v0.33 (below) |
 | 10 | Codex | RISK: byte-identical specs do not prove the same failures under Astro 7.4.2 | Fixed the same way. The concern came back twice from two seats, so it was tested: all eighteen lines run on the v0.33 starter on 2026-10-25 (`git archive v0.33`, `npm ci`, baseline 109 passed / 1 skipped, then one edit and one spec at a time, `--workers=1`), each restored and checked with `diff -rq` before the next. Every line gave the published result; run 4 still times out (twice). `RED_RUNS` now names 0.33 and 25 October; the guard's rule and message are back to their original wording; the notes record both runs |
+
+## Round 3 — Codex (verify) — 0 BUG, 1 RISK
+Codex timings: 101s (67134 tokens).
+
+| # | Seat | Finding | Disposition |
+|---|---|---|---|
+| 11 | Codex | RISK: the v0.33 rerun has only narrative support here | Refuted: the run kept a driver script and one log per line outside the repo (the session's scratch folder, not committed); two read back: run 1 "`<title> "…" is 63 chars > 60`", 1 failed / 8 passed; run 15 "`/: duplicate hreflang codes in the cluster (en, en, x-default)`", 1 failed / 8 passed |
+
+**Result: CLEAN, degraded.** 3 rounds, 13 findings (5 BUG, 5 RISK, 3 NIT counting merged seats once per row: 11 rows), all fixed, refuted or re-sorted (2 upstream RISKs go to the toolkit's BUGLOG). Second seat: a fresh-eyes Claude reviewer in round 1; GLM 5.3 could not run (melious balance 0, ollama out of quota).
