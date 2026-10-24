@@ -3,7 +3,7 @@
 Gate: DIFF, Normal (shipped site text). Seats: Codex + GLM 5.3 on melious (`reviewers: codex OK, melious OK`).
 Round 1 timings: codex 177s (76473 tokens), melious 56s (10553 tokens).
 
-## Round 1 — 2 BUG, 4 RISK, 3 NIT
+## Round 1 — 2 BUG, 3 RISK, 3 NIT
 
 | # | Seat | Finding | Disposition |
 |---|---|---|---|
@@ -15,3 +15,17 @@ Round 1 timings: codex 177s (76473 tokens), melious 56s (10553 tokens).
 | 6 | GLM | NIT: "or 26.12.1 or newer" breaks the "in the N line" pattern | Refuted: `>=26.12.1` covers 27 and later too, so no line is named |
 | 7 | GLM | NIT: the paragraph leads with the installer's 22.12 | Refuted: the paragraph is about the installer; the build floor follows in the same paragraph |
 | 8 | GLM | NIT: 26.12.1 implausible | Refuted: `node -v` on this machine prints v26.12.1 |
+
+## Round 2 (verify) — 0 BUG, 5 RISK, 2 NIT
+
+Timings: codex 83s (32682 tokens), melious 88s (13544 tokens) or codex 92s (42357 tokens), melious 146s (22821 tokens) — the two PRs ran together and the script printed both lines without a label.
+
+| # | Seat | Finding | Disposition |
+|---|---|---|---|
+| 1–3 | Codex | RISK: refutations 3, 4, 5 rest on sources the reviewer cannot see | Refuted, unchanged: the cited files are at tag v0.33 in karero/croftweaver, outside this repo; the same claims reached the reviewer twice, so they were checked against the tag directly in round 1 (paths and lines above) |
+| 4 | GLM | RISK: llms.txt may list the skills and miss hero-carousel | Refuted: llms.txt is a page map; it names no skill (grep finds only the /from-wordpress page line); `tests/llms-coverage.spec.ts` passes |
+| 5 | GLM | RISK: a v0.32 test link sits in step 5 | Refuted: steps 4–5 carry no link; the v0.32 links are in the 0.32 test-results paragraph (l.231–234) |
+| 6 | GLM | NIT: round 1 header over-counts RISKs | Fixed: 3 RISK |
+| 7 | GLM | NIT: roadmap "other than you decided" | Fixed: "other than where you decided" |
+
+No BUG in round 2: the Normal gate ends here.
