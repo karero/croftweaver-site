@@ -44,6 +44,12 @@ export const SUITES: {
     limit: 'An empty alt text passes, because a decorative image needs one. It cannot tell whether a description fits the picture.',
   },
   {
+    file: 'tables', group: 'people', name: 'Tables',
+    checks: 'Every table on every page uses the shared table style. On a phone a table of sentences stacks into labelled rows and a table of numbers fits the screen; on a wider screen it is a table again, with no word broken across lines. A test table of each kind also runs on the home page, in light and dark.',
+    example: 'A table of sentences that makes a phone scroll sideways at 320 px fails.',
+    limit: 'It measures in one browser, Chromium. Safari and screen readers such as VoiceOver are not checked, and it cannot see a hyphen, only the setting that allows one.',
+  },
+  {
     file: 'seo', group: 'search', name: 'SEO',
     checks: 'Title and description lengths, canonical address, one main heading, structured data that parses, a share card of the right size.',
     example: 'A page title of 63 characters fails; the limit is 60.',

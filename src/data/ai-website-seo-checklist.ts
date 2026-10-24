@@ -25,10 +25,10 @@ export const RED_RUNS = {
   nodeStarterAsks: '24',
   iso: '2026-10-22',
   label: '22 October 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: since PR 115 it is v0.32 itself (a0fbfb18), the
-  // version the breaks were run against, so the template specs are the same ones by definition.
-  // Before that it was 0597a28, whose four template specs were byte-identical to the v0.32 ones.
-  suiteCommit: 'a0fbfb18ea57b8f88590167a5f852a8773f27f42',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.33 (a1f30899) since 2026-10-25. The breaks ran
+  // against v0.32; at v0.33 the four specs they cover and tests/_helpers.ts are byte-identical to v0.32's
+  // (`git diff --quiet v0.32 v0.33` on each). Before, a0fbfb18 (v0.32 itself) and 0597a28 (identical specs).
+  suiteCommit: 'a1f308998e8d412fb3fa9df77a02248fd5c1c6e8',
 } as const;
 
 const COVERED = ['seo', 'images', 'navigation', 'anchors'] as const;
