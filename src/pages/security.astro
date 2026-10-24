@@ -13,9 +13,10 @@
 //   updated or removed. To cut them: delete both sections (each has a PHP-DATED comment) and the claims of
 //   the "PHP alert" group in src/data/security.ts. The alert is also named in two places that stay when the
 //   panel is cut, in words that stand alone: the labelled judgment in #safer ("the ones fixed on 21 October
-//   2026") and the claims ai-exploit-tools and ai-exploit-none-yet ("the critical PHP flaws of 21 October
-//   2026"). The description, the share card, "how this page was checked" and public/llms.txt carry no mention
-//   of it; the build, tests/check_security_page.sh and the /security tests pass on the cut page;
+//   2026") and the claim ai-exploit-tools ("the critical PHP flaws of 21 October 2026"). The claim
+//   ai-exploit-none-yet ("The same watchTowr spokesperson") refers back to ai-exploit-tools and stays with it.
+//   The description, the share card, "how this page was checked" and public/llms.txt carry no mention of it; the build,
+//   tests/check_security_page.sh and the /security tests pass on the cut page;
 // - the section on what can still go wrong (#risks, a RISKS comment above it) is cut together with the claims of
 //   the "What can still go wrong" group in src/data/security.ts: delete the section, the group and READ_RISKS, and
 //   set the paragraph in "how this page was checked" back to "on 22 October 2026", without the search-tool sentence.
@@ -75,12 +76,12 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       much code a visit runs.
     </p>
     <ul class="proof">
-      <Claim as="li" id="ai-php-scan">The PHP Foundation says that earlier this year it worked with Alpha-Omega to scan PHP with Anthropic's Claude Mythos, and that it has since added other tools, including OpenAI's Daybreak Red.</Claim>
+      <Claim as="li" id="ai-php-scan">The PHP Foundation says that earlier this year it worked with Alpha-Omega to scan PHP with Anthropic's Claude Mythos.</Claim>
       <Claim as="li" id="ai-php-reports">The PHP Foundation says the growth of AI-assisted research means its security team receives far more reports than before.</Claim>
       <Claim as="li" id="ai-wiz-found">Wiz says that frontier AI helped it find and fix vulnerabilities that had remained hidden in the PHP codebase for more than a decade.</Claim>
       <Claim as="li" id="ai-exploit-tools">watchTowr told The Record that it is observing exploitation of the critical PHP flaws of 21 October 2026 in the wild with proof-of-concept tools written with the help of AI.</Claim>
       <Claim as="li" id="ai-exploit-none-yet">The same watchTowr spokesperson said nobody had been successful to date, and that watchTowr did not expect that to last long.</Claim>
-      <Claim as="li" id="php-new-advisory">PHP published an informational advisory on 23 October 2026 for CVE-2026-115560, which it calls an unlikely remote-code-execution vector that needs an unusual combination of configuration and application code; it will publish a full advisory with the next release.</Claim>
+      <Claim as="li" id="php-new-advisory">PHP published an informational advisory on 23 October 2026 for CVE-2026-115560, which it calls an unlikely remote-code-execution vector.</Claim>
     </ul>
     <p>
       We give no overall ranking. No single fact about what runs on a server settles one, and every site depends on its accounts. A
