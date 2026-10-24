@@ -84,9 +84,10 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 - The search and AI-readability work is done by default at build time: metadata within
   limits, schema.org JSON-LD, llms.txt, share cards, clean internal links.
-- Every generated site ships with its own test gate: 14 suites today (accessibility in
+- Every generated site ships with its own test gate: 16 suites at release 0.33 (accessibility in
   light and dark, SEO consistency, navigation, anchors, orphans, images, links, email,
-  llms.txt coverage, tone, positioning, placeholders, privacy host, preview handling). The push hook runs it before
+  llms.txt coverage, tone, positioning, placeholders, privacy host, preview handling,
+  server-side analytics, tables). The push hook runs it before
   every push, and CI runs it on pull requests and on `main` and `production`.
 - After launch, real data drives the edits: Search Console insights, a ranking history
   and a weekly check of whether four AI assistants name the site (toolkit skill

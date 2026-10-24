@@ -25,8 +25,9 @@ again when the toolkit changes. A row of the table is only as good as its break.
   which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
   specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it names `a1f30899`, which is `v0.33`;
   the breaks were not run again, because at `v0.33` the four specs and `tests/_helpers.ts` are
-  byte-identical to `v0.32`'s (the starter's only other change is `src/styles/tables.css` and the
-  line in `Base.astro` that imports it). So the table
+  byte-identical to `v0.32`'s. The template's other test changes are the new `tables.spec.ts` and
+  `check_ship_push.sh`, which the breaks do not touch; the starter also changed elsewhere (Astro
+  7.4.2, `tables.css` and its import in `Base.astro`, `ci.yml`, `ship.sh`). So the table
   describes the starter, and these breaks were not run against this site's copies.
 
 ## The breaks

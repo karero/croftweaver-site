@@ -55,7 +55,7 @@ the body copy true:
   files), and a new chart needs the same.
 - **AI panel scores are assessments** by assistants, not evidence that assistants
   recommend the site.
-- **"Fourteen test suites" means fourteen spec files**, each with several assertions. A
+- **"Fifteen test suites" means fifteen spec files**, each with several assertions. A
   count in copy is rendered from the suite itself, never typed.
 - **Assistants:** write "install guides for three assistants", developed and used with
   Claude Code, and Codex and Antigravity each tested from start to finish on one site (the

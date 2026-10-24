@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { PAGES, THEMES } from './_helpers';
 
-// Tables (website-design-system, "Tables"; the CSS is in src/styles/tables.css). Two kinds: "stack"
+// Tables (website-design-system, "Tables"; on this site the CSS is in src/styles/global.css, in the starter tables.css). Two kinds: "stack"
 // (sentences: a table above 40rem, labelled stacked rows below it) and "figures" (short numbers: stays a table
 // and must fit in 320px). Two layers. The contract layer puts one table of each kind into the home page, so a
 // site with no table still proves the CSS. The scan layer reads the real tables of every page in PAGES.
@@ -145,7 +145,7 @@ function layoutProblems(root: string): { broken: string[]; tall: string[]; hyphe
 
 test('tables — the table style is on the site', async ({ page }) => {
   await openFixture(page, 1280);
-  await expect(page.locator('#table-fixture .stack'), 'no table style: copy src/styles/tables.css from the starter and import it in the layout after global.css').toHaveCSS('overflow-x', 'auto', { timeout: 2000 });
+  await expect(page.locator('#table-fixture .stack'), 'no table style: the table rules in src/styles/global.css are missing').toHaveCSS('overflow-x', 'auto', { timeout: 2000 });
 });
 
 for (const width of PHONES) {

@@ -9,13 +9,15 @@
 //
 // Two guards run when the site builds. They check inventory and provenance, not what the tests assert:
 //  1. the suites the rows name must exist, and must be among the four the breaks covered;
-//  2. the suite copy named in tests/TESTS-VERSION must be the toolkit commit whose template specs
-//     the breaks were run against. If the site's suites are copied from a newer toolkit commit, run
-//     the breaks again (they are listed on the page), then change RED_RUNS.suiteCommit.
+//  2. the suite copy named in tests/TESTS-VERSION must be RED_RUNS.suiteCommit: the toolkit commit the
+//     breaks were run against (RED_RUNS.toolkit), or a later one accepted because its four covered specs
+//     and tests/_helpers.ts are byte-identical to that one's (`git diff --quiet`), recorded in
+//     docs/ai-website-seo-checklist-breaks.md. For a newer copy, check that, or run the breaks again;
+//     then change RED_RUNS.suiteCommit.
 // Not guarded: edits to the specs, what their assertions say, and new toolkit releases. This site's
 // own copies of seo, images and navigation already have assertions the toolkit template lacks, so a
 // hash of them would trip on unrelated edits and say nothing about the template the page
-// describes. When a release changes the template tests, run the breaks again before merging. The suite names, group and file come from src/data/suites.ts, so a
+// describes. When a release changes the four template specs, run the breaks again before merging. The suite names, group and file come from src/data/suites.ts, so a
 // rename there reaches this page.
 import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 
@@ -146,7 +148,7 @@ for (const row of CHECKS) {
 if (SUITES_VERSION.commit !== RED_RUNS.suiteCommit) {
   throw new Error(
     `src/data/ai-website-seo-checklist.ts: the checklist was checked against suite copy ${RED_RUNS.suiteCommit.slice(0, 7)}, but tests/TESTS-VERSION now names ${SUITES_VERSION.commit.slice(0, 7)}. ` +
-      'Run the breaks again against the new copy, then change RED_RUNS.suiteCommit.',
+      'Check that its four covered specs and _helpers.ts are byte-identical to the ones the breaks ran on, or run the breaks again; then change RED_RUNS.suiteCommit.',
   );
 }
 
