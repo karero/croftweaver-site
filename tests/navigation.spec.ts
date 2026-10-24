@@ -518,6 +518,7 @@ for (const link of NAV_LINKS) {
       // An underline on the button itself would break at the arrow: the name and the arrow are separate boxes.
       expect(await button.evaluate(underline), 'the underline is on the whole button, not on its name').toMatch(/^none /);
       await button.click();
+      await expect(navLink(page, link.href), `the "${group.label}" list did not open`).toBeVisible();
       expect(await navLink(page, link.href).evaluate(underline), `the current link in the open "${group.label}" list is not underlined`).toBe('underline 3px');
     } else {
       await expect(navLink(page, link.href)).toBeVisible();
