@@ -32,4 +32,4 @@ Codex timings: 101s (67134 tokens).
 |---|---|---|---|
 | 11 | Codex | RISK: the v0.33 rerun has only narrative support here | Refuted: the run kept a driver script and one log per line outside the repo (the session's scratch folder, not committed); two read back: run 1 "`<title> "…" is 63 chars > 60`", 1 failed / 8 passed; run 15 "`/: duplicate hreflang codes in the cluster (en, en, x-default)`", 1 failed / 8 passed |
 
-**Result: CLEAN, degraded.** 3 rounds, 13 findings (5 BUG, 5 RISK, 3 NIT counting merged seats once per row: 11 rows), all fixed, refuted or re-sorted (2 upstream RISKs go to the toolkit's BUGLOG). Second seat: a fresh-eyes Claude reviewer in round 1; GLM 5.3 could not run (melious balance 0, ollama out of quota).
+**Result: CLEAN, degraded.** 3 rounds, 11 findings (4 BUG, 5 RISK, 2 NIT), all fixed, refuted or re-sorted (2 upstream RISKs go to the toolkit's BUGLOG). Second seat: a fresh-eyes Claude reviewer in round 1; GLM 5.3 could not run (melious balance 0, ollama out of quota).
