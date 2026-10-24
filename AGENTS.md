@@ -105,11 +105,15 @@ applies there; instead of steps 2 to 4, only this:
   only when the conditions above hold. The owner's request settles the third condition,
   whoever opened the pull request. The owner's approval of a plan, quoted word for word
   in the brief of a session started for one step of that plan, counts as the owner
-  asking in chat to merge that session's own pull requests for its step once their
-  review is clean (not to turn on auto-merge); a check of the owner's own that the plan
-  names, a failed step and a change of scope still need the owner in chat (since
-  2026-10-24). If the checks are still running, the assistant merges only once they are
-  green; if they are red, it reports that and does not merge.
+  asking in chat to merge that session's own pull requests into `main` for its step,
+  once their review is clean, at the reviewed commit
+  (`gh pr merge <number> --merge --match-head-commit <full SHA>`); it does not cover
+  auto-merge (since 2026-10-24). It does not cover a check of
+  the owner's own that the plan names, a failed step, a change of scope, or a pull
+  request that deploys or touches permissions (these rules included), logins, user
+  data, money, deletion or a schema: for those the owner asks in chat. If the checks are
+  still running, the assistant merges only once they are green; if they are red, it
+  reports that and does not merge.
   It merges as the button does, with a merge commit and not a squash or a rebase
   (`gh pr merge <number> --merge`), and never with a flag that passes over the checks
   (`--admin`). When the owner has not asked, merging stays the person's step on GitHub,
