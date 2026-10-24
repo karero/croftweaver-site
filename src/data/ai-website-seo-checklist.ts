@@ -2,34 +2,31 @@
 // suite that covers each, what happened when we broke it, and what a pass does not prove.
 // The breaks, the commands and what failed: docs/ai-website-seo-checklist-breaks.md.
 //
-// Every "what happened" cell is something we saw, on 22 October 2026, in a copy of the starter at
-// toolkit version 0.32: we made one edit, ran the suite that covers it, and wrote down what failed.
+// Every "what happened" cell is something we saw, on 25 October 2026 (and the same on 22 October), in a copy of the starter at
+// toolkit version 0.33: we made one edit, ran the suite that covers it, and wrote down what failed.
 // The page prints no failure message word for word: several carry a long dash or a contraction,
 // which tests/tone.spec.ts rejects in body text.
 //
 // Two guards run when the site builds. They check inventory and provenance, not what the tests assert:
 //  1. the suites the rows name must exist, and must be among the four the breaks covered;
-//  2. the suite copy named in tests/TESTS-VERSION must be RED_RUNS.suiteCommit: the toolkit commit the
-//     breaks were run against (RED_RUNS.toolkit), or a later one accepted because its four covered specs
-//     and tests/_helpers.ts are byte-identical to that one's (`git diff --quiet`), recorded in
-//     docs/ai-website-seo-checklist-breaks.md. For a newer copy, check that, or run the breaks again;
-//     then change RED_RUNS.suiteCommit.
+//  2. the suite copy named in tests/TESTS-VERSION must be the toolkit commit whose template specs
+//     the breaks were run against. If the site's suites are copied from a newer toolkit commit, run
+//     the breaks again (they are listed on the page), then change RED_RUNS.suiteCommit.
 // Not guarded: edits to the specs, what their assertions say, and new toolkit releases. This site's
 // own copies of seo, images and navigation already have assertions the toolkit template lacks, so a
 // hash of them would trip on unrelated edits and say nothing about the template the page
-// describes. When a release changes the four template specs, run the breaks again before merging. The suite names, group and file come from src/data/suites.ts, so a
+// describes. When a release changes the template tests, run the breaks again before merging. The suite names, group and file come from src/data/suites.ts, so a
 // rename there reaches this page.
 import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 
 export const RED_RUNS = {
-  toolkit: '0.32',
+  toolkit: '0.33',
   node: '26',
   nodeStarterAsks: '24',
-  iso: '2026-10-22',
-  label: '22 October 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: v0.33 (a1f30899) since 2026-10-25. The breaks ran
-  // against v0.32; at v0.33 the four specs they cover and tests/_helpers.ts are byte-identical to v0.32's
-  // (`git diff --quiet v0.32 v0.33` on each). Before, a0fbfb18 (v0.32 itself) and 0597a28 (identical specs).
+  iso: '2026-10-25',
+  label: '25 October 2026',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.33 itself (a1f30899), the version the breaks
+  // were last run against (2026-10-25; before, v0.32 on 2026-10-22, with the same results).
   suiteCommit: 'a1f308998e8d412fb3fa9df77a02248fd5c1c6e8',
 } as const;
 
@@ -148,7 +145,7 @@ for (const row of CHECKS) {
 if (SUITES_VERSION.commit !== RED_RUNS.suiteCommit) {
   throw new Error(
     `src/data/ai-website-seo-checklist.ts: the checklist was checked against suite copy ${RED_RUNS.suiteCommit.slice(0, 7)}, but tests/TESTS-VERSION now names ${SUITES_VERSION.commit.slice(0, 7)}. ` +
-      'Check that its four covered specs and _helpers.ts are byte-identical to the ones the breaks ran on, or run the breaks again; then change RED_RUNS.suiteCommit.',
+      'Run the breaks again against the new copy, then change RED_RUNS.suiteCommit.',
   );
 }
 

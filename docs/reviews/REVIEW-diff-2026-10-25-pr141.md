@@ -16,3 +16,11 @@ Codex timings: 344s (96355 tokens), shared with the bump round that ran beside i
 | 6 | Codex | RISK: `tables.spec.ts:185` focus test checks style and reach, not a painted width or colour | Re-sorted: upstream test, a guard gap in the toolkit's spec; for the toolkit's BUGLOG |
 | 7 | Claude | NIT: CONTENT_GUIDE "Fourteen test suites", POSITIONING "14 suites today" | Fixed: Fifteen (the site); POSITIONING describes the starter: 16 at 0.33, list completed (server-side analytics, tables) |
 | 8 | Claude | NIT: breaks notes understate what else 0.33 changed | Fixed |
+
+## Round 2 — Codex (verify) — 1 BUG, 1 RISK
+Codex timings: 70s (51359 tokens). Fixes 2, 3, 7 and 8 confirmed.
+
+| # | Seat | Finding | Disposition |
+|---|---|---|---|
+| 9 | Codex | BUG: the breaks notes' "Running them again" still asks for all eighteen runs when the template's tests or `package.json` change, against the new shortcut | Fixed by dropping the shortcut: the breaks were run again at v0.33 (below) |
+| 10 | Codex | RISK: byte-identical specs do not prove the same failures under Astro 7.4.2 | Fixed the same way. The concern came back twice from two seats, so it was tested: all eighteen lines run on the v0.33 starter on 2026-10-25 (`git archive v0.33`, `npm ci`, baseline 109 passed / 1 skipped, then one edit and one spec at a time, `--workers=1`), each restored and checked with `diff -rq` before the next. Every line gave the published result; run 4 still times out (twice). `RED_RUNS` now names 0.33 and 25 October; the guard's rule and message are back to their original wording; the notes record both runs |
