@@ -158,6 +158,11 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   .group-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1rem; }
   .group-button:hover { color: var(--link); text-decoration: underline; }
   .group-button[aria-current='true'] { color: var(--link); font-weight: 600; }
+  /* The current page and the group that holds it: a thick underline, because colour and weight alone were
+     easy to miss. Thicker than the hover underline, so the two stay apart. */
+  nav a[aria-current='page'], .group-button[aria-current='true'] {
+    text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.45em;
+  }
   .chevron { font-size: 0.8em; }
 
   /* The fold: up to 53.99rem (863px) the navigation folds behind the Menu button (the phone block at the
