@@ -7,7 +7,7 @@
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 
-export const UPDATED = { iso: '2026-10-24', label: '24 October 2026' } as const;
+export const UPDATED = { iso: '2026-10-25', label: '25 October 2026' } as const;
 export const LAUNCH = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 const realDay = (s: string) => {
@@ -118,6 +118,9 @@ export const LOG: readonly Entry[] = [
   { kind: 'observation', date: '2026-10-24', title: 'Croftweaver 0.33 is released',
     seen: 'Release 0.33 of the toolkit came out. Three of its changes are also on this site: one table style, monthly Dependabot updates with a read-only token for the checks, and a publish script that can take main straight from GitHub.',
     source: 'the 0.33 release notes on GitHub; this site’s pull requests 124, 111 and 127' },
+  { kind: 'observation', date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google',
+    seen: 'Three pages went live: the SEO checklist (/ai-website-seo-checklist) on 22 October, and /security and /what-it-runs-on on 23 October. The site now has 22 pages, up from 19 on 21 October, and Google lists all 22 as indexed. Its last crawl of /what-it-runs-on came less than three hours after the page went live, of /security about a day after and of the checklist about two days after. Indexing of all three was requested in Search Console, on days this entry does not give.',
+    source: 'the owner, for the indexing requests; the site’s sitemap, and its page list at the last publish of 21 October; Cloudflare Pages, production deployments; Google Search Console, URL inspection of every page, read on 25 October' },
 ];
 
 const PR = /^https:\/\/github\.com\/([A-Za-z0-9-]+\/[A-Za-z0-9.-]+)\/pull\/(\d+)$/;
