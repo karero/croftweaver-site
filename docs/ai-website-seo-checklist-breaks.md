@@ -8,13 +8,14 @@ again when the toolkit changes. A row of the table is only as good as its break.
 
 ## What was run, and when
 
-- 22 October 2026, on one Mac, with Node v26.12.0 and npm 11.20.0. The starter's `.nvmrc` says 24 and
-  its `engines` say at least 22.12, so this was newer than the Node it names; nothing was run on 24.
-- The subject is the Croftweaver starter at toolkit tag `v0.32`: the folder
+- 25 October 2026, on one Mac, with Node v26.12.1 and npm 11.20.0. The starter's `.nvmrc` says 24, so
+  this was newer than the Node it names; nothing was run on 24. (First run: 22 October 2026, at `v0.32`,
+  Node v26.12.0; every line gave the same result as now.)
+- The subject is the Croftweaver starter at toolkit tag `v0.33`: the folder
   `skills/new-website/templates/astro` of https://github.com/karero/croftweaver, copied out with
-  `git archive v0.32 skills/new-website/templates/astro`, then `npm ci` and `npm test`. The baseline gave
-  91 passed and 1 skipped (the skip is the starter's own "no positioning terms declared yet"
-  placeholder), on Playwright 1.64.0 from the starter's lockfile. No Cloudflare or GitHub account was
+  `git archive v0.33 skills/new-website/templates/astro`, then `npm ci` and `npm test`. The baseline gave
+  109 passed and 1 skipped (at `v0.32`: 91 and 1; most of the new ones are `tables.spec.ts`), on
+  Playwright 1.64.1 from the starter's lockfile. No Cloudflare or GitHub account was
   needed.
 - One edit at a time, then the one spec that covers it (`npx playwright test tests/<spec>.spec.ts`),
   then the files put back. A full run took about four minutes on a heavily loaded machine; fifteen of
@@ -23,7 +24,8 @@ again when the toolkit changes. A row of the table is only as good as its break.
   `tests/seo.spec.ts` differs by 224 lines, `tests/images.spec.ts` by 62 and `tests/navigation.spec.ts`
   by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `a0fbfb18`,
   which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
-  specs were byte-identical to the `v0.32` ones). So the table
+  specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it names `a1f30899`, which is `v0.33`,
+  the version of the last run. So the table
   describes the starter, and these breaks were not run against this site's copies.
 
 ## The breaks
@@ -71,9 +73,10 @@ take one attribute away per run. Several messages carry a long dash or a contrac
   were read and not run as a break.
 - The images suite judges the format by the file name (the `RASTER` pattern on `src`, `srcset` and
   `<source>`), not by the file's bytes. Read in the source, not tried.
-- Four first-pass runs (1, 2, 4 and 10) ended in Playwright timeouts while other work kept the
-  machine at a load average from 100 to 880. They were repeated with `--workers=1`. 1, 2 and 10 then
-  gave real assertion failures; 4 timed out again, for the reason above.
+- At `v0.32`, four first-pass runs (1, 2, 4 and 10) ended in Playwright timeouts while other work kept
+  the machine at a load average from 100 to 880. They were repeated with `--workers=1`. 1, 2 and 10 then
+  gave real assertion failures; 4 timed out again, for the reason above. At `v0.33` every run used
+  `--workers=1` (load average 160 to 310); only run 4 timed out, twice.
 
 ## Running them again
 
