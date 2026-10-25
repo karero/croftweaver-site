@@ -321,3 +321,40 @@ and from a second and third proof site, more than from closing any row in the ta
   header says to run it from a systemd timer or cron by hand; Windows is not mentioned. Owners
   there get the report when they ask for it unless they set that up.
   **Still open** (toolkit `main` on 14 October).
+
+## WordPress, Joomla and Drupal (checked 25 October 2026)
+
+**The question.** The owner asked whether the site does, or could, say "Croftweaver, the free
+alternative to WordPress, Joomla, etc.", and then for a WordPress, Joomla and Drupal group on
+`/compare`, with "alternative to WordPress" wording on `/compare` and `/from-wordpress`, factual
+and not a headline claim.
+
+**The answer.** "Free" sets nothing apart: all three are free and open source too. The difference
+the record backs is on Croftweaver's side: no PHP, database or admin login on a server to keep
+updated (`/from-wordpress`, "What changes on a static Astro site"; `/security`). So the group's
+rows restate what each project says about itself, and what Croftweaver lacks (a visual editor, a
+shop, member accounts) is said about Croftweaver. The phrase "alternative to WordPress" comes with
+"for a content site" or "for content sites" each time it appears.
+
+What each page says. Read with curl, except drupal.org, which answered curl with a "Client
+Challenge" page (all three of its pages by the end of the day; /about once came through
+earlier), so its pages were read with WebFetch, which returns a model's reading of the page.
+
+| Page | What it says | Used for |
+|---|---|---|
+| https://wordpress.org/about/ | "WordPress is open source software"; "built on PHP and MariaDB, and licensed under the GPLv2"; "the platform of choice for millions of sites across the web" | the WordPress row |
+| https://www.joomla.org/about-joomla.html | "a free and open-source content management system (CMS) for publishing web content"; "thousands of extensions (most for free under the GPL license)" | the Joomla row; "extensions" |
+| https://www.drupal.org/about | "Drupal is content management software"; "The Drupal project is open source software"; "thousands of add-ons"; "Modules expand Drupal's functionality"; GPL (WebFetch) | the Drupal row; "modules" |
+| https://wordpress.org/about/requirements/ | "PHP version 8.3 or greater"; "MariaDB version 10.11 or greater OR MySQL version 8.0 or greater" | "a web server with PHP and a database" |
+| https://manual.joomla.org/docs/get-started/technical-requirements/ | Joomla 6.1 (current): PHP; MySQL, MariaDB, PostgreSQL | the same |
+| https://www.drupal.org/docs/getting-started/system-requirements | "Database servers for Drupal, such as MariaDB, MySQL, PostgreSQL, and SQLite"; PHP on its own sub-page (WebFetch) | the same |
+| https://wordpress.org/ | "See how your site will look in real time, even as you add, edit, and rearrange content"; "an extensive library of plugins" | "you edit the pages on the site itself"; "plugins" |
+| https://www.joomla.org/core-features.html | "Edit your content while browsing your site." | "on the site itself" |
+| https://www.drupal.org/docs/user_guide/en/content-create.html | "In the Manage administrative menu, navigate to Content > Add content > Basic page (node/add/page)." (WebFetch) | "on the site itself" |
+
+The page names no versions and no databases: they go stale and add claims. "On the site itself"
+also keeps the line clear of the optional Keystatic editor as the toolkit sets it up, which runs in
+the browser on the owner's own computer (`/what-it-runs-on`, the Keystatic section).
+
+Left out on purpose: the home page and its headline, POSITIONING.md, EmDash (already on
+`/from-wordpress`, "Other ways to leave WordPress").

@@ -3,6 +3,7 @@ import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
+import { GROUPS, CHECKED } from '../src/data/compare';
 import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -675,4 +676,36 @@ test('seo — the privacy page names the analytics host in an element marked dat
   expect(hasHostMark('<p title="text data-analytics-host example">x</p>'), 'the words inside an attribute value must not count').toBe(false);
   expect(hasHostMark('<script type="application/ld+json">{"x":"<span data-analytics-host>a.example</span>"}</script>'), 'a marker string inside JSON-LD must not count').toBe(false);
   expect(hasHostMark(distFile('privacy.html')), 'privacy.html has no element marked data-analytics-host: tests/privacy-host.spec.ts would check nothing').toBe(true);
+});
+
+// ── /compare: every group links its sources in place and is dated ──────────────
+// Site-specific (not in the shipped suite): /compare's rule is that every statement about another
+// product links the page it restates and carries the day it was read. This holds the rendered
+// links and dates to src/data/compare.ts. Whether a fact still matches its source stays a review job.
+test('seo — /compare links each source in its own row or note and shows each date', async ({ page }) => {
+  await page.goto('/compare');
+  const hero = page.locator('section.hero time');
+  await expect(hero, 'the hero date').toHaveAttribute('datetime', CHECKED.iso);
+  await expect(hero, 'the hero date').toHaveText(CHECKED.label);
+  for (const g of GROUPS) {
+    const section = page.locator(`section#${g.id}`);
+    await expect(section, `the section for ${g.id}`).toHaveCount(1);
+    // Per row, in order: several of these addresses are linked elsewhere on the page too.
+    const rows = section.locator('ul.examples > li');
+    await expect(rows, `the rows of ${g.id}`).toHaveCount(g.examples.length);
+    for (const [i, e] of g.examples.entries()) {
+      const link = rows.nth(i).locator(`a[href="${e.url}"]`);
+      await expect(link, `${g.id}: the row for ${e.name} does not link ${e.url}`).toHaveText(e.name);
+    }
+    if ('needs' in g) {
+      const note = section.locator('p.needs');
+      for (const src of g.needs.sources) {
+        await expect(note.locator(`a[href="${src.url}"]`), `${g.id}: the note does not link ${src.url}`).toHaveText(src.label);
+      }
+    }
+    if ('checked' in g) {
+      await expect(section.locator('time'), `${g.id}: its own date`).toHaveAttribute('datetime', g.checked.iso);
+      await expect(section.locator('time'), `${g.id}: its own date`).toHaveText(g.checked.label);
+    }
+  }
 });

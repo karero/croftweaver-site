@@ -9,7 +9,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
 ---
 <Base
   title="Croftweaver and its alternatives"
-  description="Croftweaver and its alternatives: hosted website builders, AI app builders, open-source visual builders and skills for AI assistants. When to choose which."
+  description="Croftweaver and its alternatives: WordPress, Joomla, Drupal, hosted and open-source builders, AI app builders, skills for AI assistants. When to choose which."
   image="/images/og/compare.jpg"
 >
   <section class="wrap hero">
@@ -21,7 +21,8 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
     <p class="note">
       In the groups below, every statement about another product restates what its
       own page says and links to it. Those links were checked on
-      <time datetime={CHECKED.iso}>{CHECKED.label}</time>. Prices and plans change.
+      <time datetime={CHECKED.iso}>{CHECKED.label}</time>, unless a group gives its own date.
+      Prices and plans change.
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
@@ -83,6 +84,14 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
           <li><a href={e.url}>{e.name}</a><span>{e.fact}</span></li>
         ))}
       </ul>
+      {'needs' in group && (
+        <p class="note needs">
+          {group.needs.text} Sources:{' '}
+          {group.needs.sources.map((src, i) => (
+            <>{i > 0 && ', '}<a href={src.url}>{src.label}</a></>
+          ))}. The links in this group were read on <time datetime={group.checked.iso}>{group.checked.label}</time>.
+        </p>
+      )}
       <div class="grid">
         <div class="card">
           <h3>Choose one of these when</h3>
