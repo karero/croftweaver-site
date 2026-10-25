@@ -42,3 +42,14 @@ findings (28 s, 4,750 tokens).
 | # | Seat | Kind | Finding | Disposition |
 |---|---|---|---|---|
 | 11 | Codex | BUG | the test comment says the "Use them together" line keeps its own date; it has none and falls under the hero's | fixed: the comment says it does not check the short answer's or the positioning note's own dates, or the links in those two and in "Use them together" |
+
+## Round 4 (2026-10-25, delta 85676e0..282335b), verification
+
+Earned by row 11 (BUG, a comment claim). Codex: No BUG/RISK/NIT findings (37 s, 25,344 tokens).
+GLM 5.3: No BUG/RISK/NIT findings (18 s, 3,161 tokens).
+
+## Verdict
+
+DIFF gate clean on 282335b5aef4bd2c8638e29cc04ceafbea56a2a1: no open BUG or RISK. 4 rounds, 11 findings (2 BUG, 2 RISK, 7 NIT), 3
+refuted. Nothing changed after round 4 except this record, so no wording pass. Cost: the script
+logged 8 seat runs, 194,805 tokens; fresh-eyes one agent over 2 rounds, about 309 s, 126,323 tokens.
