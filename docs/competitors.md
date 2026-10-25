@@ -336,23 +336,25 @@ rows restate what each project says about itself, and what Croftweaver lacks (a 
 shop, member accounts) is said about Croftweaver. The phrase "alternative to WordPress" comes with
 "for a content site" or "for content sites" each time it appears.
 
-What each page says. Read with curl, except drupal.org, which answered curl with a "Client
-Challenge" page (all three of its pages by the end of the day; /about once came through
-earlier), so its pages were read with WebFetch, which returns a model's reading of the page.
+What each page says. Read with curl, except the three drupal.org pages, marked WebFetch: drupal.org
+answered curl with a "Client Challenge" page (/about once came through earlier in the day), and
+WebFetch returns a model's reading of the page.
 
 | Page | What it says | Used for |
 |---|---|---|
 | https://wordpress.org/about/ | "WordPress is open source software"; "built on PHP and MariaDB, and licensed under the GPLv2"; "the platform of choice for millions of sites across the web" | the WordPress row |
-| https://www.joomla.org/about-joomla.html | "a free and open-source content management system (CMS) for publishing web content"; "thousands of extensions (most for free under the GPL license)" | the Joomla row; "extensions" |
-| https://www.drupal.org/about | "Drupal is content management software"; "The Drupal project is open source software"; "thousands of add-ons"; "Modules expand Drupal's functionality"; GPL (WebFetch) | the Drupal row; "modules" |
-| https://wordpress.org/about/requirements/ | "PHP version 8.3 or greater"; "MariaDB version 10.11 or greater OR MySQL version 8.0 or greater" | "a web server with PHP and a database" |
+| https://www.joomla.org/about-joomla.html | "a free and open-source content management system (CMS) for publishing web content"; "Joomla! is free, open, and available to anyone under the GPL license."; "thousands of extensions (most for free under the GPL license)" | the Joomla row; "extensions" |
+| https://www.drupal.org/about (WebFetch) | "Drupal is content management software"; "The Drupal project is open source software"; "thousands of add-ons"; "Modules expand Drupal's functionality"; distributed under the GNU General Public License | the Drupal row; "modules" |
+| https://wordpress.org/about/requirements/ | "To run WordPress, it's recommended your host supports:"; "PHP version 8.3 or greater"; "MariaDB version 10.11 or greater OR MySQL version 8.0 or greater"; older PHP and MySQL versions "have reached their official End Of Life and may expose your site to security vulnerabilities" | "a web server with PHP and a database"; "with a host"; keeping the server "updated" |
 | https://manual.joomla.org/docs/get-started/technical-requirements/ | Joomla 6.1 (current): PHP; MySQL, MariaDB, PostgreSQL | the same |
-| https://www.drupal.org/docs/getting-started/system-requirements | "Database servers for Drupal, such as MariaDB, MySQL, PostgreSQL, and SQLite"; PHP on its own sub-page (WebFetch) | the same |
+| https://www.drupal.org/docs/getting-started/system-requirements (WebFetch) | "Database servers for Drupal, such as MariaDB, MySQL, PostgreSQL, and SQLite"; PHP on its own sub-page | the same |
 | https://wordpress.org/ | "See how your site will look in real time, even as you add, edit, and rearrange content"; "an extensive library of plugins" | "you edit the pages on the site itself"; "plugins" |
 | https://www.joomla.org/core-features.html | "Edit your content while browsing your site." | "on the site itself" |
-| https://www.drupal.org/docs/user_guide/en/content-create.html | "In the Manage administrative menu, navigate to Content > Add content > Basic page (node/add/page)." (WebFetch) | "on the site itself" |
+| https://www.drupal.org/docs/user_guide/en/content-create.html (WebFetch) | "In the Manage administrative menu, navigate to Content > Add content > Basic page (node/add/page)." | "on the site itself" |
 
-The page names no versions and no databases: they go stale and add claims. "On the site itself"
+"With a host" and keeping the server "updated" are quoted from WordPress's page only; for Joomla
+and Drupal they are this site's reading of their requirements pages (a PHP version and a database
+server you run), not a quote. The page names no versions and no databases: they go stale and add claims. "On the site itself"
 also keeps the line clear of the optional Keystatic editor as the toolkit sets it up, which runs in
 the browser on the owner's own computer (`/what-it-runs-on`, the Keystatic section).
 
