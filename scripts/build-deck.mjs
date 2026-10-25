@@ -28,8 +28,8 @@ const lockPath = join(root, 'scripts', 'deck.lock.json');
 const sha = (data) => createHash('sha256').update(data).digest('hex');
 const fail = (message) => { console.error(`deck: ${message}`); process.exit(1); };
 
-// src/config.ts is TypeScript. package.json allows a Node from 22.12 on, and one that cannot
-// run a .ts file unaided would stop here with "unknown file extension"; say what is needed.
+// src/config.ts is TypeScript. A Node with type stripping off or missing (too old, or run with
+// --no-experimental-strip-types) would stop here with "unknown file extension"; say what is needed.
 if (!process.features.typescript) fail(`this script imports src/config.ts, so it needs a Node that runs TypeScript files unaided (22.18 or newer). This is Node ${process.versions.node}.`);
 const { SITE } = await import('../src/config.ts');
 
