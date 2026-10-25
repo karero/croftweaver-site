@@ -33,3 +33,12 @@ tokens). Fresh-eyes: rows 4-7 FIXED, refutations of rows 1-3 hold, no new findin
 | 8 | Codex | BUG | the narrowed title still says "each group source" and "note links", which include the "Use them together" link the test does not check | fixed: title "links each row and each sources-note link in place…"; the comment names the `needs` note and lists the "Use them together" line among what it does not check |
 | 9 | GLM | NIT | "with a host" and "updated" called quotes, but they are paraphrases | fixed: called this site's words, resting on WordPress's host sentence and end-of-life warning |
 | 10 | GLM | NIT | which read produced the drupal.org/about quotes is unclear | fixed: "all three were read with WebFetch" |
+
+## Round 3 (2026-10-25, delta 5ca5fc7..85676e0), verification
+
+Earned by row 8 (BUG). Codex: 1 BUG (row 11; 59 s, 35,752 tokens). GLM 5.3: No BUG/RISK/NIT
+findings (28 s, 4,750 tokens).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 11 | Codex | BUG | the test comment says the "Use them together" line keeps its own date; it has none and falls under the hero's | fixed: the comment says it does not check the short answer's or the positioning note's own dates, or the links in those two and in "Use them together" |
