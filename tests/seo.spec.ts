@@ -681,10 +681,11 @@ test('seo — the privacy page names the analytics host in an element marked dat
 // ── /compare: every group links its sources in place and is dated ──────────────
 // Site-specific (not in the shipped suite): /compare's rule is that every statement about another
 // product links the page it restates and carries the day it was read. This holds each group's row
-// and note links, each group's own date and the hero's date to src/data/compare.ts. The short
-// answer and the positioning note keep their own dates and links, which this does not check.
+// links, the links in a group's sources note (`needs`), each group's own date and the hero's date
+// to src/data/compare.ts. The short answer, the positioning note and the "Use them together" line
+// keep their own dates and links, which this does not check.
 // Whether a fact still matches its source stays a review job.
-test('seo — /compare links each group source in its own row or note and shows the group and hero dates', async ({ page }) => {
+test('seo — /compare links each row and each sources-note link in place and shows the group and hero dates', async ({ page }) => {
   await page.goto('/compare');
   const hero = page.locator('section.hero time');
   await expect(hero, 'the hero date').toHaveAttribute('datetime', CHECKED.iso);

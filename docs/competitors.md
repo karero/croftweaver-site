@@ -337,8 +337,8 @@ shop, member accounts) is said about Croftweaver. The phrase "alternative to Wor
 "for a content site" or "for content sites" each time it appears.
 
 What each page says. Read with curl, except the three drupal.org pages, marked WebFetch: drupal.org
-answered curl with a "Client Challenge" page (/about once came through earlier in the day), and
-WebFetch returns a model's reading of the page.
+answered curl with a "Client Challenge" page (/about came through with curl once early in the day;
+all three were read with WebFetch), and WebFetch returns a model's reading of the page.
 
 | Page | What it says | Used for |
 |---|---|---|
@@ -352,9 +352,10 @@ WebFetch returns a model's reading of the page.
 | https://www.joomla.org/core-features.html | "Edit your content while browsing your site." | "on the site itself" |
 | https://www.drupal.org/docs/user_guide/en/content-create.html (WebFetch) | "In the Manage administrative menu, navigate to Content > Add content > Basic page (node/add/page)." | "on the site itself" |
 
-"With a host" and keeping the server "updated" are quoted from WordPress's page only; for Joomla
-and Drupal they are this site's reading of their requirements pages (a PHP version and a database
-server you run), not a quote. The page names no versions and no databases: they go stale and add claims. "On the site itself"
+"With a host" and keeping the server "updated" are this site's words. For WordPress they rest on
+its requirements page (its sentence about what your host supports, and its end-of-life warning);
+for Joomla and Drupal they are this site's reading of their requirements pages (a PHP version and
+a database server you run). The page names no versions and no databases: they go stale and add claims. "On the site itself"
 also keeps the line clear of the optional Keystatic editor as the toolkit sets it up, which runs in
 the browser on the owner's own computer (`/what-it-runs-on`, the Keystatic section).
 

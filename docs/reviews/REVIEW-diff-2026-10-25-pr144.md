@@ -22,3 +22,14 @@ tokens). Fresh-eyes: 1 RISK, 3 NIT (271 s, 116,279 tokens).
 
 Preview (Cloudflare, branch preview of b44ff75): /compare#cms and /from-wordpress#fit looked at
 on desktop in dark mode and at 375 px in light mode; no horizontal scroll.
+
+## Round 2 (2026-10-25, delta b44ff75..5ca5fc7), verification
+
+Earned by row 4 (RISK). Codex: 1 BUG (row 8; 93 s, 40,200 tokens). GLM 5.3: 2 NIT (91 s, 11,297
+tokens). Fresh-eyes: rows 4-7 FIXED, refutations of rows 1-3 hold, no new findings (38 s).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 8 | Codex | BUG | the narrowed title still says "each group source" and "note links", which include the "Use them together" link the test does not check | fixed: title "links each row and each sources-note link in place…"; the comment names the `needs` note and lists the "Use them together" line among what it does not check |
+| 9 | GLM | NIT | "with a host" and "updated" called quotes, but they are paraphrases | fixed: called this site's words, resting on WordPress's host sentence and end-of-life warning |
+| 10 | GLM | NIT | which read produced the drupal.org/about quotes is unclear | fixed: "all three were read with WebFetch" |
