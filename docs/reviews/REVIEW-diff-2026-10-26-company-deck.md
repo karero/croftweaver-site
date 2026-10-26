@@ -92,3 +92,7 @@ Codex: "No BUG/RISK/NIT findings" (119 s, 48,815 tokens). GLM 5.3: 1 NIT (100 s,
 | 34 | GLM | NIT | README says slide 2 draws the figures "as charts"; the AI counts are numbers, and the dates are read too | fixed: "the figures and dates …, which slide 2 draws as charts and numbers" (closing edit, not externally re-verified) |
 
 Stop condition (a2): round 4 has no BUG or RISK. 4 rounds, 34 findings in all.
+
+Wording pass (Codex, `--wording-pass`, base 64cfb77, head 984d46a): "No BUG/RISK/NIT findings"
+(83 s, 41,745 tokens). Gate closed clean: 4 rounds, 34 findings, no BUG open. Daniel looks at the
+PDF before the merge.
