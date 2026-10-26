@@ -26,7 +26,7 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
 ## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
 
 - **Positioning:** lead with being found by search engines and AI assistants; the test
-  gate is the proof; ownership is the brand voice. Hero: "Weave websites that rank."
+  gate is the proof; ownership is the brand voice. Hero: "Build a complete website with AI.", under the kicker "Weave websites that rank."
   (from 2026-10-08; before: "Build websites that rank."). The subline "Keep improving
   SEO and GEO, week by week." is retired; the one-liner replaces it. Details, the wording
   rule and the routes not chosen: `POSITIONING.md`; the home page story: `STORY.md`.

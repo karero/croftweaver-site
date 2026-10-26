@@ -32,7 +32,9 @@ type Clause = string | string[]; // string = required phrase · string[] = any-o
 type TermRule = { term: string; body?: Clause[] };
 type SurfaceRule = { title?: Clause[]; desc?: Clause[]; h1?: Clause[]; body?: Clause[] };
 export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
-  '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
+  // Home: neither the H1 nor the kicker carries the term (owner, 2026-10-26); the definition
+  // line under the subline does, so the body checks its wording.
+  '/': { title: ['website skills'], desc: ['website skills'], body: ['suite of website skills', 'website skills for search and AI visibility'] },
   '/checks': { term: 'test gate' },
   '/proof': { term: 'built with Croftweaver' },
   '/more-proof': { term: 'more proof' },

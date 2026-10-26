@@ -98,8 +98,9 @@ announcements. `/compare` carries a link and a date for every statement it makes
 - The owner and their assistant make the everyday changes themselves, in plain language:
   text, pages, images and layout of a static content site. By default the test gate runs
   on each change (before every push, and in CI on pull requests). Owners can make
-  everyday updates without waiting for an agency or a developer, though a stubborn
-  problem can still need outside help; anything that needs a database or an account
+  everyday updates without waiting for an agency or a developer. When they are stuck,
+  they ask their assistant first; a stubborn problem can still need outside help, and the
+  maintainer offers to help, also to get there faster (owner, 2026-10-26); anything that needs a database or an account
   system is outside what Croftweaver is for (see "Not a fit" on the home page).
 - A suite of skills for AI coding assistants, not a hosted product. The output is a
   static-first Astro repo the user fully owns, and the skills travel inside it.
@@ -164,12 +165,11 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 > search data keeps improving it.
 
 - **Core positioning term:** website skills
-- **Kicker (above the H1):** Your AI assistant, guided by website skills. Owner decision, 2026-10-12. Until then it read "Website skills for search and AI visibility", which repeated the header line once that line showed on the home page. The kicker now says how the site gets built. It was picked from ten candidates: two outside models and the assistant each wrote lines, then scored all ten without authors' names, and all three put this one first. The market category sentence moved to the first paragraph of "What Croftweaver is" on the home page.
+- **Kicker (above the H1):** Weave websites that rank. Owner decision, 2026-10-26: the brand line moved from the H1 to the kicker, so the H1 can say in plain words what a visitor gets. Codex, asked to review the hero, said "that rank" reads as a ranking claim; it stays as a brand line, and wording rule 1 still governs every promise below it. From 2026-10-12 to 2026-10-26 the kicker read "Your AI assistant, guided by website skills"; the core term now stands in the definition line. Earlier history: owner decision, 2026-10-12. Until then it read "Website skills for search and AI visibility", which repeated the header line once that line showed on the home page. The kicker now says how the site gets built. It was picked from ten candidates: two outside models and the assistant each wrote lines, then scored all ten without authors' names, and all three put this one first. The market category sentence moved to the first paragraph of "What Croftweaver is" on the home page.
 - **Header line (under the logo, on every page):** Build for search and AI. Owner decision, 2026-10-12: a visitor who lands on any page reads what Croftweaver is for before the page's own headline. It is the line that opens the toolkit's README, so site and repository say the same. Tried first and dropped: "Website skills for search and AI", which lost the building and read like an SEO tool. Not the brand line: that stays the sign-off (see "Lead with ownership" below).
-- **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
-  rank.", the plain fallback if "weave" tests badly with strangers.)
-- **Subline:** retired from the home page on 2026-10-08. The one-liner and three short outcomes replace it, since it said SEO and GEO, which strangers do not know. Its words were "Keep improving SEO and GEO, week by week."
-- **Definition line (home page, under the one-liner):** Croftweaver is a free, open-source suite of website skills: instructions your AI coding assistant follows to build and test a site you own. Owner decision, 2026-10-13. An outside audit of that day said a stranger cannot tell from the hero what Croftweaver is, a toolkit and not a hosted builder or an agency; a second model (Kimi K3), shown that point and the argument against it, agreed. The sentence says what a skill is and carries the core term. It claims nothing that §2 does not. The one-liner above it stays as approved, and the market category stays in "What Croftweaver is".
+- **Hero (H1):** Build a complete website with AI. Owner decision, 2026-10-26, after an outside growth audit said a stranger cannot tell from "Weave websites that rank." what the product does. "Complete" means a whole content site, from positioning to publishing; shops and accounts stay outside (see "Not a fit"). (Until 2026-10-26: "Weave websites that rank."; until 2026-10-08: "Build websites that rank.")
+- **Subline:** Croftweaver guides your AI coding assistant from positioning and design to a tested website that people can find on Google and in AI answers. Owner decision, 2026-10-26. It says "in AI answers", not "AI visibility", which a stranger may read as AI-written content. It replaces the one-liner, whose villain sentence moved to the home page's problem section. An earlier subline was retired on 2026-10-08: "Keep improving SEO and GEO, week by week."
+- **Definition line (home page, under the subline):** Croftweaver is a free, open-source suite of website skills: instructions your AI coding assistant follows to build and test a site you own. Owner decision, 2026-10-13. An outside audit of that day said a stranger cannot tell from the hero what Croftweaver is, a toolkit and not a hosted builder or an agency; a second model (Kimi K3), shown that point and the argument against it, agreed. The sentence says what a skill is and carries the core term. It claims nothing that §2 does not. Since 2026-10-26 it stands under the subline and is the hero's only carrier of the core term; the market category stays in "What Croftweaver is".
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
 - **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
 
@@ -197,8 +197,9 @@ The wording rule applies to all of them.
 - "Search finds you. AI names you." Only directly above dated proof; never alone on a
   share card.
 - "Build for search and AI." README headline, GitHub description.
-- "Stop waiting on someone else for every change." The villain line: the first sentence
-  of the home page one-liner (owner-approved 2026-10-08). The villain is the situation,
+- "Stop waiting on someone else for every change." The villain line (owner-approved
+  2026-10-08). Since 2026-10-26 it opens the turn to the guide in the home page's problem
+  section; until then it opened the hero's one-liner. The villain is the situation,
   never a named agency.
 - "Build high-ranking websites." Deck and `/why`, with proof beside it.
 - "Start with your positioning. Keep your pages on it." (2026-10-14) Never "true to it",
