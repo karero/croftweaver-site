@@ -2,8 +2,9 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PAGES, germanFunctionWordDensity, toneViolations } from './_helpers';
-import { SITE } from '../src/config';
+import { SITE, COMPANY } from '../src/config';
 import { makeDeck } from '../scripts/deck-slides.mjs';
+import { makeCompanyDeck } from '../scripts/company-deck-slides.mjs';
 
 // Tone-of-voice guardrail (see the website-content-guide skill + CONTENT_GUIDE.md).
 // Hard rules across all user-facing copy AND metadata. Genuinely quoted human/customer
@@ -127,5 +128,24 @@ test('tone — no banned phrasing in the /why slide deck', () => {
   expect(
     violations,
     `the /why slide deck breaks the tone rules (scripts/deck-slides.mjs):\n` + violations.map((v) => '  • ' + v).join('\n'),
+  ).toEqual([]);
+});
+
+// The deck for companies is copy too (handouts/croftweaver-for-companies.pdf). The page tests exempt
+// quoted text (blockquote, q, data-tov-exempt); the deck keeps text only, so it has no such exemption.
+test('tone — no banned phrasing in the deck for companies', () => {
+  const read = (...parts: string[]) => readFileSync(join(process.cwd(), ...parts), 'utf8');
+  const { text, title } = makeCompanyDeck({
+    whyHtml: read('dist', 'why.html'),
+    wordpressHtml: read('dist', 'from-wordpress.html'),
+    securityHtml: read('dist', 'security.html'),
+    site: SITE,
+    company: COMPANY,
+    logoSvg: read('src', 'assets', 'brand', 'lockup-horizontal-theme.svg'),
+  });
+  const violations = toneViolations(`${title}\n${text}`, 'en');
+  expect(
+    violations,
+    `the deck for companies breaks the tone rules (scripts/company-deck-slides.mjs):\n` + violations.map((v) => '  • ' + v).join('\n'),
   ).toEqual([]);
 });

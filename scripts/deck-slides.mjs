@@ -9,49 +9,66 @@
 // buzzword); the wording rule: POSITIONING.md.
 import { parse } from 'node-html-parser';
 
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const squash = (s) => s.replace(/\s+/g, ' ').trim();
+export const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+export const squash = (s) => s.replace(/\s+/g, ' ').trim();
+
+// An address as the PDF needs it: absolute. "/x" is on this site, "#x" on the page the text came
+// from; any other relative link would be dead in a PDF, so it stops the build.
+function absolute(href, base, page) {
+  if (/^(https?:|mailto:|tel:)/.test(href)) return href;
+  if (href.startsWith('/')) return base + href;
+  if (href.startsWith('#') && page) return base + page + href;
+  throw new Error(`deck: the link "${href}" has no address a PDF can follow. Update scripts/deck-slides.mjs.`);
+}
 
 // A node's content as text, keeping links (with an absolute address) and dropping every
 // other tag and attribute, so that a changed style hash on the page does not change the deck.
-function inline(node, base) {
+// `page` is the path of the page the node comes from, for links within it.
+export function inline(node, base, page) {
   return node.childNodes
     .map((n) => {
       if (n.nodeType === 3) return esc(n.text);
-      if (n.tagName === 'A') {
-        const href = n.getAttribute('href') ?? '';
-        return `<a href="${esc(href.startsWith('/') ? base + href : href)}">${inline(n, base)}</a>`;
-      }
-      return inline(n, base);
+      if (n.tagName === 'A') return `<a href="${esc(absolute(n.getAttribute('href') ?? '', base, page))}">${inline(n, base, page)}</a>`;
+      return inline(n, base, page);
     })
     .join('');
 }
 
-// What the deck takes from the built /why page. Fails loudly when the page changes shape.
-export function readWhyFacts(whyHtml, base) {
+// Finds `selector` under `parent`, or stops the build naming what the page no longer has.
+export const needIn = (page) => (parent, selector, what) => {
+  const el = parent.querySelector(selector);
+  if (!el) throw new Error(`deck: the ${page} page has no ${what} (${selector}). Update the deck's slide script.`);
+  return el;
+};
+
+// The /why evidence: its introduction, its three items and its caveat. Both decks show it.
+export function readWhyEvidence(whyHtml, base) {
   const root = parse(whyHtml);
-  const need = (parent, selector, what) => {
-    const el = parent.querySelector(selector);
-    if (!el) throw new Error(`deck: the /why page has no ${what} (${selector}). Update scripts/deck-slides.mjs.`);
-    return el;
-  };
+  const need = needIn('/why');
   const evidence = need(root, '#evidence', 'evidence section');
-  const intro = squash(inline(need(evidence, 'p', 'evidence introduction'), base));
+  const intro = squash(inline(need(evidence, 'p', 'evidence introduction'), base, '/why'));
   const items = evidence.querySelectorAll('ul li').map((li) => {
     const label = squash(need(li, 'strong', 'evidence label').text);
-    const all = squash(inline(li, base));
+    const all = squash(inline(li, base, '/why'));
     // `all` is escaped HTML and `label` is decoded text: compare like with like.
     const head = esc(label);
     if (!all.startsWith(head)) throw new Error(`deck: an evidence item does not start with its label "${label}".`);
     return { label, body: all.slice(head.length).trim() };
   });
   if (items.length !== 3) throw new Error(`deck: the /why evidence list has ${items.length} items, expected 3. Update scripts/deck-slides.mjs.`);
-  const caveat = squash(inline(need(evidence, '.aside', 'evidence caveat'), base));
+  const caveat = squash(inline(need(evidence, '.aside', 'evidence caveat'), base, '/why'));
+  return { intro, items, caveat };
+}
+
+// What the /why deck takes from the built /why page: the evidence and the Check step.
+export function readWhyFacts(whyHtml, base) {
+  const root = parse(whyHtml);
+  const need = needIn('/why');
   const checkCard = root.querySelectorAll('#steps li.card').find((li) => /Check/.test(li.querySelector('h3')?.text ?? ''));
   if (!checkCard) throw new Error('deck: the /why page has no "Check" step in #steps.');
   const checkText = squash(need(checkCard, 'p', 'text of the Check step').text);
   if (!/^\d+ test suites: /.test(checkText)) throw new Error(`deck: the Check step no longer starts with the suite count: "${checkText}".`);
-  return { intro, items, caveat, checkText };
+  return { ...readWhyEvidence(whyHtml, base), checkText };
 }
 
 // The suites in groups, from the built /checks page: [{ title, suites: ['Accessibility', ...] }].
@@ -70,7 +87,7 @@ export function readChecksFacts(checksHtml) {
   return groups;
 }
 
-const CSS = `
+export const CSS = `
 @page { size: 1280px 720px; margin: 0; }
 :root { --brand: #2e6e4e; --heading: #1a1f1b; --muted: #586157; --line: #dfe3d9; --bg: #fbfaf6; --soft: #f1f0e9; --surface: #ffffff; --mint: #dcebe2;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -218,15 +235,9 @@ function slideList(f, s, logo) {
   ];
 }
 
-// Builds the deck. Returns the page to print, its plain text and the slide count.
-export function makeDeck({ whyHtml, checksHtml, site, logoSvg }) {
-  const facts = { ...readWhyFacts(whyHtml, site.url), groups: readChecksFacts(checksHtml) };
-  // /why says how many suites there are, /checks lists them: the two must agree.
-  const listed = facts.groups.reduce((n, g) => n + g.suites.length, 0);
-  const claimed = Number(facts.checkText.match(/^\d+/)[0]);
-  if (listed !== claimed) throw new Error(`deck: /why says ${claimed} test suites and /checks lists ${listed}.`);
-  const logo = logoSvg.trim();
-  const slides = slideList(facts, site, logo);
+// Puts slides in the deck's frame: the first is the cover, the others get a kicker, a title and a
+// footer; `css` is added to the shared style. Returns the page to print, its plain text and the slide count.
+export function renderDeck({ slides, title, site, logo, css = '' }) {
   const total = slides.length;
   const sections = slides.map((sl, i) => {
     const head = i === 0 ? '' : `${sl.kicker ? `<p class="kicker">${sl.kicker}</p>` : ''}<h2>${sl.title}</h2>`;
@@ -234,8 +245,26 @@ export function makeDeck({ whyHtml, checksHtml, site, logoSvg }) {
     const body = i === 0 ? sl.body : `<div class="content">${sl.body}</div>`;
     return `<section class="slide${sl.cls ? ' ' + sl.cls : ''}">${head}${body}${foot}</section>`;
   });
-  const title = 'Why build a website for search and AI visibility | Croftweaver';
-  const html = `<!doctype html><html lang="${site.locale}"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${CSS}</style></head><body><main>${sections.join('\n')}</main></body></html>`;
+  const html = `<!doctype html><html lang="${site.locale}"><head><meta charset="utf-8"><title>${esc(title)}</title><style>${CSS}${css}</style></head><body><main>${sections.join('\n')}</main></body></html>`;
   const text = parse(html).querySelector('main').structuredText;
   return { html, text, title, slideCount: total };
+}
+
+// Builds the /why deck.
+export function makeDeck({ whyHtml, checksHtml, site, logoSvg }) {
+  const facts = { ...readWhyFacts(whyHtml, site.url), groups: readChecksFacts(checksHtml) };
+  // /why says how many suites there are, /checks lists them: the two must agree.
+  const listed = facts.groups.reduce((n, g) => n + g.suites.length, 0);
+  const claimed = Number(facts.checkText.match(/^\d+/)[0]);
+  if (listed !== claimed) throw new Error(`deck: /why says ${claimed} test suites and /checks lists ${listed}.`);
+  const logo = logoSvg.trim();
+  return renderDeck({ slides: slideList(facts, site, logo), title: 'Why build a website for search and AI visibility | Croftweaver', site, logo });
+}
+
+// Runs in the browser on the rendered deck: the numbers (from 1) of the slides whose content is
+// taller or wider than the slide, which is text that runs off the page.
+export function overflowingSlides() {
+  return [...document.querySelectorAll('.slide')]
+    .map((el, i) => (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth ? i + 1 : 0))
+    .filter(Boolean);
 }
