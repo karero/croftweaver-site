@@ -27,7 +27,7 @@ export type Entry = Change | Observation;
 
 export const PR_REPOS = ['karero/croftweaver', 'karero/croftweaver-site', 'GenAI-Wednesday/GenAI-Wednesday.de'] as const;
 // A visitor gets a 404 from a private repository's pull request, so the page names these without a link.
-export const PRIVATE_REPOS: readonly string[] = ['GenAI-Wednesday/GenAI-Wednesday.de'];
+export const PRIVATE_REPOS: readonly (typeof PR_REPOS)[number][] = ['GenAI-Wednesday/GenAI-Wednesday.de'];
 
 export const LOG: readonly Entry[] = [
   { kind: 'observation', date: '2026-10-12', title: 'The site goes live',
@@ -133,6 +133,10 @@ for (const e of LOG) {
     if (!m || !(PR_REPOS as readonly string[]).includes(m[1]!)) {
       throw new Error(`src/data/case-study.ts: "${e.title}" needs a pull request of ${PR_REPOS.join(', ')}, got ${e.pr}.`);
     }
+    // Without its own checks the page points to the pull request, which a visitor cannot open when the repository is private.
+    if ((PRIVATE_REPOS as readonly string[]).includes(m[1]!) && !e.checks) {
+      throw new Error(`src/data/case-study.ts: "${e.title}" cites a private repository's pull request, so it needs its own checks.`);
+    }
     if (e.next !== undefined && !realDay(e.next)) throw new Error(`src/data/case-study.ts: "${e.title}" has a next measurement that is not a day.`);
   } else if (!e.source.trim()) {
     throw new Error(`src/data/case-study.ts: the observation "${e.title}" needs its source.`);
@@ -146,7 +150,7 @@ export const prLabel = (url: string) => {
   const m = url.match(PR)!;
   return `${m[1]}#${m[2]}`;
 };
-export const prPrivate = (url: string) => PRIVATE_REPOS.includes(url.match(PR)![1]!);
+export const prPrivate = (url: string) => (PRIVATE_REPOS as readonly string[]).includes(url.match(PR)![1]!);
 
 // ── Google Search Console, daily ────────────────────────────────────────────────
 const searchLines = searchCsv.trim().split(/\r?\n/);
