@@ -11,7 +11,8 @@ v0.33, excerpts with line numbers.
 ## Round 1 (2026-10-26, base 88c032e, head 95b56ee)
 
 Codex: 1 BUG, 2 RISK (596 s, 77,343 tokens). Fresh-eyes: 3 BUG, 5 RISK, 4 NIT (304 s, 168,811
-tokens; its own summary line says 4 RISK, and it lists 5). The site's own Playwright run on 95b56ee also failed three table tests (row 1).
+tokens; its own summary line says 4 RISK, and it lists 5; its NIT on the panel move and the cut
+recipe is split into rows 14 and 16, and its NIT on the decisions sheet joins Codex's RISK in row 10). The site's own Playwright run on 95b56ee also failed three table tests (row 1).
 
 | # | Seat | Kind | Finding | Disposition |
 |---|---|---|---|---|
