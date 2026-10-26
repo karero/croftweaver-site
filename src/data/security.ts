@@ -74,6 +74,8 @@ const THN = 'https://thehackernews.com/2026/10/php-issues-emergency-patches-for-
 const MALWAREBYTES = 'https://www.malwarebytes.com/blog/bugs/2026/10/php2shell-why-websites-are-going-offline-for-emergency-security-updates';
 const NATIONAL = 'https://www.thenationalnews.com/future/technology/2026/10/21/php-security-issues-exploit/';
 const WP_HARDENING = 'https://developer.wordpress.org/advanced-administration/security/hardening/';
+// The table in #short on /security says who provides each setting, from the claims each row names in `claims`
+// (src/pages/security.astro). When one of those claims changes who provides it, change its row too.
 const TOOLKIT_AT = 'https://github.com/karero/croftweaver/blob/3b8a6c5f';
 const TEMPLATE_AT = 'https://github.com/karero/croftweaver/tree/3b8a6c5f/skills/new-website/templates/astro';
 
