@@ -18,7 +18,7 @@ import { PAGES } from './_helpers';
 const STALE_DOMAINS: { domain: string; reason: string }[] = [
   // { domain: 'oldvendor.com', reason: 'rebranded to newvendor.io in 2026 — use https://newvendor.io' },
   // This site's own entry (2026-10-26): the external link check found its pull requests dead for visitors.
-  { domain: 'github.com/GenAI-Wednesday/GenAI-Wednesday.de/', reason: 'a private repository, so visitors get a 404: name its pull requests without a link (PRIVATE_REPOS in src/data/case-study.ts)' },
+  { domain: 'github.com/GenAI-Wednesday/GenAI-Wednesday.de', reason: 'a private repository, so visitors get a 404: name its pull requests without a link (PRIVATE_REPOS in src/data/case-study.ts)' },
 ];
 
 for (const path of PAGES) {

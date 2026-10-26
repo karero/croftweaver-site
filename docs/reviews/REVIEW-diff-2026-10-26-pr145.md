@@ -22,3 +22,15 @@ Codex: 2 RISK (1,333 s, 39,794 tokens). GLM 5.3 on ollama: 1 RISK, 4 NIT (234 s)
 | 9 | fresh | NIT | link match is case-sensitive | declined: rare; the data's repository check is exact-case |
 | 10 | GLM | NIT | dropping "no free plan" loses a data point | declined: the owner's decision of 2026-10-26; the rule in `src/data/compare.ts` says the page never says what another product lacks |
 | 11 | fresh | NIT | the short answer's Webflow line arguably says what its free plan lacks | out of scope; named to the owner |
+
+## Round 2 (2026-10-26, delta fd8dd8c..c2817b0), verification
+
+Earned by row 1 (BUG). Codex: 1 RISK, 1 NIT (312 s, 42,186 tokens). Second seat: none (melious out of
+credit; ollama at its usage limit). Fresh-eyes: rows 1, 2, 6, 7 FIXED; 8, 9, 11 declines hold; row
+4's fix broke something (row 12); 1 RISK, the same as Codex's (47 s).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 12 | Codex, fresh | RISK | row 4's trailing `/` lets a link to the repository's root (`…/GenAI-Wednesday.de`, `#readme`, `?tab=…`) pass the guard | fixed: the slash is removed, so the entry matches the root and every path again (checked with node) |
+| 4 | Codex | RISK | (round 1) the entry also matches a repository whose name starts the same, such as `-tools` | re-sorted: rare. No such repository exists or is linked, and a match fails loudly, not silently |
+| 13 | Codex | NIT | the short answer's Webflow line stays | out of scope, as row 11 |
