@@ -729,12 +729,24 @@ test('seo — the deck script makes a titled PDF through its real make path, out
   const before = tracked.map((p) => readFileSync(join(process.cwd(), p)).toString('base64'));
   const out = mkdtempSync(join(tmpdir(), 'deck-test-'));
   try {
-    execFileSync(process.execPath, ['scripts/build-deck.mjs', '--deck', 'company', '--out', out], { encoding: 'utf8', stdio: 'pipe' });
-    const pdf = readFileSync(join(out, 'croftweaver-for-companies.pdf'));
-    expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
-    expect(pdfTitles(pdf)).toEqual([companyFrom().title]);
-    // Chromium writes the title from <title> itself; the author is what shows that set_pdf_title.py ran.
-    expect(pdf.toString('latin1').includes(`/Author (${SITE.name})`), 'the PDF has no author: scripts/set_pdf_title.py did not run').toBe(true);
+    let refused = '';
+    try {
+      execFileSync(process.execPath, ['scripts/build-deck.mjs', '--deck', 'company', '--out', out], { encoding: 'utf8', stdio: 'pipe' });
+    } catch (error) {
+      refused = (error as { stderr?: string }).stderr ?? String(error);
+    }
+    // The decks are set in the system font and made on a Mac. Linux's system font is wider, so there
+    // the script must refuse the slides that no longer fit, and (below) leave every committed file alone.
+    if (refused && process.platform !== 'darwin') {
+      expect(refused).toMatch(/text runs past the edge of slide/);
+    } else {
+      expect(refused, 'the deck script failed').toBe('');
+      const pdf = readFileSync(join(out, 'croftweaver-for-companies.pdf'));
+      expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+      expect(pdfTitles(pdf)).toEqual([companyFrom().title]);
+      // Chromium writes the title from <title> itself; the author is what shows that set_pdf_title.py ran.
+      expect(pdf.toString('latin1').includes(`/Author (${SITE.name})`), 'the PDF has no author: scripts/set_pdf_title.py did not run').toBe(true);
+    }
   } finally {
     rmSync(out, { recursive: true, force: true });
   }

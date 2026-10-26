@@ -90,7 +90,9 @@ no-ranking sentence on `/security`, and the name, company, city and phone in `CO
 of those also turns `npm test` red until `npm run deck` runs. `npm run deck`
 remakes only the decks whose PDF is not current, so an edit to `/security` leaves the served
 `/why` PDF alone. `node scripts/build-deck.mjs --deck why` remakes one deck anyway, and
-`--out <folder>` writes the PDFs elsewhere without touching a lock.
+`--out <folder>` writes the PDFs elsewhere without touching a lock. Make the decks on a Mac: they
+are set in the system font, which is wider on Linux, and there the build refuses slides that no
+longer fit.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
