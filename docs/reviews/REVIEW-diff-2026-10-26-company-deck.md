@@ -82,3 +82,13 @@ Codex: 1 BUG, 1 RISK (221 s, 66,404 tokens). GLM 5.3 on melious: 2 RISK, 2 NIT, 
 | 33 | GLM | follow-up | slide 3 headroom (#17) | stays a follow-up |
 
 Round 4 is earned by #28 (kind: slide-2-figures).
+
+## Round 4 (2026-10-26, base eb61a62, head 64cfb77; verify round, earned by #28)
+
+Codex: "No BUG/RISK/NIT findings" (119 s, 48,815 tokens). GLM 5.3: 1 NIT (100 s, 9,950 tokens).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 34 | GLM | NIT | README says slide 2 draws the figures "as charts"; the AI counts are numbers, and the dates are read too | fixed: "the figures and dates …, which slide 2 draws as charts and numbers" (closing edit, not externally re-verified) |
+
+Stop condition (a2): round 4 has no BUG or RISK. 4 rounds, 34 findings in all.

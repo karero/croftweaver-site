@@ -83,7 +83,7 @@ A second deck, `handouts/croftweaver-for-companies.pdf`, is a handout for M-Squa
 companies that will not build their site themselves. It is not in `public/`, so the site does
 not serve it. Its slides are in `scripts/company-deck-slides.mjs`, and its lock is
 `scripts/company-deck.lock.json`. It reads the `/why` evidence (its introduction, its caveat and
-the figures in its three items, which slide 2 draws as charts), the move steps, the rankings
+the figures and dates in its three items, which slide 2 draws as charts and numbers), the move steps, the rankings
 answer and "Stay on WordPress when" on `/from-wordpress`, the two request paths and the
 no-ranking sentence on `/security`, and the name, company, city and phone in `COMPANY`
 (`src/config.ts`; the email on the last slide is typed in the slide script); a change to any
