@@ -41,20 +41,20 @@ const ownLabel: Record<string, string> = {
 };
 const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' ? 'is-open' : 'is-neutral');
 
-// The summary table in #short. Each row restates the claims named in `claims`, in the section it links to; it adds none.
-// No test can tell whether a row still matches them: src/data/security.ts says to check the row when one changes.
+// The summary table in #short. Each row sums up the section it links to and adds no fact. Like the page's other
+// prose outside the claims, editorial review keeps it true (see tests/check_security_page.sh).
 const controlCols = ['What', 'Provided by', 'More on this page'];
 const controls = [
-  { what: 'HTTPS certificates, issued and renewed', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles', claims: ['cf-certs'] },
-  { what: 'Protection against denial-of-service attacks', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles', claims: ['cf-ddos'] },
-  { what: 'Rolling back to an earlier version', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles', claims: ['cf-rollback'] },
-  { what: 'Security headers on every page', by: 'Template', href: '#setup', where: 'What Croftweaver sets up', claims: ['template-headers'] },
-  { what: 'Always Use HTTPS, and a minimum TLS version', by: 'Toolkit launch steps, after you confirm', href: '#setup', where: 'What Croftweaver sets up', claims: ['toolkit-cloudflare-setup'] },
-  { what: 'Security updates for the packages', by: 'Toolkit launch steps switch them on; you merge them', href: '#setup', where: 'What Croftweaver sets up', claims: ['launch-dependabot'] },
-  { what: 'HSTS', by: 'Owner, in the Cloudflare dashboard', href: '#setup', where: 'What stays yours', claims: ['site-hsts', 'toolkit-cloudflare-setup'] },
+  { what: 'HTTPS certificates, issued and renewed', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Protection against denial-of-service attacks', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Rolling back to an earlier version', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Security headers on every page', by: 'Template', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'Always Use HTTPS, and a minimum TLS version', by: 'Toolkit launch steps, after you confirm', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'Security updates for the packages', by: 'Toolkit launch steps switch them on; you merge them', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'HSTS', by: 'Owner, in the Cloudflare dashboard', href: '#setup', where: 'What stays yours' },
   { what: 'Two-step sign-in, and who may publish', by: 'Owner', href: '#checklist', where: 'A checklist for any website' },
-  { what: 'DNS records and the domain renewal', by: 'Owner', href: '#setup', where: 'What stays yours', claims: ['no-dnssec-caa-securitytxt-in-template'] },
-  { what: 'DNSSEC, CAA records and security.txt', by: 'Owner', href: '#checks', where: 'Four checks you can run yourself', claims: ['no-dnssec-caa-securitytxt-in-template'] },
+  { what: 'DNS records and the domain renewal', by: 'Owner', href: '#setup', where: 'What stays yours' },
+  { what: 'DNSSEC, CAA records and security.txt', by: 'Owner', href: '#checks', where: 'Four checks you can run yourself' },
   { what: 'Scripts from other domains, and add-ons', by: 'Owner', href: '#risks', where: 'What can still go wrong' },
 ];
 ---
