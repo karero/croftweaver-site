@@ -12,6 +12,7 @@ GLM 5.3 on melious failed for balance ("Available: 0") on round 1, so the gate r
 |-------|-------|----------|--------------|
 | 1 | Codex | 1 RISK | Codex 399 s, 90,735 |
 | 2 | Codex (`--verify`) | 1 BUG; S1-1's page fix confirmed | Codex 253 s, 70,191 |
+| 3 | Codex (`--verify`) | none; S2-1 confirmed | Codex 183 s, 80,798 |
 
 ## Round 1
 
@@ -40,3 +41,11 @@ date check still guards the base stamp. Round 3 checks S2-1.
 | Id | Sev | Finding | Disposition | Evidence |
 |----|-----|---------|-------------|----------|
 | S2-1 | BUG | "A malformed line stops the build" was wrong: an indented `added:` line was ignored, and a fourth field was accepted | fixed: lines are matched with any leading blanks and must have exactly three fields; the message says so | builds with `  added: served-build.spec.ts abc 2026-10-26` and with a fourth field both stopped with the message; the real stamp builds. `whats-new.sh --stamp-tests` rewrites the file with two lines (`write_tests_stamp`, lines 107–110), so it drops an `added:` line, as the README says |
+
+## Round 3
+
+Codex found nothing. It confirmed S2-1 (28 cases run in memory against the real module) and that a
+render error stops Astro's build. Its one note is that the toolkit's history is not in this
+repository; both toolkit facts were checked there: the site's spec is byte-identical to the one
+commit 3a0b7e14 added, the spec is unchanged since on the toolkit branch, and `write_tests_stamp`
+writes only `suite_commit:` and `copied:`. Gate closed: no open BUG or RISK.
