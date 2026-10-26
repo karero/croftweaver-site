@@ -746,8 +746,8 @@ test('checklist table — on a wide screen it is still a table: the header row s
 // a table that silently falls back to a scroll bar.
 const STACKED: Record<string, number> = {
   '/established-sites': 2,
-  '/from-wordpress': 1,
-  '/security': 2,
+  '/from-wordpress': 2,
+  '/security': 3,
   '/positioning': 1,
   '/proof': 1,
   '/case-study': 1,

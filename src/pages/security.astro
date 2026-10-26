@@ -24,6 +24,7 @@
 // - croftweaver.com's own results (#own) list what fails, and are filled from LIVE reads by hand in
 //   src/data/security.ts; the check fails while the security.txt row says "not yet" and the file exists;
 // - advice and reasoning stand outside the claim elements, and a claim states one sourced fact.
+// - #short sums up the sections it links to and holds no claim; cutting a section means cutting its rows there.
 import Base from '../layouts/Base.astro';
 import Claim from '../components/Claim.astro';
 import { claim, longDate, readPhrase, PHP_SYSTEMS } from '../data/security';
@@ -39,6 +40,21 @@ const ownLabel: Record<string, string> = {
   'own-security-txt': 'security.txt',
 };
 const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' ? 'is-open' : 'is-neutral');
+
+// The summary table in #short. Each row restates claims made in the section it links to; it adds none.
+const controlCols = ['Control', 'Provided by', 'More on this page'];
+const controls = [
+  { what: 'HTTPS certificates, issued and renewed', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Protection against denial-of-service attacks', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Rolling back to an earlier version', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
+  { what: 'Security headers on every page', by: 'Template', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'Always Use HTTPS, and a minimum TLS version of 1.2', by: 'Toolkit launch steps, after you confirm', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'Security updates for the packages', by: 'Toolkit launch steps switch them on; you merge them', href: '#checklist', where: 'A checklist for any website' },
+  { what: 'HSTS', by: 'Owner, in the Cloudflare dashboard', href: '#setup', where: 'What stays yours' },
+  { what: 'Two-step sign-in, and who may publish', by: 'Owner', href: '#checklist', where: 'A checklist for any website' },
+  { what: 'DNS records, DNSSEC, CAA records, security.txt and the domain renewal', by: 'Owner', href: '#checks', where: 'Four checks you can run yourself' },
+  { what: 'Scripts from other domains, and add-ons', by: 'Owner', href: '#risks', where: 'What can still go wrong' },
+];
 ---
 <Base
   title="What a static website changes for security"
@@ -56,6 +72,46 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
     <p class="note">
       Every dated fact below names its source and the day we read it, and says whether it is about the
       Croftweaver site template, about croftweaver.com, or about someone else's product. {readPhrase()}.
+    </p>
+  </section>
+
+  <section class="wrap" id="short">
+    <h2>In short</h2>
+    <p>
+      <strong>What a static website removes:</strong> the software that builds a page on a server for each
+      visit. A Croftweaver page is a file built in advance, so a visitor's request reaches no PHP, no
+      database and no admin login. One short function of the site still runs on each request, on
+      Cloudflare (see <a href="#runs">what runs</a>).
+    </p>
+    <p><strong>What stays:</strong></p>
+    <ul class="steps">
+      <li>The accounts that can publish the site or change its DNS: Cloudflare, GitHub and the domain registrar.</li>
+      <li>The npm packages the site is built with, which need security updates.</li>
+      <li>The build, which can run other people's code with your secrets within reach.</li>
+      <li>Scripts that the pages load from other domains.</li>
+      <li>The site's function on Cloudflare, which runs on every request.</li>
+    </ul>
+    <p>Fewer moving parts, not none. Who looks after what:</p>
+    <div class="table-wrap stack" role="region" aria-label="Who provides each security control: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            {controlCols.map((c) => <th scope="col" role="columnheader">{c}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {controls.map((c) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">{c.what}</th>
+              <td role="cell" data-label={controlCols[1]}>{c.by}</td>
+              <td role="cell" data-label={controlCols[2]}><a href={c.href}>{c.where}</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Each row sums up the section it links to, where the sources are.
     </p>
   </section>
 
@@ -99,58 +155,6 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       <Claim as="li" id="php-systems-repos">The GitHub repositories of {PHP_SYSTEMS.length} systems have PHP as their main language: {PHP_SYSTEMS.join(', ')}. That is a fact about how they are written. It does not show that any one site on them was attacked.</Claim>
       <Claim as="li" id="php-share">PHP is used by 69.3% of the websites whose server-side language W3Techs knows. The figure changes daily.</Claim>
     </ul>
-  </section>
-
-  <!-- PHP-DATED: this section and #php-steps are the news about one alert. Cut both, and the claims
-       marked "PHP alert" in src/data/security.ts, to remove it. The answer above stands without them. -->
-  <section class="wrap panel" id="php-alert">
-    <p class="eyebrow">News · dated 21 and 22 October 2026 · to be updated or removed</p>
-    <h2>The PHP alert of 21 October 2026</h2>
-    <p>
-      On 21 October 2026 the US cyber agency CISA urged organizations to patch two critical flaws in PHP,
-      CVE-2026-109618 and CVE-2026-109619, nicknamed “php2shell”. This is what the sources say. We give
-      each report to the source that made it.
-    </p>
-    <dl class="facts">
-      <dt>What CISA said</dt>
-      <Claim as="dd" id="cisa-patch">Patch at once. The flaws allow remote code execution without a login and affect all PHP installations serving web requests. Fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35.</Claim>
-      <Claim as="dd" id="cisa-names-no-product">The alert names PHP and no other product.</Claim>
-      <dt>Who is affected</dt>
-      <Claim as="dd" id="php-advisory">All PHP installations serving web requests, php.net says, among them PHP-FPM, Apache with mod_php, php-cgi, FrankenPHP and LiteSpeed. It sees the risk as highest for mod_php.</Claim>
-      <dt>The two flaws</dt>
-      <Claim as="dd" id="ghsa-109618">CVE-2026-109618, “RCE via OOM corruption”: rated critical, published on 21 October 2026, fixed in 8.2.35, 8.3.36, 8.4.27 and 8.5.12.</Claim>
-      <Claim as="dd" id="ghsa-109619">CVE-2026-109619, “RCE via stale global state”: rated critical, published on 21 October 2026, fixed in the same four versions.</Claim>
-      <dt>Reported by</dt>
-      <Claim as="dd" id="reported-by">Calif, OpenAI and Wiz Research told the PHP project about the flaws in August 2026, the PHP Foundation writes.</Claim>
-      <dt>Older versions</dt>
-      <Claim as="dd" id="php-old-versions">PHP 8.1 and older no longer receive updates from the PHP project. Its security team published minimal source backports for 7.4, 8.0 and 8.1, and some distributions and long-term-support vendors provide backported fixes.</Claim>
-      <dt>Attacks?</dt>
-      <dd>
-        <p class="plain">The reports differ, and some are older than others.</p>
-        <ul class="reports">
-          <Claim as="li" id="cisa-no-exploitation">CISA had not observed exploitation when it published its alert.</Claim>
-          <Claim as="li" id="cloudflare-attacks">Cloudflare's chief technology officer said the same day that Cloudflare was seeing early attacks emerging, and called its firewall rules a stopgap.</Claim>
-          <Claim as="li" id="watchtowr-attempts">The security firm watchTowr reported “active exploitation attempts” later the same day, after reporting none earlier. Its head of threat intelligence told The Record that nobody had been successful so far.</Claim>
-          <Claim as="li" id="krebs-in-the-wild">Krebs on Security wrote that experts say working exploits exist and that the flaws are already being exploited in the wild.</Claim>
-          <Claim as="li" id="no-confirmed-breakin">As of its update of 21 October 2026, The Hacker News wrote that no source had reported a confirmed break-in of a specific server.</Claim>
-        </ul>
-      </dd>
-      <dt>Offline as a precaution</dt>
-      <Claim as="dd" id="offline-precaution">Several governments, and some companies, took services offline for a while before patching. Malwarebytes points out that downtime alone does not mean a site was broken into.</Claim>
-    </dl>
-    <h3>The flaw sits in PHP itself</h3>
-    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of PHP applications such as Drupal, Joomla and WordPress. It says the flaws are in PHP itself and that exploitation does not depend on a flaw in the application's code.</Claim>
-    <Claim id="calif-demo">Calif says it confirmed code execution without a login on PHP applications such as Drupal, Joomla, Laravel, Magento, MediaWiki, Nextcloud, phpMyAdmin, Roundcube, Symfony, WHMCS and WordPress.</Claim>
-    <p>
-      These were demonstrations by the people who found the flaws. They are not reports of sites that were
-      hit. Running on PHP does not show that a given site was attacked or is exposed today. Exposure depends
-      on its PHP version and on whether its host has patched.
-    </p>
-    <p class="note">
-      What we did not check about the alert: whether a given host has patched its PHP; which sites were
-      broken into, and whether any WordPress site was; the names in lists of outages that circulated, which
-      we could not confirm; and OpenAI's own post about the flaws, which our tools could not open.
-    </p>
   </section>
 
   <section class="wrap" id="runs">
@@ -565,6 +569,58 @@ const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' 
       <li><strong>Anything you add brings its own risk.</strong> A form service, an analytics script and an editing tool are each outside this comparison.</li>
       <li><strong>A passed check shows what it checks.</strong> The headers are there; that does not make the site safe. The audit lists no known flaw; that does not say there is none.</li>
     </ul>
+  </section>
+
+  <!-- PHP-DATED: this section and #php-steps are the news about one alert. Cut both, and the claims
+       marked "PHP alert" in src/data/security.ts, to remove it. The answer above stands without them. -->
+  <section class="wrap panel" id="php-alert">
+    <p class="eyebrow">News · dated 21 and 22 October 2026 · to be updated or removed</p>
+    <h2>The PHP alert of 21 October 2026</h2>
+    <p>
+      On 21 October 2026 the US cyber agency CISA urged organizations to patch two critical flaws in PHP,
+      CVE-2026-109618 and CVE-2026-109619, nicknamed “php2shell”. This is what the sources say. We give
+      each report to the source that made it.
+    </p>
+    <dl class="facts">
+      <dt>What CISA said</dt>
+      <Claim as="dd" id="cisa-patch">Patch at once. The flaws allow remote code execution without a login and affect all PHP installations serving web requests. Fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35.</Claim>
+      <Claim as="dd" id="cisa-names-no-product">The alert names PHP and no other product.</Claim>
+      <dt>Who is affected</dt>
+      <Claim as="dd" id="php-advisory">All PHP installations serving web requests, php.net says, among them PHP-FPM, Apache with mod_php, php-cgi, FrankenPHP and LiteSpeed. It sees the risk as highest for mod_php.</Claim>
+      <dt>The two flaws</dt>
+      <Claim as="dd" id="ghsa-109618">CVE-2026-109618, “RCE via OOM corruption”: rated critical, published on 21 October 2026, fixed in 8.2.35, 8.3.36, 8.4.27 and 8.5.12.</Claim>
+      <Claim as="dd" id="ghsa-109619">CVE-2026-109619, “RCE via stale global state”: rated critical, published on 21 October 2026, fixed in the same four versions.</Claim>
+      <dt>Reported by</dt>
+      <Claim as="dd" id="reported-by">Calif, OpenAI and Wiz Research told the PHP project about the flaws in August 2026, the PHP Foundation writes.</Claim>
+      <dt>Older versions</dt>
+      <Claim as="dd" id="php-old-versions">PHP 8.1 and older no longer receive updates from the PHP project. Its security team published minimal source backports for 7.4, 8.0 and 8.1, and some distributions and long-term-support vendors provide backported fixes.</Claim>
+      <dt>Attacks?</dt>
+      <dd>
+        <p class="plain">The reports differ, and some are older than others.</p>
+        <ul class="reports">
+          <Claim as="li" id="cisa-no-exploitation">CISA had not observed exploitation when it published its alert.</Claim>
+          <Claim as="li" id="cloudflare-attacks">Cloudflare's chief technology officer said the same day that Cloudflare was seeing early attacks emerging, and called its firewall rules a stopgap.</Claim>
+          <Claim as="li" id="watchtowr-attempts">The security firm watchTowr reported “active exploitation attempts” later the same day, after reporting none earlier. Its head of threat intelligence told The Record that nobody had been successful so far.</Claim>
+          <Claim as="li" id="krebs-in-the-wild">Krebs on Security wrote that experts say working exploits exist and that the flaws are already being exploited in the wild.</Claim>
+          <Claim as="li" id="no-confirmed-breakin">As of its update of 21 October 2026, The Hacker News wrote that no source had reported a confirmed break-in of a specific server.</Claim>
+        </ul>
+      </dd>
+      <dt>Offline as a precaution</dt>
+      <Claim as="dd" id="offline-precaution">Several governments, and some companies, took services offline for a while before patching. Malwarebytes points out that downtime alone does not mean a site was broken into.</Claim>
+    </dl>
+    <h3>The flaw sits in PHP itself</h3>
+    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of PHP applications such as Drupal, Joomla and WordPress. It says the flaws are in PHP itself and that exploitation does not depend on a flaw in the application's code.</Claim>
+    <Claim id="calif-demo">Calif says it confirmed code execution without a login on PHP applications such as Drupal, Joomla, Laravel, Magento, MediaWiki, Nextcloud, phpMyAdmin, Roundcube, Symfony, WHMCS and WordPress.</Claim>
+    <p>
+      These were demonstrations by the people who found the flaws. They are not reports of sites that were
+      hit. Running on PHP does not show that a given site was attacked or is exposed today. Exposure depends
+      on its PHP version and on whether its host has patched.
+    </p>
+    <p class="note">
+      What we did not check about the alert: whether a given host has patched its PHP; which sites were
+      broken into, and whether any WordPress site was; the names in lists of outages that circulated, which
+      we could not confirm; and OpenAI's own post about the flaws, which our tools could not open.
+    </p>
   </section>
 
   <!-- PHP-DATED: see the note above #php-alert. -->

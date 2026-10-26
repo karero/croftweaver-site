@@ -18,16 +18,14 @@ export const MESSAGE_FIRST = [
   { name: 'website-build-kit', url: 'https://github.com/nurkamol/website-build-kit', fact: 'opens its method with discovery' },
 ] as const;
 
-// The short answer at the top of /compare, one line per choice, so it can be quoted on its
-// own. The Croftweaver and AI-app-builder lines sum up the sections below. The WordPress and
-// Webflow lines restate their own linked pages, read on SHORT_CHECKED; each is one of several
-// in its group below. A line says when to choose, never which is best.
-export const SHORT_CHECKED = { iso: '2026-10-18', label: '18 October 2026' } as const;
-export const SHORT = [
-  { choose: 'Croftweaver', when: 'you want a content site as files in your own repository, built and changed with your AI coding assistant, with the site\'s tests running before each push and on each pull request, on hosting you control.' },
-  { choose: 'WordPress', url: 'https://wordpress.org/', when: 'you want to start from a theme, edit in the block editor and see the page as you change it, add features such as a store from its library of plugins, and find hosting for it yourself.' },
-  { choose: 'Webflow', url: 'https://webflow.com/pricing', when: 'you want to build your site visually, with Webflow hosting it, and a paid site plan is fine: one is needed to publish on your own domain.' },
-  { choose: 'an AI app builder', href: '#apps', when: 'you need an application, with accounts, stored data or a checkout, built and run by the service from a chat.' },
+// The guide at the top of /compare: what you are building, and which kind of tool fits it. One
+// line each, so a line can be quoted on its own. Each line sums up a section of the page and adds
+// no fact about another product; it says what fits, never which is best.
+export const GUIDE = [
+  { building: 'A content site that you change with your AI coding assistant', choose: 'Croftweaver', href: '#first', why: 'with the site as files in your own repository, its tests running before each push and on each pull request, on hosting you control.' },
+  { building: 'A site you design by pointing and dragging', choose: 'a hosted website builder', href: '#hosted', why: 'or an open-source visual builder you host yourself.' },
+  { building: 'An application with accounts, stored data or a checkout', choose: 'an AI app builder', href: '#apps', why: 'or a web framework made for applications.' },
+  { building: 'A site that several people edit in the browser', choose: 'a content management system', href: '#cms', why: 'such as WordPress, Joomla or Drupal.' },
 ] as const;
 
 export const GROUPS = [
