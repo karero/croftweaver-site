@@ -92,7 +92,7 @@ const controls = [
       <li>The site's function on Cloudflare, which runs on every request.</li>
     </ul>
     <p>Fewer moving parts, not none. Who looks after what:</p>
-    <div class="table-wrap stack" role="region" aria-label="Who provides each security control: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
+    <div class="table-wrap stack long-head" role="region" aria-label="Who provides each security control: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
       <table role="table">
         <thead role="rowgroup">
           <tr role="row">
@@ -104,7 +104,7 @@ const controls = [
             <tr role="row">
               <th scope="row" role="rowheader">{c.what}</th>
               <td role="cell" data-label={controlCols[1]}>{c.by}</td>
-              <td role="cell" data-label={controlCols[2]}><a href={c.href}>{c.where}</a></td>
+              <td role="cell" data-label={controlCols[2]}><a class="tap" href={c.href}>{c.where}</a></td>
             </tr>
           ))}
         </tbody>
