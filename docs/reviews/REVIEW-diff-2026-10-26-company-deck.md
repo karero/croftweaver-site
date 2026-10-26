@@ -65,3 +65,20 @@ three-bar chart of clicks per 28 days, the AI counts as large numbers), drawn fr
 100s with "Agentic Browsing 3/3", a Search Console badge of 90 clicks on 2 July 2026) were not used:
 they differ from what /why states and nothing would keep them current; his choice, 2026-10-26.
 The typed tests line is now "By default, tests run before each push" to fit the slide.
+
+## Round 3 (2026-10-26, base e7c1649, head eb61a62; verify round)
+
+Codex: 1 BUG, 1 RISK (221 s, 66,404 tokens). GLM 5.3 on melious: 2 RISK, 2 NIT, 2 follow-ups
+(354 s, 27,456 tokens).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 27 | Codex | BUG | README says a change to the /why evidence turns tests red; slide 2 now reads only its figures, so a reworded trailing sentence changes nothing | fixed: README says what is read (introduction, caveat, the figures slide 2 draws) |
+| 28 | Codex, GLM | RISK | the link "Why the second is zero" is printed whatever the from-memory count is | fixed: "What the counts mean" |
+| 29 | GLM | RISK | `/Author (Croftweaver)` may not be a plain literal in a pypdf-written PDF | refuted: the committed handout, written by `set_pdf_title.py` with pypdf 6.14.2, holds the literal `/Author (Croftweaver)` (read with a regex over its bytes, 2026-10-26); the test passes on it; CI pins the same pypdf version |
+| 30 | GLM | NIT | all-zero clicks would draw `NaN` bars | fixed: the scale's maximum is at least 1 |
+| 31 | GLM | NIT | a copy failing midway leaves one deck replaced | re-sorted: rare (a local file copy failing after the scratch copies succeeded); the next run sees the mismatch and remakes |
+| 32 | GLM | follow-up | two worktrees of a site share the Playwright port (`portFor(SITE.url)`), so sessions collide | follow-up for the toolkit's BUGLOG, offered to Daniel |
+| 33 | GLM | follow-up | slide 3 headroom (#17) | stays a follow-up |
+
+Round 4 is earned by #28 (kind: slide-2-figures).

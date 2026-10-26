@@ -49,7 +49,7 @@ function ring({ name, value }) {
 
 // Clicks per 28 days as bars on a scale from zero to the largest value.
 function bars(rows) {
-  const max = Math.max(...rows.map((r) => r.value));
+  const max = Math.max(1, ...rows.map((r) => r.value));
   return `<div class="bars">${rows.map((r) => `<div class="bar"><div class="col"><span class="value">${r.value}</span><span class="fill" style="height:${Math.max(2, Math.round((66 * r.value) / max))}px"></span></div><span class="name">${esc(r.name)}</span><span class="span">${esc(r.span)}</span></div>`).join('')}</div>`;
 }
 
@@ -172,7 +172,7 @@ function slideList(why, wp, sec, site, company, logo) {
         <li class="card"><h3>Named by AI assistants</h3>
           <p class="big"><strong>${figs.ai.withSearch[0]} of ${figs.ai.withSearch[1]}</strong><span>answers given with web search</span></p>
           <p class="big"><strong>${figs.ai.fromMemory[0]} of ${figs.ai.fromMemory[1]}</strong><span>given from memory</span></p>
-          <p class="when">${esc(figs.ai.date)}. <a href="${site.url}/proof#ai">Why the second is zero</a></p></li>
+          <p class="when">${esc(figs.ai.date)}. <a href="${site.url}/proof#ai">What the counts mean</a></p></li>
       </ul>
       <p class="note" style="margin-top:10px;font-size:18px;max-width:none">${why.caveat} By default, tests run before each push: ${link('/checks')}.</p>` },
     // 3. The move
