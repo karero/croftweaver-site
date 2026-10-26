@@ -17,3 +17,15 @@ its page.
 | 3 | fresh | NIT | the test looks anywhere in the section, while its banner says "in place" | fixed: scoped to the quoting paragraph; seen to fail with the date moved to the closing note; banner names the section |
 | 4 | GLM | NIT | one message covers both a missing link and wrong link text | fixed: a count check and a text check, each with its own message |
 | 5 | GLM | NIT | the two quotes may come from different pages | refuted: both are on https://code.claude.com/docs/en/overview (curl, 2026-10-26) |
+
+## Round 2 (2026-10-26, delta 1b1605f..e72e104), verification
+
+Earned by row 1 (BUG). Codex: No BUG/RISK/NIT findings (1,472 s, 47,942 tokens). GLM 5.3: No
+BUG/RISK/NIT findings (92 s, 9,784 tokens). Fresh-eyes: rows 1-3 FIXED, rows 4-5 hold, nothing new
+(36 s).
+
+## Verdict
+
+DIFF gate clean on e72e1042daff0d6b2935da67c90b7c2216fcb7ef: no open BUG or RISK. 2 rounds, 5 findings (1 BUG, 4 NIT): 4 fixed, 1
+refuted. Nothing changed after round 2 except this record. Cost: Codex 2 runs, 1,953 s, 113,346
+tokens; GLM 2 runs, 157 s, 18,030 tokens; fresh-eyes 2 rounds, 178 s, 112,333 tokens.
