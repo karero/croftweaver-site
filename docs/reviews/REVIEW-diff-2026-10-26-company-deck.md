@@ -96,3 +96,24 @@ Stop condition (a2): round 4 has no BUG or RISK. 4 rounds, 34 findings in all.
 Wording pass (Codex, `--wording-pass`, base 64cfb77, head 984d46a): "No BUG/RISK/NIT findings"
 (83 s, 41,745 tokens). Gate closed clean: 4 rounds, 34 findings, no BUG open. Daniel looks at the
 PDF before the merge.
+
+## Round 5 (2026-10-26, base d4248b3; after CI failed on the PR)
+
+CI's `test` job failed on d4248b3: on Ubuntu the deck's system font is wider, so the make-path
+test's real run refused slides 2, 3 and 5 ("text runs past the edge of slide 2, 3, 5"). Daniel
+chose (2026-10-26) "Keep the look you approved": the test now requires a titled PDF on a Mac, and on
+Linux requires the refusal, an empty output folder and unchanged committed files. README: make the
+decks on a Mac. Seats run as separate commands (the global rule of 2026-10-26). GLM 5.3: 1 RISK,
+2 NIT (204 s, 10,911 tokens). Codex: "model is at capacity" twice (423 s, 81 s), then 1 RISK
+(1,508 s, 58,561 tokens).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 35 | GLM, Codex | RISK | on Linux CI the make-path test passes on the refusal, so PDF writing and titling are not checked there | waived by Daniel: asked "on Linux CI it checks that the script refuses cleanly and changes nothing", he chose "Keep the look you approved (Recommended)". The full check runs on his Mac in the pre-push hook on every push |
+| 36 | GLM | NIT | a refused run is not checked for writing nothing | fixed: the output folder must be empty |
+| 37 | GLM | NIT | a Mac failure hides the script's error | fixed: the message carries it |
+
+One pre-push run of the full suite reported 1 failed, 469 passed, during this round; the next full
+run passed 470 of 470. Which test failed was not recorded, so its cause is not known.
+
+5 rounds, 37 findings in all; no BUG open.
