@@ -117,3 +117,14 @@ One pre-push run of the full suite reported 1 failed, 469 passed, during this ro
 run passed 470 of 470. Which test failed was not recorded, so its cause is not known.
 
 5 rounds, 37 findings in all; no BUG open.
+
+## Merge of main (2026-10-26)
+
+The PR conflicted with main (#146, #147, #149 had merged), so GitHub ran no CI on 6cdce0c. Merged
+origin/main 7717744 into the branch as 819c33c; the one conflict was the import lines of
+`tests/seo.spec.ts` (both sides kept). After `npm run build` both decks were still current, so main's
+edits touch nothing the deck reads; the full suite passed 471 of 471 and `npm run check` 0 errors.
+Merge link (`merge_link.sh f75f9d2 6cdce0c 7717744`), Codex (191 s, 60,298 tokens): 2 RISK, both on
+the "Who does what" table of /from-wordpress, which came from main (#146, reviewed in its own gate)
+and which this PR does not change; both marked UNVERIFIABLE by the seat. Out of this PR's scope; no
+change.
