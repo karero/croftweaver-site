@@ -32,7 +32,9 @@ type Clause = string | string[]; // string = required phrase · string[] = any-o
 type TermRule = { term: string; body?: Clause[] };
 type SurfaceRule = { title?: Clause[]; desc?: Clause[]; h1?: Clause[]; body?: Clause[] };
 export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
-  '/': { term: 'website skills', body: ['website skills for search and AI visibility'] },
+  // Home: neither the H1 nor the kicker carries the term (owner, 2026-10-26); the hero's
+  // definition line does, checked by its own test below.
+  '/': { title: ['website skills'], desc: ['website skills'], body: ['website skills for search and AI visibility'] },
   '/checks': { term: 'test gate' },
   '/proof': { term: 'built with Croftweaver' },
   '/more-proof': { term: 'more proof' },
@@ -142,4 +144,11 @@ test.describe('positioning spine', () => {
       ).toEqual([]);
     });
   }
+});
+
+// The hero is the home page's only headline-area carrier of the core term since 2026-10-26, so
+// the definition line must stay in the hero itself, not just somewhere on the page.
+test('positioning — the home hero\'s definition line carries "website skills"', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.hero p.what'), 'the hero lost its definition line, or the line lost the core term').toContainText('suite of website skills');
 });
