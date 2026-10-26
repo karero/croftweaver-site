@@ -109,6 +109,12 @@ export const SUITES: {
     example: 'A change that lets a preview address answer without the noindex header fails.',
     limit: 'It calls the function directly, so it does not prove that the hosting account runs it. A noindex header also does not stop every AI crawler from citing a preview address.',
   },
+  {
+    file: 'served-build', group: 'publish', name: 'Own build',
+    checks: 'The server the tests run against serves this copy of the site, from its own build.',
+    example: 'When another copy of the site on the same computer takes the test port during the build, the run fails instead of testing that copy.',
+    limit: 'It compares one marker file, written fresh for each test build. Two runs in the same folder share one build, so it cannot tell them apart.',
+  },
 ];
 
 // The glob is resolved from the project root at build time, whatever directory the
