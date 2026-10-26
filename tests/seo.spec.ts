@@ -678,7 +678,7 @@ test('seo — the privacy page names the analytics host in an element marked dat
   expect(hasHostMark(distFile('privacy.html')), 'privacy.html has no element marked data-analytics-host: tests/privacy-host.spec.ts would check nothing').toBe(true);
 });
 
-// ── /compare: every group links its sources in place and is dated ──────────────
+// ── /compare: every group, and the Claude Code section, links its sources in place and is dated ──
 // Site-specific (not in the shipped suite): /compare's rule is that every statement about another
 // product links the page it restates and carries the day it was read. This holds each group's row
 // links, the links in a group's sources note (`needs`), each group's own date, the hero's date, and
@@ -712,8 +712,11 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
       await expect(section.locator('time'), `${g.id}: its own date`).toHaveText(g.checked.label);
     }
   }
-  const cc = page.locator('section#claude-code');
-  await expect(cc.locator(`a[href="${CLAUDE_CODE.url}"]`), 'the Claude Code section does not link its source').toHaveText(CLAUDE_CODE.label);
-  await expect(cc.locator('time'), 'the Claude Code section: its date').toHaveAttribute('datetime', CLAUDE_CODE_CHECKED.iso);
-  await expect(cc.locator('time'), 'the Claude Code section: its date').toHaveText(CLAUDE_CODE_CHECKED.label);
+  // The quoting paragraph, the section's first: the link and the date sit next to the quotes.
+  const quoting = page.locator('section#claude-code > p').first();
+  const ccLink = quoting.locator(`a[href="${CLAUDE_CODE.url}"]`);
+  await expect(ccLink, 'the Claude Code quotes do not link their source').toHaveCount(1);
+  await expect(ccLink, 'the Claude Code source link has the wrong text').toHaveText(CLAUDE_CODE.label);
+  await expect(quoting.locator('time'), 'the Claude Code quotes: their date').toHaveAttribute('datetime', CLAUDE_CODE_CHECKED.iso);
+  await expect(quoting.locator('time'), 'the Claude Code quotes: their date').toHaveText(CLAUDE_CODE_CHECKED.label);
 });
