@@ -739,8 +739,9 @@ test('seo — the deck script makes a titled PDF through its real make path, out
     // the script must refuse the slides that no longer fit, and (below) leave every committed file alone.
     if (refused && process.platform !== 'darwin') {
       expect(refused).toMatch(/text runs past the edge of slide/);
+      expect(readdirSync(out), 'a refused run wrote a PDF').toEqual([]);
     } else {
-      expect(refused, 'the deck script failed').toBe('');
+      expect(refused, `the deck script failed: ${refused}`).toBe('');
       const pdf = readFileSync(join(out, 'croftweaver-for-companies.pdf'));
       expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
       expect(pdfTitles(pdf)).toEqual([companyFrom().title]);
