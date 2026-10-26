@@ -2,11 +2,10 @@
 // Home page, told as the visitor's story (STORY.md; the seven sections in that order).
 // Positioning spine (tests/positioning.spec.ts): the term "website skills" is threaded
 // through <title> (config titleHome), the meta description (config description) and the
-// kicker, which must stay the FIRST <p> in <main> (the H1 does not carry the term). The
-// kicker says HOW the site gets built; the header's claim above it says what for. The
-// market category "website skills for search and AI visibility" stands in the first
-// paragraph of "What Croftweaver is" (it stood in the kicker until 2026-10-12). Under the
-// one-liner, one sentence says what Croftweaver is (owner, 2026-10-13; POSITIONING.md).
+// definition line under the subline (owner, 2026-10-26: the kicker is the rank line and
+// the H1 says what a visitor gets, so neither carries the term). The market category
+// "website skills for search and AI visibility" stands in the first paragraph of
+// "What Croftweaver is". POSITIONING.md has the hero and why.
 // Wording rule (POSITIONING.md): promises in the active voice, no guarantee; the proof
 // strip sits directly under the hero. Tone rules apply to all copy: no em dashes, no
 // contractions, no buzzwords. The direct call to action keeps one label everywhere.
@@ -18,6 +17,8 @@ import { RELEASE } from '../data/skills';
 import { PANEL, fmtScore } from '../data/proof';
 import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 
+// The case study's own repository: the hero's "finished website" is this site.
+const siteRepo = 'https://github.com/karero/croftweaver-site';
 const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of reason for each score. Then do the same for [your site\'s address].';
 
 // The two measured figures under the AI panel (owner, 2026-10-13). They are read from the
@@ -81,12 +82,11 @@ const maintainerSchema = {
 <Base title={SITE.name} schemas={[softwareSchema, maintainerSchema]} mainEntity={softwareId}>
   <section class="wrap hero">
     <a class="oss" href={`${SITE.repo}/blob/main/LICENSE`}>Free and open source · MIT licence</a>
-    <p class="kicker">Your AI assistant, guided by website skills</p>
-    <h1>Weave websites that rank.</h1>
+    <p class="kicker">Weave websites that rank.</p>
+    <h1>Build a complete website with AI.</h1>
     <p class="lead">
-      Stop waiting on someone else for every change. Build or rebuild your site with
-      your AI assistant and Croftweaver, so people can find it on Google and in AI
-      answers.
+      Croftweaver guides your AI coding assistant from positioning and design to a tested
+      website that people can find on Google and in AI answers.
     </p>
     <p class="what">
       Croftweaver is a free, open-source suite of website skills: instructions your AI
@@ -94,15 +94,15 @@ const maintainerSchema = {
     </p>
     <p class="for">For founders, communities, experts and small teams.</p>
     <ul class="outcomes" role="list">
-      <li>You make the everyday changes yourself</li>
+      <li>You keep your site up to date yourself</li>
       <li>Search and AI can read it from the first build</li>
       <li>You catch common slips: {SUITE_COUNT} test suites check every change by default</li>
     </ul>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
-      <a class="btn" href="#quickstart">Quickstart</a>
+      <a class="btn" href="/case-study">See a finished website</a>
     </div>
-    <p class="fineprint">No coding needed to start: you work with your assistant in plain language.</p>
+    <p class="fineprint">No coding needed to start: you work with your assistant in plain language. The finished website is this one, and <a href={siteRepo}>its code is public</a>.</p>
   </section>
 
   <section class="wrap" id="proof">
@@ -181,7 +181,8 @@ const maintainerSchema = {
       time finding you.
     </p>
     <p>
-      Croftweaver takes the other route. Your assistant starts with your positioning,
+      Stop waiting on someone else for every change. Croftweaver takes the other route.
+      Your assistant starts with your positioning,
       what you offer and for whom, and from then on a test keeps your pages on it:
       <a href="/positioning">Positioning first</a>. It can also tell the home page as your
       visitor's story. Then you and your assistant make the changes, the search and AI
@@ -211,8 +212,8 @@ const maintainerSchema = {
     <h2>What changes for you</h2>
     <div class="grid">
       <div class="card">
-        <h3>You make the changes yourself</h3>
-        <p>Everyday updates (text, pages, images and layout) are a conversation with your assistant. No brief, and nobody to wait for. A stubborn problem can still need outside help. <a href="#yours">The site is yours</a>.</p>
+        <h3>You keep your site up to date yourself</h3>
+        <p>Everyday updates (text, pages, images and layout) are a conversation with your assistant. Nobody to brief, wait for or pay for each change. Stuck? Ask your assistant: it can read the code, run the tests and explain what went wrong. If a problem still will not budge, or you want to move faster, <a href="#learn">the maintainer is glad to help</a>. <a href="#yours">The site is yours</a>.</p>
       </div>
       <div class="card">
         <h3>Search and AI can read it from the first build</h3>
@@ -348,8 +349,8 @@ const maintainerSchema = {
     <p>
       AI stops being abstract when it works on your own site. You know what it should
       say, you see each change take shape, and you decide what stays. In my experience
-      it is a real learning curve, and a happy one. Questions along the way? I am glad
-      to help. Write to
+      it is a real learning curve, and a happy one. Stuck on something your assistant
+      cannot solve, or want to get there faster? I am glad to help. Write to
       <EmailLink address={COMPANY.email} subject="A question about Croftweaver" />.
     </p>
     <p class="byline">Daniel Melter, maintainer of Croftweaver</p>

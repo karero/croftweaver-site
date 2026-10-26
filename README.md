@@ -23,12 +23,13 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
    (https://main.croftweaver-site.pages.dev), `production` = live at
    https://croftweaver.com. Publish with `npm run ship`.
 
-## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
+## Decisions (owner, 2026-10-03, 2026-10-04, 2026-10-08 and 2026-10-26)
 
 - **Positioning:** lead with being found by search engines and AI assistants; the test
-  gate is the proof; ownership is the brand voice. Hero: "Weave websites that rank."
-  (from 2026-10-08; before: "Build websites that rank."). The subline "Keep improving
-  SEO and GEO, week by week." is retired; the one-liner replaces it. Details, the wording
+  gate is the proof; ownership is the brand voice. Hero: "Build a complete website with AI.", under the kicker "Weave websites that rank."
+  (from 2026-10-26; from 2026-10-08 the hero was "Weave websites that rank.", before that
+  "Build websites that rank."). A subline names Google and AI answers; it replaced the
+  2026-10-08 one-liner on 2026-10-26. Details, the wording
   rule and the routes not chosen: `POSITIONING.md`; the home page story: `STORY.md`.
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old

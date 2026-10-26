@@ -361,3 +361,17 @@ the browser on the owner's own computer (`/what-it-runs-on`, the Keystatic secti
 
 Left out on purpose: the home page and its headline, POSITIONING.md, EmDash (already on
 `/from-wordpress`, "Other ways to leave WordPress").
+
+## Claude Code on its own (checked 26 October 2026)
+
+**The question.** The growth audit of 26 October 2026 asked what Croftweaver adds for someone who
+already has Claude Code. The owner approved a section on `/compare` that says it.
+
+**What Claude Code's own page says** (https://code.claude.com/docs/en/overview, read with curl):
+"an agentic coding tool that reads your codebase, edits files, runs commands, and integrates with
+your development tools"; and skills, which it uses to "package repeatable workflows your team can
+share". The section quotes both, from `CLAUDE_CODE` in `src/data/compare.ts`, and says nothing Claude
+Code lacks. Its list of what the skills bring restates this site's own pages, each linked.
+
+**Not yet shown:** that a site built with Croftweaver does better than one Claude Code builds on its
+own. The section says so. A two-run comparison is planned and waits for the owner's approval.

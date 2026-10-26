@@ -87,6 +87,8 @@
 
 - **Direct CTA (one label, verbatim everywhere):** `Get Croftweaver on GitHub` →
   `SITE.repo`. Used in the hero, after the plan and in the sign-off, as on the other pages.
+- **Hero's second button:** `See a finished website` → `/case-study`, with a line under the
+  buttons that links this site's public repository (owner, 2026-10-26).
 - **Transitional CTA (lead generator):** none. The site has no email-gated guide, and
   none is invented.
 
@@ -102,19 +104,24 @@
 
 ## 7. Success (life after)
 
-- **You make the changes yourself.** Everyday updates are a conversation with your
-  assistant (§3, independence row).
+- **You keep your site up to date yourself.** Everyday updates are a conversation with your
+  assistant, and when you are stuck you ask it first; the maintainer helps when a problem
+  will not budge or you want to move faster (§3, independence row; owner, 2026-10-26).
 - **Search and AI can read it from the first build** (§3 rows 1 and 2).
 - **You catch common slips.** The test suites check every change by default, and your
   own search data points to the next edit (§3 rows 3 and 4).
 
-## One-liner (30 words)
+## Hero (owner decision, 2026-10-26)
 
-> Stop waiting on someone else for every change. Build or rebuild your site with your AI
-> assistant and Croftweaver, so people can find it on Google and in AI answers.
+> *Weave websites that rank.* (kicker)
+> **Build a complete website with AI.** (H1)
+> Croftweaver guides your AI coding assistant from positioning and design to a tested
+> website that people can find on Google and in AI answers. (subline)
 
-Owner-approved 2026-10-08. Opens on the visitor's moment, second person, present tense,
-active voice. "Build or rebuild" covers a new site and an old one.
+It replaced the one-liner approved on 2026-10-08 ("Stop waiting on someone else for every
+change. Build or rebuild your site with your AI assistant and Croftweaver, so people can
+find it on Google and in AI answers."). Its villain sentence now opens the turn to the
+guide in section 2 (Stakes), in the StoryBrand order: problem first, then the guide.
 
 ## Controlling idea
 
@@ -126,7 +133,7 @@ machine, and narrows the core term "website skills".
 **Shorthand, on every page:** "Build for search and AI." It stands under the logo in the
 header (`SITE.claim`; POSITIONING.md, header line) and is the short form of the controlling
 idea, not a second idea. Owner decision, 2026-10-12. The full sentence above is not printed
-on the home page; the one-liner and the shorthand carry it.
+on the home page; the hero and the shorthand carry it.
 
 ## Home page map (seven sections → src/pages/index.astro)
 
@@ -135,8 +142,8 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | above the kicker, a pill that says Croftweaver is free and open source and links to its MIT licence (owner, 2026-10-15); the kicker (the positioning term, the first `<p>`: "Your AI assistant, guided by website skills"; the market category stands in section 5 since 2026-10-12), the `<h1>` "Weave websites that rank.", the one-liner, one sentence that says what Croftweaver is (POSITIONING.md, definition line; owner decision, 2026-10-13), a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt, and since 2026-10-13 two measured figures with links to `/more-proof` and `/proof`). Then one testimonial in its own short section (`#voice`): Dr. Andrea Geistanger, quoted word for word as the Builder Lab shows it in English, apart from one insertion in square brackets, with her photo. "[Croftweaver]" stands in square brackets before "Builder" in the quote, so a reader knows which Builder she means (owner, 2026-10-16). It is the one shared quote POSITIONING.md allows. No other customer image: the site has none, and none is invented | yes |
-| 2 | Stakes | §6, then a short pivot to the guide: positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
+| 1 | Header | above the kicker, a pill that says Croftweaver is free and open source and links to its MIT licence (owner, 2026-10-15); the kicker (the rank line, the first `<p>`: "Weave websites that rank."; owner, 2026-10-26), the `<h1>` "Build a complete website with AI.", the subline, one sentence that says what Croftweaver is and carries the positioning term (POSITIONING.md, definition line; owner decision, 2026-10-13; the market category stands in section 5 since 2026-10-12), a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons (§5) with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ, then a link to this site's public repository), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt, and since 2026-10-13 two measured figures with links to `/more-proof` and `/proof`). Then one testimonial in its own short section (`#voice`): Dr. Andrea Geistanger, quoted word for word as the Builder Lab shows it in English, apart from one insertion in square brackets, with her photo. "[Croftweaver]" stands in square brackets before "Builder" in the quote, so a reader knows which Builder she means (owner, 2026-10-16). It is the one shared quote POSITIONING.md allows. No other customer image: the site has none, and none is invented | yes |
+| 2 | Stakes | §6, then a short pivot to the guide that opens with the villain line ("Stop waiting on someone else for every change."): positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
 | 5 | Explanatory paragraph | what Croftweaver is, the guide's empathy, three objections (coding, ranking, cost) answered from POSITIONING.md and `/start`, and links to `/more-proof` and `/proof` | no |
@@ -154,8 +161,8 @@ gives for the optional weekly AI check. None of these are positioning claims.
 
 A short section after "The site is yours". It carries a secondary benefit (POSITIONING.md
 §3 and §4: a rebuild as a project to learn with), based on the owner's experience with one
-team, and stays low on the page and out of the headline, the one-liner and the share card.
-The owner approved the passage on 2026-10-08, in the first person, with a byline.
+team, and stays low on the page and out of the headline, the subline and the share card.
+The owner approved the passage on 2026-10-08, in the first person, with a byline. On 2026-10-26 the owner widened its offer of help: for a problem the assistant cannot solve, or to get there faster.
 
 ## Beyond the seven sections: who maintains Croftweaver
 
@@ -189,7 +196,7 @@ page names no price, by the owner's choice.
 `.test` files ending in `.ts`, `.js` or `.mjs`) and fails the build when one has no
 description. Its list describes the test gate that every Croftweaver site ships with. The story test is opt-in, so adding it would make the count on the home page and the list on
 `/checks` 14, with a suite that most sites do not have, while POSITIONING.md §2 says 13. The direct
-CTA, the one-liner and the plan are guarded by review instead.
+CTA, the hero and the plan are guarded by review instead.
 
 ## Changes after a fresh-eyes check (owner, 2026-10-09)
 

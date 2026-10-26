@@ -5,18 +5,18 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED } from '../data/compare';
 ---
 <Base
-  title="Croftweaver and its alternatives"
-  description="Croftweaver and its alternatives: WordPress, Joomla, Drupal, hosted and open-source builders, AI app builders, skills for AI assistants. When to choose which."
+  title="Which website tool fits? The alternatives"
+  description="What are you building? Croftweaver and its alternatives: WordPress, Joomla, Drupal, hosted builders, AI app builders, AI assistant skills, and when each fits."
   image="/images/og/compare.jpg"
 >
   <section class="wrap hero">
-    <h1>Croftweaver and its alternatives</h1>
+    <h1>Which website tool fits what you are building?</h1>
     <p class="lead">
-      There are good alternatives to Croftweaver, and for many people one of them is
-      the better choice. This page says when.
+      Croftweaver and its alternatives, side by side. For many people one of the
+      alternatives is the better choice, and this page says when.
     </p>
     <p class="note">
       In the groups below, every statement about another product restates what its
@@ -30,18 +30,44 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
   </section>
 
   <section class="wrap" id="short">
-    <h2>Which to choose, in short</h2>
+    <h2>What are you building?</h2>
     <ul class="steps">
-      {SHORT.map((s) => (
-        <li><strong>Choose {'url' in s ? <a href={s.url}>{s.choose}</a> : 'href' in s ? <a href={s.href}>{s.choose}</a> : s.choose} when</strong> {s.when}</li>
+      {GUIDE.map((g) => (
+        <li><strong>{g.building}:</strong> <a href={g.href}>{g.choose}</a>, {g.why}</li>
       ))}
     </ul>
-    <p class="note">
-      The WordPress and Webflow lines restate their own pages, read on
-      <time datetime={SHORT_CHECKED.iso}>{SHORT_CHECKED.label}</time>; the other two sum up the
-      sections below.
+    <p class="note">Each line points to a section below, where the products are named and linked.</p>
+    <p>
+      Already on WordPress and thinking of leaving? See <a href="/from-wordpress">From WordPress to Astro</a>,
+      and <a href="/security">what a static website changes for security</a>.
     </p>
-    <p>Already on WordPress and thinking of leaving? See <a href="/from-wordpress">From WordPress to Astro</a>.</p>
+  </section>
+
+  <section class="wrap" id="claude-code">
+    <h2>Claude Code on its own, or with Croftweaver</h2>
+    <p>
+      Croftweaver does not replace Claude Code. It is a set of skills for AI coding assistants,
+      developed and used with Claude Code, with install guides for Codex and Antigravity too.
+      Claude Code is <q>{CLAUDE_CODE.what}</q>, and skills are how it packages
+      <q>{CLAUDE_CODE.skills}</q> (<a href={CLAUDE_CODE.url}>{CLAUDE_CODE.label}</a>, read on
+      <time datetime={CLAUDE_CODE_CHECKED.iso}>{CLAUDE_CODE_CHECKED.label}</time>). Croftweaver is a
+      set of such skills, for websites. What they bring:
+    </p>
+    <ul class="steps">
+      <li><strong>Positioning before copy.</strong> The assistant works out with you what the site has to say before it writes a page. <a href="/positioning">How positioning works</a>.</li>
+      <li><strong>The site's own test suites.</strong> By default they run before each push and on each pull request. <a href="/checks">The checks</a>.</li>
+      <li><strong>Search and AI basics from the first build.</strong> Titles and descriptions within limits, structured data, an llms.txt file and a share image for each page, kept in place by those tests. <a href="/ai-website-seo-checklist">The SEO checklist</a>.</li>
+      <li><strong>After launch, if you connect them, the next edit from real data.</strong> Search Console insights, and an optional weekly check of whether AI assistants name the business, run with your own API keys. <a href="/established-sites">Established sites</a>.</li>
+    </ul>
+    <p>
+      <strong>Use Claude Code on its own when</strong> you want a one-off page or a prototype, or you
+      already have your own method and checks. <strong>Use it with Croftweaver when</strong> you want
+      this method, and by default the same checks on every change.
+    </p>
+    <p class="note">
+      Nothing on this site yet compares a site built with Croftweaver with one that Claude Code builds
+      on its own.
+    </p>
   </section>
 
   <section class="wrap" id="first">
@@ -115,7 +141,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
       <li><strong>You need a shop, accounts or a database.</strong> It builds content sites.</li>
       <li><strong>You want someone else to host and run it.</strong> You publish to hosting you control.</li>
       <li><strong>You do not want an AI coding assistant.</strong> Croftweaver needs one, and building a new site with it needs a GitHub account too.</li>
-      <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one.</li>
+      <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one, and <a href="/case-study">the case study</a> follows this site week by week.</li>
     </ul>
     <p>
       What is missing and what comes next is on <a href="/roadmap">the roadmap</a>.
