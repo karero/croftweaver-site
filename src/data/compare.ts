@@ -64,7 +64,7 @@ export const GROUPS = [
     what: 'You design in a visual editor in the browser, and the company hosts the site.',
     examples: [
       { name: 'Wix', url: 'https://www.wix.com/plans', fact: 'A website builder with templates and a drag-and-drop editor. Paid plans and a free plan.' },
-      { name: 'Squarespace', url: 'https://www.squarespace.com/pricing', fact: 'A website builder with templates and shop features. Paid plans and a free trial, no free plan.' },
+      { name: 'Squarespace', url: 'https://www.squarespace.com/pricing', fact: 'A website builder with templates and shop features. Paid plans and a free trial.' },
       { name: 'Webflow', url: 'https://webflow.com/pricing', fact: 'A visual website builder. Paid site plans and a free starter plan.' },
       { name: 'Framer', url: 'https://www.framer.com/pricing', fact: 'A website builder and design tool. Paid plans and a free plan.' },
     ],

@@ -6,7 +6,7 @@
 // Honesty rules (CONTENT_GUIDE.md): the page says what was seen after a change, never that it caused it.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, dayLabel, DAILY, SEARCH, AI_DAYS, BREAKS, BREAK_DAYS } from '../data/case-study';
+import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, prPrivate, dayLabel, DAILY, SEARCH, AI_DAYS, BREAKS, BREAK_DAYS } from '../data/case-study';
 
 const named = (n: number, of: number) => `${n} of ${of}`;
 const assistants = (n: number) => `${n} ${n === 1 ? 'assistant' : 'assistants'}`;
@@ -24,7 +24,7 @@ const aiCols = ['Day', 'With search: named', 'croftweaver.com among the sources'
     <p class="lead">
       This case study follows croftweaver.com, built with Croftweaver, from its launch on
       <time datetime={LAUNCH.iso}>{LAUNCH.label}</time>. It is a log, not a finished story:
-      each change says what was asked, links the pull request, names the checks that ran, and
+      each change says what was asked, names the pull request (linked where its repository is public), names the checks that ran, and
       is followed by the next measurement. The zeros stay in.
     </p>
     <p class="aside">
@@ -123,7 +123,7 @@ const aiCols = ['Day', 'With search: named', 'croftweaver.com among the sources'
             <>
               <p><strong>Asked:</strong> {e.asked}</p>
               <p>
-                <strong>Pull request:</strong> <a href={e.pr}>{prLabel(e.pr)}</a>.
+                <strong>Pull request:</strong> {prPrivate(e.pr) ? <>{prLabel(e.pr)} (private repository)</> : <a href={e.pr}>{prLabel(e.pr)}</a>}.
                 {e.checks ? <> <strong>Checks:</strong> {e.checks}.</> : <> The checks are in the pull request.</>}
               </p>
               <p><strong>Next measurement:</strong> {e.next ? <time datetime={e.next}>{dayLabel(e.next)}</time> : 'the next weekly check'}.</p>

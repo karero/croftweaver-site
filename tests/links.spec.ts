@@ -13,9 +13,12 @@ import { PAGES } from './_helpers';
 // deliberately NOT in this hermetic gate. When that audit finds a newly dead/rebranded
 // domain, add it here so it can never be re-introduced.
 //
-// Starts empty: a brand-new site has retired nothing yet. Grow it from audit findings.
+// Started empty: a brand-new site has retired nothing yet. Grow it from audit findings. An entry may
+// also be a path on a domain, such as one repository on github.com.
 const STALE_DOMAINS: { domain: string; reason: string }[] = [
   // { domain: 'oldvendor.com', reason: 'rebranded to newvendor.io in 2026 — use https://newvendor.io' },
+  // This site's own entry (2026-10-26): the external link check found its pull requests dead for visitors.
+  { domain: 'github.com/GenAI-Wednesday/GenAI-Wednesday.de', reason: 'a private repository, so visitors get a 404: name its pull requests without a link (PRIVATE_REPOS in src/data/case-study.ts)' },
 ];
 
 for (const path of PAGES) {
