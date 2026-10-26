@@ -18,6 +18,41 @@ function startingWith(parent, selector, start, page, what) {
 // The first `n` sentences of a text (a sentence ends with ". ").
 const sentences = (html, n) => html.split(/(?<=\.) /).slice(0, n).join(' ');
 
+// The figures in the /why evidence, as numbers for the graphics on slide 2. Each pattern is the
+// sentence /why prints; a reworded sentence stops the build rather than draw a wrong chart.
+export function readWhyFigures(evidence) {
+  const body = (label) => {
+    const item = evidence.items.find((i) => i.label === label);
+    if (!item) throw new Error(`deck: the /why evidence has no item "${label}". Update scripts/company-deck-slides.mjs.`);
+    return item.body;
+  };
+  const match = (label, pattern) => {
+    const m = pattern.exec(body(label));
+    if (!m) throw new Error(`deck: the /why evidence item "${label}" is worded differently now, so slide 2 cannot read its figures. Update scripts/company-deck-slides.mjs.`);
+    return m;
+  };
+  const speed = match('Speed and search basics.', /^PageSpeed Insights on a simulated phone, ([^:]+): (\d+), (\d+), (\d+) and (\d+) out of 100 for performance, accessibility, best practices and SEO\./);
+  const clicks = match('Clicks from Google.', /^From (\d+) in the 28 days that include the launch \(([^)]+)\) to a best 28 days of (\d+) \(([^)]+)\), and (\d+) in the latest 28 days \(([^)]+)\)\./);
+  const ai = match('AI assistants.', /^On ([^,]+), (\d+) of (\d+) answers given with web search named the site, and (\d+) of (\d+) given from memory\./);
+  return {
+    speed: { date: speed[1], scores: ['Performance', 'Accessibility', 'Best practices', 'SEO'].map((name, i) => ({ name, value: Number(speed[i + 2]) })) },
+    clicks: [['At launch', 1], ['Best', 3], ['Latest', 5]].map(([name, i]) => ({ name, value: Number(clicks[i]), span: clicks[i + 1] })),
+    ai: { date: ai[1], withSearch: [Number(ai[2]), Number(ai[3])], fromMemory: [Number(ai[4]), Number(ai[5])] },
+  };
+}
+
+// A score from 0 to 100 as a ring, drawn here: no outside image or logo.
+function ring({ name, value }) {
+  const r = 34, c = 2 * Math.PI * r, arc = (c * value) / 100;
+  return `<figure class="ring"><svg viewBox="0 0 84 84" role="img" aria-label="${esc(name)}: ${value} out of 100"><circle cx="42" cy="42" r="${r}" class="track"/><circle cx="42" cy="42" r="${r}" class="arc" stroke-dasharray="${arc.toFixed(2)} ${c.toFixed(2)}" transform="rotate(-90 42 42)"/><text x="42" y="49" text-anchor="middle">${value}</text></svg><figcaption>${esc(name)}</figcaption></figure>`;
+}
+
+// Clicks per 28 days as bars on a scale from zero to the largest value.
+function bars(rows) {
+  const max = Math.max(...rows.map((r) => r.value));
+  return `<div class="bars">${rows.map((r) => `<div class="bar"><div class="col"><span class="value">${r.value}</span><span class="fill" style="height:${Math.max(2, Math.round((66 * r.value) / max))}px"></span></div><span class="name">${esc(r.name)}</span><span class="span">${esc(r.span)}</span></div>`).join('')}</div>`;
+}
+
 // What the deck takes from the built /from-wordpress page.
 export function readWordpressFacts(html, base) {
   const page = '/from-wordpress';
@@ -29,9 +64,11 @@ export function readWordpressFacts(html, base) {
   const faq = (q) => {
     const item = need(root, '#faq', 'questions section').querySelectorAll('.faq-item').find((el) => squash(el.querySelector('h3')?.text ?? '') === q);
     if (!item) throw new Error(`deck: the /from-wordpress page has no question "${q}". Update scripts/company-deck-slides.mjs.`);
-    const paragraphs = need(item, '.faq-answer', `answer to "${q}"`).querySelectorAll('p');
-    if (paragraphs.length !== 1) throw new Error(`deck: the answer to "${q}" on /from-wordpress has ${paragraphs.length} paragraphs, expected 1. Update scripts/company-deck-slides.mjs.`);
-    return squash(inline(paragraphs[0], base, page));
+    // The slide shows the whole answer, so it must be one paragraph and nothing else.
+    const answer = need(item, '.faq-answer', `answer to "${q}"`);
+    const blocks = answer.childNodes.filter((n) => n.nodeType === 1 || squash(n.text) !== '');
+    if (blocks.length !== 1 || blocks[0].tagName !== 'P') throw new Error(`deck: the answer to "${q}" on /from-wordpress is no longer one paragraph. Update scripts/company-deck-slides.mjs.`);
+    return squash(inline(blocks[0], base, page));
   };
   const rankings = faq('Will I lose my Google rankings?');
   const stayCard = need(root, '#fit', 'fit section').querySelectorAll('.card').find((c) => squash(c.querySelector('h3')?.text ?? '') === 'Stay on WordPress when');
@@ -82,16 +119,40 @@ const EXTRA_CSS = `
 .steps6 { margin: 0; padding-left: 26px; }
 .steps6 li { font-size: 20px; line-height: 1.35; margin-bottom: 6px; }
 .contact { margin: 30px 0 0; font-size: 26px; line-height: 1.5; }
+.figs { display: grid; grid-template-columns: 1.2fr 1.2fr 0.85fr; gap: 20px; margin: 0; padding: 0; list-style: none; }
+.figs .card { padding: 16px 20px; display: flex; flex-direction: column; }
+.figs h3 { font-size: 19px; margin: 0 0 8px; }
+.figs .when { margin: auto 0 0; padding-top: 10px; font-size: 15px; line-height: 1.35; color: var(--muted); }
+.rings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ring { margin: 0; text-align: center; }
+.ring svg { width: 74px; margin: 0 auto; }
+.ring .track { fill: none; stroke: var(--mint); stroke-width: 7; }
+.ring .arc { fill: none; stroke: var(--brand); stroke-width: 7; stroke-linecap: round; }
+.ring text { font-size: 24px; font-weight: 700; fill: var(--heading); font-family: var(--font); }
+.ring figcaption { font-size: 14px; line-height: 1.25; color: var(--muted); margin-top: 6px; }
+.bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.bar { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bar .col { height: 96px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; border-bottom: 1px solid var(--line); width: 100%; }
+.bar .value { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.bar .fill { width: 52px; background: var(--brand); border-radius: 6px 6px 0 0; }
+.bar .name { font-size: 15px; font-weight: 600; margin-top: 6px; }
+.bar .span { font-size: 12px; line-height: 1.25; color: var(--muted); }
+.big { margin: 0 0 12px; }
+.big strong { display: block; font-size: 40px; line-height: 1.05; color: var(--brand); white-space: nowrap; }
+.big span { font-size: 15px; line-height: 1.3; color: var(--muted); }
 .contact strong { font-size: 30px; }
 `;
 
 function slideList(why, wp, sec, site, company, logo) {
+  const figs = readWhyFigures(why);
   const host = site.url.replace(/^https?:\/\//, '');
   const link = (path) => `<a href="${site.url}${path}">${host}${path}</a>`;
   const tel = company.phone.replace(/ /g, '');
-  // Slide 6 names the site slide 2 measures: the text of the first link in the /why evidence intro.
-  const measured = /<a href="[^"]+">([^<]+)<\/a>/.exec(why.intro)?.[1];
-  if (!measured) throw new Error('deck: the /why evidence introduction no longer links the measured site. Update scripts/company-deck-slides.mjs.');
+  // Slide 6 names the site slide 2 measures: the one link in the /why evidence intro whose text is
+  // its own host name ("genai-wednesday.de" for https://genai-wednesday.de/).
+  const named = [...why.intro.matchAll(/<a href="https?:\/\/(?:www\.)?([^/"]+)[^"]*">([^<]+)<\/a>/g)].filter((m) => m[1] === m[2]);
+  if (named.length !== 1) throw new Error(`deck: the /why evidence introduction has ${named.length} links named after their own site, expected 1 (the measured site). Update scripts/company-deck-slides.mjs.`);
+  const measured = named[0][2];
   const pathCard = (p) => `<div class="card path"><h3>${esc(p.title)}</h3><ol>${p.steps
     .map((st) => `<li class="${st.kind}"><span class="tag">${esc(st.tag)}</span><span>${st.text}</span></li>`)
     .join('')}</ol></div>`;
@@ -102,11 +163,18 @@ function slideList(why, wp, sec, site, company, logo) {
       <h1>A website built to be found, in plain files you own</h1>
       <p class="lead">And a move off WordPress that lists your old addresses and checks each one on the list.</p>
       <p class="web">${host}</p>` },
-    // 2. Being found: the /why evidence
+    // 2. Being found: the /why evidence, drawn
     { cls: 'dense', kicker: 'Being found', title: 'Build high-ranking websites. The proof so far comes from one site.', body: `
-      <p class="intro">${why.intro}</p>
-      <ul class="list">${why.items.map((i) => `<li><strong>${esc(i.label)}</strong> ${i.body}</li>`).join('')}</ul>
-      <p class="note">${why.caveat} By default, tests check each change before it is pushed: ${link('/checks')}.</p>` },
+      <p class="intro" style="margin-bottom:8px">${why.intro}</p>
+      <ul class="figs" role="list">
+        <li class="card"><h3>Speed and search basics</h3><div class="rings">${figs.speed.scores.map(ring).join('')}</div><p class="when">PageSpeed Insights, simulated phone, ${esc(figs.speed.date)}</p></li>
+        <li class="card"><h3>Clicks from Google, per 28 days</h3>${bars(figs.clicks)}</li>
+        <li class="card"><h3>Named by AI assistants</h3>
+          <p class="big"><strong>${figs.ai.withSearch[0]} of ${figs.ai.withSearch[1]}</strong><span>answers given with web search</span></p>
+          <p class="big"><strong>${figs.ai.fromMemory[0]} of ${figs.ai.fromMemory[1]}</strong><span>given from memory</span></p>
+          <p class="when">${esc(figs.ai.date)}. <a href="${site.url}/proof#ai">Why the second is zero</a></p></li>
+      </ul>
+      <p class="note" style="margin-top:10px;font-size:18px;max-width:none">${why.caveat} By default, tests run before each push: ${link('/checks')}.</p>` },
     // 3. The move
     { cls: 'dense', kicker: 'Moving off WordPress', title: 'Nobody can promise your rankings. A move can keep your addresses working.', body: `
       <div class="cards two tight">

@@ -4,7 +4,8 @@ import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
 import { GROUPS, CHECKED } from '../src/data/compare';
-import { readdirSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { makeDeck, renderDeck, inline, overflowingSlides } from '../scripts/deck-slides.mjs';
@@ -721,6 +722,25 @@ test('seo — the deck script, run as `npm run deck` runs it, makes nothing when
   expect(run('--chek').code, 'a misspelt option must stop the script, not run the default').not.toBe(0);
 });
 
+test('seo — the deck script makes a titled PDF through its real make path, outside the repository', () => {
+  // --out renders, measures, titles and writes like `npm run deck`, but into a scratch folder and
+  // with no lock written, so the committed PDFs and locks must come out unchanged.
+  const tracked = DECKS.flatMap((d) => [d.pdf, d.lock]);
+  const before = tracked.map((p) => readFileSync(join(process.cwd(), p)).toString('base64'));
+  const out = mkdtempSync(join(tmpdir(), 'deck-test-'));
+  try {
+    execFileSync(process.execPath, ['scripts/build-deck.mjs', '--deck', 'company', '--out', out], { encoding: 'utf8', stdio: 'pipe' });
+    const pdf = readFileSync(join(out, 'croftweaver-for-companies.pdf'));
+    expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+    expect(pdfTitles(pdf)).toEqual([companyFrom().title]);
+    // Chromium writes the title from <title> itself; the author is what shows that set_pdf_title.py ran.
+    expect(pdf.toString('latin1').includes(`/Author (${SITE.name})`), 'the PDF has no author: scripts/set_pdf_title.py did not run').toBe(true);
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+  expect(tracked.map((p) => readFileSync(join(process.cwd(), p)).toString('base64')), 'a run with --out changed a committed PDF or lock').toEqual(before);
+});
+
 test('seo — npm run deck remakes only the decks that are not current', () => {
   // The /why PDF is served on the site: an edit to /security, which only the company deck reads,
   // must not re-render it. And a deleted company PDF must be made again.
@@ -742,7 +762,7 @@ test('seo — a changed sentence on each page the company deck reads changes the
   const base = companyFrom().html;
   expect(companyFrom().html, 'the deck is not deterministic').toBe(base);
   const changes: [keyof Pages, string, string, string][] = [
-    ['why', 'why.html', 'out of 100 for performance', 'out of 100 for speed'],
+    ['why', 'why.html', '99, 100, 100 and 100 out of 100', '98, 100, 100 and 100 out of 100'],
     ['wordpress', 'from-wordpress.html', 'Nobody can promise that you keep them.', 'Nobody can promise that.'],
     ['security', 'security.html', 'The plugins run.', 'The plugins all run.'],
   ];
@@ -763,8 +783,21 @@ test('seo — the deck for companies refuses to build when a page it reads chang
   const wordpress = distFile('from-wordpress.html');
   const security = distFile('security.html');
   expect(() => companyFrom({ why: why.replace('id="evidence"', 'id="gone"') })).toThrow(/evidence section/);
+  // Slide 2 draws its charts from the /why sentences: a reworded one stops the build, not a wrong chart.
+  const reworded = why.replace('out of 100 for performance', 'out of 100 for speed');
+  expect(reworded, '/why no longer says "out of 100 for performance"; update this test').not.toBe(why);
+  expect(() => companyFrom({ why: reworded })).toThrow(/worded differently now/);
   expect(() => companyFrom({ wordpress: wordpress.replace('id="move"', 'id="gone"') })).toThrow(/move section/);
-  expect(() => companyFrom({ wordpress: wordpress.replace(/(<ol class="loop"[^>]*>)/, '$1<li><h3>One more step</h3></li>') })).toThrow(/7 steps, expected 6/);
+  const sevenSteps = wordpress.replace(/(<ol class="loop"[^>]*>)/, '$1<li><h3>One more step</h3></li>');
+  expect(sevenSteps, 'the move list is no longer <ol class="loop">; update this test').not.toBe(wordpress);
+  expect(() => companyFrom({ wordpress: sevenSteps })).toThrow(/7 steps, expected 6/);
+  const listInAnswer = wordpress.replace(/(<div class="faq-answer"[^>]*><p>Nobody can promise)/, '<div class="faq-answer"><ul><li>More</li></ul><p>Nobody can promise');
+  expect(listInAnswer, 'the rankings answer markup changed; update this test').not.toBe(wordpress);
+  expect(() => companyFrom({ wordpress: listInAnswer })).toThrow(/no longer one paragraph/);
+  // Slide 6 names the measured site; another link in the /why intro must not take its place.
+  const extraLink = why.replace('One site, measured:', 'One site, <a href="/proof">our evidence</a>, measured:');
+  expect(extraLink, '/why no longer says "One site, measured:"; update this test').not.toBe(why);
+  expect(companyFrom({ why: extraLink }).html).toContain('genai-wednesday.de</span>, the site measured on slide 2');
   // A heading in the section that is not in the list of steps (such as a table of who does what) is not a step.
   const extraHeading = wordpress.replace(/(id="move"[^>]*>)/, '$1<h3>Who does what</h3>');
   expect(extraHeading).not.toBe(wordpress);
@@ -808,8 +841,7 @@ test('seo — the city on the last slide is read whole from COMPANY.postcodeCity
 
 test('seo — the handout PDF carries its doc-title', () => {
   const titles = pdfTitles(readFileSync(join(process.cwd(), 'handouts', 'croftweaver-for-companies.pdf')));
-  expect(titles.length, 'no readable doc-title').toBeGreaterThan(0);
-  for (const t of titles) expect(t).toBe(companyFrom().title);
+  expect(titles, 'no readable doc-title, or not the deck title').toEqual([companyFrom().title]);
 });
 
 test('seo — the deck build flags a slide whose text reaches into the footer band', async ({ page }) => {

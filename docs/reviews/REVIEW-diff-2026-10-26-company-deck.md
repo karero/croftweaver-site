@@ -38,3 +38,30 @@ unchanged.
 Change from Daniel during the round: the "Stay on WordPress when" line on /from-wordpress (which the
 deck quotes) now asks that WordPress, its plugins and PHP are kept up to date, with a firewall plugin
 or service in front of it (WordPress.org's hardening guide, read 2026-10-26).
+
+## Round 2 (2026-10-26, base 276e6dc, head e7c1649; verify round)
+
+Codex: 1 BUG, 2 RISK (491 s, 68,728 tokens). GLM 5.3 on melious, back with credit: 3 RISK, 4 NIT
+(426 s, 36,263 tokens). Both confirmed the round-1 fixes they checked (#2–#16).
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 19 | Codex | BUG | the PDFs were written to the repository before their titles were set; a title failure left both replaced and the locks stale | fixed: PDFs are written and titled in a scratch folder, copied into place only when all succeeded, then the locks |
+| 20 | Codex, GLM | RISK | slide 6 took the first link of the /why intro as the measured site | fixed: the one link whose text is its own host name, or the build stops; a test adds a "/proof" link before it and slide 6 still names genai-wednesday.de |
+| 21 | Codex, GLM | RISK | the make path (render, measure, title, write) had no test through the real script | fixed: a test runs `build-deck.mjs --deck company --out <scratch>`, checks a PDF with the deck title and the author `set_pdf_title.py` writes, and that no committed PDF or lock changed. CI installs pypdf 6.14.2 in a venv for it. Writing the test showed the doc-title alone cannot show the script ran (Chromium writes it from `<title>`, and `set_pdf_title.py` changes XMP only when a PDF has some); the author is the mark |
+| 22 | GLM | RISK | an answer of one `<p>` plus a list would drop the list | fixed: the answer must be exactly one paragraph and nothing else; test with a list added |
+| 23 | GLM | NIT | slide 4 colour falls back silently when a step has no class | declined: the "Visitor" steps have no class on the page by design; a lost class costs only colour, which Daniel's look covers |
+| 24 | GLM | NIT | `--check --deck why` still checks every deck | fixed: the usage text says `--check` always checks every deck |
+| 25 | GLM | NIT | a valueless `--deck` would remake every deck | refuted: `node scripts/build-deck.mjs --deck` prints "--deck needs a value." and exits 1; `--out --deck why` likewise |
+| 26 | GLM | NIT | the seven-step test lacks a guard that its replace fired | fixed |
+
+Seen while running tests: the growth session's worktree (`croftweaver-site-quickwins`) serves its
+preview on the same port, 4725, so two sessions' Playwright runs collide ("already used"). A first
+push of this branch failed that way; nothing was pushed.
+
+Change from Daniel after round 2: slide 2 shows the /why figures as graphics (score rings, a
+three-bar chart of clicks per 28 days, the AI counts as large numbers), drawn from the numbers in the
+/why evidence sentences; a reworded sentence stops the build (test added). His screenshots (PageSpeed
+100s with "Agentic Browsing 3/3", a Search Console badge of 90 clicks on 2 July 2026) were not used:
+they differ from what /why states and nothing would keep them current; his choice, 2026-10-26.
+The typed tests line is now "By default, tests run before each push" to fit the slide.

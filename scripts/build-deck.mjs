@@ -5,6 +5,7 @@
 //   npm run deck              build the site, then remake each deck whose PDF is not current
 //   node scripts/build-deck.mjs --check
 //                             no browser: fail unless every deck's PDF matches its source
+//                             (it always checks every deck, with or without --deck)
 //   --deck why|company        remake that deck even if it is current
 //   --out <folder>            write the PDFs there and touch no lock (every deck, or the one named)
 //
@@ -13,7 +14,8 @@
 // --check, so a run turns red when either no longer matches. The check compares hashes; it does not
 // open the PDF. Needs Node 22.18 or newer (it imports src/config.ts) and, to make a PDF, Python 3
 // with pypdf for the doc-title (the same tool as scripts/set_pdf_title.py).
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -69,8 +71,8 @@ if (todo.length === 0) {
   process.exit(0);
 }
 
-// Every deck is rendered and measured before any file is written, so a slide that is too long in
-// one deck leaves every PDF and lock as it was.
+// Every deck is rendered, measured and titled in a scratch folder first, so a slide that is too long
+// or a title that fails leaves every PDF and lock in the repository as it was.
 const { chromium } = await import('@playwright/test');
 const browser = await chromium.launch();
 const made = [];
@@ -91,10 +93,6 @@ try {
 } finally {
   await browser.close();
 }
-for (const { pdfPath, bytes } of made) {
-  mkdirSync(dirname(pdfPath), { recursive: true });
-  writeFileSync(pdfPath, bytes);
-}
 
 // The doc-title is what search results print for a hosted PDF; tests/seo.spec.ts checks it.
 function setTitle(pdfPath, title) {
@@ -107,8 +105,22 @@ function setTitle(pdfPath, title) {
   fail('no Python interpreter found (tried python3, py -3, python); the PDF needs its doc-title.');
 }
 
+const scratch = mkdtempSync(join(tmpdir(), 'deck-'));
+try {
+  for (const m of made) {
+    m.tmp = join(scratch, basename(m.pdfPath));
+    writeFileSync(m.tmp, m.bytes);
+    setTitle(m.tmp, m.built.title);
+  }
+  for (const { pdfPath, tmp } of made) {
+    mkdirSync(dirname(pdfPath), { recursive: true });
+    copyFileSync(tmp, pdfPath);
+  }
+} finally {
+  rmSync(scratch, { recursive: true, force: true });
+}
+
 for (const { deck, built, pdfPath } of made) {
-  setTitle(pdfPath, built.title);
   if (!out) {
     writeFileSync(join(root, deck.lock), JSON.stringify({ source: sha(built.html), pdf: sha(readFileSync(pdfPath)) }, null, 2) + '\n');
     // `npm run deck` builds the site first, so dist/ holds the PDF from before this run (or none).
