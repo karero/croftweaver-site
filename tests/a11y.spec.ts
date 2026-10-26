@@ -1086,12 +1086,19 @@ test('case study — the figures from the two data files equal those files', asy
   expect(aiText).toContain(`Without web search, ${t('without_search', 11)} of ${t('without_search', 10)} named it`);
   // The page never calls the source count a citation (see src/data/case-study.ts).
   expect(await page.locator('main').textContent()).not.toMatch(/\bcited\b/i);
-  // The log: every change links a pull request of one of the three repositories.
-  const prLinks = page.locator('#log li.change a[href*="/pull/"]');
-  const changes = await page.locator('#log li.change').count();
-  expect(changes, 'the log has changes').toBeGreaterThan(0);
-  await expect(prLinks).toHaveCount(changes);
-  for (const href of await prLinks.evaluateAll((as) => as.map((a) => a.getAttribute('href')))) {
-    expect(href).toMatch(/^https:\/\/github\.com\/(karero\/croftweaver|karero\/croftweaver-site|GenAI-Wednesday\/GenAI-Wednesday\.de)\/pull\/\d+$/);
+  // The log: every change names a pull request of one of the three repositories. The two public ones
+  // are linked; GenAI-Wednesday.de is private, so its pull requests are named without a link (2026-10-26).
+  const changes = page.locator('#log li.change');
+  const n = await changes.count();
+  expect(n, 'the log has changes').toBeGreaterThan(0);
+  for (let i = 0; i < n; i++) {
+    const li = changes.nth(i);
+    const hrefs = await li.locator('a[href*="/pull/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    if (/GenAI-Wednesday\/GenAI-Wednesday\.de#\d+ \(private repository\)/.test((await li.textContent()) ?? '')) {
+      expect(hrefs, `change ${i + 1} names a private pull request and must not link it`).toEqual([]);
+    } else {
+      expect(hrefs, `change ${i + 1} links one pull request`).toHaveLength(1);
+      expect(hrefs[0]).toMatch(/^https:\/\/github\.com\/(karero\/croftweaver|karero\/croftweaver-site)\/pull\/\d+$/);
+    }
   }
 });
