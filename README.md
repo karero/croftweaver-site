@@ -84,8 +84,9 @@ companies that will not build their site themselves. It is not in `public/`, so 
 not serve it. Its slides are in `scripts/company-deck-slides.mjs`, and its lock is
 `scripts/company-deck.lock.json`. It reads the `/why` evidence, the move steps, the rankings
 answer and "Stay on WordPress when" on `/from-wordpress`, the two request paths and the
-no-ranking sentence on `/security`, and the contact details in `COMPANY` (`src/config.ts`);
-a change to any of those also turns `npm test` red until `npm run deck` runs. `npm run deck`
+no-ranking sentence on `/security`, and the name, company, city and phone in `COMPANY`
+(`src/config.ts`; the email on the last slide is typed in the slide script); a change to any
+of those also turns `npm test` red until `npm run deck` runs. `npm run deck`
 remakes only the decks whose PDF is not current, so an edit to `/security` leaves the served
 `/why` PDF alone. `node scripts/build-deck.mjs --deck why` remakes one deck anyway, and
 `--out <folder>` writes the PDFs elsewhere without touching a lock.

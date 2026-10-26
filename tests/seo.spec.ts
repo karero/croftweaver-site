@@ -705,6 +705,22 @@ test('seo — every deck is checked, and a changed slide, lock or PDF, or a miss
   }
 });
 
+test('seo — the deck script, run as `npm run deck` runs it, makes nothing when every deck is current', () => {
+  // The real entry point. --check first: with a deck not current, the plain run would render PDFs.
+  const run = (...args: string[]) => {
+    try {
+      return { code: 0, out: execFileSync(process.execPath, ['scripts/build-deck.mjs', ...args], { encoding: 'utf8', stdio: 'pipe' }) };
+    } catch (error) {
+      const e = error as { status: number; stdout?: string; stderr?: string };
+      return { code: e.status, out: `${e.stdout ?? ''}${e.stderr ?? ''}` };
+    }
+  };
+  expect(run('--check').code, 'a deck is not current; run `npm run deck`').toBe(0);
+  expect(run().out).toContain('every deck is current; nothing to make');
+  expect(run('--deck', 'nope').code).not.toBe(0);
+  expect(run('--chek').code, 'a misspelt option must stop the script, not run the default').not.toBe(0);
+});
+
 test('seo — npm run deck remakes only the decks that are not current', () => {
   // The /why PDF is served on the site: an edit to /security, which only the company deck reads,
   // must not re-render it. And a deleted company PDF must be made again.
@@ -748,7 +764,14 @@ test('seo — the deck for companies refuses to build when a page it reads chang
   const security = distFile('security.html');
   expect(() => companyFrom({ why: why.replace('id="evidence"', 'id="gone"') })).toThrow(/evidence section/);
   expect(() => companyFrom({ wordpress: wordpress.replace('id="move"', 'id="gone"') })).toThrow(/move section/);
-  expect(() => companyFrom({ wordpress: wordpress.replace(/(id="move"[^>]*>)/, '$1<h3>One more step</h3>') })).toThrow(/7 steps, expected 6/);
+  expect(() => companyFrom({ wordpress: wordpress.replace(/(<ol class="loop"[^>]*>)/, '$1<li><h3>One more step</h3></li>') })).toThrow(/7 steps, expected 6/);
+  // A heading in the section that is not in the list of steps (such as a table of who does what) is not a step.
+  const extraHeading = wordpress.replace(/(id="move"[^>]*>)/, '$1<h3>Who does what</h3>');
+  expect(extraHeading).not.toBe(wordpress);
+  expect(companyFrom({ wordpress: extraHeading }).html).toBe(companyFrom().html);
+  expect(() => companyFrom({ wordpress: wordpress.replace('id="fit"', 'id="gone"') })).toThrow(/fit section/);
+  expect(() => companyFrom({ wordpress: wordpress.replace('id="faq"', 'id="gone"') })).toThrow(/questions section/);
+  expect(() => companyFrom({ security: security.replace('id="safer"', 'id="gone"') })).toThrow(/safer section/);
   expect(() => companyFrom({ wordpress: wordpress.replaceAll('Will I lose my Google rankings?', 'Will rankings move?') })).toThrow(/no question/);
   expect(() => companyFrom({ wordpress: wordpress.replace('Stay on WordPress when', 'Keep WordPress when') })).toThrow(/Stay on WordPress when/);
   expect(() => companyFrom({ security: security.replace('id="runs"', 'id="gone"') })).toThrow(/what runs/);
@@ -774,6 +797,7 @@ test('seo — every link in the deck for companies works from a PDF', () => {
   const a = (href: string) => parse(`<p><a href="${href}">x</a></p>`).querySelector('p')!;
   expect(inline(a('#here'), SITE.url, '/security')).toContain(`href="${SITE.url}/security#here"`);
   expect(() => inline(a('page.html'), SITE.url, '/security')).toThrow(/no address a PDF can follow/);
+  expect(() => inline(a('//example.com/x'), SITE.url, '/security')).toThrow(/no address a PDF can follow/);
 });
 
 test('seo — the city on the last slide is read whole from COMPANY.postcodeCity', () => {

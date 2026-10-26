@@ -16,7 +16,7 @@ export const squash = (s) => s.replace(/\s+/g, ' ').trim();
 // from; any other relative link would be dead in a PDF, so it stops the build.
 function absolute(href, base, page) {
   if (/^(https?:|mailto:|tel:)/.test(href)) return href;
-  if (href.startsWith('/')) return base + href;
+  if (href.startsWith('/') && !href.startsWith('//')) return base + href;
   if (href.startsWith('#') && page) return base + page + href;
   throw new Error(`deck: the link "${href}" has no address a PDF can follow. Update scripts/deck-slides.mjs.`);
 }

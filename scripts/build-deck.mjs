@@ -36,6 +36,9 @@ const arg = (flag) => {
 if (!process.features.typescript) fail(`this script imports src/config.ts, so it needs a Node that runs TypeScript files unaided (22.18 or newer). This is Node ${process.versions.node}.`);
 const { SITE, COMPANY } = await import('../src/config.ts');
 
+const known = ['--check', '--deck', '--out'];
+const unknown = process.argv.slice(2).filter((a, i, all) => a.startsWith('-') ? !known.includes(a) : !['--deck', '--out'].includes(all[i - 1]));
+if (unknown.length) fail(`unknown argument ${unknown.join(' ')}; the options are --check, --deck <name>, --out <folder>.`);
 const named = arg('--deck');
 if (named && !DECKS.some((d) => d.name === named)) fail(`there is no deck "${named}"; the decks are ${DECKS.map((d) => d.name).join(', ')}.`);
 const out = arg('--out');
@@ -47,7 +50,9 @@ const dist = (name) => {
 };
 const readOrNull = (path, encoding) => (existsSync(join(root, path)) ? readFileSync(join(root, path), encoding) : null);
 const logoSvg = readFileSync(logoPath, 'utf8');
-const results = DECKS.map((deck) => {
+// Remaking one named deck reads only its own pages, so a reshaped page another deck reads does not block it.
+const wanted = named && !process.argv.includes('--check') ? DECKS.filter((d) => d.name === named) : DECKS;
+const results = wanted.map((deck) => {
   const built = deck.make({ dist, site: SITE, company: COMPANY, logoSvg });
   const problem = checkDeck({ deck, html: built.html, lockText: readOrNull(deck.lock, 'utf8'), pdfBytes: readOrNull(deck.pdf) });
   return { deck, built, problem };
@@ -64,13 +69,14 @@ if (todo.length === 0) {
   process.exit(0);
 }
 
+// Every deck is rendered and measured before any file is written, so a slide that is too long in
+// one deck leaves every PDF and lock as it was.
 const { chromium } = await import('@playwright/test');
 const browser = await chromium.launch();
 const made = [];
 try {
   for (const { deck, built } of todo) {
     const pdfPath = out ? join(resolve(out), basename(deck.pdf)) : join(root, deck.pdf);
-    mkdirSync(dirname(pdfPath), { recursive: true });
     const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
     await page.setContent(built.html, { waitUntil: 'load' });
     // Measure the layout that gets printed: page.pdf() renders with print media.
@@ -78,12 +84,16 @@ try {
     // Text that runs past its slide is the layout bug nothing else would catch.
     const overflowing = await page.evaluate(overflowingSlides);
     if (overflowing.length) fail(`the ${deck.name} deck: text runs past the edge of slide ${overflowing.join(', ')}. Shorten it or make the type smaller in its slide script.`);
-    await page.pdf({ path: pdfPath, preferCSSPageSize: true, printBackground: true, tagged: true, outline: true });
+    const bytes = await page.pdf({ preferCSSPageSize: true, printBackground: true, tagged: true, outline: true });
     await page.close();
-    made.push({ deck, built, pdfPath });
+    made.push({ deck, built, pdfPath, bytes });
   }
 } finally {
   await browser.close();
+}
+for (const { pdfPath, bytes } of made) {
+  mkdirSync(dirname(pdfPath), { recursive: true });
+  writeFileSync(pdfPath, bytes);
 }
 
 // The doc-title is what search results print for a hosted PDF; tests/seo.spec.ts checks it.

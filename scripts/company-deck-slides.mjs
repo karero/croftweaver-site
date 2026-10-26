@@ -23,12 +23,15 @@ export function readWordpressFacts(html, base) {
   const page = '/from-wordpress';
   const root = parse(html);
   const need = needIn(page);
-  const steps = need(root, '#move', 'move section').querySelectorAll('h3').map((h) => squash(h.text));
+  // The step names are the headings of the numbered list; other headings in the section are not steps.
+  const steps = need(root, '#move', 'move section').querySelectorAll('ol > li h3').map((h) => squash(h.text));
   if (steps.length !== 6) throw new Error(`deck: the /from-wordpress move has ${steps.length} steps, expected 6. Update scripts/company-deck-slides.mjs.`);
   const faq = (q) => {
     const item = need(root, '#faq', 'questions section').querySelectorAll('.faq-item').find((el) => squash(el.querySelector('h3')?.text ?? '') === q);
     if (!item) throw new Error(`deck: the /from-wordpress page has no question "${q}". Update scripts/company-deck-slides.mjs.`);
-    return squash(inline(need(item, '.faq-answer p', `answer to "${q}"`), base, page));
+    const paragraphs = need(item, '.faq-answer', `answer to "${q}"`).querySelectorAll('p');
+    if (paragraphs.length !== 1) throw new Error(`deck: the answer to "${q}" on /from-wordpress has ${paragraphs.length} paragraphs, expected 1. Update scripts/company-deck-slides.mjs.`);
+    return squash(inline(paragraphs[0], base, page));
   };
   const rankings = faq('Will I lose my Google rankings?');
   const stayCard = need(root, '#fit', 'fit section').querySelectorAll('.card').find((c) => squash(c.querySelector('h3')?.text ?? '') === 'Stay on WordPress when');
@@ -48,7 +51,8 @@ export function readSecurityFacts(html, base) {
     steps: a.querySelectorAll('li.step').map((li) => {
       const [tag, text] = li.querySelectorAll('span');
       if (!text || !tag.classList.contains('tag')) throw new Error('deck: a step in the /security "what runs" section is no longer a label and a text. Update scripts/company-deck-slides.mjs.');
-      return { tag: squash(tag.text), text: squash(inline(text, base, page)) };
+      const kind = li.classList.contains('is-code') ? 'code' : li.classList.contains('is-file') ? 'file' : '';
+      return { tag: squash(tag.text), text: squash(inline(text, base, page)), kind };
     }),
   }));
   if (paths.length !== 2 || paths.some((p) => p.steps.length === 0)) throw new Error(`deck: the /security "what runs" section has ${paths.length} paths, expected 2 with steps. Update scripts/company-deck-slides.mjs.`);
@@ -63,8 +67,7 @@ export function cityOf(postcodeCity) {
   return m[1].trim();
 }
 
-// The person on the last slide writes from this address (Daniel's choice, 2026-10-25); the site
-// itself shows COMPANY.email.
+// The address on the last slide is the person's own; the site itself shows COMPANY.email.
 const CONTACT_EMAIL = 'daniel@m-squad.com';
 
 const EXTRA_CSS = `
@@ -86,8 +89,11 @@ function slideList(why, wp, sec, site, company, logo) {
   const host = site.url.replace(/^https?:\/\//, '');
   const link = (path) => `<a href="${site.url}${path}">${host}${path}</a>`;
   const tel = company.phone.replace(/ /g, '');
+  // Slide 6 names the site slide 2 measures: the text of the first link in the /why evidence intro.
+  const measured = /<a href="[^"]+">([^<]+)<\/a>/.exec(why.intro)?.[1];
+  if (!measured) throw new Error('deck: the /why evidence introduction no longer links the measured site. Update scripts/company-deck-slides.mjs.');
   const pathCard = (p) => `<div class="card path"><h3>${esc(p.title)}</h3><ol>${p.steps
-    .map((st) => `<li class="${st.tag === 'Runs code' ? 'code' : st.tag === 'No code' ? 'file' : ''}"><span class="tag">${esc(st.tag)}</span><span>${st.text}</span></li>`)
+    .map((st) => `<li class="${st.kind}"><span class="tag">${esc(st.tag)}</span><span>${st.text}</span></li>`)
     .join('')}</ol></div>`;
   return [
     // 1. Cover
@@ -100,14 +106,14 @@ function slideList(why, wp, sec, site, company, logo) {
     { cls: 'dense', kicker: 'Being found', title: 'Build high-ranking websites. The proof so far comes from one site.', body: `
       <p class="intro">${why.intro}</p>
       <ul class="list">${why.items.map((i) => `<li><strong>${esc(i.label)}</strong> ${i.body}</li>`).join('')}</ul>
-      <p class="note">${why.caveat} Tests check each change before it goes out: ${link('/checks')}.</p>` },
+      <p class="note">${why.caveat} By default, tests check each change before it is pushed: ${link('/checks')}.</p>` },
     // 3. The move
     { cls: 'dense', kicker: 'Moving off WordPress', title: 'Nobody can promise your rankings. A move can keep your addresses working.', body: `
       <div class="cards two tight">
         <div class="card"><h3>The move, in six steps</h3><ol class="steps6">${wp.steps.map((st) => `<li>${esc(st)}</li>`).join('')}</ol></div>
         <div class="card"><h3>Will we lose our Google rankings?</h3><p>${wp.rankings}</p></div>
       </div>
-      <p class="note">The helper's first trial on a real WordPress site, what it found and where it stops: ${link('/from-wordpress#proof')}.</p>` },
+      <p class="note">The helper is a Croftweaver skill. Its first trial on a real site: ${link('/from-wordpress#proof')}.</p>` },
     // 4. What runs on a visit
     { kicker: 'Security', title: 'Less of the site’s own code runs when someone opens a page.', body: `
       <div class="cards two">${sec.paths.map(pathCard).join('')}</div>
@@ -118,13 +124,13 @@ function slideList(why, wp, sec, site, company, logo) {
         <div class="card"><h3>Stay on WordPress when</h3><ul class="list">${wp.stay.map((s) => `<li>${s}</li>`).join('')}</ul></div>
         <div class="card good"><h3>After the move</h3><ul class="list">
           <li>Changes are made by someone working with an AI coding assistant: a person on your team, or someone you ask.</li>
-          <li>There is no editor in the browser.</li>
+          <li>There is no editor in the browser; an editor on your own computer can be added.</li>
           <li>The domain and the GitHub and Cloudflare accounts are in your name.</li>
         </ul></div>
       </div>` },
     // 6. Next step
     { cls: 'moss', kicker: 'Next step', title: 'Talk it through in a first call.', body: `
-      <p class="lead" style="margin-top:0">${esc(company.managingDirector)} of M-Squad maintains Croftweaver, and <span style="white-space:nowrap">genai-wednesday.de</span>, the site measured on slide 2, is his.</p>
+      <p class="lead" style="margin-top:0">${esc(company.managingDirector)} of M-Squad maintains Croftweaver, and <span style="white-space:nowrap">${measured}</span>, the site measured on slide 2, is his.</p>
       <p class="contact"><strong>${esc(company.managingDirector)}</strong><br>${esc(company.legalName)}, ${esc(cityOf(company.postcodeCity))}<br><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><br><a href="tel:${esc(tel)}">${esc(company.phone)}</a></p>
       <p class="note" style="border-color:var(--mint);color:var(--mint)">Moving from WordPress, in full: ${link('/from-wordpress')}.</p>` },
   ];
