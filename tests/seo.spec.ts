@@ -3,7 +3,7 @@ import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
-import { GROUPS, CHECKED } from '../src/data/compare';
+import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED } from '../src/data/compare';
 import { readdirSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -681,11 +681,12 @@ test('seo — the privacy page names the analytics host in an element marked dat
 // ── /compare: every group links its sources in place and is dated ──────────────
 // Site-specific (not in the shipped suite): /compare's rule is that every statement about another
 // product links the page it restates and carries the day it was read. This holds each group's row
-// links, the links in a group's sources note (`needs`), each group's own date and the hero's date
-// to src/data/compare.ts. It does not check the positioning note's own date, or the links in the
-// guide at the top, in that note and in the "Use them together" line.
+// links, the links in a group's sources note (`needs`), each group's own date, the hero's date, and
+// the Claude Code section's source link and date to src/data/compare.ts. It does not check the
+// positioning note's own date, or the links in the guide at the top, in that note, in the "Use them
+// together" line and in the Claude Code section's list.
 // Whether a fact still matches its source stays a review job.
-test('seo — /compare links each row and each sources-note link in place and shows the group and hero dates', async ({ page }) => {
+test('seo — /compare links each row, each sources-note link and the Claude Code source in place, with their dates', async ({ page }) => {
   await page.goto('/compare');
   const hero = page.locator('section.hero time');
   await expect(hero, 'the hero date').toHaveAttribute('datetime', CHECKED.iso);
@@ -711,4 +712,8 @@ test('seo — /compare links each row and each sources-note link in place and sh
       await expect(section.locator('time'), `${g.id}: its own date`).toHaveText(g.checked.label);
     }
   }
+  const cc = page.locator('section#claude-code');
+  await expect(cc.locator(`a[href="${CLAUDE_CODE.url}"]`), 'the Claude Code section does not link its source').toHaveText(CLAUDE_CODE.label);
+  await expect(cc.locator('time'), 'the Claude Code section: its date').toHaveAttribute('datetime', CLAUDE_CODE_CHECKED.iso);
+  await expect(cc.locator('time'), 'the Claude Code section: its date').toHaveText(CLAUDE_CODE_CHECKED.label);
 });

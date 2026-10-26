@@ -18,6 +18,11 @@ export const MESSAGE_FIRST = [
   { name: 'website-build-kit', url: 'https://github.com/nurkamol/website-build-kit', fact: 'opens its method with discovery' },
 ] as const;
 
+// The section "Claude Code on its own, or with Croftweaver" quotes Claude Code's own overview, read on
+// CLAUDE_CODE_CHECKED. Its list restates this site's own pages, each linked there.
+export const CLAUDE_CODE_CHECKED = { iso: '2026-10-26', label: '26 October 2026' } as const;
+export const CLAUDE_CODE = { url: 'https://code.claude.com/docs/en/overview', label: 'Claude Code overview' } as const;
+
 // The guide at the top of /compare: what you are building, and which kind of tool fits it. One
 // line each, so a line can be quoted on its own. Each line sums up a section of the page and adds
 // no fact about another product; it says what fits, never which is best.
