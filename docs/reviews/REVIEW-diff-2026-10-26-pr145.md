@@ -43,7 +43,7 @@ none (melious out of credit; ollama at its usage limit).
 ## Verdict
 
 DIFF gate clean on 621dd123036409feaf708b59cea9a4c81466471e: no open BUG or RISK. 3 rounds, 13
-findings (1 BUG, 6 RISK, 6 NIT): 7 fixed, 2 refuted, 1 re-sorted as rare, 3 declined or out of scope.
+findings (1 BUG, 5 RISK, 7 NIT): 5 fixed, 2 refuted, 1 re-sorted as rare, 5 declined or out of scope.
 GLM 5.3 took part in round 1 only (on ollama, melious being out of credit); rounds 2 and 3 had no
 second model seat, and round 2 had the fresh-eyes pass. Nothing changed after round 3 except this
 record. Cost: Codex 3 runs, 2,925 s, 110,795 tokens; GLM one run, 234 s; fresh-eyes 2 rounds,
