@@ -28,6 +28,26 @@ export const CLAUDE_CODE = {
   skills: 'repeatable workflows',
 } as const;
 
+// The two-run comparison of 26 October 2026: one brief for a fictional business, given to Claude Code
+// on its own and with Croftweaver, same model and settings. Every value is the run's own record or a
+// neutral tool's reading (never Croftweaver's own tests), taken on RUNS_MEASURED. Both repositories
+// hold the brief, the harness and the transcripts.
+export const RUNS_MEASURED = { iso: '2026-10-26', label: '26 October 2026' } as const;
+export const RUNS = [
+  { key: 'alone', name: 'Claude Code on its own', site: 'https://compare-cc-alone.pages.dev', repo: 'https://github.com/karero/compare-claude-code-alone' },
+  { key: 'croftweaver', name: 'With Croftweaver', site: 'https://compare-cc-croftweaver.pages.dev', repo: 'https://github.com/karero/compare-claude-code-croftweaver' },
+] as const;
+export const RUN_ROWS = [
+  { measure: 'Time to a finished build', alone: '160 seconds', croftweaver: '1,170 seconds' },
+  { measure: 'Cost of the run', alone: '0.51 USD', croftweaver: '3.80 USD' },
+  { measure: 'Prompts and questions', alone: 'one prompt, no questions', croftweaver: 'one prompt, no questions' },
+  { measure: 'Pages', alone: 'home, services, about, contact', croftweaver: 'home, services, about, contact, privacy' },
+  { measure: 'HTML errors', alone: 'none', croftweaver: 'none' },
+  { measure: 'Structured data', alone: 'none detected', croftweaver: 'a local business and an organization, both valid; two optional fields missing' },
+  { measure: 'PageSpeed, home', alone: 'PSI_ALONE_HOME', croftweaver: 'PSI_CW_HOME' },
+  { measure: 'PageSpeed, contact', alone: 'PSI_ALONE_CONTACT', croftweaver: 'PSI_CW_CONTACT' },
+] as const;
+
 // The guide at the top of /compare: what you are building, and which kind of tool fits it. One
 // line each, so a line can be quoted on its own. Each line sums up a section of the page and adds
 // no fact about another product; it says what fits, never which is best.

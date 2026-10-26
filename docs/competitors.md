@@ -373,5 +373,10 @@ your development tools"; and skills, which it uses to "package repeatable workfl
 share". The section quotes both, from `CLAUDE_CODE` in `src/data/compare.ts`, and says nothing Claude
 Code lacks. Its list of what the skills bring restates this site's own pages, each linked.
 
-**Not yet shown:** that a site built with Croftweaver does better than one Claude Code builds on its
-own. The section says so. A two-run comparison is planned and waits for the owner's approval.
+**One comparison (26 October 2026).** The owner approved a two-run comparison: one brief for a
+fictional business, given to Claude Code on its own and with Croftweaver, same model and settings,
+measured with tools Croftweaver does not make. The results are `RUN_ROWS` in `src/data/compare.ts`.
+Both repositories are public, with the brief, the history and the transcripts:
+https://github.com/karero/compare-claude-code-alone and
+https://github.com/karero/compare-claude-code-croftweaver. One run each is an anecdote; the section
+says so, and that positioning, copy quality and later changes were not compared.
