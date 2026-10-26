@@ -10,8 +10,8 @@ v0.33, excerpts with line numbers.
 
 ## Round 1 (2026-10-26, base 88c032e, head 95b56ee)
 
-Codex: 1 BUG, 2 RISK (596 s, 77,343 tokens). Fresh-eyes: 3 BUG, 4 RISK, 4 NIT (304 s, 168,811
-tokens). The site's own Playwright run on 95b56ee also failed three table tests (row 1).
+Codex: 1 BUG, 2 RISK (596 s, 77,343 tokens). Fresh-eyes: 3 BUG, 5 RISK, 4 NIT (304 s, 168,811
+tokens; its own summary line says 4 RISK, and it lists 5). The site's own Playwright run on 95b56ee also failed three table tests (row 1).
 
 | # | Seat | Kind | Finding | Disposition |
 |---|---|---|---|---|
@@ -24,7 +24,7 @@ tokens). The site's own Playwright run on 95b56ee also failed three table tests 
 | 7 | fresh | RISK | summary rows are not registered claims and can go stale | see rows 18 and 21 |
 | 8 | fresh | RISK | "Fixes each finding before launch" overstates the assistant's part | fixed: "Fixes the findings it can … and asks you about the rest" |
 | 9 | fresh | RISK | "lists any it refuses" misses the cases where nothing is written | fixed: "It lists what it refuses, or why it wrote nothing" |
-| 10 | Codex, fresh | RISK | "not where you decided" needs the decisions sheet | fixed: "given your decisions sheet" |
+| 10 | Codex (RISK), fresh (NIT) | RISK | "not where you decided" needs the decisions sheet | fixed: "given your decisions sheet" |
 | 11 | Codex | RISK | template and launch-step facts lack inspected support | see row 17 |
 | 12 | Codex | UNVERIFIABLE | "tests run on every change" | fixed anyway: "before each push and on each pull request" |
 | 13 | fresh | NIT | CONTENT_GUIDE.md and a test comment describe the old short answer | fixed |
@@ -35,7 +35,8 @@ tokens). The site's own Playwright run on 95b56ee also failed three table tests 
 ## Round 2 (2026-10-26, delta 95b56ee..031e28e), verification
 
 Earned by rows 2-4 (BUG). Codex: 3 RISK (1,469 s, 82,700 tokens; the machine's load average
-was near 300). Rows 1-16 verified as fixed or declined.
+was near 300). Rows 1-6, 8-10 and 12-16 verified as fixed or declined; rows 7 and 11 came back
+as rows 18 and 17.
 
 | # | Seat | Kind | Finding | Disposition |
 |---|---|---|---|---|
@@ -51,7 +52,7 @@ Codex: 1 BUG, 1 RISK (240 s, 58,909 tokens).
 | # | Seat | Kind | Finding | Disposition |
 |---|---|---|---|---|
 | 20 | Codex | BUG | the claim map was incomplete and two entries pointed elsewhere | fixed by a cut (b7a5f4c): the map is gone |
-| 21 | Codex | RISK | rows 7 and 18 again | refuted: `tests/check_security_page.sh` leaves "everything on the page that is not a registered claim" to editorial review, and the summary rows are such prose, like the hero lead. One note in `src/data/security.ts`, where re-reads happen, asks for the row to change with the claim |
+| 21 | Codex | RISK | rows 7 and 18 again | refuted as a missing guard: `tests/check_security_page.sh` leaves "everything on the page that is not a registered claim" to editorial review, and the summary rows are such prose, like the hero lead. One note in `src/data/security.ts`, where re-reads happen, asks for the row to change with the claim. A stale row stays possible, as for all of the page's prose; named to the owner |
 
 ## Confirmation (2026-10-26, delta c278099..b7a5f4c)
 
