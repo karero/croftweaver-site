@@ -5,11 +5,12 @@
 // (src/data/suites.ts); nothing here is typed by hand.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { SUITES, SUITE_GROUPS, SUITE_COUNT, SUITES_VERSION, SUITE_FILES } from '../data/suites';
+import { SUITES, SUITE_GROUPS, SUITE_COUNT, SUITES_VERSION, SUITES_ADDED, SUITE_FILES } from '../data/suites';
 
-const copied = new Date(`${SUITES_VERSION.copied}T12:00:00Z`).toLocaleDateString('en-GB', {
+const dateText = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
+const copied = dateText(SUITES_VERSION.copied);
 const description =
   `Each Croftweaver site carries its own test gate: ${SUITE_COUNT} suites for accessibility, ` +
   'search, tone and positioning. See what each checks and what a pass does not prove.';
@@ -48,6 +49,12 @@ const description =
       These are the suites of the toolkit template at commit
       <code>{SUITES_VERSION.commit.slice(0, 7)}</code>, copied on
       <time datetime={SUITES_VERSION.copied}>{copied}</time>.
+      {SUITES_ADDED.map((a) => (
+        <>
+          {' '}The {a.name} suite comes from commit <code>{a.commit.slice(0, 7)}</code>, copied on
+          <time datetime={a.copied}>{dateText(a.copied)}</time>, ahead of a template release.
+        </>
+      ))}
     </p>
   </section>
 

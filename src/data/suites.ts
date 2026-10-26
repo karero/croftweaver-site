@@ -162,11 +162,22 @@ export const SUITES_VERSION = {
   copied: versionFile.match(/^copied:\s*(\S+)/m)?.[1] ?? '',
 };
 // A real commit id and a real calendar date (2026-02-31 must not pass as "3 March").
-const copiedDate = new Date(`${SUITES_VERSION.copied}T00:00:00Z`);
-const realDate =
-  /^\d{4}-\d{2}-\d{2}$/.test(SUITES_VERSION.copied) &&
-  !Number.isNaN(copiedDate.getTime()) &&
-  copiedDate.toISOString().slice(0, 10) === SUITES_VERSION.copied;
-if (!/^[0-9a-f]{40}$/.test(SUITES_VERSION.commit) || !realDate) {
+const isCommit = (c: string) => /^[0-9a-f]{40}$/.test(c);
+const isRealDate = (d: string) => {
+  const t = new Date(`${d}T00:00:00Z`);
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d;
+};
+if (!isCommit(SUITES_VERSION.commit) || !isRealDate(SUITES_VERSION.copied)) {
   throw new Error('tests/TESTS-VERSION needs a 40-character suite_commit and a real copied date (YYYY-MM-DD).');
 }
+
+// A suite taken from the toolkit ahead of a release, so not part of suite_commit:
+// "added: <file under tests/> <40-character commit> <YYYY-MM-DD>", one line each. /checks names its source.
+export const SUITES_ADDED = [...versionFile.matchAll(/^added:[ \t]*(.*)$/gm)].map((m) => {
+  const [file, commit, copied] = m[1].trim().split(/\s+/);
+  const suite = SUITES.find((s) => SUITE_FILES[s.file] === file);
+  if (!suite || !isCommit(commit ?? '') || !isRealDate(copied ?? '')) {
+    throw new Error(`tests/TESTS-VERSION: "added: ${m[1]}" needs a test file this site has, a 40-character commit and a real date.`);
+  }
+  return { name: suite.name, commit, copied };
+});
