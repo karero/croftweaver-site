@@ -18,7 +18,7 @@
 //   The description, the share card, "how this page was checked" and public/llms.txt carry no mention of it; the build,
 //   tests/check_security_page.sh and the /security tests pass on the cut page;
 // - the section on what can still go wrong (#risks, a RISKS comment above it) is cut together with the claims of
-//   the "What can still go wrong" group in src/data/security.ts: delete the section, the group and READ_RISKS, and
+//   the "What can still go wrong" group in src/data/security.ts: delete the section, its row in #short, the group and READ_RISKS, and
 //   set the paragraph in "how this page was checked" back to "on 22 October 2026", without the search-tool sentence.
 //   It gives one labelled judgment (a typical WordPress site, one question, no figure) and no overall ranking;
 // - croftweaver.com's own results (#own) list what fails, and are filled from LIVE reads by hand in
@@ -42,17 +42,18 @@ const ownLabel: Record<string, string> = {
 const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' ? 'is-open' : 'is-neutral');
 
 // The summary table in #short. Each row restates claims made in the section it links to; it adds none.
-const controlCols = ['Control', 'Provided by', 'More on this page'];
+const controlCols = ['What', 'Provided by', 'More on this page'];
 const controls = [
   { what: 'HTTPS certificates, issued and renewed', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
   { what: 'Protection against denial-of-service attacks', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
   { what: 'Rolling back to an earlier version', by: 'Hosting (Cloudflare)', href: '#cloudflare', where: 'What Cloudflare handles' },
   { what: 'Security headers on every page', by: 'Template', href: '#setup', where: 'What Croftweaver sets up' },
-  { what: 'Always Use HTTPS, and a minimum TLS version of 1.2', by: 'Toolkit launch steps, after you confirm', href: '#setup', where: 'What Croftweaver sets up' },
-  { what: 'Security updates for the packages', by: 'Toolkit launch steps switch them on; you merge them', href: '#checklist', where: 'A checklist for any website' },
+  { what: 'Always Use HTTPS, and a minimum TLS version', by: 'Toolkit launch steps, after you confirm', href: '#setup', where: 'What Croftweaver sets up' },
+  { what: 'Security updates for the packages', by: 'Toolkit launch steps switch them on; you merge them', href: '#setup', where: 'What Croftweaver sets up' },
   { what: 'HSTS', by: 'Owner, in the Cloudflare dashboard', href: '#setup', where: 'What stays yours' },
   { what: 'Two-step sign-in, and who may publish', by: 'Owner', href: '#checklist', where: 'A checklist for any website' },
-  { what: 'DNS records, DNSSEC, CAA records, security.txt and the domain renewal', by: 'Owner', href: '#checks', where: 'Four checks you can run yourself' },
+  { what: 'DNS records and the domain renewal', by: 'Owner', href: '#setup', where: 'What stays yours' },
+  { what: 'DNSSEC, CAA records and security.txt', by: 'Owner', href: '#checks', where: 'Four checks you can run yourself' },
   { what: 'Scripts from other domains, and add-ons', by: 'Owner', href: '#risks', where: 'What can still go wrong' },
 ];
 ---
@@ -79,9 +80,9 @@ const controls = [
     <h2>In short</h2>
     <p>
       <strong>What a static website removes:</strong> the software that builds a page on a server for each
-      visit. A Croftweaver page is a file built in advance, so a visitor's request reaches no PHP, no
-      database and no admin login. One short function of the site still runs on each request, on
-      Cloudflare (see <a href="#runs">what runs</a>).
+      visit. A Croftweaver page is a file built in advance, and the Croftweaver template holds no PHP files.
+      Cloudflare's documentation says that by default a site's functions still run on each request; a
+      Croftweaver site has one or two (see <a href="#runs">what runs</a>).
     </p>
     <p><strong>What stays:</strong></p>
     <ul class="steps">
@@ -89,10 +90,10 @@ const controls = [
       <li>The npm packages the site is built with, which need security updates.</li>
       <li>The build, which can run other people's code with your secrets within reach.</li>
       <li>Scripts that the pages load from other domains.</li>
-      <li>The site's function on Cloudflare, which runs on every request.</li>
+      <li>The site's functions on Cloudflare.</li>
     </ul>
     <p>Fewer moving parts, not none. Who looks after what:</p>
-    <div class="table-wrap stack long-head" role="region" aria-label="Who provides each security control: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
+    <div class="table-wrap stack long-head" role="region" aria-label="Who provides each security setting: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
       <table role="table">
         <thead role="rowgroup">
           <tr role="row">
@@ -111,7 +112,7 @@ const controls = [
       </table>
     </div>
     <p class="note">
-      Each row sums up the section it links to, where the sources are.
+      Each row sums up the section it links to, where the sources and their dates are. What Cloudflare provides is what its documentation says.
     </p>
   </section>
 

@@ -24,8 +24,8 @@ export const MESSAGE_FIRST = [
 export const GUIDE = [
   { building: 'A content site that you change with your AI coding assistant', choose: 'Croftweaver', href: '#first', why: 'with the site as files in your own repository, its tests running before each push and on each pull request, on hosting you control.' },
   { building: 'A site you design by pointing and dragging', choose: 'a hosted website builder', href: '#hosted', why: 'or an open-source visual builder you host yourself.' },
-  { building: 'An application with accounts, stored data or a checkout', choose: 'an AI app builder', href: '#apps', why: 'or a web framework made for applications.' },
-  { building: 'A site that several people edit in the browser', choose: 'a content management system', href: '#cms', why: 'such as WordPress, Joomla or Drupal.' },
+  { building: 'An application with accounts, stored data or a checkout', choose: 'an AI app builder', href: '#apps', why: 'built and run by the service from a chat.' },
+  { building: 'A site you edit on the site itself, extended with plugins', choose: 'a content management system', href: '#cms', why: 'such as WordPress, Joomla or Drupal.' },
 ] as const;
 
 export const GROUPS = [

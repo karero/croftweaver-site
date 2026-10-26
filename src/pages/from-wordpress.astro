@@ -116,9 +116,9 @@ const whoCols = ['Step', 'Done by a script', 'Your assistant, with your approval
 const who = [
   { step: 'Count the old site', script: 'The helper counts the records, lists each address and says if the count is incomplete.', assistant: 'Runs the helper and reads the report with you.', yours: 'Choosing the site: one you own or are asked to look at.' },
   { step: 'Decide what moves', script: 'The helper writes a sheet with one row per old page.', assistant: 'Goes through the sheet with you.', yours: 'Each decision: keep, redirect or let go. A new home for each form.' },
-  { step: 'Rebuild', script: 'The site’s tests run on every change.', assistant: 'Rebuilds the pages from the starter. There is no import.', yours: 'Checking the pages and the text before they go out.' },
-  { step: 'Write the redirects', script: 'The helper writes the redirect lines from your decisions and lists any it refuses.', assistant: 'Runs the helper and shows you what it refused.', yours: 'A decision for each address it refused.' },
-  { step: 'Check each address', script: 'The helper asks the new site for each address and names those missing, sent home or not where you decided.', assistant: 'Fixes each finding before launch.', yours: 'Adding addresses the count could not find.' },
+  { step: 'Rebuild', script: 'The site’s tests run before each push and on each pull request.', assistant: 'Rebuilds the pages from the starter. There is no import.', yours: 'Checking the pages and the text before they go out.' },
+  { step: 'Write the redirects', script: 'The helper writes the redirect lines from your decisions. It lists what it refuses, or why it wrote nothing.', assistant: 'Runs the helper and shows you what it refused.', yours: 'Deciding what happens to each refused address.' },
+  { step: 'Check each address', script: 'The helper asks the new site for each address and names those missing or sent home, and, given your decisions sheet, those not where you decided.', assistant: 'Fixes the findings it can before launch, and asks you about the rest.', yours: 'Adding addresses the count could not find, and answering what the assistant asks.' },
   { step: 'Launch, then watch', script: 'The launch stage checks the live site from outside.', assistant: 'Runs the launch stage, which connects the domain.', yours: 'Moving the domain’s DNS to Cloudflare, and watching Search Console after the move.' },
 ];
 
