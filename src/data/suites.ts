@@ -173,11 +173,12 @@ if (!isCommit(SUITES_VERSION.commit) || !isRealDate(SUITES_VERSION.copied)) {
 
 // A suite taken from the toolkit ahead of a release, so not part of suite_commit:
 // "added: <file under tests/> <40-character commit> <YYYY-MM-DD>", one line each. /checks names its source.
-export const SUITES_ADDED = [...versionFile.matchAll(/^added:[ \t]*(.*)$/gm)].map((m) => {
-  const [file, commit, copied] = m[1].trim().split(/\s+/);
+export const SUITES_ADDED = [...versionFile.matchAll(/^[ \t]*added:[ \t]*(.*)$/gm)].map((m) => {
+  const fields = m[1].trim().split(/\s+/);
+  const [file, commit, copied] = fields.length === 3 ? fields : [];
   const suite = SUITES.find((s) => SUITE_FILES[s.file] === file);
   if (!suite || !isCommit(commit ?? '') || !isRealDate(copied ?? '')) {
-    throw new Error(`tests/TESTS-VERSION: "added: ${m[1]}" needs a test file this site has, a 40-character commit and a real date.`);
+    throw new Error(`tests/TESTS-VERSION: "added: ${m[1]}" needs three fields: a test file this site has, a 40-character commit and a real date.`);
   }
   return { name: suite.name, commit, copied };
 });
