@@ -4,10 +4,13 @@ import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
 import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED } from '../src/data/compare';
-import { readdirSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { makeDeck } from '../scripts/deck-slides.mjs';
+import { makeDeck, renderDeck, inline, overflowingSlides } from '../scripts/deck-slides.mjs';
+import { makeCompanyDeck, cityOf } from '../scripts/company-deck-slides.mjs';
+import { DECKS, checkDeck, decksToMake } from '../scripts/decks.mjs';
 import { parse } from 'node-html-parser';
 
 // SEO contract + tag-consistency guardrail. Base.astro derives <title>, OG,
@@ -615,7 +618,7 @@ test('seo — the /why slide deck still matches the /why and /checks pages it wa
     const e = error as { stderr?: string; message: string };
     throw new Error(e.stderr || e.message);
   }
-  expect(output).toContain('current');
+  expect(output).toContain('deck why: current');
 });
 
 test('seo — /why offers the slide deck and the site serves it', async ({ page, request }) => {
@@ -657,6 +660,222 @@ test('seo — every link in the slide deck to this site points at a page that ex
   const known = new Set<string>(PAGES);
   const dead = own.map((h) => h.slice(SITE.url.length).split('#')[0] || '/').filter((p) => !known.has(p));
   expect(dead, `the deck links to pages that are not routes: ${dead.join(', ')}`).toEqual([]);
+});
+
+// ── The deck for companies: handouts/croftweaver-for-companies.pdf ────────────
+// A handout for M-Squad's pitch to companies that will not build their site themselves (plan:
+// croftweaver-features, sme-deck/PLAN.md). Made by `npm run deck` from the built /why,
+// /from-wordpress and /security pages, so a sentence it quotes cannot drift from the page. It is
+// not in public/, so the hosted-PDF tests above never see it; these do.
+const logoSvg = () => readFileSync(join(process.cwd(), 'src', 'assets', 'brand', 'lockup-horizontal-theme.svg'), 'utf8');
+type Pages = { why?: string; wordpress?: string; security?: string; company?: Record<string, string> };
+const companyFrom = ({ why = distFile('why.html'), wordpress = distFile('from-wordpress.html'), security = distFile('security.html'), company = COMPANY }: Pages = {}) =>
+  makeCompanyDeck({ whyHtml: why, wordpressHtml: wordpress, securityHtml: security, site: SITE, company, logoSvg: logoSvg() });
+const textOrNull = (path: string): string | null => {
+  try { return readFileSync(join(process.cwd(), path), 'utf8'); } catch { return null; }
+};
+const bytesOrNull = (path: string): Buffer | null => {
+  try { return readFileSync(join(process.cwd(), path)); } catch { return null; }
+};
+const names = (results: { deck: { name: string } }[]) => results.map((r) => r.deck.name);
+
+test('seo — the deck for companies still matches the pages it was made from', () => {
+  let output = '';
+  try {
+    output = execFileSync(process.execPath, ['scripts/build-deck.mjs', '--check'], { encoding: 'utf8', stdio: 'pipe' });
+  } catch (error) {
+    const e = error as { stderr?: string; message: string };
+    throw new Error(e.stderr || e.message);
+  }
+  expect(output).toContain('deck company: current');
+});
+
+test('seo — every deck is checked, and a changed slide, lock or PDF, or a missing one, makes it not current', () => {
+  // --check and `npm run deck` both walk this list; a deck left out of it would never be checked.
+  expect(DECKS.map((d) => d.name)).toEqual(['why', 'company']);
+  for (const deck of DECKS) {
+    const { html } = deck.make({ dist: distFile, site: SITE, company: COMPANY, logoSvg: logoSvg() });
+    const lockText = textOrNull(deck.lock) as string;
+    const pdfBytes = bytesOrNull(deck.pdf) as Buffer;
+    expect(checkDeck({ deck, html, lockText, pdfBytes }), `${deck.name}: the committed PDF is not current`).toBeNull();
+    expect(checkDeck({ deck, html: html + ' ', lockText, pdfBytes }), deck.name).toMatch(/out of date/);
+    expect(checkDeck({ deck, html, lockText: JSON.stringify({ ...JSON.parse(lockText), source: '0' }), pdfBytes }), deck.name).toMatch(/out of date/);
+    expect(checkDeck({ deck, html, lockText, pdfBytes: Buffer.concat([pdfBytes, Buffer.from(' ')]) }), deck.name).toMatch(/changed without/);
+    expect(checkDeck({ deck, html, lockText, pdfBytes: null }), deck.name).toMatch(/no .* yet/);
+    expect(checkDeck({ deck, html, lockText: null, pdfBytes }), deck.name).toMatch(/no .* yet/);
+  }
+});
+
+test('seo — the deck script, run as `npm run deck` runs it, makes nothing when every deck is current', () => {
+  // The real entry point. --check first: with a deck not current, the plain run would render PDFs.
+  const run = (...args: string[]) => {
+    try {
+      return { code: 0, out: execFileSync(process.execPath, ['scripts/build-deck.mjs', ...args], { encoding: 'utf8', stdio: 'pipe' }) };
+    } catch (error) {
+      const e = error as { status: number; stdout?: string; stderr?: string };
+      return { code: e.status, out: `${e.stdout ?? ''}${e.stderr ?? ''}` };
+    }
+  };
+  expect(run('--check').code, 'a deck is not current; run `npm run deck`').toBe(0);
+  expect(run().out).toContain('every deck is current; nothing to make');
+  expect(run('--deck', 'nope').code).not.toBe(0);
+  expect(run('--chek').code, 'a misspelt option must stop the script, not run the default').not.toBe(0);
+});
+
+test('seo — the deck script makes a titled PDF through its real make path, outside the repository', () => {
+  // --out renders, measures, titles and writes like `npm run deck`, but into a scratch folder and
+  // with no lock written, so the committed PDFs and locks must come out unchanged.
+  const tracked = DECKS.flatMap((d) => [d.pdf, d.lock]);
+  const before = tracked.map((p) => readFileSync(join(process.cwd(), p)).toString('base64'));
+  const out = mkdtempSync(join(tmpdir(), 'deck-test-'));
+  try {
+    let refused = '';
+    try {
+      execFileSync(process.execPath, ['scripts/build-deck.mjs', '--deck', 'company', '--out', out], { encoding: 'utf8', stdio: 'pipe' });
+    } catch (error) {
+      refused = (error as { stderr?: string }).stderr ?? String(error);
+    }
+    // The decks are set in the system font and made on a Mac. Linux's system font is wider, so there
+    // the script must refuse the slides that no longer fit, and (below) leave every committed file alone.
+    if (refused && process.platform !== 'darwin') {
+      expect(refused).toMatch(/text runs past the edge of slide/);
+      expect(readdirSync(out), 'a refused run wrote a PDF').toEqual([]);
+    } else {
+      expect(refused, `the deck script failed: ${refused}`).toBe('');
+      const pdf = readFileSync(join(out, 'croftweaver-for-companies.pdf'));
+      expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+      expect(pdfTitles(pdf)).toEqual([companyFrom().title]);
+      // Chromium writes the title from <title> itself; the author is what shows that set_pdf_title.py ran.
+      expect(pdf.toString('latin1').includes(`/Author (${SITE.name})`), 'the PDF has no author: scripts/set_pdf_title.py did not run').toBe(true);
+    }
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+  expect(tracked.map((p) => readFileSync(join(process.cwd(), p)).toString('base64')), 'a run with --out changed a committed PDF or lock').toEqual(before);
+});
+
+test('seo — npm run deck remakes only the decks that are not current', () => {
+  // The /why PDF is served on the site: an edit to /security, which only the company deck reads,
+  // must not re-render it. And a deleted company PDF must be made again.
+  const results = (pages: Record<string, string>, missing: string | null = null) => DECKS.map((deck) => {
+    const { html } = deck.make({ dist: (name: string) => pages[name] ?? distFile(name), site: SITE, company: COMPANY, logoSvg: logoSvg() });
+    const pdfBytes = deck.name === missing ? null : bytesOrNull(deck.pdf);
+    return { deck, problem: checkDeck({ deck, html, lockText: textOrNull(deck.lock), pdfBytes }) };
+  });
+  const security = distFile('security.html');
+  const edited = security.replaceAll('The plugins run.', 'The plugins all run.');
+  expect(edited, '/security no longer says "The plugins run."; update this test').not.toBe(security);
+  expect(names(decksToMake(results({ 'security.html': edited })))).toEqual(['company']);
+  expect(names(decksToMake(results({}, 'company')))).toEqual(['company']);
+  expect(names(decksToMake(results({})))).toEqual([]);
+  expect(names(decksToMake(results({}), 'why'))).toEqual(['why']);
+});
+
+test('seo — a changed sentence on each page the company deck reads changes the deck', () => {
+  const base = companyFrom().html;
+  expect(companyFrom().html, 'the deck is not deterministic').toBe(base);
+  const changes: [keyof Pages, string, string, string][] = [
+    ['why', 'why.html', '99, 100, 100 and 100 out of 100', '98, 100, 100 and 100 out of 100'],
+    ['wordpress', 'from-wordpress.html', 'Nobody can promise that you keep them.', 'Nobody can promise that.'],
+    ['security', 'security.html', 'The plugins run.', 'The plugins all run.'],
+  ];
+  for (const [key, file, from, to] of changes) {
+    const page = distFile(file);
+    const changed = page.replaceAll(from, to);
+    expect(changed, `${file} no longer says "${from}"; update this test`).not.toBe(page);
+    expect(companyFrom({ [key]: changed }).html, `a change on ${file} did not reach the deck`).not.toBe(base);
+  }
+  expect(companyFrom({ company: { ...COMPANY, phone: '+49 30 1234567' } }).html, 'a changed phone number did not reach the deck').not.toBe(base);
+  // Astro stamps every element with a hash of its page's styles; the deck keeps text and links only.
+  const restyle = (html: string) => html.replace(/data-astro-cid-[a-z0-9]+/g, 'data-astro-cid-restyled');
+  expect(companyFrom({ why: restyle(distFile('why.html')), wordpress: restyle(distFile('from-wordpress.html')), security: restyle(distFile('security.html')) }).html).toBe(base);
+});
+
+test('seo — the deck for companies refuses to build when a page it reads changes shape', () => {
+  const why = distFile('why.html');
+  const wordpress = distFile('from-wordpress.html');
+  const security = distFile('security.html');
+  expect(() => companyFrom({ why: why.replace('id="evidence"', 'id="gone"') })).toThrow(/evidence section/);
+  // Slide 2 draws its charts from the /why sentences: a reworded one stops the build, not a wrong chart.
+  const reworded = why.replace('out of 100 for performance', 'out of 100 for speed');
+  expect(reworded, '/why no longer says "out of 100 for performance"; update this test').not.toBe(why);
+  expect(() => companyFrom({ why: reworded })).toThrow(/worded differently now/);
+  expect(() => companyFrom({ wordpress: wordpress.replace('id="move"', 'id="gone"') })).toThrow(/move section/);
+  const sevenSteps = wordpress.replace(/(<ol class="loop"[^>]*>)/, '$1<li><h3>One more step</h3></li>');
+  expect(sevenSteps, 'the move list is no longer <ol class="loop">; update this test').not.toBe(wordpress);
+  expect(() => companyFrom({ wordpress: sevenSteps })).toThrow(/7 steps, expected 6/);
+  const listInAnswer = wordpress.replace(/(<div class="faq-answer"[^>]*><p>Nobody can promise)/, '<div class="faq-answer"><ul><li>More</li></ul><p>Nobody can promise');
+  expect(listInAnswer, 'the rankings answer markup changed; update this test').not.toBe(wordpress);
+  expect(() => companyFrom({ wordpress: listInAnswer })).toThrow(/no longer one paragraph/);
+  // Slide 6 names the measured site; another link in the /why intro must not take its place.
+  const extraLink = why.replace('One site, measured:', 'One site, <a href="/proof">our evidence</a>, measured:');
+  expect(extraLink, '/why no longer says "One site, measured:"; update this test').not.toBe(why);
+  expect(companyFrom({ why: extraLink }).html).toContain('genai-wednesday.de</span>, the site measured on slide 2');
+  // A heading in the section that is not in the list of steps (such as a table of who does what) is not a step.
+  const extraHeading = wordpress.replace(/(id="move"[^>]*>)/, '$1<h3>Who does what</h3>');
+  expect(extraHeading).not.toBe(wordpress);
+  expect(companyFrom({ wordpress: extraHeading }).html).toBe(companyFrom().html);
+  expect(() => companyFrom({ wordpress: wordpress.replace('id="fit"', 'id="gone"') })).toThrow(/fit section/);
+  expect(() => companyFrom({ wordpress: wordpress.replace('id="faq"', 'id="gone"') })).toThrow(/questions section/);
+  expect(() => companyFrom({ security: security.replace('id="safer"', 'id="gone"') })).toThrow(/safer section/);
+  expect(() => companyFrom({ wordpress: wordpress.replaceAll('Will I lose my Google rankings?', 'Will rankings move?') })).toThrow(/no question/);
+  expect(() => companyFrom({ wordpress: wordpress.replace('Stay on WordPress when', 'Keep WordPress when') })).toThrow(/Stay on WordPress when/);
+  expect(() => companyFrom({ security: security.replace('id="runs"', 'id="gone"') })).toThrow(/what runs/);
+  expect(() => companyFrom({ security: security.replace('We give no overall ranking.', 'We rank nothing.') })).toThrow(/0 paragraphs starting "We give no overall ranking"/);
+});
+
+test('seo — every link in the deck for companies works from a PDF', () => {
+  const hrefs = [...companyFrom().html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const relative = hrefs.filter((h) => !/^(https?:|mailto:|tel:)/.test(h));
+  expect(relative, 'a PDF cannot follow a relative link').toEqual([]);
+  const own = hrefs.filter((h) => h.startsWith(SITE.url));
+  expect(own.length, 'the deck links to no page of this site').toBeGreaterThan(0);
+  const known = new Set<string>(PAGES);
+  for (const href of own) {
+    const [path, fragment] = href.slice(SITE.url.length).split('#');
+    expect(known.has(path || '/'), `${href} is not a route`).toBe(true);
+    if (fragment) {
+      const file = path === '' || path === '/' ? 'index.html' : `${path.slice(1)}.html`;
+      expect(parse(distFile(file)).querySelector(`[id="${fragment}"]`), `${href}: the page has no id "${fragment}"`).not.toBeNull();
+    }
+  }
+  // The rule behind it: a link within a page gets that page's address, any other relative link stops the build.
+  const a = (href: string) => parse(`<p><a href="${href}">x</a></p>`).querySelector('p')!;
+  expect(inline(a('#here'), SITE.url, '/security')).toContain(`href="${SITE.url}/security#here"`);
+  expect(() => inline(a('page.html'), SITE.url, '/security')).toThrow(/no address a PDF can follow/);
+  expect(() => inline(a('//example.com/x'), SITE.url, '/security')).toThrow(/no address a PDF can follow/);
+});
+
+test('seo — the city on the last slide is read whole from COMPANY.postcodeCity', () => {
+  expect(cityOf(COMPANY.postcodeCity)).toBe('Munich');
+  expect(cityOf('61348 Bad Homburg, Germany')).toBe('Bad Homburg');
+  expect(() => cityOf('Munich, Germany')).toThrow(/postcodeCity/);
+});
+
+test('seo — the handout PDF carries its doc-title', () => {
+  const titles = pdfTitles(readFileSync(join(process.cwd(), 'handouts', 'croftweaver-for-companies.pdf')));
+  expect(titles, 'no readable doc-title, or not the deck title').toEqual([companyFrom().title]);
+});
+
+test('seo — the deck build flags a slide whose text reaches into the footer band', async ({ page }) => {
+  // The footer (logo and page number) sits in the slide's bottom padding, from 630 px down. Text that
+  // reaches into it is a layout bug even when it stays inside the slide.
+  const lengths = Array.from({ length: 24 }, (_, i) => 60 + i * 10);
+  const slides = [{ cls: 'moss cover', body: '<h1>Cover</h1>' }, ...lengths.map((n) => ({ kicker: 'Fixture', title: `${n} words`, body: `<p>${'Word '.repeat(n)}</p>` }))];
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.setContent(renderDeck({ slides, title: 'fixture', site: SITE, logo: '' }).html);
+  await page.emulateMedia({ media: 'print' });
+  const bottoms = await page.evaluate(() => [...document.querySelectorAll('.slide')].map((s) => {
+    const p = s.querySelector('.content p');
+    return p ? p.getBoundingClientRect().bottom - s.getBoundingClientRect().top : 0;
+  }));
+  const flagged = await page.evaluate(overflowingSlides);
+  const inBand = bottoms.findIndex((b) => b > 640 && b <= 715);
+  const fits = bottoms.findIndex((b) => b > 0 && b < 600);
+  expect(inBand, `no fixture slide ends in the footer band: ${bottoms.map(Math.round).join(', ')}`).toBeGreaterThan(0);
+  expect(fits).toBeGreaterThan(0);
+  expect(flagged, `text ending at ${Math.round(bottoms[inBand])} px was not flagged`).toContain(inBand + 1);
+  expect(flagged).not.toContain(fits + 1);
 });
 
 // ── The privacy page marks the analytics host (toolkit release 0.32) ───────────

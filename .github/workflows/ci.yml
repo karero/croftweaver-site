@@ -97,4 +97,11 @@ jobs:
       - name: /security claims (src/data/security.ts)
         run: bash tests/check_security_page.sh
       - run: npx playwright install --with-deps chromium
+      # pypdf sets a PDF's doc-title; a deck test makes a PDF through the real script. A venv, because
+      # the runner's own Python refuses pip installs; pinned, so a new release cannot change a run.
+      - name: pypdf for the deck test
+        run: |
+          python3 -m venv "$RUNNER_TEMP/py"
+          "$RUNNER_TEMP/py/bin/pip" install --quiet pypdf==6.14.2
+          echo "$RUNNER_TEMP/py/bin" >> "$GITHUB_PATH"
       - run: npm test

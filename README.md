@@ -67,7 +67,7 @@ npm test             # a11y / seo / navigation / anchors / orphans / images /
                      # tone / positioning / placeholders / email / links /
                      # llms-coverage / middleware (preview handling)
 npm run og           # regenerate OG share cards after brand/copy changes
-npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
+npm run deck         # remake each slide deck whose PDF is not current
 ```
 
 The slide deck reads three things from the built pages, so they are never typed: the
@@ -79,6 +79,21 @@ you run `npm run deck` and commit the new `public/croftweaver-why.pdf` and
 test compares it with the pages: after changing an argument on `/why` or a description
 on `/checks`, read `scripts/deck-slides.mjs` and change it by hand. The deck needs Node
 22.18 or newer, and making it needs Python 3 with `pypdf` for the PDF's title.
+
+A second deck, `handouts/croftweaver-for-companies.pdf`, is a handout for M-Squad's pitch to
+companies that will not build their site themselves. It is not in `public/`, so the site does
+not serve it. Its slides are in `scripts/company-deck-slides.mjs`, and its lock is
+`scripts/company-deck.lock.json`. It reads the `/why` evidence (its introduction, its caveat and
+the figures and dates in its three items, which slide 2 draws as charts and numbers), the move steps, the rankings
+answer and "Stay on WordPress when" on `/from-wordpress`, the two request paths and the
+no-ranking sentence on `/security`, and the name, company, city and phone in `COMPANY`
+(`src/config.ts`; the email on the last slide is typed in the slide script); a change to any
+of those also turns `npm test` red until `npm run deck` runs. `npm run deck`
+remakes only the decks whose PDF is not current, so an edit to `/security` leaves the served
+`/why` PDF alone. `node scripts/build-deck.mjs --deck why` remakes one deck anyway, and
+`--out <folder>` writes the PDFs elsewhere without touching a lock. Make the decks on a Mac: they
+are set in the system font, which is wider on Linux, and there the build refuses slides that no
+longer fit.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
