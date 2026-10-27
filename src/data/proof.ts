@@ -1,5 +1,5 @@
 // Proof data. PROOF is Google PageSpeed Insights, mobile test, home page of each site,
-// shown on /more-proof; PANEL is the AI panel shown on the home page and /more-proof;
+// shown on /more-proof; PANEL is the AI panel shown on /more-proof (not on the home page since 2026-10-27);
 // SITE_PROOF is the one-site evidence on /proof. Every figure is per named site and
 // dated (CONTENT_GUIDE.md, honesty rules). PageSpeed is one run each, lab data:
 // re-measure all three before changing the date.
@@ -15,7 +15,7 @@ export const PROOF = [
   { site: 'apreet.com', url: 'https://apreet.com/', performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
 ] as const;
 
-// ── The AI panel, on the home page and on /more-proof ───────────────────────────
+// ── The AI panel, on /more-proof ────────────────────────────────────────────────
 // Four AI assistants were given the same prompt about genai-wednesday.de by the Builder
 // Lab (https://genai-wednesday.de/croftweaver, second round). Copied from that page on
 // 2026-10-08. They are opinions: GEO and E-E-A-T have no official scorer, and the Lab
