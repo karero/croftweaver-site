@@ -158,19 +158,24 @@ export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
 // The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
 export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
 
-// Card figures the CSV files do not hold. Each restates one log entry, named by date and title, with the
-// exact phrase its figures come from. The check below proves the entry and the phrase exist, not that the
-// figures match the phrase: a reviewer reads the two side by side. null is shown as "Not yet measured".
+// Card figures the CSV files do not hold, typed once and dated: each restates one log entry, named by date
+// and title. Its phrases are built from its figures, so the check below fails when a figure and its entry
+// disagree. null is shown as "Not yet measured".
+const google = { pages: 22, indexed: 22 };
+const tests = 439;
 export const CARDS = {
-  google: { date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google', phrase: 'Google lists all 22 as indexed', pages: 22, indexed: 22 },
-  bing: { date: '2026-10-20', title: 'Bing indexing requested', phrase: 'Indexing of the home page was requested', indexed: null as number | null },
-  tests: { date: '2026-10-24', title: 'The site brought up to release 0.33', phrase: '439 tests', tests: 439 },
+  google: { date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google', ...google,
+    phrases: [`The site now has ${google.pages} pages`, `Google lists all ${google.indexed} as indexed`] },
+  bing: { date: '2026-10-20', title: 'Bing indexing requested', indexed: null as number | null,
+    phrases: ['Indexing of the home page was requested', 'The outcome is pending'] },
+  tests: { date: '2026-10-24', title: 'The site brought up to release 0.33', tests, phrases: [`${tests} tests`] },
 };
-const cardEntry = (c: { date: string; title: string; phrase: string }) => {
+const cardEntry = (c: { date: string; title: string; phrases: string[] }) => {
   const e = LOG.find((x) => x.date === c.date && x.title === c.title);
   const text = e && (e.kind === 'change' ? `${e.asked} ${e.checks ?? ''}` : `${e.seen} ${e.source}`);
-  if (!text?.includes(c.phrase)) throw new Error(`src/data/case-study.ts: CARDS cites "${c.title}" (${c.date}), which is not in LOG or lacks "${c.phrase}".`);
-  return e!;
+  const missing = c.phrases.filter((p) => !text?.includes(p));
+  if (!e || missing.length) throw new Error(`src/data/case-study.ts: CARDS cites "${c.title}" (${c.date}), which is not in LOG or does not say: ${missing.join('; ')}.`);
+  return e;
 };
 for (const c of Object.values(CARDS)) cardEntry(c);
 const testsEntry = cardEntry(CARDS.tests);

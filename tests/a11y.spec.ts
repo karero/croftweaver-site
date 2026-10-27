@@ -1105,7 +1105,7 @@ test('case study — the figures from the two data files equal those files', asy
 });
 
 // The home page's "See a finished website" leads here, so the hero answers "what was built, and can I
-// inspect it?" before any figure: links, a disclosure that this is the maintainer's own site, and a
+// inspect it?" before any figure, within the first screen of a desktop (1280×800): links, a disclosure that this is the maintainer's own site, and a
 // dated screenshot (plan: docs/reviews/PLAN-2026-10-27-case-study-showcase.md).
 test('case study — the hero shows what was built and where to inspect it, without scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
@@ -1130,7 +1130,7 @@ test('case study — the hero shows what was built and where to inspect it, with
   // The screenshot: the folder holds exactly one desktop and one phone capture, both dated as the caption
   // says, and the page shows those two. Catches a caption that disagrees with the files and a file left
   // behind; it cannot tell when the pixels were captured (that is recorded in the pull request).
-  const files = readdirSync(new URL('../public/images/case-study/', import.meta.url)).sort();
+  const files = readdirSync(new URL('../public/images/case-study/', import.meta.url)).filter((f) => !f.startsWith('.')).sort();
   const dated = (kind: string) => files.filter((f) => new RegExp(`^croftweaver-com-home-${kind}-\\d{4}-\\d{2}-\\d{2}\\.webp$`).test(f));
   expect(dated('desktop'), 'one desktop capture').toHaveLength(1);
   expect(dated('phone'), 'one phone capture').toHaveLength(1);
@@ -1150,7 +1150,8 @@ test('case study — the hero shows what was built and where to inspect it, with
 
 // The four summaries: each dated and sourced; no percentages from tiny numbers, no figure in colour (no
 // green zero), and missing data said as such, never as 0. Figures from the CSV files are recomputed here
-// from the files; the two hand-kept cards must point at an entry of the log on the same page.
+// from the files. The Google indexing date and the test count must each match an entry of the log on the
+// page; that the hand-kept figures agree with their entries is checked at build time (CARDS in the data file).
 test('case study — four dated, sourced summaries, with no false zeros', async ({ page }) => {
   const csv = (name: string) => readFileSync(new URL(`../public/data/${name}`, import.meta.url), 'utf8').trim().split('\n').slice(1).map((l) => l.split(','));
   const gsc = csv('croftweaver-com-search-console.csv');
