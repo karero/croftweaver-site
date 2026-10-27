@@ -3,7 +3,7 @@ import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
-import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED } from '../src/data/compare';
+import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../src/data/compare';
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -954,5 +954,6 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
     await expect(runNote.locator(`a[href="${r.site}"]`), `the comparison note links ${r.site}`).toHaveCount(1);
     await expect(runNote.locator(`a[href="${r.repo}"]`), `the comparison note links ${r.repo}`).toHaveCount(1);
   }
-  await expect(runNote.locator('time'), 'the comparison: its date').toHaveAttribute('datetime', RUNS_MEASURED.iso);
+  await expect(runNote.locator('time').nth(0), 'the comparison: the day it was measured').toHaveAttribute('datetime', RUNS_MEASURED.iso);
+  await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveAttribute('datetime', RUNS_PAGESPEED.iso);
 });

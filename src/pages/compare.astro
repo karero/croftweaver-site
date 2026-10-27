@@ -5,7 +5,7 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../data/compare';
 ---
 <Base
   title="Which website tool fits? The alternatives"
@@ -95,12 +95,13 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       figure Claude Code reported for the run. HTML errors and warnings: the W3C Nu HTML Checker;
       structured data: Google's Rich Results Test; both on the home and contact pages. PageSpeed:
       PageSpeed Insights on mobile, the median of five runs, for performance, accessibility, best
-      practices and SEO. The sites:
+      practices and SEO, on <time datetime={RUNS_PAGESPEED.iso}>{RUNS_PAGESPEED.label}</time>. Both
+      sites fail one SEO item, the noindex both carry; 66 against 69 comes from one item that does not
+      apply to the site without images. The sites:
       {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.name.toLowerCase()}</a></>)}.
       Each repository holds the brief, the run's history and its full transcript:
       {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.name.toLowerCase()}</a></>)}.
-      Both sites ask search engines not to index them, because the business is fictional; PageSpeed's
-      SEO score counts that against both alike.
+      Both sites ask search engines not to index them, because the business is fictional.
     </p>
   </section>
 

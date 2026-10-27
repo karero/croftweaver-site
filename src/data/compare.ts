@@ -30,9 +30,11 @@ export const CLAUDE_CODE = {
 
 // The two-run comparison of 26 October 2026: one brief for a fictional business, given to Claude Code
 // on its own and with Croftweaver, same model and settings. Every value is the run's own record or a
-// neutral tool's reading (never Croftweaver's own tests), taken on RUNS_MEASURED. Both repositories
-// hold the brief, the harness and the transcripts.
+// neutral tool's reading (never Croftweaver's own tests), taken on RUNS_MEASURED (PageSpeed on
+// RUNS_PAGESPEED, through pagespeed.web.dev). Both repositories hold the brief, the harness and the
+// transcripts.
 export const RUNS_MEASURED = { iso: '2026-10-26', label: '26 October 2026' } as const;
+export const RUNS_PAGESPEED = { iso: '2026-10-27', label: '27 October 2026' } as const;
 export const RUNS = [
   { key: 'alone', name: 'Claude Code on its own', site: 'https://compare-cc-alone.pages.dev', repo: 'https://github.com/karero/compare-claude-code-alone' },
   { key: 'croftweaver', name: 'With Croftweaver', site: 'https://compare-cc-croftweaver.pages.dev', repo: 'https://github.com/karero/compare-claude-code-croftweaver' },
@@ -44,8 +46,8 @@ export const RUN_ROWS = [
   { measure: 'Pages', alone: 'home, services, about, contact', croftweaver: 'home, services, about, contact, privacy' },
   { measure: 'HTML errors', alone: 'none', croftweaver: 'none' },
   { measure: 'Structured data', alone: 'none detected', croftweaver: 'a local business and an organization, both valid; two optional fields missing' },
-  { measure: 'PageSpeed, home', alone: 'PSI_ALONE_HOME', croftweaver: 'PSI_CW_HOME' },
-  { measure: 'PageSpeed, contact', alone: 'PSI_ALONE_CONTACT', croftweaver: 'PSI_CW_CONTACT' },
+  { measure: 'PageSpeed, home', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
+  { measure: 'PageSpeed, contact', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
 ] as const;
 
 // The guide at the top of /compare: what you are building, and which kind of tool fits it. One
