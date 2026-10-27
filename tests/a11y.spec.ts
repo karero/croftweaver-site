@@ -1121,7 +1121,8 @@ test('case study — the hero shows what was built and where to inspect it, with
   for (const [name, loc] of parts) {
     await expect(loc, `${name} is in the hero once`).toHaveCount(1);
     const box = await loc.boundingBox();
-    expect(box && box.y + box.height, `${name}: bottom edge within the first 800 px at 1280×800`).toBeLessThanOrEqual(800);
+    expect(box, `${name} is rendered`).not.toBeNull();
+    expect(box!.y + box!.height, `${name}: bottom edge within the first 800 px at 1280×800`).toBeLessThanOrEqual(800);
   }
   await expect(page.locator('#log h2'), 'the jump link lands on the log heading').toHaveCount(1);
   const disclosure = (await hero.locator('.disclosure').textContent())!.replace(/\s+/g, ' ');

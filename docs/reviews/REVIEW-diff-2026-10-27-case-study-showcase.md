@@ -7,6 +7,7 @@ Gate: independent-review, DIFF, depth Normal (page code, data module and tests: 
 |---|---|---|---|
 | 1 (on 366ee64) | Codex, GLM 5.3 on melious, fresh-eyes (Sonnet) | 0 BUG, 2 RISK (both raised by two seats), 8 NIT | RISKs fixed; NITs fixed, refuted or left, below |
 | 2 (verify, on 6144807) | Codex, GLM 5.3 | 2 BUG (Codex), 1 RISK, 1 NIT (GLM) | all fixed, below |
+| 3 (verify, on c4cf3b7) | Codex, GLM 5.3 | 2 BUG, 2 NIT, 1 follow-up | cut and fixed, below |
 
 Round 1:
 - R1-R1 RISK (Codex, fresh-eyes), "Tests on the last change to this site in the log" goes false once a
@@ -40,4 +41,15 @@ Round 2:
 - R2-R1 RISK, R2-N1 NIT (GLM), the comment claimed every figure is bound, Bing included. Fixed with the
   comment, which now says how Bing is handled.
 
-Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s). Round 2 Codex 50,464 (143 s), GLM 5.3 10,425 (107 s).
+Round 3:
+- R3-B1 BUG (Codex), the phrase matcher still took "1,439 tests" and "439 testsuites" for "439 tests".
+  Same kind as R2-B2 (card figure binding), so a cut, not a patch: the typed figures and the phrase
+  matcher are gone. Each card reads its numbers from the entry it cites with anchored literal patterns
+  (`^(\d+) tests;`, `The site now has (\d+) pages`, `Google lists all (\d+) as indexed`), so a card cannot
+  disagree with its entry, and the build fails when the entry stops saying it that way (mutation
+  "1,439 tests;" fails the build). Bing: the build checks its request is still pending in the log.
+- R3-B2 BUG (GLM), a null bounding box reached `toBeLessThanOrEqual`. Fixed: asserted non-null first.
+- R3-N1, N2 NIT (GLM), the Bing guard's comment and the one-sided boundary: gone with the cut.
+- R3 follow-up (GLM), other CARDS figures unguarded: gone with the cut (no typed figures left).
+
+Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s). Round 2 Codex 50,464 (143 s), GLM 5.3 10,425 (107 s). Round 3 Codex 38,180 (144 s), GLM 5.3 9,943 (103 s).

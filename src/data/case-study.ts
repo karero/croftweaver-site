@@ -158,38 +158,35 @@ export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
 // The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
 export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
 
-// Card figures the CSV files do not hold. Each card restates one log entry, named by date and title. The
-// Google and test figures are built into the phrases that entry must contain, as whole words, so the check
-// below fails when a figure and its entry disagree. Bing has no figure: its card cites the request, whose
-// outcome is pending, and a number there is refused until the card cites the entry that measured it.
-// null is shown as "Not yet measured".
-const google = { pages: 22, indexed: 22 };
-const tests = 439;
-export const CARDS = {
-  google: { date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google', ...google,
-    phrases: [`The site now has ${google.pages} pages`, `Google lists all ${google.indexed} as indexed`] },
-  bing: { date: '2026-10-20', title: 'Bing indexing requested', indexed: null as number | null,
-    phrases: ['Indexing of the home page was requested', 'The outcome is pending'] },
-  tests: { date: '2026-10-24', title: 'The site brought up to release 0.33', tests, phrases: [`${tests} tests`] },
-};
-// A phrase counts only where it starts a word, so "39 tests" is not found in "439 tests".
-const says = (text: string, phrase: string) => {
-  for (let i = text.indexOf(phrase); i >= 0; i = text.indexOf(phrase, i + 1)) {
-    if (i === 0 || !/[\p{L}\p{N}]/u.test(text[i - 1]!)) return true;
-  }
-  return false;
-};
-const cardEntry = (c: { date: string; title: string; phrases: string[] }) => {
-  const e = LOG.find((x) => x.date === c.date && x.title === c.title);
-  const text = e ? (e.kind === 'change' ? `${e.asked} ${e.checks ?? ''}` : `${e.seen} ${e.source}`) : '';
-  const missing = c.phrases.filter((p) => !says(text, p));
-  if (!e || missing.length) throw new Error(`src/data/case-study.ts: CARDS cites "${c.title}" (${c.date}), which is not in LOG or does not say: ${missing.join('; ')}.`);
+// Card figures the CSV files do not hold are read from the log entry each card cites (named by date and
+// title), so a card cannot disagree with its entry. The build fails when an entry does not say a figure in
+// exactly these words. Bing's request is still pending in the log, so its card has no figure.
+const cited = (date: string, title: string) => {
+  const e = LOG.find((x) => x.date === date && x.title === title);
+  if (!e) throw new Error(`src/data/case-study.ts: CARDS cites "${title}" (${date}), which is not in LOG.`);
   return e;
 };
-if (CARDS.bing.indexed !== null) throw new Error('src/data/case-study.ts: CARDS.bing has a figure but cites the indexing request; cite the entry that measured it.');
-for (const c of Object.values(CARDS)) cardEntry(c);
-const testsEntry = cardEntry(CARDS.tests);
-if (testsEntry.kind !== 'change') throw new Error('src/data/case-study.ts: CARDS.tests must cite a change.');
+const read = (text: string, re: RegExp, what: string) => {
+  const m = text.match(re);
+  if (!m) throw new Error(`src/data/case-study.ts: the log entry a card cites no longer says ${what} as ${re}.`);
+  return Number(m[1]);
+};
+const indexedEntry = cited('2026-10-25', 'Three new pages, 22 in all, all indexed by Google');
+const bingEntry = cited('2026-10-20', 'Bing indexing requested');
+const testsEntry = cited('2026-10-24', 'The site brought up to release 0.33');
+if (indexedEntry.kind !== 'observation' || bingEntry.kind !== 'observation' || testsEntry.kind !== 'change') {
+  throw new Error('src/data/case-study.ts: CARDS cites an entry of the wrong kind.');
+}
+if (!bingEntry.seen.includes('The outcome is pending.')) throw new Error('src/data/case-study.ts: the Bing request is no longer pending; give the Bing card its figure.');
+export const CARDS = {
+  google: {
+    date: indexedEntry.date,
+    pages: read(indexedEntry.seen, /\bThe site now has (\d+) pages\b/, 'the page count'),
+    indexed: read(indexedEntry.seen, /\bGoogle lists all (\d+) as indexed\b/, 'the indexed count'),
+  },
+  bing: { date: bingEntry.date, indexed: null as number | null },
+  tests: { date: testsEntry.date, tests: read(testsEntry.checks ?? '', /^(\d+) tests;/, 'its test count') },
+};
 export const TESTS_PR = testsEntry.pr;
 export const measured = (n: number | null, shown: (n: number) => string = String) => (n === null ? 'Not yet measured' : shown(n));
 
