@@ -1,7 +1,8 @@
 // The case study: Croftweaver used on its own site, croftweaver.com, from launch onwards (owner decisions,
-// 2026-10-21: its own page and its own export, counts only). Three sources and no others:
+// 2026-10-21: its own page and its own export, counts only). Its figures have three sources and no others:
 //   public/data/croftweaver-com-ai-check.csv and croftweaver-com-search-console.csv, both written by
-//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them.
+//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them; CARDS
+//   restates log entries. The hero's screenshot (CAPTURE) is separate evidence, not a figure.
 // The page says what was seen after a change, never that the change caused it (CONTENT_GUIDE.md).
 // Upkeep, weekly: rerun the export after the weekly AI check, add the week's entries to LOG, set UPDATED.
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
@@ -151,6 +152,31 @@ export const prLabel = (url: string) => {
   return `${m[1]}#${m[2]}`;
 };
 export const prPrivate = (url: string) => (PRIVATE_REPOS as readonly string[]).includes(url.match(PR)![1]!);
+
+// ── The hero and the summary cards ──────────────────────────────────────────────
+export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
+// The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
+export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
+
+// Card figures the CSV files do not hold. Each restates one log entry, named by date and title, with the
+// exact phrase its figures come from. The check below proves the entry and the phrase exist, not that the
+// figures match the phrase: a reviewer reads the two side by side. null is shown as "Not yet measured".
+export const CARDS = {
+  google: { date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google', phrase: 'Google lists all 22 as indexed', pages: 22, indexed: 22 },
+  bing: { date: '2026-10-20', title: 'Bing indexing requested', phrase: 'Indexing of the home page was requested', indexed: null as number | null },
+  tests: { date: '2026-10-24', title: 'The site brought up to release 0.33', phrase: '439 tests', tests: 439 },
+};
+const cardEntry = (c: { date: string; title: string; phrase: string }) => {
+  const e = LOG.find((x) => x.date === c.date && x.title === c.title);
+  const text = e && (e.kind === 'change' ? `${e.asked} ${e.checks ?? ''}` : `${e.seen} ${e.source}`);
+  if (!text?.includes(c.phrase)) throw new Error(`src/data/case-study.ts: CARDS cites "${c.title}" (${c.date}), which is not in LOG or lacks "${c.phrase}".`);
+  return e!;
+};
+for (const c of Object.values(CARDS)) cardEntry(c);
+const testsEntry = cardEntry(CARDS.tests);
+if (testsEntry.kind !== 'change') throw new Error('src/data/case-study.ts: CARDS.tests must cite a change.');
+export const TESTS_PR = testsEntry.pr;
+export const measured = (n: number | null, shown: (n: number) => string = String) => (n === null ? 'Not yet measured' : shown(n));
 
 // ── Google Search Console, daily ────────────────────────────────────────────────
 const searchLines = searchCsv.trim().split(/\r?\n/);

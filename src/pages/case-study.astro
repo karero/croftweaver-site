@@ -4,34 +4,131 @@
 // (tests/positioning.spec.ts): "case study". Owner decisions, 2026-10-21: its own page, its own
 // export (scripts/export-own-site.py), counts only. Every figure comes from src/data/case-study.ts.
 // Honesty rules (CONTENT_GUIDE.md): the page says what was seen after a change, never that it caused it.
+// The hero answers "what was built, and can I inspect it?" first, with a dated screenshot of the live home
+// page (public/images/case-study/), then four dated summaries, then the figures and the log (2026-10-27).
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, prPrivate, dayLabel, DAILY, SEARCH, AI_DAYS, BREAKS, BREAK_DAYS } from '../data/case-study';
+import { UPDATED, LAUNCH, LOG_NEWEST, prLabel, prPrivate, dayLabel, DAILY, SEARCH, AI_DAYS, BREAKS, BREAK_DAYS,
+  SITE_REPO, CAPTURE, CARDS, TESTS_PR, measured } from '../data/case-study';
 
 const named = (n: number, of: number) => `${n} of ${of}`;
 const assistants = (n: number) => `${n} ${n === 1 ? 'assistant' : 'assistants'}`;
 const latestAi = AI_DAYS[AI_DAYS.length - 1]!;
 // The column headers are also the labels of the stacked rows on a phone (data-label), so they are written once.
 const aiCols = ['Day', 'With search: named', 'croftweaver.com among the sources', 'Without search: named'];
+const shot = (kind: string) => `/images/case-study/croftweaver-com-home-${kind}-${CAPTURE.iso}.webp`;
+const testsPr = prLabel(TESTS_PR);
 ---
 <Base
   title="Croftweaver case study: its own site"
-  description="A Croftweaver case study kept as a public log: each change to croftweaver.com, the checks that ran, and what Google and AI assistants showed after it."
+  description="A Croftweaver case study you can inspect: croftweaver.com, its public source, the checks that ran on each change, and what Google and AI assistants showed."
   image="/images/og/case-study.jpg"
 >
   <section class="wrap hero">
-    <h1>Croftweaver case study: its own website, week by week</h1>
+    <p class="kicker">Case study · live since <time datetime={LAUNCH.iso}>{LAUNCH.label}</time></p>
+    <h1>A live website built with Croftweaver. Inspect it.</h1>
     <p class="lead">
-      This case study follows croftweaver.com, built with Croftweaver, from its launch on
-      <time datetime={LAUNCH.iso}>{LAUNCH.label}</time>. It is a log, not a finished story:
-      each change says what was asked, names the pull request (linked where its repository is public), names the checks that ran, and
-      is followed by the next measurement. The zeros stay in.
+      croftweaver.com is built and maintained with Croftweaver. You can look at the site, read its
+      source, and see the checks that ran on each change and what Google and AI assistants showed
+      after it. The early numbers are small, and the zeros stay in.
     </p>
+    <div class="cta">
+      <a class="btn primary" href="/">Open the live site</a>
+      <a class="btn" href={SITE_REPO}>Read its source on GitHub</a>
+      <a class="btn" href="#log">Jump to the log</a>
+    </div>
+    <p class="disclosure">
+      This is the <a href="/about">maintainer</a>’s own website, not an independent customer project.
+      It shows what Croftweaver produced here, not what it will produce for every site or every AI
+      assistant.
+    </p>
+    <figure class="shots">
+      <img src={shot('desktop')} width="1600" height="1000" loading="eager" fetchpriority="high"
+        alt="The home page of croftweaver.com on a desktop screen: the Croftweaver logo and menu, a badge “Free and open source · MIT licence”, the line “Weave websites that rank.”, the headline “Build a complete website with AI.”, a subline on guiding your AI coding assistant to a tested website, three checked points, and the buttons “Get Croftweaver on GitHub” and “See a finished website”." />
+      <img src={shot('phone')} width="585" height="1266" loading="lazy"
+        alt="The same home page on a phone: the logo and a Menu button, the badge, the headline over two lines, the subline, the three checked points, and the GitHub button at the bottom edge." />
+      <figcaption>
+        The home page of croftweaver.com on a desktop screen and on a phone, captured from the live
+        site on <time datetime={CAPTURE.iso}>{CAPTURE.label}</time>.
+      </figcaption>
+    </figure>
     <p class="aside">
-      Last updated <time datetime={UPDATED.iso}>{UPDATED.label}</time>. A movement after a change
+      The log was last updated <time datetime={UPDATED.iso}>{UPDATED.label}</time>. A movement after a change
       is something we saw, not proof that the change caused it. For a site that is months old,
       see <a href="/proof">one site, measured</a>.
     </p>
+  </section>
+
+  <section class="wrap" id="summary">
+    <h2>What the site shows so far</h2>
+    <p>
+      Croftweaver builds the site and checks it on every change. Google and AI assistants decide
+      whether to show it. Each card gives the day or period of its figures, and where they come from.
+    </p>
+    <div class="cards">
+      <article class="card">
+        <h3>Technical output</h3>
+        <dl>
+          <div data-row="pages">
+            <dt>Pages on the site</dt>
+            <dd><span class="figure">{CARDS.google.pages}</span>, read on <time datetime={CARDS.google.date}>{dayLabel(CARDS.google.date)}</time></dd>
+          </div>
+          <div data-row="tests">
+            <dt>Tests on the last change to this site in the log</dt>
+            <dd><span class="figure">{CARDS.tests.tests}</span>, on <a href={TESTS_PR}>{testsPr}</a>, merged <time datetime={CARDS.tests.date}>{dayLabel(CARDS.tests.date)}</time></dd>
+          </div>
+        </dl>
+        <p class="source">Source: the log below, and <a href={SITE_REPO}>the code on GitHub</a>. A test count says which checks ran, not that the site has no faults.</p>
+      </article>
+      <article class="card">
+        <h3>Indexing</h3>
+        <dl>
+          <div data-row="google">
+            <dt>Google</dt>
+            <dd><span class="figure">{measured(CARDS.google.indexed, (n) => `${n} of ${CARDS.google.pages}`)}</span> pages indexed, read on <time datetime={CARDS.google.date}>{dayLabel(CARDS.google.date)}</time></dd>
+          </div>
+          <div data-row="bing">
+            <dt>Bing</dt>
+            <dd><span class="figure">{measured(CARDS.bing.indexed)}</span> since indexing of the home page was requested on <time datetime={CARDS.bing.date}>{dayLabel(CARDS.bing.date)}</time></dd>
+          </div>
+        </dl>
+        <p class="source">Source: Google Search Console, URL inspection of every page; Bing Webmaster Tools. Indexed is not the same as ranked.</p>
+      </article>
+      <article class="card">
+        <h3>Google search</h3>
+        <p class="period">From <time datetime={SEARCH.from}>{dayLabel(SEARCH.from)}</time> to <time datetime={SEARCH.to}>{dayLabel(SEARCH.to)}</time></p>
+        <dl>
+          <div data-row="appearances">
+            <dt>Appearances in Google’s results</dt>
+            <dd><span class="figure">{SEARCH.impressions}</span></dd>
+          </div>
+          <div data-row="clicks">
+            <dt>Clicks</dt>
+            <dd><span class="figure">{SEARCH.clicks}</span></dd>
+          </div>
+        </dl>
+        <p class="source">Source: Google Search Console, whole site, all countries, finished days (<a href="#search">by day, below</a>).</p>
+      </article>
+      <article class="card">
+        <h3>AI answers</h3>
+        <p class="period">On <time datetime={latestAi.date}>{latestAi.label}</time>, two questions that do not name Croftweaver</p>
+        <dl>
+          <div data-row="with-search-named">
+            <dt>With web search, answers that named it</dt>
+            <dd><span class="figure">{named(latestAi.withSearch.named, latestAi.withSearch.answers)}</span>, from {assistants(latestAi.withSearch.assistants)}</dd>
+          </div>
+          <div data-row="with-search-sources">
+            <dt>With web search, croftweaver.com among the sources returned</dt>
+            <dd><span class="figure">{named(latestAi.withSearch.sources, latestAi.withSearch.answers)}</span></dd>
+          </div>
+          <div data-row="without-search-named">
+            <dt>Without web search, answers that named it</dt>
+            <dd><span class="figure">{named(latestAi.withoutSearch.named, latestAi.withoutSearch.answers)}</span>, from {assistants(latestAi.withoutSearch.assistants)}</dd>
+          </div>
+        </dl>
+        <p class="source">Source: Croftweaver’s weekly AI check (<a href="#ai">by day, below</a>). A source returned with an answer is not the same as a mention in it.</p>
+      </article>
+    </div>
   </section>
 
   <section class="wrap" id="ai">
@@ -159,4 +256,22 @@ const aiCols = ['Day', 'With search: named', 'croftweaver.com among the sources'
   .log p { margin: 0.3rem 0; }
   .when { font-size: 0.85rem; color: var(--muted); }
   .cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+  .kicker { margin: 0 0 0.6rem; color: var(--accent); font-weight: 600; }
+  .disclosure { margin-top: 1.2rem; }
+  .shots { display: grid; grid-template-columns: 3fr 1fr; gap: 1rem; align-items: start; margin: 2rem 0 1.5rem; }
+  .shots img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .shots figcaption { grid-column: 1 / -1; font-size: 0.9rem; color: var(--muted); }
+  @media (max-width: 40rem) {
+    .shots { grid-template-columns: 1fr; }
+    .shots img + img { max-width: 12rem; }
+  }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; margin-top: 1.2rem; }
+  .cards dl { margin: 0; }
+  .cards dl > div { margin: 0 0 0.8rem; }
+  .cards dt, .cards dd { hyphens: manual; }
+  .cards dt { font-size: 0.9rem; color: var(--muted); }
+  .cards dd { margin: 0.1rem 0 0; line-height: 1.5; }
+  .figure { font-size: 1.35rem; font-weight: 700; }
+  .card p { margin: 0 0 0.8rem; }
+  .card .source { font-size: 0.85rem; color: var(--muted); margin: 0; }
 </style>
