@@ -155,7 +155,8 @@ test('positioning — the home hero\'s definition line carries "website skills"'
 
 // The proof strip under the hero shows measured figures only (owner, 2026-10-27): the AI panel's
 // scores are opinions and live on /more-proof (POSITIONING.md, wording rule 3). This checks the
-// strip's structure, its two figures and three numeric forms of a score; a score in words is not caught.
+// strip's structure, its two figures and three numeric forms of a score (8.3, 8 out of 10, 8/10);
+// "8 of 10" and a score in words are not caught.
 test('positioning — the home proof strip leads with measured figures and shows no AI score', async ({ page }) => {
   await page.goto('/');
   const strip = page.locator('#proof');
@@ -169,5 +170,5 @@ test('positioning — the home proof strip leads with measured figures and shows
   await expect(figures.nth(1).locator('a[href="/more-proof"]')).toHaveCount(1);
   await expect(strip.locator('table'), 'the AI panel table belongs on /more-proof').toHaveCount(0);
   const text = (await strip.textContent())!.replace(/\s+/g, ' ');
-  expect(text, 'a score out of 10 is back in the strip').not.toMatch(/\b\d+\.\d\b|\b\d+(\.\d+)?\s*(out of|\/)\s*10\b/i);
+  expect(text, 'no one-decimal number or score out of 10 may stand in the strip').not.toMatch(/\b\d+\.\d\b|\b\d+(\.\d+)?\s*(out of|\/)\s*10\b/i);
 });
