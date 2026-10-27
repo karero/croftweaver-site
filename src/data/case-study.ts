@@ -158,9 +158,11 @@ export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
 // The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
 export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
 
-// Card figures the CSV files do not hold, typed once and dated: each restates one log entry, named by date
-// and title. Its phrases are built from its figures, so the check below fails when a figure and its entry
-// disagree. null is shown as "Not yet measured".
+// Card figures the CSV files do not hold. Each card restates one log entry, named by date and title. The
+// Google and test figures are built into the phrases that entry must contain, as whole words, so the check
+// below fails when a figure and its entry disagree. Bing has no figure: its card cites the request, whose
+// outcome is pending, and a number there is refused until the card cites the entry that measured it.
+// null is shown as "Not yet measured".
 const google = { pages: 22, indexed: 22 };
 const tests = 439;
 export const CARDS = {
@@ -170,13 +172,21 @@ export const CARDS = {
     phrases: ['Indexing of the home page was requested', 'The outcome is pending'] },
   tests: { date: '2026-10-24', title: 'The site brought up to release 0.33', tests, phrases: [`${tests} tests`] },
 };
+// A phrase counts only where it starts a word, so "39 tests" is not found in "439 tests".
+const says = (text: string, phrase: string) => {
+  for (let i = text.indexOf(phrase); i >= 0; i = text.indexOf(phrase, i + 1)) {
+    if (i === 0 || !/[\p{L}\p{N}]/u.test(text[i - 1]!)) return true;
+  }
+  return false;
+};
 const cardEntry = (c: { date: string; title: string; phrases: string[] }) => {
   const e = LOG.find((x) => x.date === c.date && x.title === c.title);
-  const text = e && (e.kind === 'change' ? `${e.asked} ${e.checks ?? ''}` : `${e.seen} ${e.source}`);
-  const missing = c.phrases.filter((p) => !text?.includes(p));
+  const text = e ? (e.kind === 'change' ? `${e.asked} ${e.checks ?? ''}` : `${e.seen} ${e.source}`) : '';
+  const missing = c.phrases.filter((p) => !says(text, p));
   if (!e || missing.length) throw new Error(`src/data/case-study.ts: CARDS cites "${c.title}" (${c.date}), which is not in LOG or does not say: ${missing.join('; ')}.`);
   return e;
 };
+if (CARDS.bing.indexed !== null) throw new Error('src/data/case-study.ts: CARDS.bing has a figure but cites the indexing request; cite the entry that measured it.');
 for (const c of Object.values(CARDS)) cardEntry(c);
 const testsEntry = cardEntry(CARDS.tests);
 if (testsEntry.kind !== 'change') throw new Error('src/data/case-study.ts: CARDS.tests must cite a change.');

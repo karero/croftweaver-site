@@ -6,6 +6,7 @@ Gate: independent-review, DIFF, depth Normal (page code, data module and tests: 
 | Round | Seats | Findings | Disposition |
 |---|---|---|---|
 | 1 (on 366ee64) | Codex, GLM 5.3 on melious, fresh-eyes (Sonnet) | 0 BUG, 2 RISK (both raised by two seats), 8 NIT | RISKs fixed; NITs fixed, refuted or left, below |
+| 2 (verify, on 6144807) | Codex, GLM 5.3 | 2 BUG (Codex), 1 RISK, 1 NIT (GLM) | all fixed, below |
 
 Round 1:
 - R1-R1 RISK (Codex, fresh-eyes), "Tests on the last change to this site in the log" goes false once a
@@ -19,7 +20,8 @@ Round 1:
 - R1-N3 NIT (fresh-eyes), the summary test comment overstated what it checks of the hand-kept cards.
   Fixed: it says the build check binds figures to entries.
 - R1-N4, N5 NIT (GLM), failure messages "is below the fold" and "a figure is coloured" read backwards.
-  Refuted: Playwright prints the message only when the assertion fails, which is exactly that case.
+  First refuted ("printed only on failure"); round 2 showed traces use the message as the step title
+  on success too. Fixed in round 2: neutral labels.
 - R1-N6 NIT (fresh-eyes), `SITE_REPO` is a third copy of the URL. Left: the test's literal is the
   independent check; folding the copies together touches the home page, outside this change.
 - R1-N7 NIT (fresh-eyes), the OG card says "logged week by week". Left: the plan keeps the card; phase 2.
@@ -28,4 +30,14 @@ Round 1:
 - 439 typed by hand (fresh-eyes, CONTENT_GUIDE "counts rendered, never typed"): it restates a dated log
   entry and the build check binds it to that entry; the comment says so.
 
-Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s).
+Round 2:
+- R2-B1 BUG (Codex), the R1-N4/N5 refutation was wrong: Playwright traces show the message as a
+  step title on success. Fixed: "bottom edge within the first 800 px", "figure colour equals the body
+  text colour".
+- R2-B2 BUG (Codex), "39 tests" was found inside "439 tests", and a Bing number was bound to nothing.
+  Fixed: a phrase counts only where it starts a word; a Bing figure is refused until its card cites the
+  entry that measured it. Mutations run: tests 39 and Bing 0 each fail the build with their message.
+- R2-R1 RISK, R2-N1 NIT (GLM), the comment claimed every figure is bound, Bing included. Fixed with the
+  comment, which now says how Bing is handled.
+
+Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s). Round 2 Codex 50,464 (143 s), GLM 5.3 10,425 (107 s).

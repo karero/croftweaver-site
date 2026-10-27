@@ -1121,7 +1121,7 @@ test('case study — the hero shows what was built and where to inspect it, with
   for (const [name, loc] of parts) {
     await expect(loc, `${name} is in the hero once`).toHaveCount(1);
     const box = await loc.boundingBox();
-    expect(box && box.y + box.height, `${name} is below the fold at 1280×800`).toBeLessThanOrEqual(800);
+    expect(box && box.y + box.height, `${name}: bottom edge within the first 800 px at 1280×800`).toBeLessThanOrEqual(800);
   }
   await expect(page.locator('#log h2'), 'the jump link lands on the log heading').toHaveCount(1);
   const disclosure = (await hero.locator('.disclosure').textContent())!.replace(/\s+/g, ' ');
@@ -1169,7 +1169,7 @@ test('case study — four dated, sourced summaries, with no false zeros', async 
   const ink = await page.evaluate(() => getComputedStyle(document.body).color);
   const colours = await s.locator('.figure').evaluateAll((els) => els.map((e) => getComputedStyle(e).color));
   expect(colours.length).toBeGreaterThan(0);
-  for (const c of colours) expect(c, 'a figure is coloured').toBe(ink);
+  for (const c of colours) expect(c, 'figure colour equals the body text colour').toBe(ink);
   const fig = (card: number, row: string) => cards.nth(card).locator(`[data-row="${row}"] .figure`);
 
   // Google search: the period and both totals, from the file.
