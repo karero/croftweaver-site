@@ -136,10 +136,10 @@ Then `npm ci`, `npm run check`, `npm run build`, `npm test` (each checkout has i
 |---|---|---|
 | Plan reviewed (PLAN gate) | done: 4 rounds and a wording pass, no BUG open | `docs/reviews/REVIEW-plan-2026-10-27-case-study-showcase.md` |
 | Daniel's go | given 2026-10-27 | relayed word for word: "Ok, then let's build and ship it"; "publish it" typed in this session |
-| Tests written, red | not started | — |
-| Screenshot captured | not started | — |
-| Page built, tests green | not started | — |
-| DIFF review clean | not started | — |
+| Tests written, red | done | failed on the page of e853231 before it changed; committed in 366ee64 |
+| Screenshot captured | done, 2026-10-27 14:15 UTC | 366ee64 (`public/images/case-study/`) |
+| Page built, tests green | done | 366ee64; `npm test` 474 passed |
+| DIFF review clean | done, 4 rounds | d3923f0; `docs/reviews/REVIEW-diff-2026-10-27-case-study-showcase.md` |
 | PR open, CI green, merged | not started | — |
 | Publish (`npm run ship`) | Daniel's call | — |
 

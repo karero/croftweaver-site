@@ -8,6 +8,7 @@ Gate: independent-review, DIFF, depth Normal (page code, data module and tests: 
 | 1 (on 366ee64) | Codex, GLM 5.3 on melious, fresh-eyes (Sonnet) | 0 BUG, 2 RISK (both raised by two seats), 8 NIT | RISKs fixed; NITs fixed, refuted or left, below |
 | 2 (verify, on 6144807) | Codex, GLM 5.3 | 2 BUG (Codex), 1 RISK, 1 NIT (GLM) | all fixed, below |
 | 3 (verify, on c4cf3b7) | Codex, GLM 5.3 | 2 BUG, 2 NIT, 1 follow-up | cut and fixed, below |
+| 4 (verify, on d3923f0; earned by card-figure-binding, fold-box-null; cut) | Codex, GLM 5.3 | none | clean |
 
 Round 1:
 - R1-R1 RISK (Codex, fresh-eyes), "Tests on the last change to this site in the log" goes false once a
@@ -52,4 +53,11 @@ Round 3:
 - R3-N1, N2 NIT (GLM), the Bing guard's comment and the one-sided boundary: gone with the cut.
 - R3 follow-up (GLM), other CARDS figures unguarded: gone with the cut (no typed figures left).
 
-Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s). Round 2 Codex 50,464 (143 s), GLM 5.3 10,425 (107 s). Round 3 Codex 38,180 (144 s), GLM 5.3 9,943 (103 s).
+Round 4: no findings from either seat. GLM's one open question (does anything read the removed
+`title` or `phrases` fields?) settled by search: nothing in src, tests or scripts does.
+
+Verdict: gate closed on d3923f0. 4 rounds, 19 findings (4 BUG, 4 RISK, 11 NIT): fixed, cut, refuted or
+left as listed. Not run: a wording pass on the plan's status rows, which carry only commit and PR
+references.
+
+Tokens: round 1 Codex 67,148 (199 s), GLM 5.3 18,373 (172 s), fresh-eyes 95,840 (215 s). Round 2 Codex 50,464 (143 s), GLM 5.3 10,425 (107 s). Round 3 Codex 38,180 (144 s), GLM 5.3 9,943 (103 s). Round 4 Codex 42,568 (118 s), GLM 5.3 8,190 (75 s).
