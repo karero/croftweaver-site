@@ -152,3 +152,23 @@ test('positioning — the home hero\'s definition line carries "website skills"'
   await page.goto('/');
   await expect(page.locator('.hero p.what'), 'the hero lost its definition line, or the line lost the core term').toContainText('suite of website skills');
 });
+
+// The proof strip under the hero shows measured figures only (owner, 2026-10-27): the AI panel's
+// scores are opinions and live on /more-proof (POSITIONING.md, wording rule 3). This checks the
+// strip's structure, its two figures and three numeric forms of a score (8.3, 8 out of 10, 8/10);
+// "8 of 10" and a score in words are not caught.
+test('positioning — the home proof strip leads with measured figures and shows no AI score', async ({ page }) => {
+  await page.goto('/');
+  const strip = page.locator('#proof');
+  const children = await strip.evaluate((el) => [...el.children].map((c) => c.tagName));
+  expect(children, 'the strip must be heading, figures, the maintainer sentence and the opinions line, in that order').toEqual(['H2', 'UL', 'P', 'P']);
+  const figures = strip.locator(':scope > ul > li');
+  await expect(figures, 'the strip must show exactly two measured figures').toHaveCount(2);
+  await expect(figures.nth(0), 'the first figure must be the AI check').toContainText('named genai-wednesday.de');
+  await expect(figures.nth(0).locator('a[href="/proof"]')).toHaveCount(1);
+  await expect(figures.nth(1), 'the second figure must be PageSpeed').toContainText('PageSpeed Insights');
+  await expect(figures.nth(1).locator('a[href="/more-proof"]')).toHaveCount(1);
+  await expect(strip.locator('table'), 'the AI panel table belongs on /more-proof').toHaveCount(0);
+  const text = (await strip.textContent())!.replace(/\s+/g, ' ');
+  expect(text, 'no one-decimal number or score out of 10 may stand in the strip').not.toMatch(/\b\d+\.\d\b|\b\d+(\.\d+)?\s*(out of|\/)\s*10\b/i);
+});

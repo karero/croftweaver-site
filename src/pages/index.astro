@@ -14,15 +14,14 @@ import EmailLink from '../components/EmailLink.astro';
 import { SITE, COMPANY, schemaId } from '../config';
 import { SUITE_COUNT } from '../data/suites';
 import { RELEASE } from '../data/skills';
-import { PANEL, fmtScore } from '../data/proof';
 import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
 
 // The case study's own repository: the hero's "finished website" is this site.
 const siteRepo = 'https://github.com/karero/croftweaver-site';
-const tryIt = 'Score genai-wednesday.de for SEO and GEO, with one sentence of reason for each score. Then do the same for [your site\'s address].';
 
-// The two measured figures under the AI panel (owner, 2026-10-13). They are read from the
-// data behind /more-proof and /proof, so the three pages cannot disagree.
+// The proof strip shows measured figures only; the AI panel's scores are on /more-proof
+// (owner, 2026-10-27). The figures are read from the data behind /more-proof and /proof,
+// so the three pages cannot disagree.
 if (PROOF.length !== 3) throw new Error('src/pages/index.astro says "three sites" in the proof section: change the word with the list in src/data/proof.ts.');
 const pageSpeed = PROOF.flatMap((p) => [p.performance, p.accessibility, p.bestPractices, p.seo]);
 const pageSpeedRange = Math.min(...pageSpeed) === Math.max(...pageSpeed) ? `${Math.max(...pageSpeed)}` : `${Math.min(...pageSpeed)} to ${Math.max(...pageSpeed)}`;
@@ -106,52 +105,29 @@ const maintainerSchema = {
   </section>
 
   <section class="wrap" id="proof">
-    <h2>Four AI assistants scored a site built with Croftweaver</h2>
+    <h2>Measured on sites built with Croftweaver</h2>
+    <ul class="measured" role="list">
+      <li>
+        <strong>{ai.withSearch.named} of {ai.withSearch.answers}</strong> answers from AI assistants with web
+        search named {SITE_PROOF.site} on <time datetime={ai.date.iso}>{ai.date.label}</time>; without web
+        search, {ai.withoutSearch.named} of {ai.withoutSearch.answers} did. <a href="/proof">One site in depth</a>
+        has the two questions, the counts for each assistant and the site's clicks from Google.
+      </li>
+      <li>
+        <strong>{pageSpeedRange}</strong> out of 100 across the four categories of Google's PageSpeed
+        Insights, for three sites on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>.
+        <a href="/more-proof">More proof</a> has each site's figures and a link to re-run each test.
+      </li>
+    </ul>
     <p>
-      The <a href={PANEL.lab}>Builder Lab at GenAI Wednesday</a> gave four AI assistants
-      the same prompt about genai-wednesday.de on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. SEO is how well
-      Google can find and read a site. GEO, short for generative engine optimization, is
-      how well AI assistants such as ChatGPT, Perplexity or Gemini can read and quote it.
-      GEO has no official scorer, and the SEO scores here are the assistants' own opinions
-      too, not a Google metric. They are not rankings, they vary from run to run, and they
-      do not show that an assistant would recommend the site. The site belongs to the maintainer of Croftweaver.
+      All of these sites belong to the maintainer of Croftweaver: read them as worked examples,
+      not as a promise for yours. The <a href="/case-study">case study</a> follows croftweaver.com
+      itself, change by change.
     </p>
-    <div class="table-wrap figures" role="region" aria-label="SEO and GEO scores from four AI assistants for genai-wednesday.de" tabindex="0">
-      <table>
-        <thead>
-          <tr><th scope="col">Assistant</th><th scope="col" class="num">SEO</th><th scope="col" class="num">GEO</th></tr>
-        </thead>
-        <tbody>
-          {PANEL.rows.map((row) => (
-            <tr><th scope="row">{row.assistant}</th><td class="num">{fmtScore(row.seo)}</td><td class="num">{fmtScore(row.geo)}</td></tr>
-          ))}
-          <tr class="avg"><th scope="row">Panel average</th><td class="num">{fmtScore(PANEL.average.seo)}</td><td class="num">{fmtScore(PANEL.average.geo)}</td></tr>
-        </tbody>
-      </table>
-    </div>
     <p class="note">
-      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
-      Gemini (Antigravity) answers out of 100 and the Lab shows it out of 10. The Lab
-      warns that scores are not comparable between assistants, so read the average as a
-      rough guide. GEO ranges from {fmtScore(PANEL.geoLow)} to {fmtScore(PANEL.geoHigh)}.
-    </p>
-    <h3>Try it on your own site</h3>
-    <p>
-      Paste this into your own AI assistant and replace the part in brackets with your
-      site's address. Your scores will differ from these: they are opinions. The Lab's
-      own prompt is on <a href="/more-proof#eeat">More proof</a>.
-    </p>
-    <pre class="message"><code>{tryIt}</code></pre>
-    <p>
-      <strong>Measured, not scored.</strong> On <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>,
-      Google's PageSpeed Insights gave three sites built with Croftweaver, all of them the
-      maintainer's own, scores of {pageSpeedRange} out of 100 across its four categories.
-      <a href="/more-proof">More proof</a> has the figures, and how the same four
-      assistants score trust. On <time datetime={ai.date.iso}>{ai.date.label}</time>,
-      {ai.withSearch.named} of {ai.withSearch.answers} answers from AI assistants with web
-      search named {SITE_PROOF.site}; without web search, {ai.withoutSearch.named} of {ai.withoutSearch.answers} did.
-      <a href="/proof">One site in depth</a> has the counts and the site's clicks from Google.
-      The <a href="/case-study">case study</a> follows croftweaver.com itself, change by change.
+      Four AI assistants also scored {SITE_PROOF.site} for SEO, GEO and trust. Those are opinions,
+      not measurements, so they are on <a href="/more-proof#eeat">More proof</a>, with a prompt to
+      try on your own site.
     </p>
   </section>
 
@@ -511,6 +487,8 @@ const maintainerSchema = {
   .plain li::before { content: '·'; position: absolute; left: 0.4rem; font-weight: 700; }
 
   .note { font-size: 0.9rem; color: var(--muted); }
+  .measured { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; gap: 1rem; max-width: 46rem; }
+  .measured strong { display: block; font-size: 1.6rem; line-height: 1.2; color: var(--ink); }
 
   /* The quote is the customer's own voice: tests/tone.spec.ts leaves a blockquote alone. */
   .voice { display: grid; grid-template-columns: 88px 1fr; gap: 0.5rem 1.4rem; max-width: 46rem; margin: 0 0 1rem; }
@@ -530,9 +508,7 @@ const maintainerSchema = {
     background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 1rem 1.2rem; overflow-x: auto; max-width: 46rem;
   }
-  /* A message reads better wrapped; commands keep their lines and scroll (the
-     pre is focusable so a keyboard can scroll it). */
-  pre.message { white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* Commands keep their lines and scroll (the pre is focusable so a keyboard can scroll it). */
   code { font-size: 0.95rem; }
 
   .flow {

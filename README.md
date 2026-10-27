@@ -178,10 +178,10 @@ Launch requirements that no test enforces:
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
   the date here. A test mail arrived (owner, 2026-10-12).
-- The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
-  2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
-  `src/data/proof.ts` if its numbers changed, and the caveat sentences in
-  `src/pages/index.astro` and `src/pages/more-proof.astro` if its caveats changed; the
+- The AI panel on `/more-proof` (on the home page too until 2026-10-27) is copied from the
+  Builder Lab (read 2026-10-08, second round of 20 August 2026). Re-read the Lab before launch
+  and update `src/data/proof.ts` if its numbers changed, and the caveat sentences in
+  `src/pages/more-proof.astro` if its caveats changed; the
   build only checks that the rows still average to the figures copied that day.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites). The AI check file comes

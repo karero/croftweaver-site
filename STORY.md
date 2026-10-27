@@ -49,16 +49,17 @@
 
 - **Empathy:** the search and AI work is the part that gets skipped when a site has to
   go live fast (§4, restated).
-- **Authority (proof from §3 only):** the home page's proof strip shows how four AI
-  assistants scored genai-wednesday.de for SEO and GEO on 20 August 2026 (read from the
-  Builder Lab, labelled as AI opinions), with a prompt a visitor can run on their own
-  site. Under the panel, since 2026-10-13, the strip states two measured figures, read from
-  the same data as the two proof pages: the PageSpeed range for the three sites, and how
-  many answers with and without web search named genai-wednesday.de in the AI check. The
+- **Authority (proof from §3 only):** the home page's proof strip shows measured figures
+  only (owner, 2026-10-27), read from the same data as the two proof pages: first how many
+  answers with and without web search named genai-wednesday.de in the AI check, then the
+  PageSpeed range for the three sites. One line under them says that four AI assistants also
+  scored the site, that those are opinions, and links `/more-proof` for them. From 2026-10-08
+  to 2026-10-27 the strip led with the panel's SEO and GEO scores and a try-it prompt, with
+  the measured figures under it from 2026-10-13. The
   clicks from Google stay on `/proof`, because the figure is small and has fallen (the
   assistant's proposal, which the owner accepted with the sentence on 2026-10-13).
   `/more-proof` has Google's PageSpeed Insights for three sites built with
-  Croftweaver (99 to 100, measured 4 October 2026) and the E-E-A-T scores. `/proof` shows
+  Croftweaver (99 to 100, measured 4 October 2026) and the panel's SEO, GEO and E-E-A-T scores. `/proof` shows
   one site, genai-wednesday.de, launched on 27 March 2026: clicks from Google per 28
   days went from 3 around the launch to a best 99 (16 June to 13 July 2026) and stood
   at 50 in the 28 days to 29 September, with the limits that page states about itself.
@@ -142,7 +143,7 @@ at the end of section 1.
 
 | # | Section | Carries | Direct CTA |
 |---|---|---|---|
-| 1 | Header | above the kicker, a pill that says Croftweaver is free and open source and links to its MIT licence (owner, 2026-10-15); the kicker (the rank line, the first `<p>`: "Weave websites that rank."; owner, 2026-10-26), the `<h1>` "Build a complete website with AI.", the subline, one sentence that says what Croftweaver is and carries the positioning term (POSITIONING.md, definition line; owner decision, 2026-10-13; the market category stands in section 5 since 2026-10-12), a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons (§5) with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ, then a link to this site's public repository), then the proof strip (the AI panel's SEO and GEO scores, a try-it prompt, and since 2026-10-13 two measured figures with links to `/more-proof` and `/proof`). Then one testimonial in its own short section (`#voice`): Dr. Andrea Geistanger, quoted word for word as the Builder Lab shows it in English, apart from one insertion in square brackets, with her photo. "[Croftweaver]" stands in square brackets before "Builder" in the quote, so a reader knows which Builder she means (owner, 2026-10-16). It is the one shared quote POSITIONING.md allows. No other customer image: the site has none, and none is invented | yes |
+| 1 | Header | above the kicker, a pill that says Croftweaver is free and open source and links to its MIT licence (owner, 2026-10-15); the kicker (the rank line, the first `<p>`: "Weave websites that rank."; owner, 2026-10-26), the `<h1>` "Build a complete website with AI.", the subline, one sentence that says what Croftweaver is and carries the positioning term (POSITIONING.md, definition line; owner decision, 2026-10-13; the market category stands in section 5 since 2026-10-12), a one-line audience (from §1, in the owner's wording: "For founders, communities, experts and small teams."), three outcomes (one per §7 line; the third also carries the suite count), the buttons (§5) with one line under them ("No coding needed to start: you work with your assistant in plain language.", from `/start` and the FAQ, then a link to this site's public repository), then the proof strip (since 2026-10-27 measured figures only: the AI check with a link to `/proof`, the PageSpeed range with a link to `/more-proof`, the maintainer's-own-sites sentence with the case study, and one line that sends the panel's opinions to `/more-proof`; until then the panel's scores led it). Then one testimonial in its own short section (`#voice`): Dr. Andrea Geistanger, quoted word for word as the Builder Lab shows it in English, apart from one insertion in square brackets, with her photo. "[Croftweaver]" stands in square brackets before "Builder" in the quote, so a reader knows which Builder she means (owner, 2026-10-16). It is the one shared quote POSITIONING.md allows. No other customer image: the site has none, and none is invented | yes |
 | 2 | Stakes | §6, then a short pivot to the guide that opens with the villain line ("Stop waiting on someone else for every change."): positioning first and the optional story layer (both from `/positioning`), then one sentence on who makes the changes and what is done and checked by default, and a link to `/why` | no |
 | 3 | Plan | §4 as an ordered list, and the note on rebuilding | yes |
 | 4 | Value stack | the three §7 lines, each a headline and a sentence, each linking to its detail, and one short scene of a single change from the visitor's side (it claims nothing beyond the plan and the first card) | no |
