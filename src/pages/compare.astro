@@ -67,14 +67,16 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
     <h3 id="one-comparison">One comparison, side by side</h3>
     <p>
       The same brief for a fictional business went to Claude Code twice, with the same model and the
-      same settings: once on its own, once with Croftweaver. Neither run asked a question or was helped
-      along. Each site was then measured with tools Croftweaver does not make. It is a test of each
+      same settings: once on its own, once with Croftweaver. Each run started from a one-line prompt,
+      quoted in its repository; neither stopped to ask a question, and neither was helped along. The
+      experimenter deployed both sites the same way and measured them with tools Croftweaver does not
+      make. It is a test of each
       set-up's defaults on the same brief, not of an agreed checklist both had to meet. One run each is
       an anecdote, not a measurement: it cannot show that one way builds better sites in general, how
       either site would rank, or whether AI assistants would cite it, and positioning, the quality of
-      the copy and later changes were not compared.
+      the copy, Croftweaver's own publishing steps and later changes were not compared.
     </p>
-    <div class="table-wrap stack" role="region" aria-label="One comparison: Claude Code on its own and with Croftweaver" tabindex="0">
+    <div id="runs-comparison" class="table-wrap stack" role="region" aria-label="One comparison: Claude Code on its own and with Croftweaver" tabindex="0">
       <table role="table">
         <thead role="rowgroup">
           <tr role="row">
@@ -100,10 +102,12 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       practices and SEO, on <time datetime={RUNS_PAGESPEED.iso}>{RUNS_PAGESPEED.label}</time>. Both
       sites fail one SEO item, the noindex both carry; 66 against 69 comes from one item that does not
       apply to the site without images. The sites:
-      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.name.toLowerCase()}</a></>)}.
-      Each repository holds the brief, the run's history and its full transcript:
-      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.name.toLowerCase()}</a></>)}.
-      Both sites ask search engines not to index them, because the business is fictional.
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.siteLabel}</a></>)}.
+      Each repository holds the brief, the prompt, the run's history, its transcript in plain text
+      (tool results shortened) and the measurements:
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
+      The experimenter added a header to both sites asking search engines not to index them, because
+      the business is fictional.
     </p>
   </section>
 

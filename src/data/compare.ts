@@ -31,21 +31,22 @@ export const CLAUDE_CODE = {
 // The two-run comparison of 26 October 2026: one brief for a fictional business, given to Claude Code
 // on its own and with Croftweaver, same model and settings. Every value is the run's own record or a
 // neutral tool's reading (never Croftweaver's own tests), taken on RUNS_MEASURED (PageSpeed on
-// RUNS_PAGESPEED, through pagespeed.web.dev). Both repositories hold the brief, the harness and the
-// transcripts.
+// RUNS_PAGESPEED, through pagespeed.web.dev). Each repository holds the brief, the prompt, the run's
+// history, its transcript and the measurements. These describe one run's output, not what Claude Code
+// can or cannot do.
 export const RUNS_MEASURED = { iso: '2026-10-26', label: '26 October 2026' } as const;
 export const RUNS_PAGESPEED = { iso: '2026-10-27', label: '27 October 2026' } as const;
 export const RUNS = [
-  { key: 'alone', name: 'Claude Code on its own', site: 'https://compare-cc-alone.pages.dev', repo: 'https://github.com/karero/compare-claude-code-alone' },
-  { key: 'croftweaver', name: 'With Croftweaver', site: 'https://compare-cc-croftweaver.pages.dev', repo: 'https://github.com/karero/compare-claude-code-croftweaver' },
+  { key: 'alone', name: 'Claude Code on its own', site: 'https://compare-cc-alone.pages.dev', siteLabel: 'the site Claude Code built on its own', repo: 'https://github.com/karero/compare-claude-code-alone', repoLabel: 'the run on its own' },
+  { key: 'croftweaver', name: 'With Croftweaver', site: 'https://compare-cc-croftweaver.pages.dev', siteLabel: 'the site built with Croftweaver', repo: 'https://github.com/karero/compare-claude-code-croftweaver', repoLabel: 'the run with Croftweaver' },
 ] as const;
 export const RUN_ROWS = [
   { measure: 'Time to a finished build', alone: '160 seconds', croftweaver: '1,170 seconds' },
   { measure: 'Cost of the run', alone: '0.51 USD', croftweaver: '3.80 USD' },
   { measure: 'Prompts and questions', alone: 'one prompt, no questions', croftweaver: 'one prompt, no questions' },
   { measure: 'Pages', alone: 'home, services, about, contact', croftweaver: 'home, services, about, contact, privacy' },
-  { measure: 'HTML errors', alone: 'none', croftweaver: 'none' },
-  { measure: 'Structured data', alone: 'none detected', croftweaver: 'a local business and an organization, both valid; two optional fields missing' },
+  { measure: 'HTML errors and warnings', alone: 'none', croftweaver: 'none' },
+  { measure: 'Structured data', alone: 'none detected', croftweaver: 'one organization markup, valid, which the test also lists as a local business; two optional fields missing' },
   { measure: 'PageSpeed, home', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
   { measure: 'PageSpeed, contact', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
 ] as const;

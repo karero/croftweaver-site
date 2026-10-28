@@ -901,11 +901,10 @@ test('seo — the privacy page names the analytics host in an element marked dat
 // Site-specific (not in the shipped suite): /compare's rule is that every statement about another
 // product links the page it restates and carries the day it was read. This holds each group's row
 // links, the links in a group's sources note (`needs`), each group's own date, the hero's date, and
-// the Claude Code section's source link and date, and its comparison table, links and date, to
-// src/data/compare.ts. It does not check the
-// positioning note's own date, or the links in the guide at the top, in that note, in the "Use them
-// together" line and in the Claude Code section's list.
-// Whether a fact still matches its source stays a review job.
+// the Claude Code section's source link and date, and its comparison table, links and two dates, to
+// src/data/compare.ts. It does not check the positioning note's own date, the links in the guide at
+// the top, in that note, in the "Use them together" line and in the Claude Code section's list, or the
+// comparison's prose. Whether a value still matches its source stays a review job.
 test('seo — /compare links each row, each sources-note link and the Claude Code source in place, with their dates', async ({ page }) => {
   await page.goto('/compare');
   const hero = page.locator('section.hero time');
@@ -939,9 +938,11 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
   await expect(ccLink, 'the Claude Code source link has the wrong text').toHaveText(CLAUDE_CODE.label);
   await expect(quoting.locator('time'), 'the Claude Code quotes: their date').toHaveAttribute('datetime', CLAUDE_CODE_CHECKED.iso);
   await expect(quoting.locator('time'), 'the Claude Code quotes: their date').toHaveText(CLAUDE_CODE_CHECKED.label);
-  // The comparison: every row of the data in the table, in order, both sites and both repositories
-  // linked, and the day it was measured.
-  const runRows = page.locator('section#claude-code table tbody tr');
+  // The comparison: the column heads and every row of the data in the table, in order; both sites and
+  // both repositories linked with their labels; both dates.
+  const runHeads = page.locator('#runs-comparison thead th');
+  for (const [j, r] of RUNS.entries()) await expect(runHeads.nth(j + 1), `comparison column ${j + 1}`).toHaveText(r.name);
+  const runRows = page.locator('#runs-comparison tbody tr');
   await expect(runRows, 'the comparison table rows').toHaveCount(RUN_ROWS.length);
   for (const [i, row] of RUN_ROWS.entries()) {
     await expect(runRows.nth(i).locator('th'), `comparison row ${i + 1}`).toHaveText(row.measure);
@@ -949,11 +950,13 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
       await expect(runRows.nth(i).locator('td').nth(j), `comparison row ${i + 1}, ${r.name}`).toHaveText(row[r.key]);
     }
   }
-  const runNote = page.locator('section#claude-code table').locator('xpath=../following-sibling::p[1]');
+  const runNote = page.locator('#runs-comparison + p');
   for (const r of RUNS) {
-    await expect(runNote.locator(`a[href="${r.site}"]`), `the comparison note links ${r.site}`).toHaveCount(1);
-    await expect(runNote.locator(`a[href="${r.repo}"]`), `the comparison note links ${r.repo}`).toHaveCount(1);
+    await expect(runNote.locator(`a[href="${r.site}"]`), `the comparison note links ${r.site}`).toHaveText(r.siteLabel);
+    await expect(runNote.locator(`a[href="${r.repo}"]`), `the comparison note links ${r.repo}`).toHaveText(r.repoLabel);
   }
   await expect(runNote.locator('time').nth(0), 'the comparison: the day it was measured').toHaveAttribute('datetime', RUNS_MEASURED.iso);
+  await expect(runNote.locator('time').nth(0), 'the comparison: the day it was measured').toHaveText(RUNS_MEASURED.label);
   await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveAttribute('datetime', RUNS_PAGESPEED.iso);
+  await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveText(RUNS_PAGESPEED.label);
 });
