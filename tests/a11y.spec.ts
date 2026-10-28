@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 // Site-specific (not in the shipped suite): the skills catalogue's data, which the /skills test at the end of this file reads.
@@ -1039,8 +1039,9 @@ test('roadmap — says which release and day it was last read through against', 
   expect(await page.locator('meta[name="description"]').getAttribute('content')).toContain('No delivery dates');
 });
 
-// The case study shows only what its three sources say (owner, 2026-10-21): the two files written by
-// scripts/export-own-site.py and the log in src/data/case-study.ts. This reads the files itself, not
+// The case study's figures come only from its three sources (owner, 2026-10-21): the two files written by
+// scripts/export-own-site.py and the log in src/data/case-study.ts; the hero's screenshot is separate
+// evidence, tested below. This reads the files itself, not
 // through the page's data module, so a slip in that module's sums shows up here.
 test('case study — the figures from the two data files equal those files', async ({ page }) => {
   const csv = (name: string) => readFileSync(new URL(`../public/data/${name}`, import.meta.url), 'utf8').trim().split('\n').slice(1).map((l) => l.split(','));
@@ -1101,4 +1102,105 @@ test('case study — the figures from the two data files equal those files', asy
       expect(hrefs[0]).toMatch(/^https:\/\/github\.com\/(karero\/croftweaver|karero\/croftweaver-site)\/pull\/\d+$/);
     }
   }
+});
+
+// The home page's "See a finished website" leads here, so the hero answers "what was built, and can I
+// inspect it?" before any figure, within the first screen of a desktop (1280×800): links, a disclosure that this is the maintainer's own site, and a
+// dated screenshot (plan: docs/reviews/PLAN-2026-10-27-case-study-showcase.md).
+test('case study — the hero shows what was built and where to inspect it, without scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/case-study');
+  const hero = page.locator('section.hero');
+  const parts: [string, ReturnType<typeof hero.locator>][] = [
+    ['the H1', hero.locator('h1')],
+    ['the link to the live site', hero.locator('a[href="/"]')],
+    ['the link to the source', hero.locator('a[href="https://github.com/karero/croftweaver-site"]')],
+    ['the link to the log', hero.locator('a[href="#log"]')],
+    ['the disclosure', hero.locator('.disclosure')],
+  ];
+  for (const [name, loc] of parts) {
+    await expect(loc, `${name} is in the hero once`).toHaveCount(1);
+    const box = await loc.boundingBox();
+    expect(box, `${name} is rendered`).not.toBeNull();
+    expect(box!.y + box!.height, `${name}: bottom edge within the first 800 px at 1280×800`).toBeLessThanOrEqual(800);
+  }
+  await expect(page.locator('#log h2'), 'the jump link lands on the log heading').toHaveCount(1);
+  const disclosure = (await hero.locator('.disclosure').textContent())!.replace(/\s+/g, ' ');
+  expect(disclosure).toContain('maintainer');
+  expect(disclosure).toContain('not an independent customer project');
+  // The screenshot: the folder holds exactly one desktop and one phone capture, both dated as the caption
+  // says, and the page shows those two. Catches a caption that disagrees with the files and a file left
+  // behind; it cannot tell when the pixels were captured (that is recorded in the pull request).
+  const files = readdirSync(new URL('../public/images/case-study/', import.meta.url)).filter((f) => !f.startsWith('.')).sort();
+  const dated = (kind: string) => files.filter((f) => new RegExp(`^croftweaver-com-home-${kind}-\\d{4}-\\d{2}-\\d{2}\\.webp$`).test(f));
+  expect(dated('desktop'), 'one desktop capture').toHaveLength(1);
+  expect(dated('phone'), 'one phone capture').toHaveLength(1);
+  expect(files, 'nothing else in public/images/case-study').toHaveLength(2);
+  const captured = await hero.locator('figure figcaption time').getAttribute('datetime');
+  for (const f of files) expect(f, 'the caption date is the capture date in the file name').toContain(`-${captured}.webp`);
+  const imgs = hero.locator('figure img');
+  const srcs = await imgs.evaluateAll((els) => els.map((e) => e.getAttribute('src')));
+  expect(srcs.sort()).toEqual(files.map((f) => `/images/case-study/${f}`));
+  for (let i = 0; i < (await imgs.count()); i++) {
+    const img = imgs.nth(i);
+    expect((await img.getAttribute('alt'))?.trim(), 'the screenshot is described').toBeTruthy();
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((e: HTMLImageElement) => e.complete && e.naturalWidth), { message: `${srcs[i]} loads` }).toBeGreaterThan(0);
+  }
+});
+
+// The four summaries: each dated and sourced; no percentages from tiny numbers, no figure in colour (no
+// green zero), and missing data said as such, never as 0. Figures from the CSV files are recomputed here
+// from the files. The Google indexing date and the test count must each match an entry of the log on the
+// page; that the hand-kept figures agree with their entries is checked at build time (CARDS in the data file).
+test('case study — four dated, sourced summaries, with no false zeros', async ({ page }) => {
+  const csv = (name: string) => readFileSync(new URL(`../public/data/${name}`, import.meta.url), 'utf8').trim().split('\n').slice(1).map((l) => l.split(','));
+  const gsc = csv('croftweaver-com-search-console.csv');
+  const ai = csv('croftweaver-com-ai-check.csv');
+  await page.goto('/case-study');
+  const s = page.locator('#summary');
+  await expect(s.locator('h2')).toHaveCount(1);
+  const cards = s.locator('article.card');
+  await expect(cards.locator('h3')).toHaveText(['Technical output', 'Indexing', 'Google search', 'AI answers']);
+  for (let i = 0; i < 4; i++) {
+    expect(await cards.nth(i).locator('time').count(), `card ${i + 1} is dated`).toBeGreaterThan(0);
+    await expect(cards.nth(i).locator('.source'), `card ${i + 1} names its source`).toContainText('Source:');
+  }
+  expect(await s.textContent()).not.toContain('%');
+  const ink = await page.evaluate(() => getComputedStyle(document.body).color);
+  const colours = await s.locator('.figure').evaluateAll((els) => els.map((e) => getComputedStyle(e).color));
+  expect(colours.length).toBeGreaterThan(0);
+  for (const c of colours) expect(c, 'figure colour equals the body text colour').toBe(ink);
+  const fig = (card: number, row: string) => cards.nth(card).locator(`[data-row="${row}"] .figure`);
+
+  // Google search: the period and both totals, from the file.
+  const sum = (col: number) => gsc.reduce((n, r) => n + Number(r[col]), 0);
+  const search = cards.nth(2);
+  await expect(search.locator('time').first()).toHaveAttribute('datetime', gsc[0]![0]!);
+  await expect(search.locator('time').nth(1)).toHaveAttribute('datetime', gsc[gsc.length - 1]![0]!);
+  await expect(fig(2, 'appearances')).toHaveText(String(sum(2)));
+  await expect(fig(2, 'clicks')).toHaveText(String(sum(1)));
+
+  // AI answers: the newest day in the file, and its three "n of m".
+  const last = [...new Set(ai.map((r) => r[0]!))].sort().pop()!;
+  const t = (mode: string, col: number) => ai.filter((r) => r[0] === last && r[2] === mode).reduce((n, r) => n + Number(r[col]), 0);
+  await expect(cards.nth(3).locator('time').first()).toHaveAttribute('datetime', last);
+  await expect(fig(3, 'with-search-named')).toHaveText(`${t('with_search', 11)} of ${t('with_search', 10)}`);
+  await expect(fig(3, 'with-search-sources')).toHaveText(`${t('with_search', 12)} of ${t('with_search', 10)}`);
+  await expect(fig(3, 'without-search-named')).toHaveText(`${t('without_search', 11)} of ${t('without_search', 10)}`);
+
+  // Indexing: its date is an observation in the log; Bing has no figure yet, so it says so.
+  const read = await cards.nth(1).locator('[data-row="google"] time').getAttribute('datetime');
+  await expect(page.locator(`#log li.observation:has(.when time[datetime="${read}"])`).filter({ hasText: 'indexed' }),
+    'the indexing card restates an observation of the same day').not.toHaveCount(0);
+  await expect(fig(1, 'bing')).toHaveText('Not yet measured');
+
+  // Technical output: the test count belongs to a change in the log, of the same date, that names that count.
+  const pr = await cards.nth(0).locator('[data-row="tests"] a').getAttribute('href');
+  const merged = await cards.nth(0).locator('[data-row="tests"] time').getAttribute('datetime');
+  const tests = (await fig(0, 'tests').textContent())!.trim();
+  const change = page.locator('#log li.change').filter({ has: page.locator(`a[href="${pr}"]`) });
+  await expect(change, 'the test count cites a change in the log').toHaveCount(1);
+  await expect(change.locator('.when time')).toHaveAttribute('datetime', merged!);
+  await expect(change).toContainText(`${tests} tests`);
 });

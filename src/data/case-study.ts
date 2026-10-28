@@ -1,7 +1,8 @@
 // The case study: Croftweaver used on its own site, croftweaver.com, from launch onwards (owner decisions,
-// 2026-10-21: its own page and its own export, counts only). Three sources and no others:
+// 2026-10-21: its own page and its own export, counts only). Its figures have three sources and no others:
 //   public/data/croftweaver-com-ai-check.csv and croftweaver-com-search-console.csv, both written by
-//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them.
+//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them; CARDS
+//   restates log entries. The hero's screenshot (CAPTURE) is separate evidence, not a figure.
 // The page says what was seen after a change, never that the change caused it (CONTENT_GUIDE.md).
 // Upkeep, weekly: rerun the export after the weekly AI check, add the week's entries to LOG, set UPDATED.
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
@@ -151,6 +152,43 @@ export const prLabel = (url: string) => {
   return `${m[1]}#${m[2]}`;
 };
 export const prPrivate = (url: string) => (PRIVATE_REPOS as readonly string[]).includes(url.match(PR)![1]!);
+
+// ── The hero and the summary cards ──────────────────────────────────────────────
+export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
+// The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
+export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
+
+// Card figures the CSV files do not hold are read from the log entry each card cites (named by date and
+// title), so a card cannot disagree with its entry. The build fails when an entry does not say a figure in
+// exactly these words. Bing's request is still pending in the log, so its card has no figure.
+const cited = (date: string, title: string) => {
+  const e = LOG.find((x) => x.date === date && x.title === title);
+  if (!e) throw new Error(`src/data/case-study.ts: CARDS cites "${title}" (${date}), which is not in LOG.`);
+  return e;
+};
+const read = (text: string, re: RegExp, what: string) => {
+  const m = text.match(re);
+  if (!m) throw new Error(`src/data/case-study.ts: the log entry a card cites no longer says ${what} as ${re}.`);
+  return Number(m[1]);
+};
+const indexedEntry = cited('2026-10-25', 'Three new pages, 22 in all, all indexed by Google');
+const bingEntry = cited('2026-10-20', 'Bing indexing requested');
+const testsEntry = cited('2026-10-24', 'The site brought up to release 0.33');
+if (indexedEntry.kind !== 'observation' || bingEntry.kind !== 'observation' || testsEntry.kind !== 'change') {
+  throw new Error('src/data/case-study.ts: CARDS cites an entry of the wrong kind.');
+}
+if (!bingEntry.seen.includes('The outcome is pending.')) throw new Error('src/data/case-study.ts: the Bing request is no longer pending; give the Bing card its figure.');
+export const CARDS = {
+  google: {
+    date: indexedEntry.date,
+    pages: read(indexedEntry.seen, /\bThe site now has (\d+) pages\b/, 'the page count'),
+    indexed: read(indexedEntry.seen, /\bGoogle lists all (\d+) as indexed\b/, 'the indexed count'),
+  },
+  bing: { date: bingEntry.date, indexed: null as number | null },
+  tests: { date: testsEntry.date, tests: read(testsEntry.checks ?? '', /^(\d+) tests;/, 'its test count') },
+};
+export const TESTS_PR = testsEntry.pr;
+export const measured = (n: number | null, shown: (n: number) => string = String) => (n === null ? 'Not yet measured' : shown(n));
 
 // ── Google Search Console, daily ────────────────────────────────────────────────
 const searchLines = searchCsv.trim().split(/\r?\n/);
