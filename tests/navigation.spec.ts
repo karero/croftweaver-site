@@ -752,6 +752,7 @@ const STACKED: Record<string, number> = {
   '/proof': 1,
   '/case-study': 1,
   '/ai-website-seo-checklist': 1,
+  '/compare': 1,
 };
 
 const stacked = (page: import('@playwright/test').Page) => page.locator('.table-wrap.stack');

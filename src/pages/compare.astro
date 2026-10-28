@@ -5,7 +5,7 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../data/compare';
 ---
 <Base
   title="Which website tool fits? The alternatives"
@@ -64,9 +64,50 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       already have your own method and checks. <strong>Use it with Croftweaver when</strong> you want
       this method, and by default the same checks on every change.
     </p>
+    <h3 id="one-comparison">One comparison, side by side</h3>
+    <p>
+      The same brief for a fictional business went to Claude Code twice, with the same model and the
+      same settings: once on its own, once with Croftweaver. Each run started from a one-line prompt,
+      quoted in its repository; neither stopped to ask a question, and neither was helped along. The
+      experimenter deployed both sites the same way and measured them with tools Croftweaver does not
+      make. It is a test of each
+      set-up's defaults on the same brief, not of an agreed checklist both had to meet. One run each is
+      an anecdote, not a measurement: it cannot show that one way builds better sites in general, how
+      either site would rank, or whether AI assistants would cite it, and positioning, the quality of
+      the copy, Croftweaver's own publishing steps and later changes were not compared.
+    </p>
+    <div id="runs-comparison" class="table-wrap stack" role="region" aria-label="One comparison: Claude Code on its own and with Croftweaver" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Measure</th>
+            {RUNS.map((r) => <th scope="col" role="columnheader">{r.name}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {RUN_ROWS.map((row) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">{row.measure}</th>
+              {RUNS.map((r) => <td role="cell" data-label={r.name}>{row[r.key]}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
     <p class="note">
-      Nothing on this site yet compares a site built with Croftweaver with one that Claude Code builds
-      on its own.
+      Measured on <time datetime={RUNS_MEASURED.iso}>{RUNS_MEASURED.label}</time>. The cost is the
+      figure Claude Code reported for the run. HTML errors and warnings: the W3C Nu HTML Checker;
+      structured data: Google's Rich Results Test; both on the home and contact pages. PageSpeed:
+      PageSpeed Insights on mobile, the median of five runs, for performance, accessibility, best
+      practices and SEO, on <time datetime={RUNS_PAGESPEED.iso}>{RUNS_PAGESPEED.label}</time>. Both
+      sites fail one SEO item, the noindex both carry; 66 against 69 comes from one item that does not
+      apply to the site without images. The sites:
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.siteLabel}</a></>)}.
+      Each repository holds the brief, the prompt, the run's history, its transcript in plain text
+      (tool results shortened) and the measurements:
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
+      The experimenter added a header to both sites asking search engines not to index them, because
+      the business is fictional.
     </p>
   </section>
 
