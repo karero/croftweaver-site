@@ -7,11 +7,11 @@
 // (tests/llms-coverage.spec.ts fails until it matches), and open the footer's release-notes link once:
 // the tests build it from RELEASE and SITE.repo, so they cannot see a wrong tag name. The site cannot check the toolkit at
 // build time, but the build stops when the list, the release's skill count and ADDED_SINCE do not add up.
-export const RELEASE = { version: '0.33', iso: '2026-10-24', label: '24 October 2026', skills: 38 } as const;
+export const RELEASE = { version: '0.34', iso: '2026-10-28', label: '28 October 2026', skills: 39 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
 // the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
 export const ADDED_SINCE: readonly string[] = [];
-export const AS_OF = { iso: '2026-10-24', label: '24 October 2026' } as const;
+export const AS_OF = { iso: '2026-10-28', label: '28 October 2026' } as const;
 
 export const STAGES = [
   { id: 'build', title: 'Build', intro: 'From a brief to a finished site.' },
@@ -46,7 +46,8 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'keystatic-setup', stage: 'build', optional: true, does: 'Adds an editor (Keystatic) for people who do not edit files.' },
   { name: 'website-permissions', stage: 'build', does: 'Cuts permission prompts in the routine build loop and keeps destructive actions gated.' },
 
-  { name: 'website-qa', stage: 'verify', does: 'The gate before launch: run the tests, fix until green, then check speed.' },
+  { name: 'website-qa', stage: 'verify', does: 'The gate before launch: run the tests, fix until green, then run the speed test itself.' },
+  { name: 'website-launch-check', stage: 'verify', does: 'Says whether the site is ready to launch: runs its tests, then checks what they cannot, such as the legal pages and what only the live site shows, and writes a dated report with a verdict. For a site that replaces an older one, it also lists where every old address should point.' },
   { name: 'website-review', stage: 'verify', does: 'A review in two passes: bugs first, then consistency across files.' },
   { name: 'double-knuth', stage: 'verify', does: 'The same two-pass review for any repository or set of files.' },
   { name: 'independent-review', stage: 'verify', does: 'Sends a plan or a change to independent AI models for a second opinion.' },
@@ -79,7 +80,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
+  { version: '0.34', label: '28 October 2026', text: 'A new check says when your site is ready to launch and writes a report you can open in your browser. New sites keep their pictures light on phones, keep your keys out of git from the start, and your assistant runs the speed test itself. Contact forms can ask for more, and the email they open starts with your greeting.' },
   { version: '0.33', label: '24 October 2026', text: 'An optional helper shows a few photos at the top of a page that take turns. Tables get one shared style that fits a phone. For a move off WordPress, the helper now writes the forwarding rules from a sheet of your decisions. New sites build on Astro 7.4.2, which needs Node with the security fixes of 21 October, and get one update suggestion a month from GitHub.' },
   { version: '0.32', label: '16 October 2026', text: 'New sites count no visitors until you switch on Plausible, and with it on, your site counts each click on your email address. Of three new helpers, one gets you colours and a logo, one finds the short line under your logo, and one counts what a WordPress site holds before a move. Croftweaver now comes as a plugin for Claude Code and for Codex, and for a site on GitHub your assistant can set up Cloudflare, with your yes before it changes anything.' },
-  { version: '0.31', label: '12 October 2026', text: 'The toolkit takes the name Croftweaver. It is the same toolkit under the same licence. The old address on GitHub leads to the new one, and the download is now called croftweaver.zip.' },
 ] as const;

@@ -7,7 +7,7 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 // Edit both by hand, and only after re-reading this page against that release.
-const REVIEWED = { version: '0.33', iso: '2026-10-24', label: '24 October 2026' } as const;
+const REVIEWED = { version: '0.34', iso: '2026-10-28', label: '28 October 2026' } as const;
 
 const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
@@ -68,14 +68,14 @@ const out = [
   </section>
 
   <section class="wrap" id="done">
-    <h2>Done in release 0.33</h2>
+    <h2>Done in release 0.34</h2>
     <ul class="steps">
-      <li><strong>Forwarding for a move off WordPress.</strong> For each old address you write its new address, "keep" or "let go". The helper writes the redirect lines from that, and the check after the move names any address that lands somewhere other than where you decided. <a href="/from-wordpress">Moving from WordPress</a> has the steps.</li>
-      <li><strong>Tables that fit a phone, and photos that take turns.</strong> Tables share one style that fits a small screen. An optional helper shows a few photos at the top of a page, one after another.</li>
+      <li><strong>A check before launch.</strong> A new helper runs the site's tests, then checks what they cannot, such as the legal pages and what only the live site shows, and writes a dated report with a verdict. For a site that replaces an older one, it lists where every old address should point.</li>
+      <li><strong>Pages that stay light on phones, and a safer start.</strong> New sites get a test that catches pictures far bigger than a phone shows, and your assistant runs the speed test itself. Setting up a site no longer waits for a key press, never picks a hidden folder, and keeps your keys out of git from the first step.</li>
     </ul>
     <p>
       The rest of what the release brought is in
-      <a href={`${SITE.repo}/releases/tag/v0.33`}>its release notes</a>.
+      <a href={`${SITE.repo}/releases/tag/v0.34`}>its release notes</a>.
     </p>
   </section>
 
