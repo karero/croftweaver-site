@@ -379,4 +379,4 @@ measured with tools Croftweaver does not make. The results are `RUN_ROWS` in `sr
 Both repositories are public; each holds the brief, the prompt, the run's history, its transcript and the measurements:
 https://github.com/karero/compare-claude-code-alone and
 https://github.com/karero/compare-claude-code-croftweaver. One run each is an anecdote; the section
-says so, and that positioning, copy quality and later changes were not compared.
+says so, and that positioning, copy quality, Croftweaver's own publishing steps and later changes were not compared.

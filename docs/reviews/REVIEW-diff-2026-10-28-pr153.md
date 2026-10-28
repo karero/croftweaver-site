@@ -29,3 +29,15 @@ Fresh-eyes: 3 BUG, 3 RISK, 6 NIT (285 s, 112,853 tokens); every table value matc
 | 15 | fresh | NIT | `docs/competitors.md` gives one date | fixed: both dates |
 | 16 | fresh | NIT | Croftweaver's own publishing steps were not compared, unsaid | fixed: added to the "not compared" list |
 | 17 | fresh | NIT | ragged test comment | fixed |
+
+## Round 2 (2026-10-28, delta 3758247..720d771), verification
+
+Earned by rows 1-3 (BUG). Codex: No BUG/RISK/NIT findings (154 s, 56,446 tokens). GLM 5.3: 2 NIT
+(166 s, 15,593 tokens). Fresh-eyes: all its round-1 findings FIXED, the other seats' dispositions
+hold; 1 NIT (71 s). Push gate: 472 passed.
+
+| # | Seat | Kind | Finding | Disposition |
+|---|---|---|---|---|
+| 18 | fresh | NIT | the structured-data cell says "the test", which a stacked cell on a phone does not name | fixed: "Google's Rich Results Test" |
+| 19 | GLM | NIT | the test comment says it does not check the comparison's prose, but it checks the note's links and dates | fixed: "the rest of the comparison's prose" |
+| 20 | GLM | NIT | `docs/competitors.md`'s not-compared list lacks the publishing steps | fixed |

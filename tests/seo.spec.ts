@@ -904,7 +904,7 @@ test('seo — the privacy page names the analytics host in an element marked dat
 // the Claude Code section's source link and date, and its comparison table, links and two dates, to
 // src/data/compare.ts. It does not check the positioning note's own date, the links in the guide at
 // the top, in that note, in the "Use them together" line and in the Claude Code section's list, or the
-// comparison's prose. Whether a value still matches its source stays a review job.
+// rest of the comparison's prose. Whether a value still matches its source stays a review job.
 test('seo — /compare links each row, each sources-note link and the Claude Code source in place, with their dates', async ({ page }) => {
   await page.goto('/compare');
   const hero = page.locator('section.hero time');

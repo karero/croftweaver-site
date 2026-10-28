@@ -46,7 +46,7 @@ export const RUN_ROWS = [
   { measure: 'Prompts and questions', alone: 'one prompt, no questions', croftweaver: 'one prompt, no questions' },
   { measure: 'Pages', alone: 'home, services, about, contact', croftweaver: 'home, services, about, contact, privacy' },
   { measure: 'HTML errors and warnings', alone: 'none', croftweaver: 'none' },
-  { measure: 'Structured data', alone: 'none detected', croftweaver: 'one organization markup, valid, which the test also lists as a local business; two optional fields missing' },
+  { measure: 'Structured data', alone: 'none detected', croftweaver: 'one organization markup, valid, which Google\'s Rich Results Test also lists as a local business; two optional fields missing' },
   { measure: 'PageSpeed, home', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
   { measure: 'PageSpeed, contact', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
 ] as const;
