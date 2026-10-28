@@ -41,3 +41,19 @@ hold; 1 NIT (71 s). Push gate: 472 passed.
 | 18 | fresh | NIT | the structured-data cell says "the test", which a stacked cell on a phone does not name | fixed: "Google's Rich Results Test" |
 | 19 | GLM | NIT | the test comment says it does not check the comparison's prose, but it checks the note's links and dates | fixed: "the rest of the comparison's prose" |
 | 20 | GLM | NIT | `docs/competitors.md`'s not-compared list lacks the publishing steps | fixed |
+
+A wording pass on the round-2 fixes (Codex, `--wording-pass`) answered that one changed line, the
+structured-data cell, is in a TypeScript data file and so outside a prose-only pass. Round 3 reviewed
+the same delta as code instead.
+
+## Round 3 (2026-10-28, delta 720d771..b2e5221), verification
+
+Codex: No BUG/RISK/NIT findings (63 s, 35,315 tokens). GLM 5.3: rows 18-20 FIXED, nothing new (27 s,
+3,412 tokens).
+
+## Verdict
+
+DIFF gate clean on b2e5221cb34cc8a810ee5d18c5a46194990fb8cd: no open BUG or RISK. 3 rounds, 20 findings (4 BUG, 5 RISK, 11 NIT): 19
+fixed, 1 refuted. Nothing changed after round 3 except this record. Cost: Codex 4 runs (3 rounds and
+the wording pass), 431 s, 163,478 tokens; GLM 3 runs, 439 s, 34,599 tokens; fresh-eyes 2 rounds,
+356 s, 128,864 tokens.
