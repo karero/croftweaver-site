@@ -53,7 +53,7 @@ Codex: No BUG/RISK/NIT findings (63 s, 35,315 tokens). GLM 5.3: rows 18-20 FIXED
 
 ## Verdict
 
-DIFF gate clean on b2e5221cb34cc8a810ee5d18c5a46194990fb8cd: no open BUG or RISK. 3 rounds, 20 findings (4 BUG, 5 RISK, 11 NIT): 19
+DIFF gate clean on b2e5221cb34cc8a810ee5d18c5a46194990fb8cd: no open BUG or RISK. 3 rounds, 20 findings (3 BUG, 5 RISK, 12 NIT): 19
 fixed, 1 refuted. Nothing changed after round 3 except this record. Cost: Codex 4 runs (3 rounds and
 the wording pass), 431 s, 163,478 tokens; GLM 3 runs, 439 s, 34,599 tokens; fresh-eyes 2 rounds,
 356 s, 128,864 tokens.
