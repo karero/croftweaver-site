@@ -68,7 +68,7 @@ DEFAULT_SUBTITLES = ["Weave websites that rank,", "on Google and in AI answers."
 PAGES: list[tuple[str, str, list[str]]] = [
     ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
     ("proof", "Built with Croftweaver", ["One site, measured:", "speed, search clicks, AI mentions."]),
-    ("case-study", "Case study", ["Croftweaver on its own website,", "logged week by week."]),
+    ("case-study", "A live website built with Croftweaver", ["Look at the site, its source and its checks.", "The early numbers are small; the zeros stay in."]),
     ("more-proof", "More proof", ["Speed and technical SEO, measured.", "Trust, as four AI assistants score it."]),
     ("skills", "Website skills", ["The catalogue, by stage:", "build, verify, launch, grow."]),
     ("start", "Quickstart", ["From nothing to your first site,", "with your AI coding assistant."]),
