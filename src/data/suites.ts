@@ -46,7 +46,7 @@ export const SUITES: {
   {
     file: 'phone-images', group: 'people', name: 'Phone images',
     checks: 'Each page loads as a phone screen and scrolls to the end. A photo or other raster image the page downloads fails when it is more than 3.3 times as wide as it shows (three times, with a 10% allowance) and a copy that wide would save an estimated 4 KiB or more, or when it is downloaded but never shown and is 4 KiB or more.',
-    example: 'A photo 1600 pixels wide, shown 372 pixels wide on a phone, fails: a phone uses at most 1228 pixels of it, and a copy that wide saves an estimated 26 KB.',
+    example: 'A 63 KiB photo 1600 pixels wide, shown 372 pixels wide on a phone, fails: the test allows it 1228 pixels, and a copy that wide saves an estimated 26 KiB.',
     limit: 'It measures one phone size, in one browser, Chromium. SVG files are not judged, nor images used only as borders, cursors or shapes, and the saving is an estimate. It does not judge how sharp an image looks or which file format it uses.',
   },
   {
