@@ -57,8 +57,8 @@ ACCENT = (143, 212, 171)           # accent bar      (--accent)
 FOOTER_COL = (162, 172, 159)       # footer url (--muted dark, #a2ac9f)
 
 # Home + fallback card (this is Base.astro's default `image`). Edit for your site.
-DEFAULT_TITLE = "Weave websites that rank."
-DEFAULT_SUBTITLES = ["Stop waiting on someone else for every change.", "Website skills for search and AI visibility."]
+DEFAULT_TITLE = "Build a complete website with AI."
+DEFAULT_SUBTITLES = ["Weave websites that rank,", "on Google and in AI answers."]
 
 # ── PAGES ─────────────────────────────────────────────────────────────────────
 # One entry per page that should have its OWN card. The slug is the output filename
@@ -68,7 +68,7 @@ DEFAULT_SUBTITLES = ["Stop waiting on someone else for every change.", "Website 
 PAGES: list[tuple[str, str, list[str]]] = [
     ("checks", "The test gate", ["What each suite checks,", "and what a pass does not prove."]),
     ("proof", "Built with Croftweaver", ["One site, measured:", "speed, search clicks, AI mentions."]),
-    ("case-study", "Case study", ["Croftweaver on its own website,", "logged week by week."]),
+    ("case-study", "A live website built with Croftweaver", ["Look at the site, its source and its checks.", "The early numbers are small; the zeros stay in."]),
     ("more-proof", "More proof", ["Speed and technical SEO, measured.", "Trust, as four AI assistants score it."]),
     ("skills", "Website skills", ["The catalogue, by stage:", "build, verify, launch, grow."]),
     ("start", "Quickstart", ["From nothing to your first site,", "with your AI coding assistant."]),
