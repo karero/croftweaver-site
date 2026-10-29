@@ -45,9 +45,9 @@ export const SUITES: {
   },
   {
     file: 'phone-images', group: 'people', name: 'Phone images',
-    checks: 'Each page loads as a phone screen and scrolls to the end. No image it downloads may be far wider than a phone can show, and none may be downloaded and then never shown.',
-    example: 'A photo several thousand pixels wide, shown a few hundred pixels wide on a phone, fails when a smaller copy would save at least 4 KiB.',
-    limit: 'It measures one phone size, in one browser, Chromium. It does not judge how sharp an image looks or which file format it uses.',
+    checks: 'Each page loads as a phone screen and scrolls to the end. A photo or other raster image the page downloads fails when it is wider than a phone with three times the pixels could use and a narrower copy would save at least 4 KiB, or when it is downloaded but never shown and is 4 KiB or more.',
+    example: 'A photo 1600 pixels wide, shown 372 pixels wide on a phone, fails when a narrower copy would save at least 4 KiB.',
+    limit: 'It measures one phone size, in one browser, Chromium. SVG files are not judged, nor images used only as borders, cursors or shapes, and the saving is an estimate. It does not judge how sharp an image looks or which file format it uses.',
   },
   {
     file: 'tables', group: 'people', name: 'Tables',

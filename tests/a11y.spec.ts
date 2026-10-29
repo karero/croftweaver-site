@@ -1145,8 +1145,15 @@ test('case study — the hero shows what was built and where to inspect it, with
   const imgs = hero.locator('figure img');
   const srcs = await imgs.evaluateAll((els) => els.map((e) => e.getAttribute('src')));
   expect(srcs.sort()).toEqual(captures.map((f) => `/images/case-study/${f}`));
+  // Every srcset entry is a file in the folder whose width is its descriptor, and every copy is listed.
   const srcset = (await hero.locator('figure img[srcset]').getAttribute('srcset')) ?? '';
-  for (const f of copies) expect(srcset, `${f} is in the desktop capture's srcset`).toContain(`/images/case-study/${f} `);
+  const entries = srcset.split(',').map((e) => e.trim().split(/\s+/)).filter((e) => e[0]);
+  for (const f of copies) expect(entries.map((e) => e[0]), `${f} is in the desktop capture's srcset`).toContain(`/images/case-study/${f}`);
+  for (const [url, w] of entries) {
+    expect(files.map((f) => `/images/case-study/${f}`), `${url} in the srcset is a file in public/images/case-study`).toContain(url);
+    const natural = await page.evaluate((u) => new Promise<number>((ok) => { const i = new Image(); i.onload = () => ok(i.naturalWidth); i.onerror = () => ok(0); i.src = u; }), url);
+    expect(`${natural}w`, `${url}: its srcset width is the file's own width`).toBe(w);
+  }
   for (let i = 0; i < (await imgs.count()); i++) {
     const img = imgs.nth(i);
     expect((await img.getAttribute('alt'))?.trim(), 'the screenshot is described').toBeTruthy();
