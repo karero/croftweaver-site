@@ -44,6 +44,12 @@ export const SUITES: {
     limit: 'An empty alt text passes, because a decorative image needs one. It cannot tell whether a description fits the picture.',
   },
   {
+    file: 'phone-images', group: 'people', name: 'Phone images',
+    checks: 'Each page loads as a phone screen and scrolls to the end. No image it downloads may be far wider than a phone can show, and none may be downloaded and then never shown.',
+    example: 'A photo several thousand pixels wide, shown a few hundred pixels wide on a phone, fails when a smaller copy would save at least 4 KiB.',
+    limit: 'It measures one phone size, in one browser, Chromium. It does not judge how sharp an image looks or which file format it uses.',
+  },
+  {
     file: 'tables', group: 'people', name: 'Tables',
     checks: 'Every table on every page uses the shared table style. On a phone a table of sentences stacks into labelled rows and a table of numbers fits the screen; on a wider screen it is a table again, with no word broken across lines. A test table of each kind also runs on the home page, in light and dark.',
     example: 'A table of sentences that makes a phone scroll sideways at 320 px fails.',

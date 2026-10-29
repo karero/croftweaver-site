@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, COMPANY, ogLocaleFor } from '../src/config';
+import * as config from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
 import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../src/data/compare';
@@ -959,4 +960,37 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
   await expect(runNote.locator('time').nth(0), 'the comparison: the day it was measured').toHaveText(RUNS_MEASURED.label);
   await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveAttribute('datetime', RUNS_PAGESPEED.iso);
   await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveText(RUNS_PAGESPEED.label);
+});
+
+// The generator tag (src/config.ts GENERATOR_TAG): every built page, 404 and noindex pages too,
+// carries exactly one Croftweaver generator tag when the switch is on, none when it is off. A
+// config without the switch (a site from before it existed) counts as off. Another generator
+// tag an owner adds is not ours and is not counted.
+function findHtml(dir: string): string[] {
+  const out: string[] = [];
+  let entries: import('node:fs').Dirent[];
+  try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return out; }
+  for (const e of entries) {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) out.push(...findHtml(p));
+    else if (e.name.endsWith('.html')) out.push(p);
+  }
+  return out;
+}
+
+test('seo — the generator tag follows its switch on every built page', async ({ page }) => {
+  const on = 'GENERATOR_TAG' in config && Boolean(config.GENERATOR_TAG);
+  const pages = findHtml(join(process.cwd(), 'dist'));
+  expect(pages.length, 'no built pages in dist/: the test server builds the site first').toBeGreaterThan(0);
+  for (const file of pages) {
+    // A real HTML parser, so comments and script text are not counted as tags.
+    const ours = await page.evaluate((html) => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return [...doc.querySelectorAll('meta[name="generator" i]')].filter(
+        (m) => m.getAttribute('content') === 'Croftweaver',
+      ).length;
+    }, readFileSync(file, 'utf8'));
+    if (on) expect(ours, `${file}: needs exactly one <meta name="generator" content="Croftweaver"> (GENERATOR_TAG is on)`).toBe(1);
+    else expect(ours, `${file}: has the Croftweaver generator tag although GENERATOR_TAG is off`).toBe(0);
+  }
 });

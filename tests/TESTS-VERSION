@@ -1,4 +1,3 @@
-suite_commit: a1f308998e8d412fb3fa9df77a02248fd5c1c6e8
-copied: 2026-10-25
+suite_commit: 99b72e10d765ad0925b4598a7430d604b1d2c244
+copied: 2026-10-29
 left_out: analytics-server.spec.ts — needs functions/go/email, which this site does not have
-added: served-build.spec.ts 3a0b7e1438e9560554a9ec6025321a1c0c0d0f0e 2026-10-26

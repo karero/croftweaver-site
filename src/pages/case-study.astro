@@ -43,7 +43,8 @@ const testsPr = prLabel(TESTS_PR);
       assistant.
     </p>
     <figure class="shots">
-      <img src={shot('desktop')} width="1600" height="1000" loading="eager" fetchpriority="high"
+      <img src={shot('desktop')} srcset={`${shot('desktop').replace('.webp', '-800.webp')} 800w, ${shot('desktop')} 1600w`}
+        sizes="(max-width: 40rem) 100vw, 75vw" width="1600" height="1000" loading="eager" fetchpriority="high"
         alt="The home page of croftweaver.com on a desktop screen: the Croftweaver logo and menu, a badge “Free and open source · MIT licence”, the line “Weave websites that rank.”, the headline “Build a complete website with AI.”, a subline on guiding your AI coding assistant to a tested website, three checked points, and the buttons “Get Croftweaver on GitHub” and “See a finished website”." />
       <img src={shot('phone')} width="585" height="1266" loading="lazy"
         alt="The same home page on a phone: the logo and a Menu button, the badge, the headline over two lines, the subline, the three checked points, and the GitHub button at the bottom edge." />

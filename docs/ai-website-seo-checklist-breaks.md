@@ -27,6 +27,13 @@ again when the toolkit changes. A row of the table is only as good as its break.
   specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it names `a1f30899`, which is `v0.33`,
   the version of the last run. So the table
   describes the starter, and these breaks were not run against this site's copies.
+- 29 October 2026, at `v0.34` (`99b72e10`), Node v26.13.0, Playwright 1.64.1, the starter copied out the
+  same way. In the four specs, the tests these breaks use are unchanged from `v0.33`: `images`,
+  `navigation`, `anchors` and `_helpers.ts` are byte-identical, and `seo.spec.ts` only gained one test,
+  the generator tag. So the breaks were not all run again. Rerun: the baseline (115 passed and 1 skipped;
+  most of the new ones are `phone-images.spec.ts`), the tie T and control C2 (10 passed each, one more
+  than at `v0.33`: the generator-tag test), and break 15, which failed with the same message. The table
+  below gives the `v0.33` counts.
 
 ## The breaks
 

@@ -1135,12 +1135,18 @@ test('case study — the hero shows what was built and where to inspect it, with
   const dated = (kind: string) => files.filter((f) => new RegExp(`^croftweaver-com-home-${kind}-\\d{4}-\\d{2}-\\d{2}\\.webp$`).test(f));
   expect(dated('desktop'), 'one desktop capture').toHaveLength(1);
   expect(dated('phone'), 'one phone capture').toHaveLength(1);
-  expect(files, 'nothing else in public/images/case-study').toHaveLength(2);
+  // Smaller copies of the desktop capture for phones (its srcset): same name and date, plus a width.
+  const copies = files.filter((f) => /^croftweaver-com-home-desktop-\d{4}-\d{2}-\d{2}-\d+\.webp$/.test(f));
+  expect(files, 'nothing else in public/images/case-study').toHaveLength(2 + copies.length);
+  const captures = [...dated('desktop'), ...dated('phone')].sort();
   const captured = await hero.locator('figure figcaption time').getAttribute('datetime');
-  for (const f of files) expect(f, 'the caption date is the capture date in the file name').toContain(`-${captured}.webp`);
+  for (const f of captures) expect(f, 'the caption date is the capture date in the file name').toContain(`-${captured}.webp`);
+  for (const f of copies) expect(f, 'a copy is of the dated desktop capture').toMatch(new RegExp(`^croftweaver-com-home-desktop-${captured}-\\d+\\.webp$`));
   const imgs = hero.locator('figure img');
   const srcs = await imgs.evaluateAll((els) => els.map((e) => e.getAttribute('src')));
-  expect(srcs.sort()).toEqual(files.map((f) => `/images/case-study/${f}`));
+  expect(srcs.sort()).toEqual(captures.map((f) => `/images/case-study/${f}`));
+  const srcset = (await hero.locator('figure img[srcset]').getAttribute('srcset')) ?? '';
+  for (const f of copies) expect(srcset, `${f} is in the desktop capture's srcset`).toContain(`/images/case-study/${f} `);
   for (let i = 0; i < (await imgs.count()); i++) {
     const img = imgs.nth(i);
     expect((await img.getAttribute('alt'))?.trim(), 'the screenshot is described').toBeTruthy();
