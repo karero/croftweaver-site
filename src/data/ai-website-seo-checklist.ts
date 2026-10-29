@@ -25,9 +25,10 @@ export const RED_RUNS = {
   nodeStarterAsks: '24',
   iso: '2026-10-25',
   label: '25 October 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: v0.33 itself (a1f30899), the version the breaks
-  // were last run against (2026-10-25; before, v0.32 on 2026-10-22, with the same results).
-  suiteCommit: 'a1f308998e8d412fb3fa9df77a02248fd5c1c6e8',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.34 (99b72e10). The breaks ran on v0.33
+  // (2026-10-25); at v0.34 the tests they use are unchanged (seo.spec.ts only gained the generator-tag
+  // test), and the baseline, T, C2 and break 15 were rerun there on 2026-10-29 (the breaks notes).
+  suiteCommit: '99b72e10d765ad0925b4598a7430d604b1d2c244',
 } as const;
 
 const COVERED = ['seo', 'images', 'navigation', 'anchors'] as const;
