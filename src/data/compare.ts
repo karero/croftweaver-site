@@ -51,6 +51,32 @@ export const RUN_ROWS = [
   { measure: 'PageSpeed, contact', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
 ] as const;
 
+// The maintenance test of 31 October 2026: the same change asked of both sites above (add a page from
+// a supplied text and photo with three planted faults), each run in its own container. Every value is
+// the run's record or a neutral tool's reading of the deployed new page. Each repository's
+// `maintenance` branch holds the write-up and the transcript.
+export const MAINT_MEASURED = { iso: '2026-10-31', label: '31 October 2026' } as const;
+export const MAINT_PAGESPEED = [
+  { iso: '2026-10-31', label: '31 October' },
+  { iso: '2026-11-02', label: '2 November 2026' },
+] as const;
+export const MAINT_RUNS = [
+  { key: 'alone', name: 'Claude Code on its own', site: 'https://maintenance.compare-cc-alone.pages.dev/how-it-works/', siteLabel: 'the page added on its own', repo: 'https://github.com/karero/compare-claude-code-alone/tree/maintenance', repoLabel: 'the change on its own' },
+  { key: 'croftweaver', name: 'With Croftweaver 0.34', site: 'https://maintenance.compare-cc-croftweaver.pages.dev/how-a-job-works', siteLabel: 'the page added with Croftweaver', repo: 'https://github.com/karero/compare-claude-code-croftweaver/tree/maintenance', repoLabel: 'the change with Croftweaver' },
+] as const;
+export const MAINT_ROWS = [
+  { measure: 'Fault 1: a link to /service, where the page is /services', alone: 'named by the assistant; fixed', croftweaver: 'named by the assistant; fixed' },
+  { measure: 'Fault 2: a photo 5,194 pixels wide, 2.2 MB', alone: 'named by the assistant; made smaller (123 KiB on a phone), but PageSpeed still flags it, and no message said so', croftweaver: 'named by the assistant; fixed (three WebP sizes, 27 KiB on a phone)' },
+  { measure: 'Fault 3: priced "per page", where the site says per word', alone: 'named by the assistant; fixed', croftweaver: 'named by the assistant; fixed' },
+  { measure: 'Questions asked', alone: '3', croftweaver: '4' },
+  { measure: 'Checks run', alone: 'the build, twice', croftweaver: 'the site\'s 157 tests, then the same tests before the push' },
+  { measure: 'Tests added', alone: 'none (the site has no tests)', croftweaver: 'the new page in the site\'s wording test' },
+  { measure: 'Pushed to', alone: 'main', croftweaver: 'a new branch, for a pull request' },
+  { measure: 'Time', alone: '49 seconds', croftweaver: '268 seconds' },
+  { measure: 'Cost of the run', alone: '0.28 USD', croftweaver: '0.94 USD' },
+  { measure: 'PageSpeed, the new page', alone: '100, 100, 100 and 69', croftweaver: '100, 100, 100 and 69' },
+] as const;
+
 // The guide at the top of /compare: what you are building, and which kind of tool fits it. One
 // line each, so a line can be quoted on its own. Each line sums up a section of the page and adds
 // no fact about another product; it says what fits, never which is best.

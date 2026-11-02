@@ -4,7 +4,7 @@ import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import * as config from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
-import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../src/data/compare';
+import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED, MAINT_MEASURED, MAINT_PAGESPEED, MAINT_RUNS, MAINT_ROWS } from '../src/data/compare';
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -960,6 +960,28 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
   await expect(runNote.locator('time').nth(0), 'the comparison: the day it was measured').toHaveText(RUNS_MEASURED.label);
   await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveAttribute('datetime', RUNS_PAGESPEED.iso);
   await expect(runNote.locator('time').nth(1), 'the comparison: the day of the PageSpeed runs').toHaveText(RUNS_PAGESPEED.label);
+  // The maintenance test, the same way: heads, every row in order, its pages and branches linked, its dates.
+  const maintHeads = page.locator('#maintenance-comparison thead th');
+  for (const [j, r] of MAINT_RUNS.entries()) await expect(maintHeads.nth(j + 1), `maintenance column ${j + 1}`).toHaveText(r.name);
+  const maintRows = page.locator('#maintenance-comparison tbody tr');
+  await expect(maintRows, 'the maintenance table rows').toHaveCount(MAINT_ROWS.length);
+  for (const [i, row] of MAINT_ROWS.entries()) {
+    await expect(maintRows.nth(i).locator('th'), `maintenance row ${i + 1}`).toHaveText(row.measure);
+    for (const [j, r] of MAINT_RUNS.entries()) {
+      await expect(maintRows.nth(i).locator('td').nth(j), `maintenance row ${i + 1}, ${r.name}`).toHaveText(row[r.key]);
+    }
+  }
+  const maintNote = page.locator('#maintenance-comparison + p');
+  for (const r of MAINT_RUNS) {
+    await expect(maintNote.locator(`a[href="${r.site}"]`), `the maintenance note links ${r.site}`).toHaveText(r.siteLabel);
+    await expect(maintNote.locator(`a[href="${r.repo}"]`), `the maintenance note links ${r.repo}`).toHaveText(r.repoLabel);
+  }
+  const maintDates = [MAINT_MEASURED, ...MAINT_PAGESPEED];
+  await expect(maintNote.locator('time'), 'the maintenance note: its dates').toHaveCount(maintDates.length);
+  for (const [k, d] of maintDates.entries()) {
+    await expect(maintNote.locator('time').nth(k), `the maintenance note: date ${k + 1}`).toHaveAttribute('datetime', d.iso);
+    await expect(maintNote.locator('time').nth(k), `the maintenance note: date ${k + 1}`).toHaveText(d.label);
+  }
 });
 
 // The generator tag (src/config.ts GENERATOR_TAG): every built page, 404 and noindex pages too,
