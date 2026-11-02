@@ -113,9 +113,14 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
     <p>
       Both sites above were then given the same ordinary change: add a page, "How a job works", from a
       text and a photo the owner supplied, then commit and push. The experimenter planted three faults
-      in that material. Each run had its own container, with no login for GitHub or the live site, and
-      its questions were answered from the brief, else with "add it as given; use your default". The
-      table says, for each fault, who named it first and whether it was gone from the deployed page.
+      in that material. Each turn of a run ran in a fresh container, with no login for GitHub or the
+      live site, and its questions were answered from the brief, else with "add it as given; use your
+      default". For each fault the table gives two things. Who named it first: a check, whose output
+      names the fault, or the assistant, in a message of its own before any check's output does. And
+      its end state on the deployed page: fixed (gone), reported (still there, and the assistant told
+      the owner it is a problem) or left in silently. A fault counts as there when, for the link, the
+      W3C Link Checker reports it broken; for the photo, PageSpeed Insights on mobile names it under
+      "Improve image delivery"; for the price, the page says per page.
     </p>
     <div id="maintenance-comparison" class="table-wrap stack" role="region" aria-label="One change: Claude Code on its own and with Croftweaver" tabindex="0">
       <table role="table">
@@ -137,24 +142,29 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
     </div>
     <p class="note">
       Run on <time datetime={MAINT_MEASURED.iso}>{MAINT_MEASURED.label}</time>, with Claude Code
-      2.1.308 and the same model as above. In both runs the assistant named all three faults itself;
-      no check named one. The supplied photo is not the desk its description (its alt text) names: the
+      2.1.308 and the same model as above. In both runs the assistant named each fault before any
+      check did. The supplied photo is not the desk its description (its alt text) names: the
       run on its own kept the untrue description, the run with Croftweaver rewrote it to match the
-      picture. The cost is Claude Code's own figure; the time is the wall clock of the run's turns,
-      without the time taken to answer its questions. The run with Croftweaver was started a second
-      time, because the first attempt (0.78 USD) needed an image library the experimenter had left out
-      of its container. PageSpeed: PageSpeed Insights on mobile, five runs each, on
+      picture. The cost is Claude Code's own figure at the end of the run, which covers all its turns;
+      the time is the wall clock of the run's turns, without the time taken to answer its questions.
+      The run with Croftweaver was started a second time, because the first attempt (0.78 USD) needed
+      an image library the experimenter had left out of its container; its figures are the second
+      attempt's. PageSpeed: PageSpeed Insights on mobile, five runs each, on
       {MAINT_PAGESPEED.map((d, i) => <>{i > 0 && ' and '}<time datetime={d.iso}>{d.label}</time></>)}.
-      The Nu HTML Checker found no errors on either new page, and one warning on each. The pages:
+      HTML: the W3C Nu HTML Checker; its one warning on each page is "Section lacks heading". Links:
+      the W3C Link Checker. The pages:
       {MAINT_RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.siteLabel}</a></>)}.
-      Each repository's maintenance branch holds the write-up, the prompts and answers and the
-      transcript: {MAINT_RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
+      Each repository's maintenance branch holds the write-up, with the transcript's words behind
+      each fault's two fields, the prompts and answers and the transcript: {MAINT_RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
     </p>
     <p class="note">
       The limits: one run each is an anecdote, and a model can answer differently each time. The
       experimenter who chose the faults knows Croftweaver's tests, and the first two faults are kinds
-      those tests look for; no test was found that checks the third. The site with Croftweaver kept
-      its 0.33 tests plus the one new 0.34 test an owner is told to copy in. Both histories show the
+      those tests look for. No test was found that checks the third: the site on its own has no
+      tests, and the other site's tests were searched for the words. The site with Croftweaver kept
+      its 0.33 tests plus the one new 0.34 test an owner is told to copy in, and its run could use the
+      image tools its own settings allow; the experimenter added one, Python's Pillow, which its
+      share-card script needs. Both histories show the
       experimenter's own commits. These runs ran in a Linux container, the first comparison on a Mac.
     </p>
   </section>
