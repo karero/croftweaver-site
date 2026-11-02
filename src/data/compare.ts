@@ -78,7 +78,7 @@ export const MAINT_ROWS = [
   { measure: 'Pushed', alone: 'to main (git push origin main); the site has no check before a push (core.hooksPath not set)', croftweaver: 'to a new branch, for a pull request (git push -u origin content/how-a-job-works); the site\'s check before a push (core.hooksPath scripts/hooks) ran its tests and passed' },
   { measure: 'HTML errors and warnings, the new page', alone: 'no errors, one warning', croftweaver: 'no errors, one warning' },
   { measure: 'Broken links, the new page', alone: 'none', croftweaver: 'one: its canonical link to the live address, where this page was never deployed' },
-  { measure: 'Title, description, canonical link, sitemap, menu link', alone: 'all five; the title 48 characters, the description 90', croftweaver: 'all five; the title 48 characters, the description 156; plus its own share card and a line in llms.txt' },
+  { measure: 'Title, description, canonical link, sitemap, menu link', alone: 'all five; the title 48 characters, the description 90 characters', croftweaver: 'all five; the title 48 characters, the description 156 characters; plus its own share card and a line in llms.txt' },
   { measure: 'PageSpeed, the new page', alone: '100, 100, 100 and 69', croftweaver: '100, 100, 100 and 69' },
 ] as const;
 

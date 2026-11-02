@@ -116,10 +116,10 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       in that material. Each turn of a run ran in a fresh container, with no login for GitHub or the
       live site, and its questions were answered from the brief, else with "add it as given; use your
       default". For each fault the table gives two things. Who named it first: a check, whose output
-      names the fault, the assistant, in a message of its own before any check's output does, or
-      nobody. And
-      its end state on the deployed page: fixed (gone), reported (still there, and the assistant told
-      the owner it is a problem) or left in silently. A fault counts as there when, for the link, the
+      names the fault; the assistant, in a message of its own before any check's output does; or
+      nobody. And its end state on the deployed page: fixed (gone), reported (still there, and the
+      assistant told the owner it is a problem) or left in silently. A fault counts as there when, for
+      the link, the
       W3C Link Checker reports it broken; for the photo, PageSpeed Insights on mobile names it under
       "Improve image delivery"; for the price, the page says per page.
     </p>
@@ -146,7 +146,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       2.1.308 and the same model as above. In both runs the assistant named each fault before any
       check did. The supplied photo is not the desk its description (its alt text) names: the
       run on its own kept the untrue description, the run with Croftweaver rewrote it to match the
-      picture. The cost is Claude Code's own figure at the end of the run, which covers all its turns;
+      picture. The cost is Claude Code's own figure at the end of the run;
       the time is the wall clock of the run's turns, without the time taken to answer its questions.
       The run with Croftweaver was started a second time, because the first attempt (0.78 USD) needed
       an image library the experimenter had left out of its container; its figures are the second
