@@ -882,6 +882,17 @@ test('a11y — /what-it-runs-on: the "No cookie banner*" line is followed by its
   await expect(page.locator('#analytics')).toContainText('leave Plausible off and add nothing');
   await expect(page.locator('#analytics')).toContainText('processing contract with Cloudflare');
 });
+// /checks must not say that nothing on the server stops a failed publish: the repository's rulesets require a pull
+// request and passing checks for main (read from GitHub on 23 October 2026), and the page names what is still
+// not gated, the push to production. The old sentence was a flat claim that part of the live rules contradicted.
+test('a11y — /checks says the server refusal depends on a branch rule, and what stays ungated', async ({ page }) => {
+  await page.goto('/checks');
+  const aside = (await page.locator('#when .aside').textContent()) ?? '';
+  const text = aside.replace(/\s+/g, ' ');
+  expect(text, 'the limits paragraph must not claim that nothing on the server stops a failed publish').not.toMatch(/nothing on the server stops/i);
+  expect(text, 'the limits paragraph must say the refusal depends on a branch rule the owner switches on').toMatch(/depends on a branch rule/);
+  expect(text, 'the limits paragraph must name the push to production as ungated').toMatch(/publishes to production is not gated/);
+});
 for (const width of [360, 320] as const) {
   test(`a11y — /what-it-runs-on fits a ${width} px phone without scrolling sideways`, async ({ page }) => {
     await page.setViewportSize({ width, height: 740 });
