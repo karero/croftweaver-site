@@ -75,10 +75,10 @@ export const MAINT_ROWS = [
   { measure: 'Commands refused', alone: 'none', croftweaver: '2: a command Claude Code\'s parser refused, and one that used gh, which is denied' },
   { measure: 'Checks run', alone: 'the build, twice', croftweaver: 'the site\'s 157 tests, then the same tests before the push' },
   { measure: 'Tests added', alone: 'none (the site has no tests)', croftweaver: 'the new page in the site\'s wording test' },
-  { measure: 'Pushed', alone: 'to main (git push origin main); the site has no check before a push', croftweaver: 'to a new branch, for a pull request (git push -u origin content/how-a-job-works); the site\'s check before a push ran its tests and passed' },
+  { measure: 'Pushed', alone: 'to main (git push origin main); the site has no check before a push (core.hooksPath not set)', croftweaver: 'to a new branch, for a pull request (git push -u origin content/how-a-job-works); the site\'s check before a push (core.hooksPath scripts/hooks) ran its tests and passed' },
   { measure: 'HTML errors and warnings, the new page', alone: 'no errors, one warning', croftweaver: 'no errors, one warning' },
   { measure: 'Broken links, the new page', alone: 'none', croftweaver: 'one: its canonical link to the live address, where this page was never deployed' },
-  { measure: 'Title, description, canonical link, sitemap, menu link', alone: 'all five', croftweaver: 'all five, plus its own share card and a line in llms.txt' },
+  { measure: 'Title, description, canonical link, sitemap, menu link', alone: 'all five; the title 48 characters, the description 90', croftweaver: 'all five; the title 48 characters, the description 156; plus its own share card and a line in llms.txt' },
   { measure: 'PageSpeed, the new page', alone: '100, 100, 100 and 69', croftweaver: '100, 100, 100 and 69' },
 ] as const;
 
