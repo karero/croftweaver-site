@@ -144,7 +144,7 @@ export const LOG: readonly Entry[] = [
     pr: 'https://github.com/karero/croftweaver-site/pull/149', checks: '459 tests; review by two outside models, 2 rounds' },
   { kind: 'change', date: '2026-10-26', title: 'A handout for companies, and a line on keeping WordPress up to date',
     asked: 'Make a six-slide PDF for companies that will not build their site themselves, drawn from the built pages, and ask on /from-wordpress that a WordPress site you keep stays up to date.',
-    pr: 'https://github.com/karero/croftweaver-site/pull/148', checks: '470 tests; review by two outside models, 4 rounds and a wording pass; GLM 5.3 took part from round 2' },
+    pr: 'https://github.com/karero/croftweaver-site/pull/148', checks: '470 tests; review by two outside models, 5 rounds and a wording pass; GLM 5.3 took part from round 2' },
   { kind: 'observation', date: '2026-10-26', title: 'Claude names Croftweaver once',
     seen: 'In the weekly AI check, Claude with web search named Croftweaver in 1 of its 3 answers to the broad question, which does not name it, as a free, open-source set of website skills. croftweaver.com was not among the sources it returned. No other answer that day named it: 1 of 45 in all, one call having failed.',
     source: 'the weekly AI check, run of 26 October; the answers are saved in full' },
