@@ -1,7 +1,7 @@
 ---
-// /more-proof — the proof that is not on the home page: Google's PageSpeed Insights for
-// three sites, the E-E-A-T scores of the AI panel, and what none of it shows. The home
-// page leads with the panel's SEO and GEO scores. Positioning term
+// /more-proof — Google's PageSpeed Insights for three sites, the AI panel's SEO, GEO and
+// E-E-A-T scores, and what none of it shows. The home page shows measured figures only and
+// links here for the panel (owner, 2026-10-27). Positioning term
 // (tests/positioning.spec.ts): "more proof". Honesty rules (CONTENT_GUIDE.md): every
 // figure names its tool and its date; E-E-A-T is explained once, here.
 import Base from '../layouts/Base.astro';
@@ -18,12 +18,11 @@ const rerun = (url: string) =>
   <section class="wrap hero">
     <h1>More proof: speed, trust and technical SEO</h1>
     <p class="lead">
-      The home page shows how four AI assistants score SEO and GEO for
-      genai-wednesday.de. SEO is how well Google can find and read a site. GEO, short
-      for generative engine optimization, is how well AI assistants such as ChatGPT,
-      Perplexity or Gemini can read and quote it. Here is the rest: Google's PageSpeed
-      Insights for three sites built with Croftweaver, the E-E-A-T scores, and what none
-      of it shows. Every figure has a date, and where you can re-run a test, there is a
+      This page has Google's PageSpeed Insights for three sites built with Croftweaver,
+      how four AI assistants score one of them for SEO, GEO and E-E-A-T, and what none of
+      it shows. SEO is how well Google can find and read a site. GEO, short for generative
+      engine optimization, is how well AI assistants such as ChatGPT, Perplexity or Gemini
+      can read and quote it. Every figure has a date, and where you can re-run a test, there is a
       link.
     </p>
     <p class="aside">
@@ -63,7 +62,7 @@ const rerun = (url: string) =>
   </section>
 
   <section class="wrap" id="eeat">
-    <h2>E-E-A-T: how four AI assistants score trust</h2>
+    <h2>What four AI assistants think: SEO, GEO and E-E-A-T</h2>
     <p>
       E-E-A-T stands for experience, expertise, authoritativeness and trustworthiness.
       It is what Google's quality raters look for when they judge content. It is not a
@@ -72,7 +71,9 @@ const rerun = (url: string) =>
       it is not a ranking factor by itself. The <a href={PANEL.lab}>Builder Lab</a> asks
       four AI assistants to put a number on it anyway, with the same prompt as for SEO
       and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
-      these numbers are AI opinions, not a Google metric.
+      these numbers are AI opinions, not a Google metric, and the SEO scores here are the
+      assistants' opinions too. They are not rankings, they vary from run to run, and they do
+      not show that an assistant would recommend the site.
     </p>
     <div class="table-wrap figures" role="region" aria-label="SEO, GEO and E-E-A-T scores from four AI assistants for genai-wednesday.de" tabindex="0">
       <table>

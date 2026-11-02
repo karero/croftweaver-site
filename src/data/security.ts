@@ -13,7 +13,8 @@
 //   file is transpiled on its own, so it may use constants and functions but must not import anything.
 // To cut the dated PHP alert: delete the section #php-alert and the section #php-steps from the page (each has a
 // PHP-DATED comment above it) and the claims of the "PHP alert" group below. The alert is also named, in words that
-// stand alone, by the labelled judgment in #safer and the claims ai-exploit-tools and ai-exploit-none-yet; those stay.
+// stand alone, by the labelled judgment in #safer and the claim ai-exploit-tools (the claim ai-exploit-none-yet refers back to
+// it); those stay.
 // The description, the share card, the "how this page was checked" section and public/llms.txt carry no mention of
 // it, and the page, this file and tests/check_security_page.sh pass without the panel (tried on 2026-10-23); the
 // constants CISA, PHPNET, THN and NATIONAL are then unused (four editor hints, no error), so delete them too.
@@ -73,6 +74,7 @@ const THN = 'https://thehackernews.com/2026/10/php-issues-emergency-patches-for-
 const MALWAREBYTES = 'https://www.malwarebytes.com/blog/bugs/2026/10/php2shell-why-websites-are-going-offline-for-emergency-security-updates';
 const NATIONAL = 'https://www.thenationalnews.com/future/technology/2026/10/21/php-security-issues-exploit/';
 const WP_HARDENING = 'https://developer.wordpress.org/advanced-administration/security/hardening/';
+// The table in #short on /security sums up who provides each setting. When a re-read changes who provides one, change that row too.
 const TOOLKIT_AT = 'https://github.com/karero/croftweaver/blob/3b8a6c5f';
 const TEMPLATE_AT = 'https://github.com/karero/croftweaver/tree/3b8a6c5f/skills/new-website/templates/astro';
 
@@ -124,7 +126,7 @@ export const CLAIMS: Claim[] = [
   { id: 'php-share', kind: 'url', source: 'https://w3techs.com/technologies/details/pl-php', label: 'W3Techs', read: READ_NEWS },
   { id: 'php-systems-news', kind: 'url', source: KREBS, label: 'Krebs on Security', also: [{ label: 'Malwarebytes', url: MALWAREBYTES }], read: READ_NEWS },
   { id: 'php-systems-repos', kind: 'command', source: `for r in ${SYSTEMS}; do echo "$r $(curl -s https://api.github.com/repos/$r | grep '"language"')"; done`, read: READ_GITHUB_API },
-  // ---- AI-assisted finding of flaws, a labelled judgment in the evergreen section #safer (stays when the dated alert is cut) ----
+  // ---- AI-assisted finding of flaws, exploitation attempts and the latest PHP advisory: what the labelled judgment in the evergreen section #safer rests on (stays when the dated alert is cut) ----
   { id: 'ai-php-scan', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
   { id: 'ai-php-reports', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
   { id: 'ai-wiz-found', kind: 'url', source: 'https://www.wiz.io/blog/php2shell-php-rce', label: 'Wiz Research', read: READ_AI },

@@ -44,6 +44,18 @@ export const SUITES: {
     limit: 'An empty alt text passes, because a decorative image needs one. It cannot tell whether a description fits the picture.',
   },
   {
+    file: 'phone-images', group: 'people', name: 'Phone images',
+    checks: 'Each page loads as a phone screen and scrolls to the end. A photo or other raster image the page downloads fails when it is more than 3.3 times as wide as it shows (three times, with a 10% allowance) and a copy that wide would save an estimated 4 KiB or more, or when it is downloaded but never shown and is 4 KiB or more.',
+    example: 'A 63 KiB photo 1600 pixels wide, shown 372 pixels wide on a phone, fails: the test allows it 1228 pixels, and a copy that wide saves an estimated 26 KiB.',
+    limit: 'It measures one phone size, in one browser, Chromium. SVG files are not judged, nor images used only as borders, cursors or shapes, and the saving is an estimate. It does not judge how sharp an image looks or which file format it uses.',
+  },
+  {
+    file: 'tables', group: 'people', name: 'Tables',
+    checks: 'Every table on every page uses the shared table style. On a phone a table of sentences stacks into labelled rows and a table of numbers fits the screen; on a wider screen it is a table again, with no word broken across lines. A test table of each kind also runs on the home page, in light and dark.',
+    example: 'A table of sentences that makes a phone scroll sideways at 320 px fails.',
+    limit: 'It measures in one browser, Chromium. Safari and screen readers such as VoiceOver are not checked, and it cannot see a hyphen, only the setting that allows one.',
+  },
+  {
     file: 'seo', group: 'search', name: 'SEO',
     checks: 'Title and description lengths, canonical address, one main heading, structured data that parses, a share card of the right size.',
     example: 'A page title of 63 characters fails; the limit is 60.',
@@ -103,6 +115,12 @@ export const SUITES: {
     example: 'A change that lets a preview address answer without the noindex header fails.',
     limit: 'It calls the function directly, so it does not prove that the hosting account runs it. A noindex header also does not stop every AI crawler from citing a preview address.',
   },
+  {
+    file: 'served-build', group: 'publish', name: 'Own build',
+    checks: 'The server the tests run against serves this copy of the site, from its own build.',
+    example: 'When another copy of the site on the same computer takes the test port during the build, the run fails instead of testing that copy.',
+    limit: 'It compares one marker file, written fresh for each test build. Two runs in the same folder share one build, so it cannot tell them apart.',
+  },
 ];
 
 // The glob is resolved from the project root at build time, whatever directory the
@@ -150,11 +168,23 @@ export const SUITES_VERSION = {
   copied: versionFile.match(/^copied:\s*(\S+)/m)?.[1] ?? '',
 };
 // A real commit id and a real calendar date (2026-02-31 must not pass as "3 March").
-const copiedDate = new Date(`${SUITES_VERSION.copied}T00:00:00Z`);
-const realDate =
-  /^\d{4}-\d{2}-\d{2}$/.test(SUITES_VERSION.copied) &&
-  !Number.isNaN(copiedDate.getTime()) &&
-  copiedDate.toISOString().slice(0, 10) === SUITES_VERSION.copied;
-if (!/^[0-9a-f]{40}$/.test(SUITES_VERSION.commit) || !realDate) {
+const isCommit = (c: string) => /^[0-9a-f]{40}$/.test(c);
+const isRealDate = (d: string) => {
+  const t = new Date(`${d}T00:00:00Z`);
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d;
+};
+if (!isCommit(SUITES_VERSION.commit) || !isRealDate(SUITES_VERSION.copied)) {
   throw new Error('tests/TESTS-VERSION needs a 40-character suite_commit and a real copied date (YYYY-MM-DD).');
 }
+
+// A suite taken from the toolkit ahead of a release, so not part of suite_commit:
+// "added: <file under tests/> <40-character commit> <YYYY-MM-DD>", one line each. /checks names its source.
+export const SUITES_ADDED = [...versionFile.matchAll(/^[ \t]*added:[ \t]*(.*)$/gm)].map((m) => {
+  const fields = m[1].trim().split(/\s+/);
+  const [file, commit, copied] = fields.length === 3 ? fields : [];
+  const suite = SUITES.find((s) => SUITE_FILES[s.file] === file);
+  if (!suite || !isCommit(commit ?? '') || !isRealDate(copied ?? '')) {
+    throw new Error(`tests/TESTS-VERSION: "added: ${m[1]}" needs three fields: a test file this site has, a 40-character commit and a real date.`);
+  }
+  return { name: suite.name, commit, copied };
+});

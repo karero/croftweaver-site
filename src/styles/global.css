@@ -147,6 +147,7 @@ h2, h3 { scroll-margin-top: 1.5rem; }
 .table-wrap.stack.long-head tbody th { width: 38%; }
 .table-wrap .nowrap { white-space: nowrap; }
 .table-wrap .num { text-align: right; font-variant-numeric: tabular-nums; }
+.table-wrap a:focus-visible { outline-offset: -2px; }  /* the region clips an outline drawn outside the first column */
 .table-wrap th.num, .table-wrap td.num { padding-right: 0.2rem; padding-left: 1rem; }
 .table-wrap tr.avg th, .table-wrap tr.avg td { font-weight: 700; border-top: 2px solid var(--line); }
 @media (max-width: 40rem) {

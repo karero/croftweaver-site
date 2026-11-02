@@ -321,3 +321,62 @@ and from a second and third proof site, more than from closing any row in the ta
   header says to run it from a systemd timer or cron by hand; Windows is not mentioned. Owners
   there get the report when they ask for it unless they set that up.
   **Still open** (toolkit `main` on 14 October).
+
+## WordPress, Joomla and Drupal (checked 25 October 2026)
+
+**The question.** The owner asked whether the site does, or could, say "Croftweaver, the free
+alternative to WordPress, Joomla, etc.", and then for a WordPress, Joomla and Drupal group on
+`/compare`, with "alternative to WordPress" wording on `/compare` and `/from-wordpress`, factual
+and not a headline claim.
+
+**The answer.** "Free" sets nothing apart: all three are free and open source too. The difference
+the record backs is on Croftweaver's side: no PHP, database or admin login on a server to keep
+updated (`/from-wordpress`, "What changes on a static Astro site"; `/security`). So the group's
+rows restate what each project says about itself, and what Croftweaver lacks (a visual editor, a
+shop, member accounts) is said about Croftweaver. The phrase "alternative to WordPress" comes with
+"for a content site" or "for content sites" each time it appears.
+
+What each page says. Read with curl, except the three drupal.org pages, marked WebFetch: drupal.org
+answered curl with a "Client Challenge" page (/about came through with curl once early in the day;
+all three were read with WebFetch), and WebFetch returns a model's reading of the page.
+
+| Page | What it says | Used for |
+|---|---|---|
+| https://wordpress.org/about/ | "WordPress is open source software"; "built on PHP and MariaDB, and licensed under the GPLv2"; "the platform of choice for millions of sites across the web" | the WordPress row |
+| https://www.joomla.org/about-joomla.html | "a free and open-source content management system (CMS) for publishing web content"; "Joomla! is free, open, and available to anyone under the GPL license."; "thousands of extensions (most for free under the GPL license)" | the Joomla row; "extensions" |
+| https://www.drupal.org/about (WebFetch) | "Drupal is content management software"; "The Drupal project is open source software"; "thousands of add-ons"; "Modules expand Drupal's functionality"; distributed under the GNU General Public License | the Drupal row; "modules" |
+| https://wordpress.org/about/requirements/ | "To run WordPress, it's recommended your host supports:"; "PHP version 8.3 or greater"; "MariaDB version 10.11 or greater OR MySQL version 8.0 or greater"; older PHP and MySQL versions "have reached their official End Of Life and may expose your site to security vulnerabilities" | "a web server with PHP and a database"; "with a host"; keeping the server "updated" |
+| https://manual.joomla.org/docs/get-started/technical-requirements/ | Joomla 6.1 (current): PHP; MySQL, MariaDB, PostgreSQL | the same |
+| https://www.drupal.org/docs/getting-started/system-requirements (WebFetch) | "Database servers for Drupal, such as MariaDB, MySQL, PostgreSQL, and SQLite"; PHP on its own sub-page | the same |
+| https://wordpress.org/ | "See how your site will look in real time, even as you add, edit, and rearrange content"; "an extensive library of plugins" | "you edit the pages on the site itself"; "plugins" |
+| https://www.joomla.org/core-features.html | "Edit your content while browsing your site." | "on the site itself" |
+| https://www.drupal.org/docs/user_guide/en/content-create.html (WebFetch) | "In the Manage administrative menu, navigate to Content > Add content > Basic page (node/add/page)." | "on the site itself" |
+
+"With a host" and keeping the server "updated" are this site's words. For WordPress they rest on
+its requirements page (its sentence about what your host supports, and its end-of-life warning);
+for Joomla and Drupal they are this site's reading of their requirements pages (a PHP version and
+a database server you run). The page names no versions and no databases: they go stale and add claims. "On the site itself"
+also keeps the line clear of the optional Keystatic editor as the toolkit sets it up, which runs in
+the browser on the owner's own computer (`/what-it-runs-on`, the Keystatic section).
+
+Left out on purpose: the home page and its headline, POSITIONING.md, EmDash (already on
+`/from-wordpress`, "Other ways to leave WordPress").
+
+## Claude Code on its own (checked 26 October 2026)
+
+**The question.** The growth audit of 26 October 2026 asked what Croftweaver adds for someone who
+already has Claude Code. The owner approved a section on `/compare` that says it.
+
+**What Claude Code's own page says** (https://code.claude.com/docs/en/overview, read with curl):
+"an agentic coding tool that reads your codebase, edits files, runs commands, and integrates with
+your development tools"; and skills, which it uses to "package repeatable workflows your team can
+share". The section quotes both, from `CLAUDE_CODE` in `src/data/compare.ts`, and says nothing Claude
+Code lacks. Its list of what the skills bring restates this site's own pages, each linked.
+
+**One comparison (run 26 October, PageSpeed 27 October 2026).** The owner approved a two-run comparison: one brief for a
+fictional business, given to Claude Code on its own and with Croftweaver, same model and settings,
+measured with tools Croftweaver does not make. The results are `RUN_ROWS` in `src/data/compare.ts`.
+Both repositories are public; each holds the brief, the prompt, the run's history, its transcript and the measurements:
+https://github.com/karero/compare-claude-code-alone and
+https://github.com/karero/compare-claude-code-croftweaver. One run each is an anecdote; the section
+says so, and that positioning, copy quality, Croftweaver's own publishing steps and later changes were not compared.

@@ -53,6 +53,14 @@ review (14 October 2026)", added in karero/croftweaver-site#76). Owner decisions
 Also decided the same day: the contact form stays the visitor's own email program. A
 form that sends through a server moves to "Out, on purpose" on `/roadmap`.
 
+Updated 2026-10-27, after an outside follow-up audit the same day: the home page's proof
+strip shows measured figures only, the AI check first and the PageSpeed range second, and one
+line sends the panel's opinions to `/more-proof` (owner decision the same day, the second of
+three options). The audit said the panel's averages under the hero look like objective
+performance indicators even with their caveats, which works against wording rule 3. This
+replaces the 2026-10-08 and 2026-10-13 decisions on what leads the strip; the panel, its
+caveats and the Lab's prompt stay on `/more-proof`.
+
 ## 1. Competitive alternatives
 
 - The status quo: an old site, or none, and someone else to ask for every update (an
@@ -84,9 +92,10 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 - The search and AI-readability work is done by default at build time: metadata within
   limits, schema.org JSON-LD, llms.txt, share cards, clean internal links.
-- Every generated site ships with its own test gate: 14 suites today (accessibility in
+- Every generated site ships with its own test gate: 16 suites at release 0.33 (accessibility in
   light and dark, SEO consistency, navigation, anchors, orphans, images, links, email,
-  llms.txt coverage, tone, positioning, placeholders, privacy host, preview handling). The push hook runs it before
+  llms.txt coverage, tone, positioning, placeholders, privacy host, preview handling,
+  server-side analytics, tables). The push hook runs it before
   every push, and CI runs it on pull requests and on `main` and `production`.
 - After launch, real data drives the edits: Search Console insights, a ranking history
   and a weekly check of whether four AI assistants name the site (toolkit skill
@@ -97,8 +106,9 @@ announcements. `/compare` carries a link and a date for every statement it makes
 - The owner and their assistant make the everyday changes themselves, in plain language:
   text, pages, images and layout of a static content site. By default the test gate runs
   on each change (before every push, and in CI on pull requests). Owners can make
-  everyday updates without waiting for an agency or a developer, though a stubborn
-  problem can still need outside help; anything that needs a database or an account
+  everyday updates without waiting for an agency or a developer. When they are stuck,
+  they ask their assistant first. A stubborn problem can still need outside help, and the
+  maintainer offers to help with it or to get there faster (owner, 2026-10-26); anything that needs a database or an account
   system is outside what Croftweaver is for (see "Not a fit" on the home page).
 - A suite of skills for AI coding assistants, not a hosted product. The output is a
   static-first Astro repo the user fully owns, and the skills travel inside it.
@@ -108,7 +118,7 @@ announcements. `/compare` carries a link and a date for every statement it makes
 | Unique attribute | Value it enables | Proof |
 |---|---|---|
 | Search work done by default | Fast, accessible, and the search basics in place from the first build | PageSpeed Insights, mobile, home page, 4 October 2026 (performance / accessibility / best practices / SEO): genai-wednesday.de 99/100/100/100, m-squad.com 99/100/100/100, apreet.com 100/100/100/100. Re-run: pagespeed.web.dev with each address. This measures speed, accessibility and SEO basics, not rankings and not AI readability |
-| AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo. AI panel, genai-wednesday.de, second round of 20 August 2026 (SEO and GEO on the home page, E-E-A-T on `/more-proof`): AI opinions with no official scorer, not a measurement and not evidence that an assistant would recommend the site (`src/data/proof.ts`) |
+| AI-readability work done by default | Pages an assistant can read and quote | `llms.txt`, schema.org JSON-LD and the `llms-coverage` suite in every generated repo. AI panel, genai-wednesday.de, second round of 20 August 2026 (SEO, GEO and E-E-A-T on `/more-proof`): AI opinions with no official scorer, not a measurement and not evidence that an assistant would recommend the site (`src/data/proof.ts`) |
 | Built-in test gate | The work cannot silently decay on page one hundred | The suites ship in every generated repo; this site runs them before every push and in CI |
 | Weekly loop from real data | Edits follow what people actually search for | genai-wednesday.de, launched 27 March 2026: clicks from Google per 28 days rose from 3 around the launch to a best 28 days of 99 (16 June to 13 July 2026) and stood at 50 in the 28 days to 29 September 2026. The daily figures are published on `/proof` |
 | Skill suite, static Astro output | No platform rent, no lock-in, cheap to host | Public MIT repo; Cloudflare Pages free tier |
@@ -117,8 +127,8 @@ announcements. `/compare` carries a link and a date for every statement it makes
 
 Every figure is per named site and dated. The PageSpeed figures were measured on
 4 October 2026 and are the ones on `/more-proof` (`src/data/proof.ts`). The AI panel's
-SEO and GEO scores are on the home page, and its SEO, GEO and E-E-A-T scores on
-`/more-proof` (the second round of 20 August 2026, copied from the Builder Lab on
+SEO, GEO and E-E-A-T scores are on `/more-proof` (SEO and GEO were on the home page too
+until 2026-10-27; the second round of 20 August 2026, copied from the Builder Lab on
 2026-10-08). They are AI opinions, and the Lab itself says they are not comparable across
 assistants. `src/data/proof.ts` checks that the rows still average to the figures the Lab
 showed that day; it never reads the Lab, so a later change there, or a small slip in one
@@ -163,12 +173,11 @@ genai-wednesday.de. This replaces the earlier launch requirement of three sites.
 > search data keeps improving it.
 
 - **Core positioning term:** website skills
-- **Kicker (above the H1):** Your AI assistant, guided by website skills. Owner decision, 2026-10-12. Until then it read "Website skills for search and AI visibility", which repeated the header line once that line showed on the home page. The kicker now says how the site gets built. It was picked from ten candidates: two outside models and the assistant each wrote lines, then scored all ten without authors' names, and all three put this one first. The market category sentence moved to the first paragraph of "What Croftweaver is" on the home page.
+- **Kicker (above the H1):** Weave websites that rank. Owner decision, 2026-10-26: the rank line moved from the H1 to the kicker, so the H1 can say in plain words what a visitor gets. Codex, asked to review the hero, said "that rank" reads as a ranking claim; it stays as a slogan, and wording rule 1 still governs every promise below it. From 2026-10-12 to 2026-10-26 the kicker read "Your AI assistant, guided by website skills"; the core term now stands in the definition line. Earlier history: owner decision, 2026-10-12. Until then it read "Website skills for search and AI visibility", which repeated the header line once that line showed on the home page. The kicker now says how the site gets built. It was picked from ten candidates: two outside models and the assistant each wrote lines, then scored all ten without authors' names, and all three put this one first. The market category sentence moved to the first paragraph of "What Croftweaver is" on the home page.
 - **Header line (under the logo, on every page):** Build for search and AI. Owner decision, 2026-10-12: a visitor who lands on any page reads what Croftweaver is for before the page's own headline. It is the line that opens the toolkit's README, so site and repository say the same. Tried first and dropped: "Website skills for search and AI", which lost the building and read like an SEO tool. Not the brand line: that stays the sign-off (see "Lead with ownership" below).
-- **Hero (H1):** Weave websites that rank. (Until 2026-10-08: "Build websites that
-  rank.", the plain fallback if "weave" tests badly with strangers.)
-- **Subline:** retired from the home page on 2026-10-08. The one-liner and three short outcomes replace it, since it said SEO and GEO, which strangers do not know. Its words were "Keep improving SEO and GEO, week by week."
-- **Definition line (home page, under the one-liner):** Croftweaver is a free, open-source suite of website skills: instructions your AI coding assistant follows to build and test a site you own. Owner decision, 2026-10-13. An outside audit of that day said a stranger cannot tell from the hero what Croftweaver is, a toolkit and not a hosted builder or an agency; a second model (Kimi K3), shown that point and the argument against it, agreed. The sentence says what a skill is and carries the core term. It claims nothing that §2 does not. The one-liner above it stays as approved, and the market category stays in "What Croftweaver is".
+- **Hero (H1):** Build a complete website with AI. Owner decision, 2026-10-26, after an outside growth audit said a stranger cannot tell from "Weave websites that rank." what the product does. "Complete" means a whole content site, from positioning to publishing; shops and accounts stay outside (see "Not a fit"). (Until 2026-10-26: "Weave websites that rank."; until 2026-10-08: "Build websites that rank.")
+- **Subline:** Croftweaver guides your AI coding assistant from positioning and design to a tested website that people can find on Google and in AI answers. Owner decision, 2026-10-26. It says "in AI answers", not "AI visibility", which a stranger may read as AI-written content. It replaces the one-liner, whose villain sentence moved to the home page's problem section. An earlier subline was retired on 2026-10-08: "Keep improving SEO and GEO, week by week."
+- **Definition line (home page, under the subline):** Croftweaver is a free, open-source suite of website skills: instructions your AI coding assistant follows to build and test a site you own. Owner decision, 2026-10-13. An outside audit of that day said a stranger cannot tell from the hero what Croftweaver is, a toolkit and not a hosted builder or an agency; a second model (Kimi K3), shown that point and the argument against it, agreed. The sentence says what a skill is and carries the core term. It claims nothing that §2 does not. Since 2026-10-26 it stands under the subline and is the hero's only carrier of the core term; the market category stays in "What Croftweaver is".
 - **Brand line, used as sign-off (≤ 12 words):** Your own plot of the web.
 - **~50-word boilerplate:** Croftweaver is a suite of open-source website skills for AI coding assistants. It turns an assistant such as Claude Code into a careful website builder: fast, accessible Astro sites built to rank on Google and show up in AI answers, tested on every change, in a repo you fully own.
 
@@ -183,7 +192,8 @@ that honest:
    figure, tool, date, verification link.
 3. A line that says "top scores" is followed on the page by which tool and which date.
    There is no public "GEO score"; where the term appears, the page says what is
-   measured (the weekly AI check and the assistant panel).
+   measured (the weekly AI check and the assistant panel). No AI opinion score stands on
+   the home page (owner, 2026-10-27; `tests/positioning.spec.ts` checks the proof strip).
 
 Further rules for copy live in `CONTENT_GUIDE.md` (honesty rules).
 
@@ -196,8 +206,9 @@ The wording rule applies to all of them.
 - "Search finds you. AI names you." Only directly above dated proof; never alone on a
   share card.
 - "Build for search and AI." README headline, GitHub description.
-- "Stop waiting on someone else for every change." The villain line: the first sentence
-  of the home page one-liner (owner-approved 2026-10-08). The villain is the situation,
+- "Stop waiting on someone else for every change." The villain line (owner-approved
+  2026-10-08). Since 2026-10-26 it opens the turn to the guide in the home page's problem
+  section; until then it opened the hero's one-liner. The villain is the situation,
   never a named agency.
 - "Build high-ranking websites." Deck and `/why`, with proof beside it.
 - "Start with your positioning. Keep your pages on it." (2026-10-14) Never "true to it",
@@ -248,9 +259,9 @@ is built.
   SoftwareSourceCode schema. `/proof` is written fresh from new measurements (speed,
   clicks from Google, the weekly AI check) and approved by the site's owner; the Lab's
   scorecard is linked, not copied. The panel's scores are the one exception, below.
-- Exception, owner decision 2026-10-08: the home page and `/more-proof` show the
-  panel's scores for genai-wednesday.de (SEO and GEO on the home page; SEO, GEO and
-  E-E-A-T on `/more-proof`), each with its date, a link to the Lab, and the Lab's own
+- Exception, owner decision 2026-10-08: `/more-proof` shows the panel's SEO, GEO and
+  E-E-A-T scores for genai-wednesday.de (the home page showed SEO and GEO too until
+  2026-10-27), each with its date, a link to the Lab, and the Lab's own
   caveats: AI opinions with no official scorer, and not comparable across assistants.
   `/more-proof` also shows the Lab's one-line prompt, attributed, so a visitor can
   reproduce the panel. The Lab keeps the full scorecard, both rounds and the notes for

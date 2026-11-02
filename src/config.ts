@@ -29,7 +29,7 @@ export const SITE = {
 //
 // An item is a link, or a group of links that opens under its name. A group needs two
 // pages: while only one page of a set is on main it stays a plain link under its own label
-// (Security, for the Technology set, until a second Technology page exists), and the navigation
+// (Security was one, until /what-it-runs-on made the two the Technology group), and the navigation
 // work's pull request that adds the second page's place turns the link into the group. Header
 // places are the navigation work's; a page's own pull request adds only its FOOTER entry (below). The
 // header is a curated subset of the pages: tests/navigation.spec.ts checks that every group
@@ -49,7 +49,13 @@ export const NAV: NavItem[] = [
       { label: 'SEO Checklist', href: '/ai-website-seo-checklist' },
     ],
   },
-  { label: 'Security', href: '/security' },
+  {
+    label: 'Technology',
+    items: [
+      { label: 'What It Runs On', href: '/what-it-runs-on' },
+      { label: 'Security', href: '/security' },
+    ],
+  },
   {
     label: 'For your site',
     items: [

@@ -23,12 +23,13 @@ coding assistants (https://github.com/karero/croftweaver). Built with Croftweave
    (https://main.croftweaver-site.pages.dev), `production` = live at
    https://croftweaver.com. Publish with `npm run ship`.
 
-## Decisions (owner, 2026-10-03, 2026-10-04 and 2026-10-08)
+## Decisions (owner, 2026-10-03, 2026-10-04, 2026-10-08 and 2026-10-26)
 
 - **Positioning:** lead with being found by search engines and AI assistants; the test
-  gate is the proof; ownership is the brand voice. Hero: "Weave websites that rank."
-  (from 2026-10-08; before: "Build websites that rank."). The subline "Keep improving
-  SEO and GEO, week by week." is retired; the one-liner replaces it. Details, the wording
+  gate is the proof; ownership is the brand voice. Hero: "Build a complete website with AI.", under the kicker "Weave websites that rank."
+  (from 2026-10-26; from 2026-10-08 the hero was "Weave websites that rank.", before that
+  "Build websites that rank."). A subline names Google and AI answers; it replaced the
+  2026-10-08 one-liner on 2026-10-26. Details, the wording
   rule and the routes not chosen: `POSITIONING.md`; the home page story: `STORY.md`.
 - **Name in text:** "Croftweaver". Lower case only in code contexts (domain, repo).
 - **GitHub:** rename `karero/website-builder` to `karero/croftweaver` in place. The old
@@ -66,7 +67,7 @@ npm test             # a11y / seo / navigation / anchors / orphans / images /
                      # tone / positioning / placeholders / email / links /
                      # llms-coverage / middleware (preview handling)
 npm run og           # regenerate OG share cards after brand/copy changes
-npm run deck         # remake the /why slide deck (public/croftweaver-why.pdf)
+npm run deck         # remake each slide deck whose PDF is not current
 ```
 
 The slide deck reads three things from the built pages, so they are never typed: the
@@ -78,6 +79,21 @@ you run `npm run deck` and commit the new `public/croftweaver-why.pdf` and
 test compares it with the pages: after changing an argument on `/why` or a description
 on `/checks`, read `scripts/deck-slides.mjs` and change it by hand. The deck needs Node
 22.18 or newer, and making it needs Python 3 with `pypdf` for the PDF's title.
+
+A second deck, `handouts/croftweaver-for-companies.pdf`, is a handout for M-Squad's pitch to
+companies that will not build their site themselves. It is not in `public/`, so the site does
+not serve it. Its slides are in `scripts/company-deck-slides.mjs`, and its lock is
+`scripts/company-deck.lock.json`. It reads the `/why` evidence (its introduction, its caveat and
+the figures and dates in its three items, which slide 2 draws as charts and numbers), the move steps, the rankings
+answer and "Stay on WordPress when" on `/from-wordpress`, the two request paths and the
+no-ranking sentence on `/security`, and the name, company, city and phone in `COMPANY`
+(`src/config.ts`; the email on the last slide is typed in the slide script); a change to any
+of those also turns `npm test` red until `npm run deck` runs. `npm run deck`
+remakes only the decks whose PDF is not current, so an edit to `/security` leaves the served
+`/why` PDF alone. `node scripts/build-deck.mjs --deck why` remakes one deck anyway, and
+`--out <folder>` writes the PDFs elsewhere without touching a lock. Make the decks on a Mac: they
+are set in the system font, which is wider on Linux, and there the build refuses slides that no
+longer fit.
 
 Add a page: add the route to `tests/_helpers.ts` `PAGES` first (suite goes red),
 build the page until green, update `public/llms.txt`, commit. Voice rules live in
@@ -100,7 +116,7 @@ requests.
 |---|---|---|---|---|
 | 0 | Decisions (positioning, lines, name, rename route, deck, palette) | owner | done | section "Decisions" above; positioning in `POSITIONING.md` |
 | 0a | Name and trademark check for "Croftweaver" | owner | done: the owner searched for "Croftweaver" on 2026-10-12 and found nothing ("ALL GREEN nothing found"). These were the owner's own searches, with no legal opinion; the owner had asked for the search pages of the US, EU, WIPO and UK registers, and which of them were searched is not recorded here. The earlier check was for the dropped name "Webcroft" (owner's own searches, 2026-10-04: no identical hit in TMview, USPTO, the UK register and EUIPO; similar marks "webcraft", "web craft" and "croft" in classes 9, 35 and 42, no legal opinion). Webcroft was then dropped as too close to an existing company | the owner's statement, 2026-10-12 |
-| 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on `/more-proof` (step 4b). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only; its Search Console figures (28 days to 29 September 2026) and the AI check (five check days, 26 September to 8 October 2026) are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
+| 0b | Fresh, publishable proof figures | owner | PageSpeed for three sites is on `/more-proof` (step 4b). Owner, 2026-10-04: `/proof` uses genai-wednesday.de only. Its Search Console figures (28 days to 29 September 2026) and the AI check (seven check days, 26 September to 19 October 2026; the days of 12 and 19 October were added on 2026-10-23) are on `/proof` (step 5) | karero/croftweaver-site#7, merged 2026-10-04 (`646bcd1`) |
 | 1 | Requirements: `POSITIONING.md`, `CONTENT_GUIDE.md`, this table | PR | done | karero/croftweaver-site#3, merged 2026-10-04 (`f304bef`) |
 | 2 | Brand: palette tokens, share-card colours, 404 page, `_headers` placeholder, `llms.txt` licence wording | PR | done | karero/croftweaver-site#4, merged 2026-10-04 (`0d38a11`) |
 | 2a | Legal address into `imprint.astro` and `privacy.astro` | owner fact + PR | done: the operator is M-Squad GmbH, with the address, managing director, register entry and VAT ID the owner gave on 2026-10-09, and a phone number (owner, 2026-10-11). The structured data (`legalName` in `src/config.ts`) names the same company | karero/croftweaver-site#39, merged 2026-10-12 (`151fd44`) |
@@ -121,15 +137,16 @@ requests.
 | 5h | Page `/established-sites`: Croftweaver for sites that already exist | PR | done | karero/croftweaver-site#25, merged 2026-10-09 (`a4969ff`) |
 | 5i | Launch wording: genai-wednesday.de launched on 27 March 2026 and was not relaunched (`/proof`, `/more-proof`, `/why`, `STORY.md`, `public/llms.txt`) | PR | done | karero/croftweaver-site#27, merged 2026-10-09 (`c48b39e`) |
 | 5j | Perplexity's count in the AI check is worded as what it measures, not as a citation; the export script no longer stops on a valid row | PR | done | karero/croftweaver-site#30, merged 2026-10-09 (`fb2b415`) |
-| 5k | `/skills` lists 37 skills, all of them in toolkit release 0.32. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts`, clear `ADDED_SINCE`, change the release line in `public/llms.txt` (the footer and the home page's structured data read `RELEASE`), and open the footer's release-notes link once | PRs | done | release 0.32: karero/croftweaver-site#92, merged 2026-10-16 (`8d08615`); release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
+| 5k | `/skills` lists 39 skills, all of them in toolkit release 0.34. At the next release, update `RELEASE`, `SKILLS`, `RECENT` and `AS_OF` in `src/data/skills.ts`, clear `ADDED_SINCE`, change the release line in `public/llms.txt` (the footer and the home page's structured data read `RELEASE`), update `REVIEWED`, the "Done in release" section and its release-notes link in `src/pages/roadmap.astro`, and open the footer's release-notes link once | PRs | done | release 0.34: karero/croftweaver-site#154 (adds `website-launch-check`); release 0.33: karero/croftweaver-site#137, merged 2026-10-24 (`a6c1dd5`); release 0.32: karero/croftweaver-site#92, merged 2026-10-16 (`8d08615`); release 0.31: karero/croftweaver-site#41; 33 skills: karero/croftweaver-site#32, merged 2026-10-09 (`dc4b20f`); the 34th, `facts-check`, and the `/established-sites` answers that no longer call it "in review": karero/croftweaver-site#37, merged 2026-10-11 (`2020179`) |
 | 5l | Page `/about`: a note from the maintainer in his own words, and who he is; on `/established-sites`, an offer of help for the team that runs the site | PR | done; live since 2026-10-14 (`npm run ship`, build `84c5e45` verified on croftweaver.com) | karero/croftweaver-site#75, merged 2026-10-14 (`ac7b2ee`) |
 | 6 | Toolkit rename pull request (in the toolkit repo) | PR | done. Replaced karero/website-builder#147, which used the dropped name Webcroft | karero/croftweaver#212, merged 2026-10-12 (`0597a28`) |
 | 7 | GitHub rename `website-builder` → `croftweaver`, release v0.31 (site links assume it; v0.30 ships first under the old name) | owner | done: the repository answers at `github.com/karero/croftweaver` and the old address leads there (seen 2026-10-11); v0.30 came out on 2026-10-11 and v0.31 on 2026-10-12. Step 0a, which this step was to wait for, got its result afterwards, on 2026-10-12: nothing found | releases `v0.30` and `v0.31` of karero/croftweaver |
 | 8 | Launch: mailbox `hello@croftweaver.com` (set up, owner, 2026-10-08), Pages project, `production` branch, domain, Search Console, `npm run ship` | owner | live since 2026-10-12. Cloudflare Pages project `croftweaver` (owner), connected to this repository, production branch `production`, croftweaver.com attached. The project's name differs from its addresses, `croftweaver-site.pages.dev` and the preview `main.croftweaver-site.pages.dev`: on the evening of 2026-10-12 Wrangler 4.149.0 listed one project for this site, named `croftweaver`, with the domains `croftweaver-site.pages.dev` and `croftweaver.com`, and refused the name `croftweaver-site` (first refusal at 21:14 CEST), which it had still taken at 15:31 CEST the same day (both times from Wrangler's own logs on the computer the commands ran on). No record here of who changed the name or why. What to do when Wrangler does not find the project is at the top of `AGENTS.md`. The first publish was an upload with Wrangler, because Cloudflare showed the project as disconnected from GitHub and built nothing on a push or a merge. The owner repaired the connection the same day, and Cloudflare then built a pushed branch by itself (the preview of karero/croftweaver-site#41). `npm run ship` ran for the first time on 2026-10-12 and confirmed build `b129697` on the live domain. A test mail to `hello@croftweaver.com` arrived (owner, 2026-10-12). `CANONICAL_URL` is set to `https://croftweaver.com` for Production (owner, 2026-10-12); from the production build after that, `https://croftweaver-site.pages.dev` answers with a 301 to the same path and query on the live domain, and `https://main.croftweaver-site.pages.dev` stays the preview (both seen 2026-10-12). The sitemap `https://croftweaver.com/sitemap-index.xml` was submitted in Search Console on 2026-10-12 (read from Search Console the same day: pending, no errors) | `https://croftweaver.com/build.txt` served `b129697` on 2026-10-12; the project's name: `wrangler pages project list`, 2026-10-12 |
 | 9 | Builder Lab, footers and other sites point at the new name | PRs | open | — |
 | 10 | German translation | PRs | open | — |
-| 11 | The rest of the toolkit template, from commit `8ea17a7` to release 0.32. The spec files (all but one, below), `tests/_helpers.ts` and `tests/check_ship_push.sh` are done and `tests/TESTS-VERSION` now names release 0.32 (a0fbfb18), so the toolkit's `scripts/whats-new.sh` no longer lists what is left. The site takes `privacy-host.spec.ts` (the privacy page marks its analytics host) and leaves out `analytics-server.spec.ts`, which imports `functions/go/email` (line 3 of the spec at v0.32, checked 2026-10-22), a server-side sender this site does not have (`functions/` holds only `_middleware.ts` and `obfuscate.ts`); the stamp file says so in a `left_out:` line, so 14 of the toolkit's 15 suites (the count at v0.32: `git ls-tree` of its template `tests/` folder) are here. At each release, `whats-new.sh --stamp-tests` rewrites the stamp file and drops that line: copy it aside first and put it back afterwards. Left: changes to `AGENTS.md`, `PUBLISHING.md`, `SETUP.md`, `CONTENT_GUIDE.md`, `.github/workflows/ci.yml`, `.nvmrc`, `public/_headers`, `scripts/hooks/pre-push`, `.claude/settings.json` and `tests/check_analytics_gate.sh` (this site's own copy); and four files the site does not have: `.gitattributes`, `scripts/verify.mjs`, `scripts/wire-hooks.mjs`, `.claude/hooks/git-stand.mjs`. To see them, in a clone of the toolkit: `git diff 8ea17a7 v0.32 -- skills/new-website/templates` | PRs | open; spec files done 2026-10-13; release 0.32 suites on this branch | karero/croftweaver-site#67 |
+| 11 | The rest of the toolkit template, from commit `8ea17a7` to release 0.34. The spec files (all but one, below), `tests/_helpers.ts` and `tests/check_ship_push.sh` are done and `tests/TESTS-VERSION` now names release 0.34 (99b72e10), so the toolkit's `scripts/whats-new.sh` no longer lists what is left. The site takes `privacy-host.spec.ts` (the privacy page marks its analytics host) and leaves out `analytics-server.spec.ts`, which imports `functions/go/email` (line 3 of the spec at v0.32, checked 2026-10-22), a server-side sender this site does not have (`functions/` holds only `_middleware.ts`); the stamp file says so in a `left_out:` line, so 17 of the toolkit's 18 suites (the count at v0.34: `git ls-tree` of its template `tests/` folder) are here. 0.34's new `phone-images.spec.ts` is taken as it is. 0.33's new `tables.spec.ts` is taken with two lines changed (its comment and one message name `global.css`, where this site keeps the table rules); the site's tables already used the `stack` and `figures` kinds in `global.css`, which took the starter's focus-ring rule for links in a table so the suite passes. At each release, `whats-new.sh --stamp-tests` rewrites the stamp file and drops that line: copy it aside first and put it back afterwards. Left: changes to `AGENTS.md`, `PUBLISHING.md`, `SETUP.md`, `CONTENT_GUIDE.md`, `.github/workflows/ci.yml`, `.nvmrc`, `public/_headers`, `scripts/hooks/pre-push`, `.claude/settings.json` and `tests/check_analytics_gate.sh` (this site's own copy); and three files the site does not have: `.gitattributes`, `scripts/verify.mjs`, `.claude/hooks/git-stand.mjs` (`scripts/wire-hooks.mjs` came with `scripts/ship.sh` 0.22). To see them, in a clone of the toolkit: `git diff 8ea17a7 v0.34 -- skills/new-website/templates`. Taken ahead of release 0.34 (2026-10-26): the test port per site folder in `playwright.config.ts`, the test-build id in `scripts/build-marker.mjs`, and `tests/served-build.spec.ts`; all three are part of 0.34, so the stamp's `added:` line is gone | PRs | open; spec files done 2026-10-13; release 0.34 suites since this branch (`tests/toolkit-0.34`) | karero/croftweaver-site#67 |
 | 12 | `security.txt`: the file at `public/.well-known/security.txt` expires on 2027-04-22 (`Expires`). Renew it, to a date about six months ahead, by 2027-03-08, 45 days before. `tests/check_security_txt.sh` warns from 2027-03-23 and fails from 2027-04-15, but only when someone pushes, so the date is kept here | owner | open: renew by 2027-03-08 | `public/.well-known/security.txt`, `tests/check_security_txt.sh` |
+| 13 | croftweaver.com names the GenAI Wednesday page "Builder Lab" in its visible links and in `public/llms.txt`, but that page now calls itself "Croftweaver: the free AI Website Builder" (read 2026-11-02). Choose the label, then change every place together; `src/data/proof.ts` also quotes the old name in an error message | owner, then a PR | open: label not chosen (from the session "Croftweaver pages update", 2026-10-24) | `git grep -n -i "builder lab" -- src public` |
 
 Launch requirements that no test enforces:
 
@@ -162,10 +179,10 @@ Launch requirements that no test enforces:
   and its MX records point to Google (seen 2026-10-08). Before launch a test mail to it
   must arrive, because the imprint and privacy pages publish it as their contact; record
   the date here. A test mail arrived (owner, 2026-10-12).
-- The AI panel on the home page and `/more-proof` is copied from the Builder Lab (read
-  2026-10-08, second round of 20 August 2026). Re-read the Lab before launch and update
-  `src/data/proof.ts` if its numbers changed, and the caveat sentences in
-  `src/pages/index.astro` and `src/pages/more-proof.astro` if its caveats changed; the
+- The AI panel on `/more-proof` (on the home page too until 2026-10-27) is copied from the
+  Builder Lab (read 2026-10-08, second round of 20 August 2026). Re-read the Lab before launch
+  and update `src/data/proof.ts` if its numbers changed, and the caveat sentences in
+  `src/pages/more-proof.astro` if its caveats changed; the
   build only checks that the rows still average to the figures copied that day.
 - `/proof` with fresh, dated figures for genai-wednesday.de (one site by owner
   decision, 2026-10-04; the earlier requirement was three sites). The AI check file comes

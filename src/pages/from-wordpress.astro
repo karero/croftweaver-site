@@ -14,8 +14,8 @@ import { SITE } from '../config';
 import { WORDPRESS_FAQ, wordpressFaqSchema, EMDASH_POST } from '../data/wordpress-faq';
 import { PROOF, PROOF_MEASURED } from '../data/proof';
 
-// The page describes the helper as released in 0.32, so the link is pinned to that tag.
-const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.32/skills/wordpress-inspector';
+// Pinned to 0.33, the release whose redirect writer the steps describe; the test links below stay on 0.32.
+const INSPECTOR = 'https://github.com/karero/croftweaver/tree/v0.33/skills/wordpress-inspector';
 
 // The speed row reads the same PageSpeed data as /more-proof, so a re-measurement changes both.
 const scores = PROOF.map((p) => p.performance);
@@ -36,7 +36,8 @@ const notFits = [
   'You run a shop on WooCommerce, or need memberships, accounts or a booking system.',
   'Several colleagues edit the site in the browser and do not use an AI assistant.',
   'A plugin you cannot do without has no counterpart on a static site.',
-  'Your WordPress site runs well and costs you little time. Then there is no reason to move.',
+  // Updates and a firewall plugin or service: WordPress.org's hardening guide, the source /security cites.
+  'Your WordPress site runs well, costs you little time, and WordPress, its plugins and PHP are kept up to date, with a firewall plugin or service in front of it. Then there is no pressing reason to move.',
 ];
 
 const reasons = [
@@ -95,12 +96,12 @@ const move = [
   },
   {
     title: 'Write the redirects',
-    text: 'Every old address that moves gets a permanent redirect in the site’s redirect file. Your assistant writes the lines from the decisions in step 2; no script builds them yet.',
+    text: 'Every old address that moves gets a permanent redirect in the site’s redirect file. Since release 0.33 the helper writes the lines from the decisions in step 2, and refuses any the file cannot hold.',
     say: 'Write a 301 redirect for each old address we decided to move.',
   },
   {
     title: 'Check each address on the list',
-    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent.',
+    text: 'Before the switch, the helper asks the new site for each address on the list, the ones the count found and any you add by hand, and sorts them: kept, redirected, missing, or sent to the home page. Missing and sent home are findings, fixed before launch. It also lists temporary redirects that should be permanent, and, given your decisions, each address that lands somewhere other than decided.',
     say: 'Check each address on the list against the preview.',
   },
   {
@@ -108,6 +109,18 @@ const move = [
     text: 'Once the domain’s DNS is on Cloudflare (a guide walks you through moving it by hand), the launch stage connects the domain and checks the live site from outside. Then watch Search Console for addresses Google cannot find.',
     say: 'Launch the site on example.com.',
   },
+];
+
+// Who does what in each of the six steps above. Restates the steps and the helper's SKILL.md (v0.33); adds no new fact.
+const whoCols = ['Step', 'Done by a script', 'Your assistant, with your approval', 'Stays yours'];
+
+const who = [
+  { step: 'Count the old site', script: 'The helper counts the records, lists each address and says if the count is incomplete.', assistant: 'Runs the helper and reads the report with you.', yours: 'Choosing the site: one you own or are asked to look at.' },
+  { step: 'Decide what moves', script: 'The helper writes a sheet with one row per old page.', assistant: 'Goes through the sheet with you.', yours: 'Each decision: keep, redirect or let go. A new home for each form.' },
+  { step: 'Rebuild', script: 'The site’s tests run before each push and on each pull request.', assistant: 'Rebuilds the pages from the starter. There is no import.', yours: 'Checking the pages and the text before they go out.' },
+  { step: 'Write the redirects', script: 'The helper writes the redirect lines from your decisions. It lists what it refuses, or why it wrote nothing.', assistant: 'Runs the helper and shows you what it refused.', yours: 'Deciding what happens to each refused address.' },
+  { step: 'Check each address', script: 'The helper asks the new site for each address and names those missing or sent home, and, given your decisions sheet, those not where you decided.', assistant: 'Fixes the findings it can before launch, and asks you about the rest.', yours: 'Adding addresses the count could not find, and answering what the assistant asks.' },
+  { step: 'Launch, then watch', script: 'The launch stage checks the live site from outside.', assistant: 'Runs the launch stage, which connects the domain.', yours: 'Moving the domain’s DNS to Cloudflare, and watching Search Console after the move.' },
 ];
 
 const cannotSee = [
@@ -118,7 +131,7 @@ const cannotSee = [
 ---
 <Base
   title="WordPress to Astro, with your AI assistant"
-  description="Moving from WordPress to Astro? Your AI assistant rebuilds the site page by page, counts the old site first and checks the addresses it found after the move."
+  description="An alternative to WordPress for content sites: move from WordPress to Astro. Your AI assistant rebuilds the pages and checks the old addresses it found."
   image="/images/og/from-wordpress.jpg"
   schemas={[wordpressFaqSchema]}
 >
@@ -138,6 +151,7 @@ const cannotSee = [
 
   <section class="wrap" id="fit">
     <h2>Is it for you?</h2>
+    <p>Croftweaver is an alternative to WordPress for content sites, not for every site WordPress runs.</p>
     <div class="grid two">
       <div class="card">
         <h3>A good fit when</h3>
@@ -190,7 +204,8 @@ const cannotSee = [
     </div>
     <p>
       The speed figures are on <a href="/more-proof">the more proof page</a>, and the tests
-      on <a href="/checks">the checks page</a>.
+      on <a href="/checks">the checks page</a>. What a static site changes for security, and what
+      it does not, is on <a href="/security">the security page</a>.
     </p>
   </section>
 
@@ -206,6 +221,26 @@ const cannotSee = [
       The biggest worry in a move is losing the visitors who arrive through old
       addresses. These six steps are built around that.
     </p>
+    <h3 id="who">Who does what</h3>
+    <div class="table-wrap stack" role="region" aria-label="Who does what in each step of the move: a script, your assistant, or you" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            {whoCols.map((c) => <th scope="col" role="columnheader">{c}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {who.map((w) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">{w.step}</th>
+              <td role="cell" data-label={whoCols[1]}>{w.script}</td>
+              <td role="cell" data-label={whoCols[2]}>{w.assistant}</td>
+              <td role="cell" data-label={whoCols[3]}>{w.yours}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
     <ol class="loop" role="list">
       {move.map((m) => (
         <li class="card">
@@ -241,12 +276,12 @@ const cannotSee = [
       with the live site that replaced it in June.
     </p>
     <ul class="steps">
-      <li><strong>It found a gap.</strong> The old site offered <code>/locations.kml</code>, a
-      file for local search. The new site answers 404. The other nine old addresses still lead
+      <li><strong>It found a gap.</strong> The old site’s local sitemap listed
+      <code>/locations.kml</code>. The new site answers 404. The other nine old addresses still lead
       somewhere sensible: one is unchanged, seven redirect to the matching page, and one
       (<code>/home/</code>) goes to the home page, as intended.</li>
       <li><strong>It refused to call its own count complete.</strong> It counted 9 pages and
-      54 media files, the same as the old database, and named four content types it could not
+      54 media items, the same as the old database, and named four content types it could not
       read. The database held nothing hidden in three of them. The fourth is 14 Elementor
       building blocks, not pages.</li>
     </ul>
@@ -257,7 +292,8 @@ const cannotSee = [
     </p>
     <p>
       What a site built with Croftweaver achieves after launch is on
-      <a href="/proof">the proof page</a>: one site, measured.
+      <a href="/proof">the proof page</a>: one site, measured. <a href="/case-study">The case
+      study</a> logs each change to croftweaver.com and what Google and AI assistants showed after it.
     </p>
   </section>
 

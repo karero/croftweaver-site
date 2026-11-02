@@ -37,7 +37,7 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
           <button
             class="group-button" type="button" aria-expanded="false" aria-controls={`nav-group-${i}`}
             aria-current={item.items.some((link) => isCurrent(link.href)) ? 'true' : undefined}
-          >{item.label}<span class="chevron" aria-hidden="true">▾</span></button>
+          ><span class="group-name">{item.label}</span><span class="chevron" aria-hidden="true">▾</span></button>
           <span class="group-label" id={`nav-group-label-${i}`}>{item.label}</span>
           <ul class="group-list" id={`nav-group-${i}`} aria-labelledby={`nav-group-label-${i}`}>
             {item.items.map((link) => (
@@ -140,7 +140,7 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.4rem;
   }
   nav a { color: var(--ink); }
-  nav a:hover { color: var(--link); text-decoration: underline; }
+  nav a:hover { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; }
   nav a[aria-current='page'] { color: var(--link); font-weight: 600; }
   .repo {
     padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius);
@@ -156,18 +156,27 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   }
   .group-label { font-weight: 600; color: var(--muted); }
   .group-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1rem; }
-  .group-button:hover { color: var(--link); text-decoration: underline; }
+  /* A group's underline goes on its name only: on the whole button it breaks at the arrow. */
+  .group-button:hover { color: var(--link); }
+  .group-button:hover .group-name { text-decoration: underline; text-decoration-thickness: 1px; }
   .group-button[aria-current='true'] { color: var(--link); font-weight: 600; }
+  /* The current page and the group that holds it: a 3px underline, because colour and weight alone were
+     easy to miss. The hover underline is 1px, so the two stay apart. */
+  nav a[aria-current='page'], .group-button[aria-current='true'] .group-name {
+    text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.45em;
+  }
   .chevron { font-size: 0.8em; }
 
-  /* The fold: up to 51.99rem (831px) the navigation folds behind the Menu button (the phone block at the
-     end); above it, it stands in the header. 52rem is where the items fit one row with room to spare in a
-     wide system font (Verdana, close to DejaVu Sans on a Linux machine, needs about 769px). The wide block
+  /* The fold: up to 53.99rem (863px) the navigation folds behind the Menu button (the phone block at the
+     end); above it, it stands in the header. 54rem is where the items fit one row with at least 40px to spare in
+     a wide system font (Verdana, close to DejaVu Sans on a Linux machine: the items need about 809px of
+     window on the home page and about 824px on a page whose current link is bold, so 864px leaves 40 to 55px;
+     it was 52rem before the Technology group's longer label). The wide block
      below is the exact complement of that query, so no width, a fractional one from browser zoom included,
      falls between the two; tests/navigation.spec.ts keeps the two numbers equal. */
 
   /* Wide, with JavaScript: a group is a button that opens its list as a panel under it. */
-  @media not all and (max-width: 51.99rem) {
+  @media not all and (max-width: 53.99rem) {
     :global(html.js) .group { display: block; position: relative; }
     :global(html.js) .group-button { display: inline-flex; }
     :global(html.js) .group-label { display: none; }
@@ -181,7 +190,7 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     :global(html.js) .group-button[aria-expanded='true'] ~ .group-list { display: flex; }
   }
   /* Phones: the list folds behind the button and opens as one column under the logo. */
-  @media (max-width: 51.99rem) {
+  @media (max-width: 53.99rem) {
     /* The logo is a little smaller here, so logo and button share the first row down to 320px. */
     .site-header { column-gap: 0.75rem; }
     .brand :global(svg) { height: 1.5rem; }

@@ -1,13 +1,14 @@
 // The case study: Croftweaver used on its own site, croftweaver.com, from launch onwards (owner decisions,
-// 2026-10-21: its own page and its own export, counts only). Three sources and no others:
+// 2026-10-21: its own page and its own export, counts only). Its figures have three sources and no others:
 //   public/data/croftweaver-com-ai-check.csv and croftweaver-com-search-console.csv, both written by
-//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them.
+//   scripts/export-own-site.py, and LOG below. Every figure on /case-study comes from one of them; CARDS
+//   restates log entries. The hero's screenshot (CAPTURE) is separate evidence, not a figure.
 // The page says what was seen after a change, never that the change caused it (CONTENT_GUIDE.md).
 // Upkeep, weekly: rerun the export after the weekly AI check, add the week's entries to LOG, set UPDATED.
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 
-export const UPDATED = { iso: '2026-10-21', label: '21 October 2026' } as const;
+export const UPDATED = { iso: '2026-10-25', label: '25 October 2026' } as const;
 export const LAUNCH = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 const realDay = (s: string) => {
@@ -26,6 +27,8 @@ type Observation = { kind: 'observation'; date: string; title: string; seen: str
 export type Entry = Change | Observation;
 
 export const PR_REPOS = ['karero/croftweaver', 'karero/croftweaver-site', 'GenAI-Wednesday/GenAI-Wednesday.de'] as const;
+// A visitor gets a 404 from a private repository's pull request, so the page names these without a link.
+export const PRIVATE_REPOS: readonly (typeof PR_REPOS)[number][] = ['GenAI-Wednesday/GenAI-Wednesday.de'];
 
 export const LOG: readonly Entry[] = [
   { kind: 'observation', date: '2026-10-12', title: 'The site goes live',
@@ -67,6 +70,60 @@ export const LOG: readonly Entry[] = [
   { kind: 'change', date: '2026-10-21', title: 'The same, on genai-wednesday.de',
     asked: 'Add “Already have a website?” to the Croftweaver page on genai-wednesday.de, in English and German.',
     pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/53', checks: '298 tests; reviewed together with the change above' },
+  { kind: 'change', date: '2026-10-22', title: 'A checklist of SEO checks for sites an AI assistant built',
+    asked: 'Add a page for people whose site an AI assistant built: eight SEO checks, the Croftweaver test behind each, what happened when each was broken on purpose, and what a passing test does not prove.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/112', checks: '337 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-22', title: 'A security.txt that says where to report a flaw',
+    asked: 'Publish a security.txt with a contact for reporting a security flaw, and add a check that keeps the file valid.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/114', checks: 'its own check script; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-22', title: 'A page on what a static website changes for security',
+    asked: 'Answer “Is Croftweaver safer than WordPress?” on a page of its own, with a source and a reading date for every claim.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/118', checks: '352 tests and a check of its 67 claims; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A footer that lists the pages in four columns',
+    asked: 'Draw the footer as four labelled columns that list every page except the home page and the error page once, and add a test that fails when one is missing.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/119', checks: '361 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A header with groups of links',
+    asked: 'Group the header links under names that open a list, such as “Skills & checks” and “For your site”.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/122', checks: '387 tests; review by two outside models, 3 rounds; Codex took part in round 2 only' },
+  { kind: 'change', date: '2026-10-23', title: 'A page on what a Croftweaver site runs on',
+    asked: 'Explain the technology behind a Croftweaver site in plain words: the three places it lives, what each costs and its limits, and what can be swapped.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/121', checks: '379 tests; review by two outside models, 4 rounds, with the last additions read by Codex alone' },
+  { kind: 'change', date: '2026-10-23', title: 'One table style, stacked on a phone',
+    asked: 'Give every table on the site one style, and turn text tables into labelled rows on a phone instead of letting them scroll sideways.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/124', checks: '376 tests; review by one outside model, 3 rounds' },
+  { kind: 'change', date: '2026-10-23', title: 'A Technology group in the header',
+    asked: 'Put Security and What It Runs On together in the header, as a group named Technology.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/128', checks: '421 tests; review by two outside models, 1 round' },
+  { kind: 'change', date: '2026-10-24', title: 'A Croftweaver site next to a shop',
+    asked: 'Say that a shop needs a shop platform, and that a Croftweaver site can sit next to it with guides and articles on the topics of its products.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/130', checks: '420 tests; merged without a review, which was still owed on 24 October' },
+  { kind: 'change', date: '2026-10-24', title: 'Two more AI check days on /proof',
+    asked: 'Add the AI check runs of 12 and 19 October for genai-wednesday.de to the page that measures that site.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/132', checks: '420 tests; review by two outside models, 1 round' },
+  { kind: 'change', date: '2026-10-24', title: 'The WordPress trial, said more exactly',
+    asked: 'On /from-wordpress, say only what the trial recorded: 54 media items, not files, and a file that the old site’s local sitemap listed.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/134', checks: '421 tests; review by two outside models, 1 round' },
+  { kind: 'change', date: '2026-10-24', title: 'The current page, underlined in the header',
+    asked: 'Underline the current menu item, and its group, so the current page shows at a glance.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/136', checks: '439 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-24', title: 'The site brought up to release 0.33',
+    asked: 'Say 0.33 wherever the site names the current release, and correct what 0.33 changed: the skill count, the roadmap, the WordPress forwarding and the Node a build needs.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/137', checks: '439 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-24', title: 'genai-wednesday.de: what Search Console shows now',
+    asked: 'Replace “keeps climbing” on the Croftweaver pages of genai-wednesday.de with the figures Search Console shows now, and say “launch”, not “relaunch”.',
+    pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/57', checks: '300 tests; one review, not by an outside model' },
+  { kind: 'change', date: '2026-10-24', title: 'genai-wednesday.de: skills for AI coding assistants',
+    asked: 'Call Croftweaver “website skills for AI coding assistants” on four more pages of genai-wednesday.de, instead of “Claude Code skills”.',
+    pr: 'https://github.com/GenAI-Wednesday/GenAI-Wednesday.de/pull/58', checks: '300 tests; reviewed together with the change above' },
+  { kind: 'observation', date: '2026-10-24', title: 'What went live, and when',
+    seen: 'The checklist page and security.txt went live on 22 October; /security, /what-it-runs-on, the new header and footer and the table style on 23 October; the Technology group, the shop wording, the two check days on /proof and the WordPress wording on 24 October. The underlined current page and the 0.33 update were merged but not yet live when this was read.',
+    source: 'Cloudflare Pages, production deployments, read on 24 October' },
+  { kind: 'observation', date: '2026-10-24', title: 'Croftweaver 0.33 is released',
+    seen: 'Release 0.33 of the toolkit came out. Three of its changes are also on this site: one table style, monthly Dependabot updates with a read-only token for the checks, and a publish script that can take main straight from GitHub.',
+    source: 'the 0.33 release notes on GitHub; this site’s pull requests 124, 111 and 127' },
+  { kind: 'observation', date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google',
+    seen: 'Three pages went live: the SEO checklist (/ai-website-seo-checklist) on 22 October, and /security and /what-it-runs-on on 23 October. The site now has 22 pages, up from 19 on 21 October, and Google lists all 22 as indexed. Its last crawl of /what-it-runs-on came less than three hours after the page went live, of /security about a day after and of the checklist about two days after. Indexing of all three was requested in Search Console, on days this entry does not give.',
+    source: 'the owner, for the indexing requests; the site’s sitemap, and its page list at the last publish of 21 October; Cloudflare Pages, production deployments; Google Search Console, URL inspection of every page, read on 25 October' },
 ];
 
 const PR = /^https:\/\/github\.com\/([A-Za-z0-9-]+\/[A-Za-z0-9.-]+)\/pull\/(\d+)$/;
@@ -76,6 +133,10 @@ for (const e of LOG) {
     const m = e.pr.match(PR);
     if (!m || !(PR_REPOS as readonly string[]).includes(m[1]!)) {
       throw new Error(`src/data/case-study.ts: "${e.title}" needs a pull request of ${PR_REPOS.join(', ')}, got ${e.pr}.`);
+    }
+    // Without its own checks the page points to the pull request, which a visitor cannot open when the repository is private.
+    if ((PRIVATE_REPOS as readonly string[]).includes(m[1]!) && !e.checks) {
+      throw new Error(`src/data/case-study.ts: "${e.title}" cites a private repository's pull request, so it needs its own checks.`);
     }
     if (e.next !== undefined && !realDay(e.next)) throw new Error(`src/data/case-study.ts: "${e.title}" has a next measurement that is not a day.`);
   } else if (!e.source.trim()) {
@@ -90,6 +151,44 @@ export const prLabel = (url: string) => {
   const m = url.match(PR)!;
   return `${m[1]}#${m[2]}`;
 };
+export const prPrivate = (url: string) => (PRIVATE_REPOS as readonly string[]).includes(url.match(PR)![1]!);
+
+// ── The hero and the summary cards ──────────────────────────────────────────────
+export const SITE_REPO = 'https://github.com/karero/croftweaver-site';
+// The day the screenshots in public/images/case-study/ were captured from the live site; the file names carry it.
+export const CAPTURE = { iso: '2026-10-27', label: dayLabel('2026-10-27') } as const;
+
+// Card figures the CSV files do not hold are read from the log entry each card cites (named by date and
+// title), so a card cannot disagree with its entry. The build fails when an entry does not say a figure in
+// exactly these words. Bing's request is still pending in the log, so its card has no figure.
+const cited = (date: string, title: string) => {
+  const e = LOG.find((x) => x.date === date && x.title === title);
+  if (!e) throw new Error(`src/data/case-study.ts: CARDS cites "${title}" (${date}), which is not in LOG.`);
+  return e;
+};
+const read = (text: string, re: RegExp, what: string) => {
+  const m = text.match(re);
+  if (!m) throw new Error(`src/data/case-study.ts: the log entry a card cites no longer says ${what} as ${re}.`);
+  return Number(m[1]);
+};
+const indexedEntry = cited('2026-10-25', 'Three new pages, 22 in all, all indexed by Google');
+const bingEntry = cited('2026-10-20', 'Bing indexing requested');
+const testsEntry = cited('2026-10-24', 'The site brought up to release 0.33');
+if (indexedEntry.kind !== 'observation' || bingEntry.kind !== 'observation' || testsEntry.kind !== 'change') {
+  throw new Error('src/data/case-study.ts: CARDS cites an entry of the wrong kind.');
+}
+if (!bingEntry.seen.includes('The outcome is pending.')) throw new Error('src/data/case-study.ts: the Bing request is no longer pending; give the Bing card its figure.');
+export const CARDS = {
+  google: {
+    date: indexedEntry.date,
+    pages: read(indexedEntry.seen, /\bThe site now has (\d+) pages\b/, 'the page count'),
+    indexed: read(indexedEntry.seen, /\bGoogle lists all (\d+) as indexed\b/, 'the indexed count'),
+  },
+  bing: { date: bingEntry.date, indexed: null as number | null },
+  tests: { date: testsEntry.date, tests: read(testsEntry.checks ?? '', /^(\d+) tests;/, 'its test count') },
+};
+export const TESTS_PR = testsEntry.pr;
+export const measured = (n: number | null, shown: (n: number) => string = String) => (n === null ? 'Not yet measured' : shown(n));
 
 // ── Google Search Console, daily ────────────────────────────────────────────────
 const searchLines = searchCsv.trim().split(/\r?\n/);

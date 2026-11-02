@@ -5,23 +5,24 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../data/compare';
 ---
 <Base
-  title="Croftweaver and its alternatives"
-  description="Croftweaver and its alternatives: hosted website builders, AI app builders, open-source visual builders and skills for AI assistants. When to choose which."
+  title="Which website tool fits? The alternatives"
+  description="What are you building? Croftweaver and its alternatives: WordPress, Joomla, Drupal, hosted builders, AI app builders, AI assistant skills, and when each fits."
   image="/images/og/compare.jpg"
 >
   <section class="wrap hero">
-    <h1>Croftweaver and its alternatives</h1>
+    <h1>Which website tool fits what you are building?</h1>
     <p class="lead">
-      There are good alternatives to Croftweaver, and for many people one of them is
-      the better choice. This page says when.
+      Croftweaver and its alternatives, side by side. For many people one of the
+      alternatives is the better choice, and this page says when.
     </p>
     <p class="note">
       In the groups below, every statement about another product restates what its
       own page says and links to it. Those links were checked on
-      <time datetime={CHECKED.iso}>{CHECKED.label}</time>. Prices and plans change.
+      <time datetime={CHECKED.iso}>{CHECKED.label}</time>, unless a group gives its own date.
+      Prices and plans change.
     </p>
     <div class="cta">
       <a class="btn primary" href={SITE.repo}>Get Croftweaver on GitHub</a>
@@ -29,18 +30,85 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
   </section>
 
   <section class="wrap" id="short">
-    <h2>Which to choose, in short</h2>
+    <h2>What are you building?</h2>
     <ul class="steps">
-      {SHORT.map((s) => (
-        <li><strong>Choose {'url' in s ? <a href={s.url}>{s.choose}</a> : 'href' in s ? <a href={s.href}>{s.choose}</a> : s.choose} when</strong> {s.when}</li>
+      {GUIDE.map((g) => (
+        <li><strong>{g.building}:</strong> <a href={g.href}>{g.choose}</a>, {g.why}</li>
       ))}
     </ul>
-    <p class="note">
-      The WordPress and Webflow lines restate their own pages, read on
-      <time datetime={SHORT_CHECKED.iso}>{SHORT_CHECKED.label}</time>; the other two sum up the
-      sections below.
+    <p class="note">Each line points to a section below, where the products are named and linked.</p>
+    <p>
+      Already on WordPress and thinking of leaving? See <a href="/from-wordpress">From WordPress to Astro</a>,
+      and <a href="/security">what a static website changes for security</a>.
     </p>
-    <p>Already on WordPress and thinking of leaving? See <a href="/from-wordpress">From WordPress to Astro</a>.</p>
+  </section>
+
+  <section class="wrap" id="claude-code">
+    <h2>Claude Code on its own, or with Croftweaver</h2>
+    <p>
+      Croftweaver does not replace Claude Code. It is a set of skills for AI coding assistants,
+      developed and used with Claude Code, with install guides for Codex and Antigravity too.
+      Claude Code is <q>{CLAUDE_CODE.what}</q>, and skills are how it packages
+      <q>{CLAUDE_CODE.skills}</q> (<a href={CLAUDE_CODE.url}>{CLAUDE_CODE.label}</a>, read on
+      <time datetime={CLAUDE_CODE_CHECKED.iso}>{CLAUDE_CODE_CHECKED.label}</time>). Croftweaver is a
+      set of such skills, for websites. What they bring:
+    </p>
+    <ul class="steps">
+      <li><strong>Positioning before copy.</strong> The assistant works out with you what the site has to say before it writes a page. <a href="/positioning">How positioning works</a>.</li>
+      <li><strong>The site's own test suites.</strong> By default they run before each push and on each pull request. <a href="/checks">The checks</a>.</li>
+      <li><strong>Search and AI basics from the first build.</strong> Titles and descriptions within limits, structured data, an llms.txt file and a share image for each page, kept in place by those tests. <a href="/ai-website-seo-checklist">The SEO checklist</a>.</li>
+      <li><strong>After launch, if you connect them, the next edit from real data.</strong> Search Console insights, and an optional weekly check of whether AI assistants name the business, run with your own API keys. <a href="/established-sites">Established sites</a>.</li>
+    </ul>
+    <p>
+      <strong>Use Claude Code on its own when</strong> you want a one-off page or a prototype, or you
+      already have your own method and checks. <strong>Use it with Croftweaver when</strong> you want
+      this method, and by default the same checks on every change.
+    </p>
+    <h3 id="one-comparison">One comparison, side by side</h3>
+    <p>
+      The same brief for a fictional business went to Claude Code twice, with the same model and the
+      same settings: once on its own, once with Croftweaver. Each run started from a one-line prompt,
+      quoted in its repository; neither stopped to ask a question, and neither was helped along. The
+      experimenter deployed both sites the same way and measured them with tools Croftweaver does not
+      make. It is a test of each
+      set-up's defaults on the same brief, not of an agreed checklist both had to meet. One run each is
+      an anecdote, not a measurement: it cannot show that one way builds better sites in general, how
+      either site would rank, or whether AI assistants would cite it, and positioning, the quality of
+      the copy, Croftweaver's own publishing steps and later changes were not compared.
+    </p>
+    <div id="runs-comparison" class="table-wrap stack" role="region" aria-label="One comparison: Claude Code on its own and with Croftweaver" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Measure</th>
+            {RUNS.map((r) => <th scope="col" role="columnheader">{r.name}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {RUN_ROWS.map((row) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">{row.measure}</th>
+              {RUNS.map((r) => <td role="cell" data-label={r.name}>{row[r.key]}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Measured on <time datetime={RUNS_MEASURED.iso}>{RUNS_MEASURED.label}</time>. The cost is the
+      figure Claude Code reported for the run. HTML errors and warnings: the W3C Nu HTML Checker;
+      structured data: Google's Rich Results Test; both on the home and contact pages. PageSpeed:
+      PageSpeed Insights on mobile, the median of five runs, for performance, accessibility, best
+      practices and SEO, on <time datetime={RUNS_PAGESPEED.iso}>{RUNS_PAGESPEED.label}</time>. Both
+      sites fail one SEO item, the noindex both carry; 66 against 69 comes from one item that does not
+      apply to the site without images. The sites:
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.siteLabel}</a></>)}.
+      Each repository holds the brief, the prompt, the run's history, its transcript in plain text
+      (tool results shortened) and the measurements:
+      {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
+      The experimenter added a header to both sites asking search engines not to index them, because
+      the business is fictional.
+    </p>
   </section>
 
   <section class="wrap" id="first">
@@ -83,6 +151,14 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
           <li><a href={e.url}>{e.name}</a><span>{e.fact}</span></li>
         ))}
       </ul>
+      {'needs' in group && (
+        <p class="note needs">
+          {group.needs.text} Sources:{' '}
+          {group.needs.sources.map((src, i) => (
+            <>{i > 0 && ', '}<a href={src.url}>{src.label}</a></>
+          ))}. The links in this group were read on <time datetime={group.checked.iso}>{group.checked.label}</time>.
+        </p>
+      )}
       <div class="grid">
         <div class="card">
           <h3>Choose one of these when</h3>
@@ -106,7 +182,7 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, SHORT, SHORT_CHECKED } f
       <li><strong>You need a shop, accounts or a database.</strong> It builds content sites.</li>
       <li><strong>You want someone else to host and run it.</strong> You publish to hosting you control.</li>
       <li><strong>You do not want an AI coding assistant.</strong> Croftweaver needs one, and building a new site with it needs a GitHub account too.</li>
-      <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one.</li>
+      <li><strong>You want proof from many sites.</strong> <a href="/proof">The proof page</a> shows one, and <a href="/case-study">the case study</a> follows this site week by week.</li>
     </ul>
     <p>
       What is missing and what comes next is on <a href="/roadmap">the roadmap</a>.
