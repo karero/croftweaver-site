@@ -1071,3 +1071,18 @@ for (const width of [360, 320]) {
     expect(overflow, `the page scrolls sideways at ${width} px`).toBeLessThanOrEqual(0);
   });
 }
+
+// Site-specific (not in the shipped suite): the two doors in /established-sites#help. The link says who does the
+// work and leads to M-Squad's page about it, with ?ref=croftweaver so its analytics can name the source when a
+// browser drops the referrer. The email link stays as it was: the new link adds a door, it does not replace it.
+test('help — #help says the work goes through M-Squad, links to its page and keeps its own email link', async ({ page }) => {
+  await page.goto('/established-sites');
+  const help = page.locator('#help');
+  const studio = help.locator('p', { hasText: 'through M-Squad' });
+  await expect(studio, 'the M-Squad sentence').toHaveText('I do this work through M-Squad, the studio I lead in Munich. What this help covers.');
+  const link = studio.getByRole('link', { name: 'What this help covers', exact: true });
+  await expect(link, 'the link to M-Squad\'s page').toHaveAttribute('href', 'https://m-squad.com/croftweaver-help?ref=croftweaver');
+  const email = help.locator('a.email-link');
+  await expect(email, '#help keeps exactly one email link').toHaveCount(1);
+  await expect(email, 'the email link in #help').toHaveAttribute('href', 'mailto:hello@croftweaver.com?subject=Help%20for%20our%20team%20with%20Croftweaver');
+});
