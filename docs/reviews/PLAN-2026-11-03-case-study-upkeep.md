@@ -33,11 +33,11 @@ about croftweaver.com, so they stay a judgment made by hand; the check says so i
   (merged 3 November) is not in LOG, when the check runs, then it lists it with merge day and title
   under "merged since the last update, not in the log: log it or leave it out", and exits 1. "Since"
   means a merge day (UTC, as GitHub gives it) after UPDATED.
-- **A3b, one more look.** Pull requests merged after the previous UPDATED and up to and including
-  the current one, and not in LOG, are listed under a second heading, "left out at the last update;
+- **A3b, one more look.** Pull requests merged on or after the previous UPDATED and up to and
+  including the current one, and not in LOG, are listed under a second heading, "left out at the last update;
   shown once more", and do not change the exit status. The previous UPDATED is the date UPDATED held
-  before the last commit that changed its date (a label-only edit does not count). On 3 November, with the branch merged, that is 26 October to
-  2 November: 129, 157, 159, 160, 161, 162 and 164. So a pull request left out on purpose never makes
+  before the last commit that changed its date (a label-only edit does not count). On 3 November, with the branch merged, that is 25 October to
+  2 November: 129, 140, 143, 157, 159, 160, 161, 162 and 164. So a pull request left out on purpose never makes
   the check fail after the update that judged it, and one that update missed is still shown, however
   long the gap before it.
 - **A4, all clear.** Given both files match a fresh export, the newest run is at most 6 days old and
@@ -52,11 +52,14 @@ about croftweaver.com, so they stay a judgment made by hand; the check says so i
   check read-only and tells Daniel in plain words what is due and the one thing to say ("update the
   case study"). What the app does when it is closed at 11:30 is not checked here. A missed reminder
   loses nothing: the next check still lists everything merged since UPDATED. The harness's
-  `scheduler_watch` already reports a registered task that did not run. A6 is done only when an
-  automatic run has been seen: on the first Monday after both the check's merge and the task's
-  registration, the task's run list shows a run it started itself, between 11:30 and 13:30 Berlin
-  time, that reported (not failed). Until then its status row says "not yet seen running on its
-  own"; if that Monday passes without one, Daniel is told.
+  `scheduler_watch` already reports a registered task that did not run. A6 is done only when both
+  are seen: (1) the scheduler lists the task with cron `30 11 * * 1` and a `nextRunAt` of 11:30 Berlin
+  time plus its jitter (the scheduler reads cron in the Mac's local time: the weekly apreet task's
+  `30 11 * * 1` lists its next run as 10:37 UTC, 11:37 in Berlin); (2) on the first Monday by whose
+  11:30 both the check's merge and the task's registration have happened, the run list shows a run
+  the task started itself, within 30 minutes of 11:30 Berlin time, that reported rather than failed.
+  Until then its status row says "not yet seen running on its own"; if that Monday passes without
+  one, Daniel is told.
 - **C1, newest count wins.** Given the newest croftweaver-site change whose checks start with
   "N tests;" is #155 (29 October, 499 tests), then the card shows 499, #155, 29 October. Today's page
   does not change.
@@ -102,13 +105,14 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
 - UPDATED: one literal regex over `case-study.ts` at the ref, reading the `iso` date. The previous
   UPDATED: walk `git log --first-parent <ref> -- src/data/case-study.ts` newest first, and take the
   first commit whose `iso` date differs from its first parent's; the parent's date is the previous
-  UPDATED. First-parent walking sees a change that arrived by a merge, and comparing dates skips a
-  label-only edit. On `main` at 0973ed8 this gives 24 October, through the merge of #143. No match
+  UPDATED. First-parent walking sees a change that arrived by a merge (reproduced on 3 November: on
+  `main`, the first-parent commits that touch the file are merges, and the merge of #143 is the
+  first whose date differs from its parent's), and comparing dates skips a label-only edit. On `main` at 0973ed8 this gives 24 October, through the merge of #143. No match
   is A5.
 - Pull requests: `gh pr list -R karero/croftweaver-site --state merged --search "merged:>=<since>"
   --limit 200 --json number,mergedAt,title`, with `<since>` the previous UPDATED itself, so a pull
   request merged later on that day is still seen (A3b includes that day). Run on 3 November with
-  26 October, the query returned the 20 pull requests merged since. Logged ones are the
+  25 October, the query returned the 24 pull requests merged since. Logged ones are the
   `pr` fields of LOG's changes: the ref's `case-study-log.ts` is written to the temp dir and loaded
   with Node (which strips its types; checked with Node 26.13), and the script reads the list Node
   prints. An address in a comment or in an observation's text never counts.
@@ -116,8 +120,8 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
 - The `case-study.ts` header comment's upkeep line names the script.
 
 **Reminder:** a recurring scheduled task `croftweaver-case-study-weekly`, Mondays 11:30 (the weekly
-AI job runs at 09:45). It runs the check and reports; it changes no file, branch or page (the
-check's `git fetch` updates only `origin/main`). It replaces the one-off
+AI job runs at 09:45). It runs the check and reports; it changes no working-tree file, local
+branch or page. Its `git fetch` writes only Git's own records (`origin/main`, `FETCH_HEAD`). It replaces the one-off
 reminders; `croftweaver-case-study-week-2` has fired and is left as it is. This is a harness change:
 a row in `~/.claude/HARNESS.md` and an entry in `~/.claude/HARNESS-CHANGES.md`.
 
@@ -143,7 +147,7 @@ a row in `~/.claude/HARNESS.md` and an entry in `~/.claude/HARNESS-CHANGES.md`.
   Each must fail a test.
 - The full suite and `astro check` before round 1 and after the last edit.
 - A6: `scheduler_watch` lists the task with its schedule, one manual run reports, and the automatic
-  run of 9 November is looked for in the task's run list (A6).
+  run on A6's Monday is looked for in the task's run list.
 
 ## Cost
 
