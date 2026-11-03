@@ -35,8 +35,8 @@ about croftweaver.com, so they stay a judgment made by hand; the check says so i
   means a merge day (UTC, as GitHub gives it) after UPDATED.
 - **A3b, one more look.** Pull requests merged after the previous UPDATED and up to and including
   the current one, and not in LOG, are listed under a second heading, "left out at the last update;
-  shown once more", and do not change the exit status. The previous UPDATED is the value before the
-  last commit that changed it. On 3 November, with the branch merged, that is 26 October to
+  shown once more", and do not change the exit status. The previous UPDATED is the date UPDATED held
+  before the last commit that changed its date (a label-only edit does not count). On 3 November, with the branch merged, that is 26 October to
   2 November: 129, 157, 159, 160, 161, 162 and 164. So a pull request left out on purpose never makes
   the check fail after the update that judged it, and one that update missed is still shown, however
   long the gap before it.
@@ -53,8 +53,10 @@ about croftweaver.com, so they stay a judgment made by hand; the check says so i
   case study"). What the app does when it is closed at 11:30 is not checked here. A missed reminder
   loses nothing: the next check still lists everything merged since UPDATED. The harness's
   `scheduler_watch` already reports a registered task that did not run. A6 is done only when an
-  automatic run has been seen: the task's run list shows a run on Monday 9 November after 11:30. Until
-  then its status row says "not yet seen running on its own", and if none happened, Daniel is told.
+  automatic run has been seen: on the first Monday after both the check's merge and the task's
+  registration, the task's run list shows a run it started itself, between 11:30 and 13:30 Berlin
+  time, that reported (not failed). Until then its status row says "not yet seen running on its
+  own"; if that Monday passes without one, Daniel is told.
 - **C1, newest count wins.** Given the newest croftweaver-site change whose checks start with
   "N tests;" is #155 (29 October, 499 tests), then the card shows 499, #155, 29 October. Today's page
   does not change.
@@ -91,17 +93,22 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
   files and the exporter itself are read from that one commit with `git show`, never from the
   working tree, because the site's one folder is often on another branch.
 - Data: the ref's `export-own-site.py` is written to a temp dir and run there with `--out-dir`
-  (the existing, tested write path). The exporter reads only its two inputs outside the repository
+  (the existing, tested write path). The check takes `--history` and `--google-data` and passes them
+  on; their defaults are the exporter's. The exporter reads only its two inputs outside the repository
   (`--history`, `--google-data`) and the standard library; two runs on the same inputs gave
   identical files (checked 3 November). Each file is compared byte for byte with the ref's copy.
   Newest run day: the largest `date` in the fresh AI check file, which holds croftweaver.com rows only
   (the exporter skips every other site, `export-own-site.py` line 107).
-- UPDATED: one literal regex over `case-study.ts` at the ref. The previous UPDATED: the same regex
-  over the file at the parent of the newest commit (on the ref) whose diff changes that line
-  (`git log -G`). No match for either is A5.
+- UPDATED: one literal regex over `case-study.ts` at the ref, reading the `iso` date. The previous
+  UPDATED: walk `git log --first-parent <ref> -- src/data/case-study.ts` newest first, and take the
+  first commit whose `iso` date differs from its first parent's; the parent's date is the previous
+  UPDATED. First-parent walking sees a change that arrived by a merge, and comparing dates skips a
+  label-only edit. On `main` at 0973ed8 this gives 24 October, through the merge of #143. No match
+  is A5.
 - Pull requests: `gh pr list -R karero/croftweaver-site --state merged --search "merged:>=<since>"
-  --limit 200 --json number,mergedAt,title`, with `<since>` the day after the previous UPDATED (run
-  on 3 November with 26 October, it returned the 20 pull requests merged since). Logged ones are the
+  --limit 200 --json number,mergedAt,title`, with `<since>` the previous UPDATED itself, so a pull
+  request merged later on that day is still seen (A3b includes that day). Run on 3 November with
+  26 October, the query returned the 20 pull requests merged since. Logged ones are the
   `pr` fields of LOG's changes: the ref's `case-study-log.ts` is written to the temp dir and loaded
   with Node (which strips its types; checked with Node 26.13), and the script reads the list Node
   prints. An address in a comment or in an observation's text never counts.
@@ -109,7 +116,8 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
 - The `case-study.ts` header comment's upkeep line names the script.
 
 **Reminder:** a recurring scheduled task `croftweaver-case-study-weekly`, Mondays 11:30 (the weekly
-AI job runs at 09:45). Read-only: run the check, report, change nothing. It replaces the one-off
+AI job runs at 09:45). It runs the check and reports; it changes no file, branch or page (the
+check's `git fetch` updates only `origin/main`). It replaces the one-off
 reminders; `croftweaver-case-study-week-2` has fired and is left as it is. This is a harness change:
 a row in `~/.claude/HARNESS.md` and an entry in `~/.claude/HARNESS-CHANGES.md`.
 
@@ -117,11 +125,13 @@ a row in `~/.claude/HARNESS.md` and an entry in `~/.claude/HARNESS-CHANGES.md`.
 
 - `tests/check_case_study_audit.sh` (new, wired into CI next to `check_export_own_site.sh`): drives
   the real script in a throwaway git repository with synthetic history and Google files, always
-  with `--no-fetch` and a local `--ref`, and a fake `gh` first on `PATH` that prints a committed
+  with `--no-fetch` and a local `--ref` (except the one fetch scenario below), and a fake `gh` first on `PATH` that prints a committed
   capture. One scenario each for A1, A2, A3, A3b, A4, and each A5 cause, with expected output
   written by hand. A branch whose working-tree exporter differs from the ref's must still pass A4.
   An address in a trailing comment, a commented-out entry and an observation's text must not count
-  as logged.
+  as logged. A change of UPDATED that arrives by a merge, and a label-only edit after an update, must
+  give the right previous UPDATED. One scenario runs without `--no-fetch` in a repository with no
+  `origin` remote, and must exit 2 with the fetch named and no all-clear.
 - The capture: `tests/fixtures/gh-2.103.3-pr-list-merged.json`, a real `gh pr list` answer for this
   repository, entries cut, nothing edited.
 - `tests/case-study-card.spec.ts` (new): C1 to C5 on hand-built logs passed to `newestTestCount`, and
