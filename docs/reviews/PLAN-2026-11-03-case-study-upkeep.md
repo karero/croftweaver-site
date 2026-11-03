@@ -53,11 +53,13 @@ about croftweaver.com, so they stay a judgment made by hand; the check says so i
   case study"). What the app does when it is closed at 11:30 is not checked here. A missed reminder
   loses nothing: the next check still lists everything merged since UPDATED. The harness's
   `scheduler_watch` already reports a registered task that did not run. A6 is done only when both
-  are seen: (1) the scheduler lists the task with cron `30 11 * * 1` and a `nextRunAt` of 11:30 Berlin
-  time plus its jitter (the scheduler reads cron in the Mac's local time: the weekly apreet task's
-  `30 11 * * 1` lists its next run as 10:37 UTC, 11:37 in Berlin); (2) on the first Monday by whose
-  11:30 both the check's merge and the task's registration have happened, the run list shows a run
-  the task started itself, within 30 minutes of 11:30 Berlin time, that reported rather than failed.
+  are seen: (1) the scheduler lists the task with cron `30 11 * * 1`, its `jitterSeconds`, and a
+  `nextRunAt` of 11:30 Berlin time plus at most that jitter. The scheduler reads cron in the Mac's
+  local time, summer time included: the Crashlytics task's `0 14 * * 1,4` started at 12:02 UTC on
+  22 October (14:02 summer time) and at 13:02 UTC on 2 November (14:02 winter time); (2) on the
+  first Monday by whose 11:30 both the check's merge and the task's registration have happened, the
+  run list shows a run the task started itself, within 30 minutes after the listed `nextRunAt`,
+  that reported rather than failed.
   Until then its status row says "not yet seen running on its own"; if that Monday passes without
   one, Daniel is told.
 - **C1, newest count wins.** Given the newest croftweaver-site change whose checks start with
@@ -107,8 +109,9 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
   first commit whose `iso` date differs from its first parent's; the parent's date is the previous
   UPDATED. First-parent walking sees a change that arrived by a merge (reproduced on 3 November: on
   `main`, the first-parent commits that touch the file are merges, and the merge of #143 is the
-  first whose date differs from its parent's), and comparing dates skips a label-only edit. On `main` at 0973ed8 this gives 24 October, through the merge of #143. No match
-  is A5.
+  first whose date differs from its parent's), and comparing dates skips a label-only edit. On `main` at 0973ed8 (before the branch is merged) this gives 24 October, through
+  the merge of #143; on the branch's head 1fbfbae it gives 25 October, through 37ca9a4, and skips
+  84fb2f9, which kept the date. No match is A5.
 - Pull requests: `gh pr list -R karero/croftweaver-site --state merged --search "merged:>=<since>"
   --limit 200 --json number,mergedAt,title`, with `<since>` the previous UPDATED itself, so a pull
   request merged later on that day is still seen (A3b includes that day). Run on 3 November with
@@ -119,7 +122,8 @@ croftweaver-site change matches `/\b\d+ tests\b/` but not `/^(\d+) tests;/`, and
 - Output: plain sentences, one block per check; exit codes as in A5.
 - The `case-study.ts` header comment's upkeep line names the script.
 
-**Reminder:** a recurring scheduled task `croftweaver-case-study-weekly`, Mondays 11:30 (the weekly
+**Reminder:** a recurring scheduled task `croftweaver-case-study-weekly`, Mondays 11:30 Berlin time,
+as cron `30 11 * * 1` in the Mac's local time (the weekly
 AI job runs at 09:45). It runs the check and reports; it changes no working-tree file, local
 branch or page. Its `git fetch` writes only Git's own records (`origin/main`, `FETCH_HEAD`). It replaces the one-off
 reminders; `croftweaver-case-study-week-2` has fired and is left as it is. This is a harness change:
@@ -134,7 +138,8 @@ a row in `~/.claude/HARNESS.md` and an entry in `~/.claude/HARNESS-CHANGES.md`.
   written by hand. A branch whose working-tree exporter differs from the ref's must still pass A4.
   An address in a trailing comment, a commented-out entry and an observation's text must not count
   as logged. A change of UPDATED that arrives by a merge, and a label-only edit after an update, must
-  give the right previous UPDATED. One scenario runs without `--no-fetch` in a repository with no
+  give the right previous UPDATED. An unlogged pull request merged on the previous UPDATED's own day
+  must be fetched and listed under A3b. One scenario runs without `--no-fetch` in a repository with no
   `origin` remote, and must exit 2 with the fetch named and no all-clear.
 - The capture: `tests/fixtures/gh-2.103.3-pr-list-merged.json`, a real `gh pr list` answer for this
   repository, entries cut, nothing edited.
