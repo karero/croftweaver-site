@@ -86,6 +86,12 @@ export const SUITES: {
     limit: 'The word list is short and fixed. It cannot tell whether a sentence is clear or true.',
   },
   {
+    file: 'case-study-card', group: 'message', name: 'Case study card',
+    checks: 'The test count on the case study page is the newest one that a change to this site states in the page’s log.',
+    example: 'A newer log entry that writes its test count in a form the page cannot read fails the build, so the card cannot stay on an older count unnoticed.',
+    limit: 'It cannot tell whether a stated count is true. A count with a word between the number and "tests", as in 75 SEO tests, is not noticed.',
+  },
+  {
     file: 'email', group: 'publish', name: 'Email',
     checks: 'No plaintext email address in the served HTML.',
     example: 'An address typed straight into a page fails. It has to go through the component that hides it.',

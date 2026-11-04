@@ -71,6 +71,10 @@ jobs:
           node-version: 24
           check-latest: true  # the newest 24.x, not a cached one older than the engines floor
           cache: npm
+      # Loads src/data/case-study-log.ts with Node's type stripping, so it follows setup-node. Needs no
+      # network: a fake gh answers from tests/fixtures.
+      - name: Case study upkeep check (scripts/case-study-audit.py)
+        run: bash tests/check_case_study_audit.sh
       - run: npm ci
       # Reads public/.well-known/security.txt, src/config.ts and tests/_helpers.ts, and runs `node` for the
       # date maths. Not for Dependabot's own pull requests: an Expires date that has run out must not hold up
