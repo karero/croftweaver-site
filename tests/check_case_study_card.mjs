@@ -115,9 +115,11 @@ console.log('the tests row on the built page');
   const PAGE = 'dist/case-study.html';
   const SOURCES = ['src/data/case-study.ts', 'src/data/case-study-log.ts', 'src/pages/case-study.astro'];
   const built = existsSync(PAGE) ? statSync(PAGE).mtimeMs : null;
-  const stale = built === null ? null : SOURCES.find((f) => statSync(f).mtimeMs > built);
-  if (built === null) check(`${PAGE} exists`, false, 'run npm run build');
-  else if (stale) check(`${PAGE} is newer than ${stale}`, false, 'run npm run build');
+  const missing = SOURCES.find((f) => !existsSync(f));
+  const stale = built === null || missing ? null : SOURCES.find((f) => statSync(f).mtimeMs > built);
+  if (missing) check(`${missing} exists`, false);
+  else if (built === null) check(`${PAGE} exists`, false, 'run npm run build');
+  else if (stale) check(`${PAGE} is older than ${stale}`, false, 'run npm run build');
   else {
     let expected = null;
     try { expected = newestTestCount(LOG); } catch (e) { check('newestTestCount(LOG) answers', false, e.message); }
