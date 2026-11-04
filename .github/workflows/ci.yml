@@ -71,6 +71,10 @@ jobs:
           node-version: 24
           check-latest: true  # the newest 24.x, not a cached one older than the engines floor
           cache: npm
+      # Loads src/data/case-study-log.ts with Node's type stripping, so it follows setup-node. Needs no
+      # network: a fake gh answers from tests/fixtures.
+      - name: Case study upkeep check (scripts/case-study-audit.py)
+        run: bash tests/check_case_study_audit.sh
       - run: npm ci
       # Reads public/.well-known/security.txt, src/config.ts and tests/_helpers.ts, and runs `node` for the
       # date maths. Not for Dependabot's own pull requests: an Expires date that has run out must not hold up
@@ -96,6 +100,9 @@ jobs:
       - run: npm run build
       - name: /security claims (src/data/security.ts)
         run: bash tests/check_security_page.sh
+      # Reads dist/case-study.html, so it follows the build above.
+      - name: Case study tests card (src/data/case-study-log.ts)
+        run: bash tests/check_case_study_card.sh
       - run: npx playwright install --with-deps chromium
       # pypdf sets a PDF's doc-title; a deck test makes a PDF through the real script. A venv, because
       # the runner's own Python refuses pip installs; pinned, so a new release cannot change a run.
