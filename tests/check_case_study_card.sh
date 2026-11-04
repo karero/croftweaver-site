@@ -10,7 +10,7 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 echo "tests/check_case_study_card.mjs"
 
-# Without the log file the check must stop with its one plain line, not a stack trace.
+# Without the log file the check must stop with its one plain line (the one in the .mjs), not a stack trace.
 tmp=$(mktemp -d)
 mkdir "$tmp/tests"
 cp tests/check_case_study_card.mjs "$tmp/tests/"

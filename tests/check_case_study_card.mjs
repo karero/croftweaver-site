@@ -10,7 +10,7 @@ import { existsSync, statSync, readFileSync } from 'node:fs';
 import { parse } from 'node-html-parser';
 // Imported only after this check: a static import of a missing file stops Node with a stack trace.
 const LOG_FILE = new URL('../src/data/case-study-log.ts', import.meta.url);
-if (!existsSync(LOG_FILE)) {
+if (!existsSync(LOG_FILE)) { // check_case_study_card.sh expects this line word for word
   console.error('case study card check: src/data/case-study-log.ts is missing, so there is no log to check.');
   process.exit(1);
 }
