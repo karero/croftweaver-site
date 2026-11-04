@@ -9,4 +9,20 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 echo "tests/check_case_study_card.mjs"
+
+# Without the log file the check must stop with its one plain line, not a stack trace.
+tmp=$(mktemp -d)
+mkdir "$tmp/tests"
+cp tests/check_case_study_card.mjs "$tmp/tests/"
+ln -s "$PWD/node_modules" "$tmp/node_modules"
+status=0
+out=$(cd "$tmp" && node --no-warnings tests/check_case_study_card.mjs 2>&1) || status=$?
+rm -rf "$tmp"
+if [ "$status" -ne 1 ] || [ "$out" != "case study card check: src/data/case-study-log.ts is missing, so there is no log to check." ]; then
+  echo "  FAIL a missing log file: exit $status, output:" >&2
+  printf '%s\n' "$out" >&2
+  exit 1
+fi
+echo "  ok   a missing log file stops the check with one plain line"
+
 exec node --no-warnings tests/check_case_study_card.mjs
