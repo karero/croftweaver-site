@@ -10,7 +10,7 @@ Seats: Codex `gpt-6.1-sol` (read-only; effort medium from round 2 on, the defaul
 | 2 | `834e890` | delta since `8ba483e`, with evidence | codex, melious | 186 s 55.8k; 283 s 27.7k | 2 BUG, 2 RISK, 4 NIT |
 | 3 | `7290cd6` | delta since `834e890`, with evidence | codex, melious | 212 s 71.8k; 184 s 25.1k | 1 BUG (a docstring), 1 RISK, 2 NIT |
 | 4 | `e106634` | delta since `7290cd6`, with evidence | codex, melious | 129 s 43.9k; 330 s 22.0k | 0 BUG, 1 RISK (refuted), 2 NIT |
-| wording | `c68bc23`-parent `e2f4a6d` | delta since `e2f4a6d` (README row 15), `--wording-pass --first-success` | codex | 68 s 56.3k | 1 RISK (the trail did not exist yet; this file answers it) |
+| wording | `6232c22` | delta since `e2f4a6d` (README row 15), `--wording-pass --first-success` | codex | 68 s 56.3k | 1 RISK (the trail did not exist yet; this file answers it) |
 
 Total about 565k tokens for the four rounds, plus 56k for the wording pass. The plan gate (3 rounds) is in `REVIEW-plan-2026-11-03-case-study-upkeep.md`.
 
@@ -45,7 +45,7 @@ The manager session (planner), 2026-11-04, after round 2: no Playwright suite. T
 
 ## Checks and mutations
 
-- Before round 1 (step 0, base `768e1ac`): `npx playwright test` 501 passed; `npx astro check` 0 errors. On the final head: 501 passed, 0 errors, `bash tests/check_case_study_audit.sh` all checks passed (23 scenarios), `bash tests/check_case_study_card.sh` 20 checks ok, `npm run deck` nothing to make.
+- Before round 1 (step 0, base `768e1ac`): `npx playwright test` 501 passed; `npx astro check` 0 errors. On the final head: 501 passed, 0 errors, `bash tests/check_case_study_audit.sh` all 24 checks passed, `bash tests/check_case_study_card.sh` 20 checks ok, `npm run deck` nothing to make.
 - Audit script, by hand (a copy of the commit per mutation): 11 mutations of `scripts/case-study-audit.py` each failed `tests/check_case_study_audit.sh`; the Search Console file compared was added to scenario A1 after one survived; later the handler and the pinned-commit reads (above).
 - The card check, by hand: five mutations (tie rule reversed, repository filter dropped, C4 guard off, date ordering dropped, card figure + 1 with a rebuild) each failed `bash tests/check_case_study_card.sh`, for the matching reason.
 - The mutation-check skill's run on the earlier spec ended with "no result: the machine stayed busy" (load 100 to 500 from other sessions); the same five mutations were then run by hand against the spec, all five failed it. The skill was not used for the card script (its runner presets are unittest, playwright, rspec and xcodebuild).
