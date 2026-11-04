@@ -17,7 +17,8 @@ site's folder is often on another branch. A session that updates the page on its
                                        shown once more and never make the check fail
 Exit 0: all clear. 1: something is due. 2: a check could not run (it is never reported as clear).
 2 wins over 1, and 1 over 0. --history and --google-data are passed on to the exporter.
-Needs git, gh (signed in) and Node 22.18 or newer (it loads LOG, a TypeScript file).
+Needs git, gh (signed in) and a Node that strips TypeScript types (it loads LOG, a TypeScript file;
+CI runs Node 24). Any other failure ends as exit 2 with a message, never as a traceback.
 """
 import argparse
 import datetime
@@ -203,7 +204,7 @@ def main():
         os.chdir(git('rev-parse', '--show-toplevel').decode().strip())
         if not args.no_fetch:
             git('fetch', 'origin', 'main')
-        git('rev-parse', '--verify', f'{args.ref}^{{commit}}')
+        start = git('rev-parse', '--verify', f'{args.ref}^{{commit}}')
     except CannotCheck as e:
         blocks = [('error', [f'{n}: could not be checked. {e}.']) for n in NAMES]
     else:
@@ -232,6 +233,9 @@ def main():
                 blocks.append(('due' if due else 'ok', lines))
             except CannotCheck as e:
                 blocks.append(('error', [f'{NAMES[3]}: could not be checked. {e}.']))
+        # Every read names the ref, so a ref that moves mid-run (a fetch in another session) would mix commits.
+        if git('rev-parse', '--verify', f'{args.ref}^{{commit}}') != start:
+            blocks = [('error', [f'{n}: could not be checked. {args.ref} moved while the check ran; run it again.']) for n in NAMES]
 
     out = [f'Case study audit of {args.ref}, {today.isoformat()}.']
     for _, lines in blocks:
@@ -251,4 +255,10 @@ def main():
     sys.exit(code)
 
 
-main()
+try:
+    main()
+except SystemExit:
+    raise
+except Exception as e:
+    print(f'The check stopped before it finished ({type(e).__name__}: {e}). This is not an all-clear.')
+    sys.exit(2)

@@ -88,7 +88,7 @@ export const SUITES: {
   {
     file: 'case-study-card', group: 'message', name: 'Case study card',
     checks: 'The test count on the case study page is the newest one that a change to this site states in the page’s log.',
-    example: 'A newer log entry that writes its test count in a form the page cannot read fails the build, so the card cannot stay on an older count unnoticed.',
+    example: 'A newer log entry that writes "499 tests, no flakes" instead of "499 tests;" fails the build, so the card cannot stay on an older count unnoticed.',
     limit: 'It cannot tell whether a stated count is true. A count with a word between the number and "tests", as in 75 SEO tests, is not noticed.',
   },
   {

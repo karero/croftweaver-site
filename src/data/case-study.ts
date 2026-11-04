@@ -5,7 +5,7 @@
 //   restates log entries. The hero's screenshot (CAPTURE) is separate evidence, not a figure.
 // The page says what was seen after a change, never that the change caused it (CONTENT_GUIDE.md).
 // Upkeep, weekly: rerun the export after the weekly AI check, add the week's entries to LOG, set UPDATED.
-// `python3 scripts/case-study-audit.py` says what is due (a Monday reminder runs it).
+// `python3 scripts/case-study-audit.py` says what is due.
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 import { LOG, PR_REPOS, PRIVATE_REPOS, newestTestCount, type Entry } from './case-study-log';

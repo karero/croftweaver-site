@@ -55,7 +55,7 @@ test('C4: a newer change that states a count another way stops the build and nam
   const base = change('2026-10-29', '499 tests; review by one outside model');
   for (const checks of ['458 tests and a check of the 103 security claims; review by one outside model', '499 tests, no flakes']) {
     const wrong = change('2026-11-02', checks);
-    expect(() => newestTestCount([base, wrong]), checks).toThrow(new RegExp(`"${wrong.title}" \\(2026-11-02\\) states a test count`));
+    expect(() => newestTestCount([base, wrong]), checks).toThrow(`"${wrong.title}" (2026-11-02) states a test count`);
   }
   // A newer change on the same day, later in the list, is newer as well.
   const sameDay = change('2026-10-29', '501 tests and a check of the claims');

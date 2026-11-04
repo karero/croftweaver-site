@@ -4,7 +4,7 @@
 # Drives the real script in throwaway git repositories with synthetic history, Google files and log
 # modules, and a fake `gh` first on PATH. The fake answers from tests/fixtures/gh-2.103.3-pr-list-merged.json,
 # a real `gh pr list` answer, and filters it by the merge day of `--search merged:>=DAY` the way GitHub does.
-# Scenario names (A1 to A6) are those of docs/reviews/PLAN-2026-11-03-case-study-upkeep.md; the expected
+# Scenario names (A1 to A5; A6, the reminder, is not scripted) are those of docs/reviews/PLAN-2026-11-03-case-study-upkeep.md; the expected
 # output is written by hand. Always --no-fetch and a local --ref, except the one fetch scenario.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -28,6 +28,7 @@ cat > "$tmp/bin/gh" <<'FAKE'
 #!/usr/bin/env bash
 printf '%s\n' "$*" > "$FAKE_GH_LOG"
 if [ "${FAKE_GH:-ok}" = fail ]; then echo "gh: To get started with GitHub CLI, please run:  gh auth login" >&2; exit 4; fi
+if [ -n "${FAKE_GH_MOVE:-}" ]; then git update-ref refs/heads/main main~1; fi   # another session moves the ref mid-run
 exec python3 - "$@" <<'PY'
 import json, os, sys
 a = sys.argv[1:]
@@ -255,6 +256,15 @@ want_has "A5: the previous UPDATED cannot be read" 2 "Pull requests: could not b
 twoupdates "$tmp/a5mix" h-nov2 $ALL
 AUDIT_PATH=$tmp/nogh audit "$tmp/a5mix" --ref main --no-fetch --history "$tmp/h-nov9.csv" --google-data "$tmp/google.json" --today 2026-11-09
 want_has "A5: exit 2 wins over 1, and the due item is still named" 2 "differs from a fresh export" "gh is not installed" "Something else is due. Say: update the case study."
+
+# A5: the ref moves while the check runs (the fake gh moves main): no commit mixing, no all-clear.
+twoupdates "$tmp/a5m" h-nov2 $ALL
+FAKE_GH_MOVE=1 audit "$tmp/a5m" "${a5[@]}"
+want_has "A5: the ref moves during the run" 2 "AI check data: could not be checked. main moved while the check ran; run it again."
+if [ "$(grep -c 'could not be checked' <<<"$out")" = 4 ]; then pass "A5: all four checks say so after the ref moved"; else fail "A5: a check still reported after the ref moved"; fi
+# A5: an error the script did not expect ends as exit 2 with a message, not as a traceback (audit() fails on one).
+audit "$tmp/a5" --ref main --no-fetch --history "$tmp/h-nov2.csv" --google-data "$tmp/google.json" --today not-a-date
+want_has "A5: an unexpected error is exit 2 with a message" 2 "The check stopped before it finished (ValueError:" "This is not an all-clear."
 
 # A5: git fetch fails (this repository has no origin). Run without --no-fetch.
 audit "$tmp/a5" --ref main --history "$tmp/h-nov2.csv" --google-data "$tmp/google.json" --today 2026-11-03
