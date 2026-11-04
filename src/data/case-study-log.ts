@@ -166,7 +166,7 @@ const COUNT_ANYWHERE = /\b\d+ tests\b/;
 /**
  * The tests card's figure: the newest croftweaver-site change whose checks start with "N tests;".
  * Newer means a later date, or the same date and later in the log. A newer change of this site that
- * says "N tests" any other way stops the build, so a count written differently is never skipped silently.
+ * says "N tests" any other way stops the build. Wordings it cannot see ("N passing tests", "75 SEO tests") are skipped.
  */
 export const newestTestCount = (log: readonly Entry[]): { entry: Change; tests: number } => {
   const changes = log

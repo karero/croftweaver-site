@@ -256,23 +256,24 @@ twoupdates "$tmp/a5mix" h-nov2 $ALL
 AUDIT_PATH=$tmp/nogh audit "$tmp/a5mix" --ref main --no-fetch --history "$tmp/h-nov9.csv" --google-data "$tmp/google.json" --today 2026-11-09
 want_has "A5: exit 2 wins over 1, and the due item is still named" 2 "differs from a fresh export" "gh is not installed" "Something else is due. Say: update the case study."
 
-# A5: the ref moves while the check runs (a git shim moves main one commit back at the first read of a data
-# file, as a fetch in another session would): every read is of the commit named at the start, so the answer is
-# the one an unmoved run gives.
+# A5: the ref moves while the check runs (a git shim moves main one commit back at the first `git show`, the
+# read of the exporter, as a fetch in another session would): every read is of the commit named at the start,
+# so the answer is the one an unmoved run gives.
 mkdir "$tmp/gitmove"
 cat > "$tmp/gitmove/git" <<SHIM
 #!/usr/bin/env bash
-if [ "\$1" = show ] && [[ "\$2" == *:public/data/* ]] && [ ! -e "$tmp/moved" ]; then
+if [ "\$1" = show ] && [ ! -e "$tmp/moved" ]; then
   : > "$tmp/moved"; $(command -v git) update-ref refs/heads/main main~1
 fi
 exec $(command -v git) "\$@"
 SHIM
 chmod +x "$tmp/gitmove/git"
-audit "$tmp/a5" "${a5[@]}"; unmoved=$out; unmoved_code=$code
-# The same site as a5, but the commit before the last holds the newer export, so a read of the moved ref would differ.
+# The commit before the last has another export and an exporter that stops, so a read of the moved ref differs.
 newrepo "$tmp/a5m"
-site "$tmp/a5m" 2026-10-25 '25 October 2026' h-nov9 $ALL; commit "$tmp/a5m" "update of 25 October"
+site "$tmp/a5m" 2026-10-25 '25 October 2026' h-nov9 $ALL
+printf 'import sys\nsys.exit("an older exporter")\n' > "$tmp/a5m/scripts/export-own-site.py"; commit "$tmp/a5m" "update of 25 October"
 site "$tmp/a5m" 2026-11-02 '2 November 2026' h-nov2 $ALL; commit "$tmp/a5m" "update of 2 November"
+audit "$tmp/a5m" "${a5[@]}"; unmoved=$out; unmoved_code=$code
 was=$(git -C "$tmp/a5m" rev-parse main)
 AUDIT_PATH="$tmp/gitmove:$tmp/bin:$PATH" audit "$tmp/a5m" "${a5[@]}"
 if [ ! -e "$tmp/moved" ] || [ "$(git -C "$tmp/a5m" rev-parse main)" = "$was" ]; then fail "A5: the shim did not move the ref"

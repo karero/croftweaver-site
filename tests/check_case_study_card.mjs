@@ -6,7 +6,7 @@
 // Part 1 runs newestTestCount (src/data/case-study-log.ts, which imports nothing) on hand-built logs.
 // Part 2 reads dist/case-study.html and holds the tests row to newestTestCount(LOG). The reader is run on
 // hand-made pages first, so a reader that accepts everything would be caught. Needs Node with type stripping.
-import { statSync, readFileSync } from 'node:fs';
+import { existsSync, statSync, readFileSync } from 'node:fs';
 import { parse } from 'node-html-parser';
 import { LOG, newestTestCount } from '../src/data/case-study-log.ts';
 
@@ -113,17 +113,18 @@ console.log('the tests row on the built page');
   check('reader: a page without the row is found', problems('<p>none</p>', want).length === 1);
 
   const PAGE = 'dist/case-study.html';
-  let stale = null;
-  try {
-    const built = statSync(PAGE).mtimeMs;
-    for (const f of ['src/data/case-study.ts', 'src/data/case-study-log.ts', 'src/pages/case-study.astro']) if (statSync(f).mtimeMs > built) stale = f;
-  } catch {
-    check(`${PAGE} exists`, false, 'run npm run build');
-  }
-  if (stale) check(`${PAGE} is newer than ${stale}`, false, 'run npm run build');
-  else if (!failed) {
-    const found = problems(readFileSync(PAGE, 'utf8'), newestTestCount(LOG));
-    check('the page shows the figure, pull request and day of newestTestCount(LOG)', found.length === 0, found.join('; '));
+  const SOURCES = ['src/data/case-study.ts', 'src/data/case-study-log.ts', 'src/pages/case-study.astro'];
+  const built = existsSync(PAGE) ? statSync(PAGE).mtimeMs : null;
+  const stale = built === null ? null : SOURCES.find((f) => statSync(f).mtimeMs > built);
+  if (built === null) check(`${PAGE} exists`, false, 'run npm run build');
+  else if (stale) check(`${PAGE} is newer than ${stale}`, false, 'run npm run build');
+  else {
+    let expected = null;
+    try { expected = newestTestCount(LOG); } catch (e) { check('newestTestCount(LOG) answers', false, e.message); }
+    if (expected) {
+      const found = problems(readFileSync(PAGE, 'utf8'), expected);
+      check('the page shows the figure, pull request and day of newestTestCount(LOG)', found.length === 0, found.join('; '));
+    }
   }
 }
 
