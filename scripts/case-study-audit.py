@@ -18,7 +18,7 @@ site's folder is often on another branch. A session that updates the page on its
 Exit 0: all clear. 1: something is due. 2: a check could not run (it is never reported as clear).
 2 wins over 1, and 1 over 0. --history and --google-data are passed on to the exporter.
 Needs git, gh (signed in) and a Node that strips TypeScript types (it loads LOG, a TypeScript file;
-CI runs Node 24). Any other failure ends as exit 2 with a message, never as a traceback.
+CI runs Node 24). Any other error ends as exit 2 with a message, never as a traceback.
 """
 import argparse
 import datetime
@@ -44,6 +44,7 @@ NODE_PRINT_LOG = (
     "const m = await import(pathToFileURL(process.argv[1]).href);"
     "console.log(JSON.stringify(m.LOG.filter((e) => e.kind === 'change').map((e) => e.pr)));"
 )
+REF_NAME = ''  # the --ref as given, for messages; every read uses the commit id it resolved to at the start
 NAMES = ['AI check data', 'Search Console data', 'Weekly AI check', 'Pull requests']
 
 
@@ -122,7 +123,7 @@ def check_data(ref, fresh, name, label, unit):
     committed = git('show', f'{ref}:public/data/{name}')
     if committed == fresh[name]:
         return False, f'{label}: matches a fresh export ({rows(fresh[name])} {unit}).'
-    return True, (f'{label}: public/data/{name} at {ref} differs from a fresh export '
+    return True, (f'{label}: public/data/{name} at {REF_NAME} differs from a fresh export '
                   f'(committed {rows(committed)} {unit}, fresh {rows(fresh[name])} {unit}).')
 
 
@@ -167,7 +168,7 @@ def merged_since(day):
 def check_pulls(ref, tmp):
     updated = updated_at(ref)
     if updated is None:
-        raise CannotCheck(f'cannot read UPDATED in src/data/case-study.ts at {ref}')
+        raise CannotCheck(f'cannot read UPDATED in src/data/case-study.ts at {REF_NAME}')
     previous = previous_updated(ref)
     logged = logged_numbers(ref, tmp)
     prs = sorted(merged_since(previous), key=lambda x: (x['mergedAt'], x['number']))
@@ -189,6 +190,7 @@ def check_pulls(ref, tmp):
 
 
 def main():
+    global REF_NAME
     parser = argparse.ArgumentParser(description='Say what the case study page needs this week.')
     parser.add_argument('--ref', default='origin/main', help='the commit to read everything from (default: %(default)s)')
     parser.add_argument('--no-fetch', action='store_true', help='skip `git fetch origin main`')
@@ -196,6 +198,7 @@ def main():
     parser.add_argument('--google-data', help='the report job cache, passed on to scripts/export-own-site.py')
     parser.add_argument('--today', help=argparse.SUPPRESS)
     args = parser.parse_args()
+    REF_NAME = args.ref
     today = datetime.date.fromisoformat(args.today) if args.today else datetime.date.today()
     passed_on = [x for flag, value in (('--history', args.history), ('--google-data', args.google_data)) if value for x in (flag, value)]
 
@@ -204,19 +207,19 @@ def main():
         os.chdir(git('rev-parse', '--show-toplevel').decode().strip())
         if not args.no_fetch:
             git('fetch', 'origin', 'main')
-        start = git('rev-parse', '--verify', f'{args.ref}^{{commit}}')
+        sha = git('rev-parse', '--verify', f'{args.ref}^{{commit}}').decode().strip()
     except CannotCheck as e:
         blocks = [('error', [f'{n}: could not be checked. {e}.']) for n in NAMES]
     else:
         with tempfile.TemporaryDirectory() as tmp:
             try:
-                fresh = fresh_export(args.ref, tmp, passed_on)
+                fresh = fresh_export(sha, tmp, passed_on)
                 days = [line.split(',')[0] for line in fresh[AI_FILE].decode().splitlines()[1:]]
                 if not days:
                     raise CannotCheck('the fresh AI check file has no rows')
                 newest = max(days)
                 for name, label, unit in ((AI_FILE, NAMES[0], 'rows'), (GSC_FILE, NAMES[1], 'days')):
-                    due, line = check_data(args.ref, fresh, name, label, unit)
+                    due, line = check_data(sha, fresh, name, label, unit)
                     if due and name == AI_FILE:
                         line += f' The newest AI check day is {newest}. Run the export and commit the two data files.'
                     blocks.append(('due' if due else 'ok', [line]))
@@ -229,13 +232,10 @@ def main():
             except CannotCheck as e:
                 blocks += [('error', [f'{n}: could not be checked. {e}.']) for n in NAMES[len(blocks):3]]
             try:
-                due, lines = check_pulls(args.ref, tmp)
+                due, lines = check_pulls(sha, tmp)
                 blocks.append(('due' if due else 'ok', lines))
             except CannotCheck as e:
                 blocks.append(('error', [f'{NAMES[3]}: could not be checked. {e}.']))
-        # Every read names the ref, so a ref that moves mid-run (a fetch in another session) would mix commits.
-        if git('rev-parse', '--verify', f'{args.ref}^{{commit}}') != start:
-            blocks = [('error', [f'{n}: could not be checked. {args.ref} moved while the check ran; run it again.']) for n in NAMES]
 
     out = [f'Case study audit of {args.ref}, {today.isoformat()}.']
     for _, lines in blocks:

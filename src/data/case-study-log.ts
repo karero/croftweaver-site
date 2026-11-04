@@ -3,7 +3,8 @@
 // A change has a merged pull request, dated by its merge day. Merge is not publication: croftweaver.com
 // goes live when main is shipped to its production branch (scripts/ship.sh); genai-wednesday.de and the
 // toolkit README follow their own repositories. An observation is something seen, with its source.
-// `checks` states a suite count first, as "N tests;": newestTestCount reads it, and stops the build on a count worded otherwise.
+// `checks` states a suite count first, as "N tests;": newestTestCount reads it, and stops the build when a newer change
+// writes "N tests" anywhere else. Other wordings ("N passing tests", "75 SEO tests") are not noticed.
 export type Change = { kind: 'change'; date: string; title: string; asked: string; pr: string; checks?: string; next?: string };
 export type Observation = { kind: 'observation'; date: string; title: string; seen: string; source: string };
 export type Entry = Change | Observation;

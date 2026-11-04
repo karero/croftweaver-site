@@ -28,7 +28,6 @@ cat > "$tmp/bin/gh" <<'FAKE'
 #!/usr/bin/env bash
 printf '%s\n' "$*" > "$FAKE_GH_LOG"
 if [ "${FAKE_GH:-ok}" = fail ]; then echo "gh: To get started with GitHub CLI, please run:  gh auth login" >&2; exit 4; fi
-if [ -n "${FAKE_GH_MOVE:-}" ]; then git update-ref refs/heads/main main~1; fi   # another session moves the ref mid-run
 exec python3 - "$@" <<'PY'
 import json, os, sys
 a = sys.argv[1:]
@@ -257,11 +256,29 @@ twoupdates "$tmp/a5mix" h-nov2 $ALL
 AUDIT_PATH=$tmp/nogh audit "$tmp/a5mix" --ref main --no-fetch --history "$tmp/h-nov9.csv" --google-data "$tmp/google.json" --today 2026-11-09
 want_has "A5: exit 2 wins over 1, and the due item is still named" 2 "differs from a fresh export" "gh is not installed" "Something else is due. Say: update the case study."
 
-# A5: the ref moves while the check runs (the fake gh moves main): no commit mixing, no all-clear.
-twoupdates "$tmp/a5m" h-nov2 $ALL
-FAKE_GH_MOVE=1 audit "$tmp/a5m" "${a5[@]}"
-want_has "A5: the ref moves during the run" 2 "AI check data: could not be checked. main moved while the check ran; run it again."
-if [ "$(grep -c 'could not be checked' <<<"$out")" = 4 ]; then pass "A5: all four checks say so after the ref moved"; else fail "A5: a check still reported after the ref moved"; fi
+# A5: the ref moves while the check runs (a git shim moves main one commit back at the first read of a data
+# file, as a fetch in another session would): every read is of the commit named at the start, so the answer is
+# the one an unmoved run gives.
+mkdir "$tmp/gitmove"
+cat > "$tmp/gitmove/git" <<SHIM
+#!/usr/bin/env bash
+if [ "\$1" = show ] && [[ "\$2" == *:public/data/* ]] && [ ! -e "$tmp/moved" ]; then
+  : > "$tmp/moved"; $(command -v git) update-ref refs/heads/main main~1
+fi
+exec $(command -v git) "\$@"
+SHIM
+chmod +x "$tmp/gitmove/git"
+audit "$tmp/a5" "${a5[@]}"; unmoved=$out; unmoved_code=$code
+# The same site as a5, but the commit before the last holds the newer export, so a read of the moved ref would differ.
+newrepo "$tmp/a5m"
+site "$tmp/a5m" 2026-10-25 '25 October 2026' h-nov9 $ALL; commit "$tmp/a5m" "update of 25 October"
+site "$tmp/a5m" 2026-11-02 '2 November 2026' h-nov2 $ALL; commit "$tmp/a5m" "update of 2 November"
+was=$(git -C "$tmp/a5m" rev-parse main)
+AUDIT_PATH="$tmp/gitmove:$tmp/bin:$PATH" audit "$tmp/a5m" "${a5[@]}"
+if [ ! -e "$tmp/moved" ] || [ "$(git -C "$tmp/a5m" rev-parse main)" = "$was" ]; then fail "A5: the shim did not move the ref"
+elif [ "$code" = "$unmoved_code" ] && [ "$out" = "$unmoved" ]; then pass "A5: a ref that moves during the run changes nothing"
+else fail "A5: a moved ref changed the answer (exit $code, want $unmoved_code)"; diff <(printf '%s\n' "$unmoved") <(printf '%s\n' "$out") | sed 's/^/       /' || true; fi
+
 # A5: an error the script did not expect ends as exit 2 with a message, not as a traceback (audit() fails on one).
 audit "$tmp/a5" --ref main --no-fetch --history "$tmp/h-nov2.csv" --google-data "$tmp/google.json" --today not-a-date
 want_has "A5: an unexpected error is exit 2 with a message" 2 "The check stopped before it finished (ValueError:" "This is not an all-clear."
