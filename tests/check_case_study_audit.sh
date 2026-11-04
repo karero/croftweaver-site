@@ -56,6 +56,7 @@ runs() { local name=$1; shift; { echo "$header"; for d in "$@"; do row "$d" "r$d
 printf '{"property": "sc-domain:croftweaver.com", "country": "", "finished": "2026-11-01", "daily": [{"date":"2026-10-31","clicks":0,"impressions":2},{"date":"2026-11-01","clicks":1,"impressions":3}]}\n' > "$tmp/google.json"
 runs h-nov2 2026-11-02
 runs h-nov9 2026-11-02 2026-11-09
+printf '{"property": "sc-domain:croftweaver.com", "country": "", "finished": "2026-11-02", "daily": [{"date":"2026-10-31","clicks":0,"impressions":2},{"date":"2026-11-01","clicks":1,"impressions":3},{"date":"2026-11-02","clicks":0,"impressions":4}]}\n' > "$tmp/google-nov2.json"
 
 # ── Throwaway repositories ────────────────────────────────────────────────────────────────────────
 newrepo() { git init -q -b main "$1"; git -C "$1" config user.email t@example.com; git -C "$1" config user.name t
@@ -134,6 +135,12 @@ $IN_LOG
 $TAIL
 Something is due. Say: update the case study.
 EOF
+
+# A1, the other file: Search Console has a finished day the committed file lacks. The AI check file matches.
+audit "$tmp/a1" --ref main --no-fetch --history "$tmp/h-nov2.csv" --google-data "$tmp/google-nov2.json" --today 2026-11-03
+want_has "A1: Search Console data older than the report cache: differs, both day counts, exit 1" 1 \
+  "AI check data: matches a fresh export (2 rows)." \
+  "Search Console data: public/data/croftweaver-com-search-console.csv at main differs from a fresh export (committed 2 days, fresh 3 days)."
 
 # A2. The newest run is 2 November and the reminder runs on 9 November: seven days. Six days is still fine.
 twoupdates "$tmp/a2" h-nov2 $ALL
