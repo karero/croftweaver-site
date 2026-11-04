@@ -292,7 +292,7 @@ marked so there. The owner's instruction for the asterisk line is in the chat of
 
 The two fixes (an attribution in one sentence, a tighter test) got no second model pass: there is no second seat to
 ask while melious has no balance and ollama is at its weekly limit, and both fixes were checked by mutation and by the
-full suite (379 passed, `astro check` 0 errors). Findings in all: 49 before this stretch's two, 2 here: 51 total; 48
+full suite (379 passed, `astro check` 0 errors). Findings in all: 47 before this stretch's two, 2 here: 49 total; 46
 fixed, 2 refuted, 1 out of scope.
 
 
@@ -310,4 +310,4 @@ The owner asked for a line on serving visitors without tracking and a privacy de
 The owner's wording, "100% on the safe side", was not used: a site without analytics still logs requests through
 Cloudflare, and the page says what such a site still needs (privacy page, imprint in Germany and Austria, a processing
 contract with Cloudflare; the toolkit's guide, `SKILL.md` on `origin/main`). The two wording fixes got no further model
-pass (no second seat; see above); the suite passed (379). Findings in all: 53; 50 fixed, 2 refuted, 1 out of scope.
+pass (no second seat; see above); the suite passed (379). Findings in all: 51 (D1 to D52, less D33, which is a note, not a finding); 48 fixed, 2 refuted, 1 out of scope.

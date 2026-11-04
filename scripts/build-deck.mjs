@@ -14,7 +14,7 @@
 // --check, so a run turns red when either no longer matches. The check compares hashes; it does not
 // open the PDF. Needs Node 22.18 or newer (it imports src/config.ts) and, to make a PDF, Python 3
 // with pypdf for the doc-title (the same tool as scripts/set_pdf_title.py).
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -74,7 +74,19 @@ if (todo.length === 0) {
 // Every deck is rendered, measured and titled in a scratch folder first, so a slide that is too long
 // or a title that fails leaves every PDF and lock in the repository as it was.
 const { chromium } = await import('@playwright/test');
-const browser = await chromium.launch();
+// Where the Chromium build this Playwright version expects is missing, as in a Claude Code cloud
+// session, launch the one under /opt/pw-browsers instead, the same fallback as playwright.config.ts.
+const cloudChromium = () => {
+  const browsers = '/opt/pw-browsers';
+  if (existsSync(chromium.executablePath()) || !existsSync(browsers)) return undefined;
+  const shell = readdirSync(browsers).filter((name) => name.startsWith('chromium_headless_shell-')).sort().pop();
+  return [
+    ...(shell ? [join(browsers, shell, 'chrome-headless-shell-linux64', 'chrome-headless-shell')] : []),
+    join(browsers, 'chromium'),
+  ].find((path) => existsSync(path));
+};
+const cloudExecutable = cloudChromium();
+const browser = await chromium.launch(cloudExecutable ? { executablePath: cloudExecutable } : {});
 const made = [];
 try {
   for (const { deck, built } of todo) {

@@ -37,9 +37,13 @@ const description =
       <code>production</code>.
     </p>
     <p class="aside">
-      Two limits apply. The hook can be skipped with one flag. And today nothing on
-      the server stops a person from publishing a build that failed: the default
-      publish path runs the tests first, but it is a default, not a lock.
+      Two limits apply. The hook can be skipped with one flag. And the default publish
+      path runs the tests first, but it is a default, not a lock: whether the server
+      refuses a change whose checks failed depends on a branch rule that the owner
+      switches on. On the repository behind this site it is on, so a change reaches
+      <code>main</code> only by a pull request that passes its checks. The push that
+      publishes to <code>production</code> is not gated by any check
+      (read from GitHub's settings on 23 October 2026).
     </p>
     <p>
       Some of the same checks, read against a site an AI assistant built, are on
