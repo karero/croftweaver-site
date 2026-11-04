@@ -1,6 +1,6 @@
 # DIFF review — branch `build/case-study-upkeep` — the case study upkeep check and the tests card finding its own entry
 
-Base `768e1ac` (the stacked branch `content/case-study-2026-11-02` plus the plan) · depth: Normal (the diff changes the logic of a check script and of a build-time guard, so not Light) · verdict: CLEAN after four rounds and a wording pass · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A (this session made the branch `build/case-study-upkeep` and works in the site's one folder, as the brief says: no worktrees); POST AUTHORITY and GATED-THIS-DIFF: not used yet, there is no pull request, so the review comment and the stamp wait for it
+Base `768e1ac` (the stacked branch `content/case-study-2026-11-02` plus the plan) · depth: Normal (the diff changes the logic of a check script and of a build-time guard, so not Light) · verdict: CLEAN after four rounds, a wording pass and a merge link · authority used: WORKTREE-WRITE and BRANCH-COMMIT, atom A (this session made the branch `build/case-study-upkeep` and works in the site's one folder, as the brief says: no worktrees); POST AUTHORITY and GATED-THIS-DIFF: not used yet, there is no pull request, so the review comment and the stamp wait for it
 
 Seats: Codex `gpt-6.1-sol` (read-only; effort medium from round 2 on, the default for a verification round), GLM 5.3 on melious.ai (`MELIOUS_API_TIMEOUT=900`), fresh-eyes by a `sonnet` sub-agent in round 1 only.
 
@@ -11,8 +11,9 @@ Seats: Codex `gpt-6.1-sol` (read-only; effort medium from round 2 on, the defaul
 | 3 | `7290cd6` | delta since `834e890`, with evidence | codex, melious | 212 s 71.8k; 184 s 25.1k | 1 BUG (a docstring), 1 RISK, 2 NIT |
 | 4 | `e106634` | delta since `7290cd6`, with evidence | codex, melious | 129 s 43.9k; 330 s 22.0k | 0 BUG, 1 RISK (refuted), 2 NIT |
 | wording | `6232c22` | delta since `e2f4a6d` (README row 15), `--wording-pass --first-success` | codex | 68 s 56.3k | 1 RISK (the trail did not exist yet; this file answers it) |
+| link | `6382068` | merge link `e106634..6382068` (`scripts/merge_link.sh 768e1ac e106634 9f46104`: the round 4 NIT fixes and README rows 14 and 15; the case study branch #167 is now in `main`), with evidence | codex 110 s 37.9k; melious 54 s 8.2k (its answer held no finding, so the script marked it FAILED: "output is not a review"; read by hand it is clean) | 1 BUG (re-sorted to a follow-up) |
 
-Total about 565k tokens for the four rounds, plus 56k for the wording pass. The plan gate (3 rounds) is in `REVIEW-plan-2026-11-03-case-study-upkeep.md`.
+Total about 565k tokens for the four rounds, plus 56k for the wording pass and 46k for the merge link. The plan gate (3 rounds) is in `REVIEW-plan-2026-11-03-case-study-upkeep.md`.
 
 | id | Sev | Source | Rnd | Finding | Status | Evidence |
 |---|---|---|---|---|---|---|
@@ -35,6 +36,7 @@ Total about 565k tokens for the four rounds, plus 56k for the wording pass. The 
 | R3-3, R3-4 | NIT | melious | 3 | the unmoved reference came from another repository; the card check's catch named the wrong file and `newestTestCount(LOG)` was outside `check()` | fixed `e106634` | reference is a run on the same repository; the catch is gone; a throw is a failed check |
 | R4-1 | RISK | melious | 4 | the record said the fresh-export mutation passed, so the scenario cannot fire for that read | refuted | the round's evidence file still held the earlier run; on `e106634` the three mutations were run again and each failed the scenario (`FAIL A5: a moved ref changed the answer`, exits 2, 1, 2) |
 | R4-2, R4-3 | NIT | codex, melious | 4 | the stale-page message said "newer than" for "older than"; a missing source file crashed the card check with a stack trace | fixed `e2f4a6d` | existence and age are checked apart, the message says "older than"; the stale case was seen failing, then passing after `npm run build` |
+| L-1 | NIT | codex (melious asked it as UNVERIFIABLE) | link | the card check imports `case-study-log.ts` at the top, so a missing log module still ends in a stack trace before the new existence check runs (R4-3, for that one file) | follow-up, re-sorted: rare (Codex labelled it BUG) | it fails loud: with the module moved away `bash tests/check_case_study_card.sh` exits 1 with `ERR_MODULE_NOT_FOUND ... src/data/case-study-log.ts`; nothing passes silently. A fix is a dynamic import after the check |
 | W-1 | RISK | codex | wording | "reviewed (four rounds)" without the record | answered | this file |
 
 UNVERIFIABLE entries asked, none made a finding: the Node floor, the GitHub search sets (R1-6), the reruns of suites the read-only seats cannot write for, the scheduler registration (A6 is open on purpose).
@@ -61,3 +63,4 @@ The manager session (planner), 2026-11-04, after round 2: no Playwright suite. T
 
 - Round 4 was earned by the kind `moved-ref-test` (R3-2, a test that could not fire for one read); the cut since the kind first earned a round is R2-1's.
 - Fresh-eyes ran in round 1 only, on `sonnet`; its report is the BUG and RISK rows marked fresh-eyes.
+- The merge link (not a round): after #167 merged, `main` was merged into the branch (one README conflict, row 14 taken from `main`, row 15 kept). Authority used: WORKTREE-WRITE and BRANCH-COMMIT atom A, POST AUTHORITY atom A (this session opens the pull request), GATED-THIS-DIFF atom A (seen pairs above; Codex holds an unbroken chain from round 1 to the link, melious missed the wording pass and the link as a finding-less answer, so the stamp relies on Codex). The link read the code NIT fix `e2f4a6d`, which no seat had seen.
