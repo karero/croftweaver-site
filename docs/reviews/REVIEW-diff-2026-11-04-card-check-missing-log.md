@@ -13,3 +13,11 @@ Codex: no findings. GLM 5.3: 1 RISK, 4 NITs. Gate 20261104T221601Z-87340, 37,739
 - NIT, no `node_modules` gives a misleading failure: re-sorted, rare. CI installs before this step, and without `node_modules` the main run fails anyway, loudly.
 - NIT, a file removed between the check and the import: re-sorted, rare. Nothing deletes the log while the check runs.
 - NIT, the message is written in two files with no pointer: fixed. Each copy now names the other.
+
+## Round 2 (head d2b1c98, --verify round 1)
+
+Codex: no findings. GLM 5.3 restated round 1's RISK and NITs (the text-only seat does not see this trail's dispositions; they stand as above) and added 2 NITs. Gate 20261104T221601Z-87340, rounds 1-2, 88,982 tokens.
+
+- RISK repeated, dynamic `import()` of `.ts` on Node 24: settled by running it, not by argument. This pull request's CI job runs `tests/check_case_study_card.sh` on Node 24 after the build; its result is recorded below before the merge.
+- NIT, the word-for-word comment sat on the `if` line, not the message: fixed, it now sits above the `console.error` line.
+- NIT, `statSync` may be a dead import: refuted, Part 2 calls it for the page's and sources' times.
