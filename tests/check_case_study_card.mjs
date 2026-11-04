@@ -8,7 +8,14 @@
 // hand-made pages first, so a reader that accepts everything would be caught. Needs Node with type stripping.
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { parse } from 'node-html-parser';
-import { LOG, newestTestCount } from '../src/data/case-study-log.ts';
+// Imported only after this check: a static import of a missing file stops Node with a stack trace.
+const LOG_FILE = new URL('../src/data/case-study-log.ts', import.meta.url);
+if (!existsSync(LOG_FILE)) {
+  // check_case_study_card.sh expects this message word for word.
+  console.error('case study card check: src/data/case-study-log.ts is missing, so there is no log to check.');
+  process.exit(1);
+}
+const { LOG, newestTestCount } = await import(LOG_FILE.href);
 
 const SITE = 'https://github.com/karero/croftweaver-site/pull/';
 let failed = 0;
