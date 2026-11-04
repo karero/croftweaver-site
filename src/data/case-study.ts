@@ -8,7 +8,7 @@
 import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 
-export const UPDATED = { iso: '2026-10-25', label: '25 October 2026' } as const;
+export const UPDATED = { iso: '2026-11-02', label: '2 November 2026' } as const;
 export const LAUNCH = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 const realDay = (s: string) => {
@@ -124,6 +124,54 @@ export const LOG: readonly Entry[] = [
   { kind: 'observation', date: '2026-10-25', title: 'Three new pages, 22 in all, all indexed by Google',
     seen: 'Three pages went live: the SEO checklist (/ai-website-seo-checklist) on 22 October, and /security and /what-it-runs-on on 23 October. The site now has 22 pages, up from 19 on 21 October, and Google lists all 22 as indexed. Its last crawl of /what-it-runs-on came less than three hours after the page went live, of /security about a day after and of the checklist about two days after. Indexing of all three was requested in Search Console, on days this entry does not give.',
     source: 'the owner, for the indexing requests; the site’s sitemap, and its page list at the last publish of 21 October; Cloudflare Pages, production deployments; Google Search Console, URL inspection of every page, read on 25 October' },
+  { kind: 'change', date: '2026-10-25', title: 'The site’s tests brought up to Croftweaver 0.33',
+    asked: 'Take the toolkit’s new table tests into the site, count them on /checks, /why and the home page, and run the SEO checklist’s eighteen breaks again on release 0.33.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/141', checks: '457 tests; review by one outside model, 3 rounds; the second model could not run' },
+  { kind: 'change', date: '2026-10-25', title: 'WordPress, Joomla and Drupal on /compare',
+    asked: 'Add a group for WordPress, Joomla and Drupal to /compare, and say plainly, for content sites, that Croftweaver is an alternative to WordPress.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/144', checks: '458 tests; review by two outside models, 4 rounds' },
+  { kind: 'change', date: '2026-10-26', title: 'This page stops linking a private repository',
+    asked: 'On this page, name the three pull requests of the private genai-wednesday.de repository without a link, since the link gave visitors a 404; and drop “no free plan” from the Squarespace row on /compare.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/145', checks: '458 tests; review by Codex in 3 rounds, with GLM 5.3 in round 1 only' },
+  { kind: 'change', date: '2026-10-26', title: 'A new headline on the home page',
+    asked: 'Make “Build a complete website with AI.” the home page headline with “Weave websites that rank.” above it, and lead the second button to the case study.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/147', checks: '459 tests; review by two outside models, 2 rounds; round 1 by Codex alone' },
+  { kind: 'change', date: '2026-10-26', title: 'Clearer openings on three pages',
+    asked: 'Open /compare with a guide by situation, add a “who does what” table to /from-wordpress and an “in short” section to /security, and link the three pages to each other and to the case study.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/146', checks: '458 tests and a check of the 103 security claims; review by one outside model, 2 rounds, a re-gate and a confirmation' },
+  { kind: 'change', date: '2026-10-26', title: 'Claude Code on its own, or with Croftweaver',
+    asked: 'Add a section to /compare that says Croftweaver does not replace Claude Code, what its skills add, and when to use which.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/149', checks: '459 tests; review by two outside models, 2 rounds' },
+  { kind: 'change', date: '2026-10-26', title: 'A handout for companies, and a line on keeping WordPress up to date',
+    asked: 'Make a six-slide PDF for companies that will not build their site themselves, drawn from the built pages, and ask on /from-wordpress that a WordPress site you keep stays up to date.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/148', checks: '470 tests; review by two outside models, 5 rounds and a wording pass; GLM 5.3 took part from round 2' },
+  { kind: 'observation', date: '2026-10-26', title: 'Claude names Croftweaver once',
+    seen: 'In the weekly AI check, Claude with web search named Croftweaver in 1 of its 3 answers to the broad question, which does not name it, as a free, open-source set of website skills. croftweaver.com was not among the sources it returned. No other answer that day named it: 1 of 45 in all, one call having failed.',
+    source: 'the weekly AI check, run of 26 October; the answers are saved in full' },
+  { kind: 'change', date: '2026-10-26', title: 'One test port per copy of the site, and an “Own build” check',
+    asked: 'Stop two copies of the site from testing on the same port, and add a test that fails if the tests ever run against another copy’s build.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/150', checks: '472 tests; review by one outside model, 3 rounds' },
+  { kind: 'change', date: '2026-10-27', title: 'The home page leads with measured figures',
+    asked: 'Under the hero, show the AI check and the PageSpeed range first, and keep the four AI assistants’ scores for /more-proof.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/151', checks: '473 tests; review by two outside models, 2 rounds; the plan had 2 rounds by Codex alone' },
+  { kind: 'change', date: '2026-10-28', title: 'This page opens with the live site',
+    asked: 'Open the case study with the live site, its source, two screenshots and four dated summaries, before the evidence and this log.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/152', checks: '474 tests; review by two outside models, 4 rounds; the plan had 4 rounds and a wording pass' },
+  { kind: 'change', date: '2026-10-28', title: 'One comparison, side by side',
+    asked: 'On /compare, show what came of giving one brief to Claude Code twice, on its own and with Croftweaver: time, cost, errors, structured data and PageSpeed.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/153', checks: '472 tests; review by two outside models, 3 rounds' },
+  { kind: 'change', date: '2026-10-28', title: 'The site brought up to release 0.34',
+    asked: 'Say 0.34 wherever the site names the current release: 39 skills, the new launch-check skill and a “Done in release 0.34” section on the roadmap.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/154', checks: 'review by two outside models, 2 rounds; the pull request gives no test count' },
+  { kind: 'change', date: '2026-10-29', title: 'Tests up to 0.34, and a smaller screenshot for phones',
+    asked: 'Take the toolkit’s 0.34 tests into the site; its new image test found that phones got the 1600 px desktop screenshot on this page, so give them an 800 px copy.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/155', checks: '499 tests; review by one outside model, 4 rounds, at the higher depth because a publish script changed' },
+  { kind: 'change', date: '2026-10-29', title: 'Share cards match the pages',
+    asked: 'Redraw the share cards of the home page and this page so they show the pages’ current wording.',
+    pr: 'https://github.com/karero/croftweaver-site/pull/156', checks: '75 SEO tests, and the full suite passed; review by one outside model, 1 round' },
+  { kind: 'observation', date: '2026-11-02', title: 'No assistant names it this week',
+    seen: 'In the weekly AI check of 2 November, none of 46 answers to the two questions that do not name Croftweaver named it, Claude’s included. By then croftweaver.com was serving every change to it in this log.',
+    source: 'the weekly AI check, run of 2 November; the live site’s build, read on 2 November' },
 ];
 
 const PR = /^https:\/\/github\.com\/([A-Za-z0-9-]+\/[A-Za-z0-9.-]+)\/pull\/(\d+)$/;
@@ -173,7 +221,7 @@ const read = (text: string, re: RegExp, what: string) => {
 };
 const indexedEntry = cited('2026-10-25', 'Three new pages, 22 in all, all indexed by Google');
 const bingEntry = cited('2026-10-20', 'Bing indexing requested');
-const testsEntry = cited('2026-10-24', 'The site brought up to release 0.33');
+const testsEntry = cited('2026-10-29', 'Tests up to 0.34, and a smaller screenshot for phones');
 if (indexedEntry.kind !== 'observation' || bingEntry.kind !== 'observation' || testsEntry.kind !== 'change') {
   throw new Error('src/data/case-study.ts: CARDS cites an entry of the wrong kind.');
 }
