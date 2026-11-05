@@ -51,6 +51,37 @@ export const RUN_ROWS = [
   { measure: 'PageSpeed, contact', alone: '100, 100, 100 and 66', croftweaver: '100, 100, 100 and 69' },
 ] as const;
 
+// The maintenance test of 31 October 2026: the same change asked of both sites above (add a page from
+// a supplied text and photo with three planted faults), each turn in a fresh container. Every value is
+// the run's record or a neutral tool's reading of the deployed new page. Each repository's
+// `maintenance` branch holds the write-up and the transcript.
+export const MAINT_MEASURED = { iso: '2026-10-31', label: '31 October 2026' } as const;
+export const MAINT_PAGESPEED = [
+  { iso: '2026-10-31', label: '31 October 2026' },
+  { iso: '2026-11-02', label: '2 November 2026' },
+] as const;
+export const MAINT_RUNS = [
+  { key: 'alone', name: 'Claude Code on its own', site: 'https://maintenance.compare-cc-alone.pages.dev/how-it-works/', siteLabel: 'the page added on its own', repo: 'https://github.com/karero/compare-claude-code-alone/tree/maintenance', repoLabel: 'the change on its own' },
+  { key: 'croftweaver', name: 'With Croftweaver 0.34', site: 'https://maintenance.compare-cc-croftweaver.pages.dev/how-a-job-works', siteLabel: 'the page added with Croftweaver', repo: 'https://github.com/karero/compare-claude-code-croftweaver/tree/maintenance', repoLabel: 'the change with Croftweaver' },
+] as const;
+export const MAINT_ROWS = [
+  { measure: 'Fault 1: a link to /service, where the page is /services', alone: 'named by the assistant; fixed', croftweaver: 'named by the assistant; fixed' },
+  { measure: 'Fault 2: a photo of 5,194 × 3,425 pixels, 2.2 MB', alone: 'named by the assistant; left in silently: made about 18 times smaller (123 KiB on a phone), but PageSpeed still flags it, and no message called that a problem', croftweaver: 'named by the assistant; fixed (three WebP sizes, 27 KiB on a phone)' },
+  { measure: 'Fault 3: priced "per page", where the site says per word', alone: 'named by the assistant; fixed', croftweaver: 'named by the assistant; fixed' },
+  { measure: 'Time', alone: '49 seconds', croftweaver: '268 seconds' },
+  { measure: 'Model turns', alone: '13', croftweaver: '33' },
+  { measure: 'Cost of the run', alone: '0.28 USD', croftweaver: '0.94 USD' },
+  { measure: 'Questions asked', alone: '3', croftweaver: '4' },
+  { measure: 'Commands refused', alone: 'none', croftweaver: '2: a command Claude Code\'s parser refused, and one that used gh, which is denied' },
+  { measure: 'Checks run', alone: 'the build, twice', croftweaver: 'the site\'s 157 tests, then the same tests before the push' },
+  { measure: 'Tests added', alone: 'none (the site has no tests)', croftweaver: 'the new page in the site\'s wording test' },
+  { measure: 'Pushed', alone: 'to main (git push origin main); the site has no check before a push (core.hooksPath not set)', croftweaver: 'to a new branch, for a pull request (git push -u origin content/how-a-job-works); the site\'s check before a push (core.hooksPath scripts/hooks) ran its tests and passed' },
+  { measure: 'HTML errors and warnings, the new page', alone: 'no errors, one warning', croftweaver: 'no errors, one warning' },
+  { measure: 'Broken links, the new page', alone: 'none', croftweaver: 'one: its canonical link to the live address, where this page was never deployed' },
+  { measure: 'Title, description, canonical link, sitemap, menu link', alone: 'all five; the title 48 characters, the description 90 characters', croftweaver: 'all five; the title 48 characters, the description 156 characters; plus its own share card and a line in llms.txt' },
+  { measure: 'PageSpeed, the new page', alone: '100, 100, 100 and 69', croftweaver: '100, 100, 100 and 69' },
+] as const;
+
 // The guide at the top of /compare: what you are building, and which kind of tool fits it. One
 // line each, so a line can be quoted on its own. Each line sums up a section of the page and adds
 // no fact about another product; it says what fits, never which is best.

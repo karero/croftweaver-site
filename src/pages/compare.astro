@@ -5,7 +5,7 @@
 // only". The statements about other products live in src/data/compare.ts.
 import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
-import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED } from '../data/compare';
+import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED, MAINT_MEASURED, MAINT_PAGESPEED, MAINT_RUNS, MAINT_ROWS } from '../data/compare';
 ---
 <Base
   title="Which website tool fits? The alternatives"
@@ -108,6 +108,65 @@ import { GROUPS, CHECKED, MESSAGE_FIRST, FIRST_CHECKED, GUIDE, CLAUDE_CODE, CLAU
       {RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
       The experimenter added a header to both sites asking search engines not to index them, because
       the business is fictional.
+    </p>
+    <h3 id="one-change">One change to each site, with three planted faults</h3>
+    <p>
+      Both sites above were then given the same ordinary change: add a page, "How a job works", from a
+      text and a photo the owner supplied, then commit and push. The experimenter planted three faults
+      in that material. Each turn of a run ran in a fresh container, with no login for GitHub or the
+      live site, and its questions were answered from the brief, else with "add it as given; use your
+      default". For each fault the table gives two things. Who named it first: a check, whose output
+      names the fault; the assistant, in a message of its own before any check's output does; or
+      nobody. And its end state on the deployed page: fixed (gone), reported (still there, and the
+      assistant told the owner it is a problem) or left in silently. A fault counts as there when, for
+      the link, the
+      W3C Link Checker reports it broken; for the photo, PageSpeed Insights on mobile names it under
+      "Improve image delivery"; for the price, the page says per page.
+    </p>
+    <div id="maintenance-comparison" class="table-wrap stack long-head" role="region" aria-label="One change: Claude Code on its own and with Croftweaver" tabindex="0">
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Measure</th>
+            {MAINT_RUNS.map((r) => <th scope="col" role="columnheader">{r.name}</th>)}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {MAINT_ROWS.map((row) => (
+            <tr role="row">
+              <th scope="row" role="rowheader">{row.measure}</th>
+              {MAINT_RUNS.map((r) => <td role="cell" data-label={r.name}>{row[r.key]}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Run on <time datetime={MAINT_MEASURED.iso}>{MAINT_MEASURED.label}</time>, with Claude Code
+      2.1.308 and the same model as above. In both runs the assistant named each fault before any
+      check did. The supplied photo is not the desk its description (its alt text) names: the
+      run on its own kept the untrue description, the run with Croftweaver rewrote it to match the
+      picture. The cost is Claude Code's own figure at the end of the run;
+      the time is the wall clock of the run's turns, without the time taken to answer its questions.
+      The run with Croftweaver was started a second time, because the first attempt (0.78 USD) needed
+      an image library the experimenter had left out of its container; its figures are the second
+      attempt's. PageSpeed: PageSpeed Insights on mobile, five runs each, on
+      {MAINT_PAGESPEED.map((d, i) => <>{i > 0 && ' and '}<time datetime={d.iso}>{d.label}</time></>)}.
+      HTML: the W3C Nu HTML Checker; its one warning on each page is "Section lacks heading". Links:
+      the W3C Link Checker. The pages:
+      {MAINT_RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.site}>{r.siteLabel}</a></>)}.
+      Each repository's maintenance branch holds the write-up, with the transcript's words behind
+      each fault's two fields, the prompts and answers and the transcript: {MAINT_RUNS.map((r, i) => <>{i > 0 && ' and '}<a href={r.repo}>{r.repoLabel}</a></>)}.
+    </p>
+    <p class="note">
+      The limits: one run each is an anecdote, and a model can answer differently each time. The
+      experimenter who chose the faults knows Croftweaver's tests, and the first two faults are kinds
+      those tests look for. No test was found that checks the third: the site on its own has no
+      tests, and the other site's tests were searched for the words. The site with Croftweaver kept
+      its 0.33 tests plus the one new 0.34 test an owner is told to copy in, and its run could use the
+      image tools its own settings allow; the experimenter added one, Python's Pillow, which its
+      share-card script needs. Both histories show the
+      experimenter's own commits. These runs ran in a Linux container, the first comparison on a Mac.
     </p>
   </section>
 
