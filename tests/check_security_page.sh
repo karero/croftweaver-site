@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Guard for /security: every registered claim in src/data/security.ts is on the built page, with the source and
 # the day it was read that the data gives. It holds the page to its data, nothing more. It cannot show that a
-# source SUPPORTS the sentence next to it: an AI assistant read each source for that (2026-10-22) and kept a log,
+# source SUPPORTS the sentence next to it: an AI assistant read each source for that (22 and 23 October 2026) and kept a log,
 # and editorial review covers that and everything on the page that is not a registered claim. It does not look for
 # dead links: scripts/check_external_links.sh does, warn-only, and is not in CI or the hook; run it on demand.
 #
 # Reads dist/security.html, so it builds nothing and refuses a stale build: it fails with "run npm run build"
-# unless dist/security.html is at least as new as the page, its data and the component that renders a claim.
+# unless dist/security.html is at least as new as the page, its data, the component that renders a claim, the site
+# config (the author in the structured data comes from it) and the layout (it emits the structured data).
 # CI builds first; the pre-push hook has just built. (The site's build.format is "file", so the page is
 # dist/security.html, astro.config.mjs.)
 #
@@ -19,9 +20,16 @@
 #     file at the pinned commit with its lines; a command claim: the command in <code>), the same day in its
 #     <time datetime>, and, for a claim with a `result`, that result as text;
 #   - each date is a real ISO day (month 13, day 32 and 30 February are not) and at most one day after today's UTC date;
+#   - the byline (#byline) reads exactly "Researched and written with an AI assistant. Published by Daniel Melter,
+#     maintainer. Last updated <UPDATED.label>.", with one link, "Daniel Melter", to /about#maintainer, and a <time> whose
+#     datetime is UPDATED.iso (UPDATED is in the data file);
+#   - the page's one Article in the structured data has dateModified equal to UPDATED.iso;
+#   - UPDATED.iso is a real ISO day, at most one day after today's UTC date and not before the newest claim date
+#     (READ_LAST), and UPDATED.label is that day written out. A forgotten bump inside those bounds is not caught;
+#     review checks that;
 #   - while own-security-txt says "not yet", public/.well-known/security.txt must not exist: the rows of #own are
 #     filled from live reads after that file has shipped, and this fails until then, on purpose.
-# It runs its own reader on hand-made pages first (a check never seen to fail proves nothing). No network.
+# It runs its own readers on hand-made pages first (a check never seen to fail proves nothing). No network.
 # Needs bash and node.
 set -euo pipefail
 CDPATH= cd -- "$(dirname -- "$0")/.."
@@ -34,14 +42,14 @@ fi
 PAGE=dist/security.html
 DATA=src/data/security.ts
 
-for f in src/pages/security.astro "$DATA" src/components/Claim.astro; do
+for f in src/pages/security.astro "$DATA" src/components/Claim.astro src/config.ts src/layouts/Base.astro; do
   if [ ! -f "$f" ]; then echo "security page check: $f is missing" >&2; exit 1; fi
 done
 if [ ! -f "$PAGE" ]; then
   echo "security page check: $PAGE does not exist: run npm run build" >&2
   exit 1
 fi
-for f in src/pages/security.astro "$DATA" src/components/Claim.astro; do
+for f in src/pages/security.astro "$DATA" src/components/Claim.astro src/config.ts src/layouts/Base.astro; do
   if [ "$f" -nt "$PAGE" ]; then
     echo "security page check: $PAGE is older than $f: run npm run build" >&2
     exit 1
@@ -120,6 +128,49 @@ function check({ claims, html, today, fileExists, fileHref, securityTxtExists })
   return { problems, claims: els.length };
 }
 
+// updated: { iso, label } from the data file; readLast: the newest claim date; longDate: the date writer of the data file.
+function checkUpdated({ html, updated, readLast, today, longDate }) {
+  const problems = [];
+  const root = parse(html);
+  const bylines = root.querySelectorAll("#byline");
+  if (bylines.length !== 1) problems.push("the page has " + bylines.length + " elements with id byline, not one");
+  else {
+    const b = bylines[0];
+    const want = "Researched and written with an AI assistant. Published by Daniel Melter, maintainer. Last updated " + updated.label + ".";
+    const text = b.text.replace(/\s+/g, " ").trim();
+    if (text !== want) problems.push("the byline text is \"" + text + "\", it should be \"" + want + "\"");
+    const links = b.querySelectorAll("a");
+    if (links.length !== 1) problems.push("the byline has " + links.length + " links, not one");
+    else {
+      if (links[0].getAttribute("href") !== "/about#maintainer") problems.push("the byline link goes to \"" + links[0].getAttribute("href") + "\", not /about#maintainer");
+      if (links[0].text.trim() !== "Daniel Melter") problems.push("the byline link text is \"" + links[0].text.trim() + "\", not Daniel Melter");
+    }
+    const times = b.querySelectorAll("time");
+    if (times.length !== 1) problems.push("the byline has " + times.length + " <time> elements, not one");
+    else {
+      if (times[0].getAttribute("datetime") !== updated.iso) problems.push("the byline <time> datetime is " + times[0].getAttribute("datetime") + ", UPDATED.iso is " + updated.iso);
+      if (times[0].text.trim() !== updated.label) problems.push("the byline <time> text is \"" + times[0].text.trim() + "\", UPDATED.label is \"" + updated.label + "\"");
+    }
+  }
+  const articles = [];
+  for (const s of root.querySelectorAll("script")) {
+    if (s.getAttribute("type") !== "application/ld+json") continue;
+    let node;
+    try { node = JSON.parse(s.rawText); } catch (e) { problems.push("a JSON-LD block does not parse: " + e.message); continue; }
+    if (node && node["@type"] === "Article") articles.push(node);
+  }
+  if (articles.length !== 1) problems.push("the page has " + articles.length + " Article nodes in its JSON-LD, not one");
+  else if (articles[0].dateModified !== updated.iso) problems.push("the Article dateModified is " + articles[0].dateModified + ", UPDATED.iso is " + updated.iso);
+  if (!realDay(readLast)) problems.push("the newest claim date \"" + readLast + "\" is not a real ISO date");
+  if (!realDay(updated.iso)) problems.push("UPDATED.iso \"" + updated.iso + "\" is not a real ISO date");
+  else {
+    if (updated.label !== longDate(updated.iso)) problems.push("UPDATED.label \"" + updated.label + "\" is not " + updated.iso + " written out (" + longDate(updated.iso) + ")");
+    if (updated.iso > nextDay(today)) problems.push("UPDATED.iso " + updated.iso + " is in the future");
+    if (updated.iso < readLast) problems.push("UPDATED.iso " + updated.iso + " is before the latest claim date " + readLast);
+  }
+  return { problems };
+}
+
 // ---- the reader on hand-made pages ----
 const TODAY = "2026-10-22";
 const yes = () => true;
@@ -180,10 +231,53 @@ const cases = [
   ["security.txt exists, row says pass", { claims: [own("pass")], html: page(el(own("pass"))), securityTxtExists: true }, []],
   ["security.txt absent, row says not yet", { claims: [own("not yet")], html: page(el(own("not yet"))), securityTxtExists: false }, []],
 ];
+// The byline and the Article the page would show for UPDATED; o breaks one thing at a time.
+const U = { iso: "2026-11-06", label: "6 November 2026" };
+const MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const ULONG = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); return Number(m[3]) + " " + MONTH[Number(m[2]) - 1] + " " + m[1]; };
+const article = (o = {}) => o.noArticle ? "" : "<script type=\"application/ld+json\">" + (o.badJson ? "{not json" : JSON.stringify({ "@type": "Article", dateModified: o.modified || U.iso })) + "</script>";
+const byline = (o = {}) => {
+  const link = o.noLink ? "Daniel Melter" : "<a href=\"" + (o.href || "/about#maintainer") + "\">" + (o.linkText || "Daniel Melter") + "</a>" + (o.extraLink ? " <a href=\"/x\">x</a>" : "");
+  const time = o.noTime ? U.label : "<time datetime=\"" + (o.datetime || U.iso) + "\">" + (o.timeText || U.label) + "</time>" + (o.twoTimes ? " <time datetime=\"" + U.iso + "\">" + U.label + "</time>" : "");
+  return "<p id=\"byline\">\n  " + (o.ai === false ? "" : "Researched and written with an AI assistant. ") + (o.verb || "Published") + " by " + link + ", maintainer.\n  Last updated " + time + ".</p>";
+};
+const udoc = (o = {}) => "<main>" + (o.noByline ? "" : byline(o)) + (o.twoBylines ? byline(o) : "") + "</main>" + article(o) + (o.twoArticles ? article(o) : "");
+const day = (iso) => ({ datetime: iso, modified: iso, timeText: ULONG(iso), updated: { iso, label: ULONG(iso) } });
+const ucases = [
+  ["a good byline and Article", { html: udoc() }, []],
+  ["no byline", { html: udoc({ noByline: true }) }, ["0 elements with id byline"]],
+  ["two bylines", { html: udoc({ twoBylines: true }) }, ["2 elements with id byline"]],
+  ["Reviewed instead of Published", { html: udoc({ verb: "Reviewed" }) }, ["the byline text is"]],
+  ["the AI sentence dropped", { html: udoc({ ai: false }) }, ["the byline text is"]],
+  ["the name not linked", { html: udoc({ noLink: true }) }, ["has 0 links"]],
+  ["a link to the wrong place", { html: udoc({ href: "/about" }) }, ["not /about#maintainer"]],
+  ["a changed link text", { html: udoc({ linkText: "D. Melter" }) }, ["the byline link text"]],
+  ["a second link", { html: udoc({ extraLink: true }) }, ["has 2 links"]],
+  ["a time that is not UPDATED", { html: udoc({ datetime: "2026-11-05" }) }, ["datetime is 2026-11-05"]],
+  ["no <time> in the byline", { html: udoc({ noTime: true }) }, ["has 0 <time> elements"]],
+  ["two <time> elements in the byline", { html: udoc({ twoTimes: true }) }, ["has 2 <time> elements"]],
+  ["a time text that is not the label", { html: udoc({ timeText: "6 Nov 2026" }) }, ["<time> text is"]],
+  ["no Article", { html: udoc({ noArticle: true }) }, ["0 Article nodes"]],
+  ["two Articles", { html: udoc({ twoArticles: true }) }, ["2 Article nodes"]],
+  ["a dateModified that is not UPDATED", { html: udoc({ modified: "2026-11-05" }) }, ["dateModified is 2026-11-05"]],
+  ["JSON-LD that does not parse", { html: udoc({ badJson: true }) }, ["does not parse"]],
+  ["a label that is not the day written out", { html: udoc({ timeText: "6 November 2025" }), updated: { iso: U.iso, label: "6 November 2025" } }, ["written out"]],
+  ["an iso that is not a day", { html: udoc(day("2026-02-30")), updated: day("2026-02-30").updated }, ["not a real ISO date"]],
+  ["two days ahead is the future", { html: udoc(day("2026-11-08")), updated: day("2026-11-08").updated }, ["in the future"]],
+  ["one day ahead is allowed", { html: udoc(day("2026-11-07")), updated: day("2026-11-07").updated }, []],
+  ["no newest claim date", { html: udoc(), readLast: undefined }, ["newest claim date"]],
+  ["a day before the newest claim", { html: udoc(day("2026-10-22")), updated: day("2026-10-22").updated }, ["before the latest claim date"]],
+];
 let bad = 0;
 console.log("security page check: the reader on hand-made pages");
 for (const [name, input, expect] of cases) {
   const { problems } = check({ today: TODAY, fileExists: yes, fileHref: stubHref, securityTxtExists: false, ...input });
+  const ok = expect.length === 0 ? problems.length === 0 : expect.every((e) => problems.some((p) => p.includes(e)));
+  console.log("  " + (ok ? "ok   " : "FAIL ") + name + (ok ? "" : ": got " + JSON.stringify(problems)));
+  if (!ok) bad++;
+}
+for (const [name, input, expect] of ucases) {
+  const { problems } = checkUpdated({ updated: U, readLast: "2026-10-23", today: "2026-11-06", longDate: ULONG, ...input });
   const ok = expect.length === 0 ? problems.length === 0 : expect.every((e) => problems.some((p) => p.includes(e)));
   console.log("  " + (ok ? "ok   " : "FAIL ") + name + (ok ? "" : ": got " + JSON.stringify(problems)));
   if (!ok) bad++;
@@ -205,6 +299,8 @@ const { problems, claims } = check({
   claims: mod.CLAIMS, html: readFileSync(pagePath, "utf8"), today,
   fileExists: (p) => existsSync(p), fileHref: mod.fileHref, securityTxtExists: existsSync(SEC_TXT),
 });
+const upd = checkUpdated({ html: readFileSync(pagePath, "utf8"), updated: mod.UPDATED, readLast: mod.READ_LAST, today, longDate: mod.longDate });
+problems.push(...upd.problems);
 console.log("security page check: " + pagePath + ", " + mod.CLAIMS.length + " claim(s) in " + dataPath + ", " + claims + " on the page");
 for (const p of problems) console.log("  FAIL " + p);
 process.exit(problems.length ? 1 : 0);

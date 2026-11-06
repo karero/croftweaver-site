@@ -11,7 +11,7 @@
 // contractions, no buzzwords. The direct call to action keeps one label everywhere.
 import Base from '../layouts/Base.astro';
 import EmailLink from '../components/EmailLink.astro';
-import { SITE, COMPANY, schemaId } from '../config';
+import { SITE, COMPANY, schemaId, maintainerSchema as maintainerSchemaNode } from '../config';
 import { SUITE_COUNT } from '../data/suites';
 import { RELEASE } from '../data/skills';
 import { PROOF, PROOF_MEASURED, SITE_PROOF } from '../data/proof';
@@ -59,24 +59,7 @@ const softwareSchema = {
   author: { '@id': maintainerId },
   maintainer: { '@id': maintainerId },
 };
-// The section #maintainer on this page says the same in words. LinkedIn and the GitHub account
-// are also linked on /about (since 2026-10-18; until then LinkedIn was in the structured data
-// only, owner, 2026-10-13). LinkedIn redirects the address with a trailing slash to the one
-// below. The team page and the GitHub account are the ones
-// M-Squad's own site gives for him (https://m-squad.com/company/team, read 2026-10-13).
-const maintainerSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': maintainerId,
-  name: 'Daniel Melter',
-  url: `${origin}/#maintainer`,
-  worksFor: { '@id': schemaId(origin, 'organization') },
-  sameAs: [
-    'https://www.linkedin.com/in/danielmelter',
-    'https://m-squad.com/company/team',
-    'https://github.com/karero',
-  ],
-};
+const maintainerSchema = { '@context': 'https://schema.org', ...maintainerSchemaNode(origin) };
 ---
 <Base title={SITE.name} schemas={[softwareSchema, maintainerSchema]} mainEntity={softwareId}>
   <section class="wrap hero">
