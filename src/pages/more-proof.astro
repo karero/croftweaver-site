@@ -68,7 +68,7 @@ const rerun = (url: string) =>
       It is what Google's quality raters look for when they judge content. It is not a
       score, and
       <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content">Google says</a>
-      it is not a ranking factor by itself. The <a href={PANEL.lab}>Builder Lab</a> asks
+      it is not a ranking factor by itself. The <a href={PANEL.lab}>GenAI Wednesday page</a> asks
       four AI assistants to put a number on it anyway, with the same prompt as for SEO
       and GEO, on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>. GEO and E-E-A-T have no official scorer, so
       these numbers are AI opinions, not a Google metric, and the SEO scores here are the
@@ -104,17 +104,17 @@ const rerun = (url: string) =>
       </table>
     </div>
     <p class="note">
-      Scores out of 10, as the Builder Lab shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
-      Gemini (Antigravity) answers out of 100 and the Lab shows it normalised to a scale
-      of 10; the others answer out of 10 directly. The Lab warns that scores are not
+      Scores out of 10, as the GenAI Wednesday page shows them (read on <time datetime={PANEL.readOn.iso}>{PANEL.readOn.label}</time>).
+      Gemini (Antigravity) answers out of 100 and that page shows it normalised to a scale
+      of 10; the others answer out of 10 directly. That page also warns that scores are not
       comparable between assistants, so read the average as a rough guide. The SEO
       column here is an AI opinion of the whole site; the SEO score in the PageSpeed
-      cards above is an automatic check of technical basics. The Lab ran the same prompt
+      cards above is an automatic check of technical basics. GenAI Wednesday ran the same prompt
       twice, on <time datetime={PANEL.firstRound.iso}>{PANEL.firstRound.label}</time> and on <time datetime={PANEL.date.iso}>{PANEL.date.label}</time>, and keeps both
       rounds with a note for each assistant.
     </p>
     <h3>Try it on your own site</h3>
-    <p>This is the Lab's prompt. Paste it into your own AI assistant, then change the address to your own:</p>
+    <p>This is GenAI Wednesday's prompt. Paste it into your own AI assistant, then change the address to your own:</p>
     <pre class="message"><code>{PANEL.labPrompt}</code></pre>
     <h3>What the panel says is still missing</h3>
     <p>
@@ -145,7 +145,7 @@ const rerun = (url: string) =>
     </ul>
     <p>
       <a href="/proof">One site in depth</a> has its clicks from Google and a count of
-      how often assistants name it. The <a href={PANEL.lab}>Builder Lab</a> keeps the
+      how often assistants name it. The <a href={PANEL.lab}>GenAI Wednesday page</a> keeps the
       full scorecard. The <a href="/case-study">case study</a> follows croftweaver.com itself, change by change.
     </p>
   </section>

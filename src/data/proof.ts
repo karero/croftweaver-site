@@ -38,7 +38,7 @@ const average = { seo: meanOf('seo'), geo: meanOf('geo'), eeat: meanOf('eeat') }
 const LAB_AVERAGE = { seo: 83, geo: 81, eeat: 85 } as const;
 for (const column of ['seo', 'geo', 'eeat'] as const) {
   if (average[column] !== LAB_AVERAGE[column]) {
-    throw new Error(`src/data/proof.ts: the ${column} rows average ${average[column]} but the Builder Lab showed ${LAB_AVERAGE[column]} when they were copied (both in tenths). Re-read the Lab page and update the rows and the averages together.`);
+    throw new Error(`src/data/proof.ts: the ${column} rows average ${average[column]} but the GenAI Wednesday page showed ${LAB_AVERAGE[column]} when they were copied (both in tenths). Re-read that page and update the rows and the averages together.`);
   }
 }
 /** 82 becomes "8.2". */
