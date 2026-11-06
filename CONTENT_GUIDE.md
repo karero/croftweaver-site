@@ -24,6 +24,8 @@ page-level content that hangs off that positioning.
 
 Write like a craftsperson showing you around their workshop: warm, concrete,
 understated, a little wry. Proof over claims. Active voice. Speak to the reader as "you".
+Where a page calls the reader "the owner", say once, before the first table or list that uses it,
+that the owner means you; for the maintainer, use his name, not "the owner".
 
 **Hard rules (enforced by the tone test — run after every copy change):**
 - **No em dashes (—).** Use a comma, period, or colon.
