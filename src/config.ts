@@ -156,6 +156,26 @@ export const COMPANY = {
 // Once published an @id must not change.
 export const schemaId = (origin: string, thing: 'organization' | 'software' | 'daniel-melter') => `${origin}/#${thing}`;
 
+// The maintainer's Person node, without @context: the home page gives it as a top-level node, /security
+// nests it as an Article's author. One function builds both, so the two copies cannot differ.
+// The section #maintainer on /about says the same in words. LinkedIn and the GitHub account
+// are also linked on /about (since 2026-10-18; until then LinkedIn was in the structured data
+// only, owner, 2026-10-13). LinkedIn redirects the address with a trailing slash to the one
+// below. The team page and the GitHub account are the ones
+// M-Squad's own site gives for him (https://m-squad.com/company/team, read 2026-10-13).
+export const maintainerSchema = (origin: string) => ({
+  '@type': 'Person',
+  '@id': schemaId(origin, 'daniel-melter'),
+  name: 'Daniel Melter',
+  url: `${origin}/#maintainer`,
+  worksFor: { '@id': schemaId(origin, 'organization') },
+  sameAs: [
+    'https://www.linkedin.com/in/danielmelter',
+    'https://m-squad.com/company/team',
+    'https://github.com/karero',
+  ],
+});
+
 // External profiles of the OPERATOR (Organization sameAs). Only ship URLs that resolve — a
 // broken sameAs is worse than none. Empty from 2026-10-13: the two links that stood here,
 // the toolkit's repository and the Builder Lab, identify the software and not the company.

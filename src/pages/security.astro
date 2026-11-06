@@ -9,17 +9,9 @@
 //   read, and tests/check_security_page.sh holds the page to that data;
 // - WordPress is not called insecure, and no overall ranking is given. The 17 PHP systems are named as plain
 //   fact (their repositories are written in PHP), never as hit. Sites are not named as hit;
-// - the news about the PHP alert is a dated panel (#php-alert) and the PHP steps (#php-steps), both to be
-//   updated or removed. To cut them: delete both sections (each has a PHP-DATED comment) and the claims of
-//   the "PHP alert" group in src/data/security.ts. The alert is also named in two places that stay when the
-//   panel is cut, in words that stand alone: the labelled judgment in #safer ("the ones fixed on 21 October
-//   2026") and the claim ai-exploit-tools ("the critical PHP flaws of 21 October 2026"). The claim
-//   ai-exploit-none-yet ("The same watchTowr spokesperson") refers back to ai-exploit-tools and stays with it.
-//   The description, the share card, "how this page was checked" and public/llms.txt carry no mention of it; the build,
-//   tests/check_security_page.sh and the /security tests pass on the cut page;
 // - the section on what can still go wrong (#risks, a RISKS comment above it) is cut together with the claims of
 //   the "What can still go wrong" group in src/data/security.ts: delete the section, its row in #short, the group and READ_RISKS, and
-//   set the paragraph in "how this page was checked" back to "on 22 October 2026", without the search-tool sentence.
+//   set the paragraph in "how this page was checked" back to "on 22 and 23 October 2026", without the search-tool sentence.
 //   It gives one labelled judgment (a typical WordPress site, one question, no figure) and no overall ranking;
 // - croftweaver.com's own results (#own) list what fails, and are filled from LIVE reads by hand in
 //   src/data/security.ts; the check fails while the security.txt row says "not yet" and the file exists;
@@ -27,8 +19,11 @@
 // - #short sums up the sections it links to and holds no claim; cutting a section means cutting its rows there.
 import Base from '../layouts/Base.astro';
 import Claim from '../components/Claim.astro';
-import { claim, longDate, readPhrase, PHP_SYSTEMS } from '../data/security';
+import { SITE, schemaId, maintainerSchema } from '../config';
+import { claim, longDate, readPhrase, PHP_SYSTEMS, UPDATED } from '../data/security';
 
+const heading = 'What does a static website change about security?';
+const image = '/images/og/security.jpg';
 const description =
   'What a static website changes for security: what runs on a visit, what Cloudflare handles, what stays with the owner, and four checks you can run yourself.';
 
@@ -40,6 +35,23 @@ const ownLabel: Record<string, string> = {
   'own-security-txt': 'security.txt',
 };
 const statusClass = (s?: string) => (s === 'pass' ? 'is-pass' : s === 'not yet' ? 'is-open' : 'is-neutral');
+
+// Who wrote and published the page, and when. The author is the same Person node as on the home page. datePublished is the
+// day the page went live (UTC); dateModified is the hand-set last content change.
+const origin = (Astro.site ?? new URL(SITE.url)).origin;
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${origin}/security#article`,
+  headline: heading,
+  image: new URL(image, origin).href,
+  author: maintainerSchema(origin),
+  publisher: { '@id': schemaId(origin, 'organization') },
+  mainEntityOfPage: { '@id': `${origin}/security#webpage` },
+  datePublished: '2026-10-23',
+  dateModified: UPDATED.iso,
+  inLanguage: SITE.locale,
+};
 
 // The summary table in #short. Each row sums up the section it links to and adds no fact. Like the page's other
 // prose outside the claims, editorial review keeps it true (see tests/check_security_page.sh).
@@ -61,10 +73,11 @@ const controls = [
 <Base
   title="What a static website changes for security"
   description={description}
-  image="/images/og/security.jpg"
+  image={image}
+  schemas={[articleSchema]}
 >
   <section class="wrap hero">
-    <h1>What does a static website change about security?</h1>
+    <h1>{heading}</h1>
     <p class="lead">
       A static website is a set of finished files. When someone opens a page, nothing builds it on a
       server, so a flaw in the software that builds pages cannot be reached through a visit. The site
@@ -74,6 +87,10 @@ const controls = [
     <p class="note">
       Every dated fact below names its source and the day we read it, and says whether it is about the
       Croftweaver site template, about croftweaver.com, or about someone else's product. {readPhrase()}.
+    </p>
+    <p class="note" id="byline">
+      Researched and written with an AI assistant. Published by <a href="/about#maintainer">Daniel Melter</a>,
+      maintainer. Last updated <time datetime={UPDATED.iso}>{UPDATED.label}</time>.
     </p>
   </section>
 
@@ -573,76 +590,6 @@ const controls = [
     </ul>
   </section>
 
-  <!-- PHP-DATED: this section and #php-steps are the news about one alert. Cut both, and the claims
-       marked "PHP alert" in src/data/security.ts, to remove it. The answer above stands without them. -->
-  <section class="wrap panel" id="php-alert">
-    <p class="eyebrow">News · dated 21 and 22 October 2026 · to be updated or removed</p>
-    <h2>The PHP alert of 21 October 2026</h2>
-    <p>
-      On 21 October 2026 the US cyber agency CISA urged organizations to patch two critical flaws in PHP,
-      CVE-2026-109618 and CVE-2026-109619, nicknamed “php2shell”. This is what the sources say. We give
-      each report to the source that made it.
-    </p>
-    <dl class="facts">
-      <dt>What CISA said</dt>
-      <Claim as="dd" id="cisa-patch">Patch at once. The flaws allow remote code execution without a login and affect all PHP installations serving web requests. Fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35.</Claim>
-      <Claim as="dd" id="cisa-names-no-product">The alert names PHP and no other product.</Claim>
-      <dt>Who is affected</dt>
-      <Claim as="dd" id="php-advisory">All PHP installations serving web requests, php.net says, among them PHP-FPM, Apache with mod_php, php-cgi, FrankenPHP and LiteSpeed. It sees the risk as highest for mod_php.</Claim>
-      <dt>The two flaws</dt>
-      <Claim as="dd" id="ghsa-109618">CVE-2026-109618, “RCE via OOM corruption”: rated critical, published on 21 October 2026, fixed in 8.2.35, 8.3.36, 8.4.27 and 8.5.12.</Claim>
-      <Claim as="dd" id="ghsa-109619">CVE-2026-109619, “RCE via stale global state”: rated critical, published on 21 October 2026, fixed in the same four versions.</Claim>
-      <dt>Reported by</dt>
-      <Claim as="dd" id="reported-by">Calif, OpenAI and Wiz Research told the PHP project about the flaws in August 2026, the PHP Foundation writes.</Claim>
-      <dt>Older versions</dt>
-      <Claim as="dd" id="php-old-versions">PHP 8.1 and older no longer receive updates from the PHP project. Its security team published minimal source backports for 7.4, 8.0 and 8.1, and some distributions and long-term-support vendors provide backported fixes.</Claim>
-      <dt>Attacks?</dt>
-      <dd>
-        <p class="plain">The reports differ, and some are older than others.</p>
-        <ul class="reports">
-          <Claim as="li" id="cisa-no-exploitation">CISA had not observed exploitation when it published its alert.</Claim>
-          <Claim as="li" id="cloudflare-attacks">Cloudflare's chief technology officer said the same day that Cloudflare was seeing early attacks emerging, and called its firewall rules a stopgap.</Claim>
-          <Claim as="li" id="watchtowr-attempts">The security firm watchTowr reported “active exploitation attempts” later the same day, after reporting none earlier. Its head of threat intelligence told The Record that nobody had been successful so far.</Claim>
-          <Claim as="li" id="krebs-in-the-wild">Krebs on Security wrote that experts say working exploits exist and that the flaws are already being exploited in the wild.</Claim>
-          <Claim as="li" id="no-confirmed-breakin">As of its update of 21 October 2026, The Hacker News wrote that no source had reported a confirmed break-in of a specific server.</Claim>
-        </ul>
-      </dd>
-      <dt>Offline as a precaution</dt>
-      <Claim as="dd" id="offline-precaution">Several governments, and some companies, took services offline for a while before patching. Malwarebytes points out that downtime alone does not mean a site was broken into.</Claim>
-    </dl>
-    <h3>The flaw sits in PHP itself</h3>
-    <Claim id="wiz-demo">The people who found the flaws showed them working. Wiz Research ran code without a login on the latest container images of PHP applications such as Drupal, Joomla and WordPress. It says the flaws are in PHP itself and that exploitation does not depend on a flaw in the application's code.</Claim>
-    <Claim id="calif-demo">Calif says it confirmed code execution without a login on PHP applications such as Drupal, Joomla, Laravel, Magento, MediaWiki, Nextcloud, phpMyAdmin, Roundcube, Symfony, WHMCS and WordPress.</Claim>
-    <p>
-      These were demonstrations by the people who found the flaws. They are not reports of sites that were
-      hit. Running on PHP does not show that a given site was attacked or is exposed today. Exposure depends
-      on its PHP version and on whether its host has patched.
-    </p>
-    <p class="note">
-      What we did not check about the alert: whether a given host has patched its PHP; which sites were
-      broken into, and whether any WordPress site was; the names in lists of outages that circulated, which
-      we could not confirm; and OpenAI's own post about the flaws, which our tools could not open.
-    </p>
-  </section>
-
-  <!-- PHP-DATED: see the note above #php-alert. -->
-  <section class="wrap" id="php-steps">
-    <p class="eyebrow">News · dated 21 October 2026 · to be updated or removed</p>
-    <h2>If you run PHP anywhere</h2>
-    <p>CISA's advice of 21 October 2026, in our words:</p>
-    <Claim as="div" id="cisa-steps">
-      <ul class="steps">
-        <li>List every system that runs PHP. PHP is often a component of other software, so you may not see it.</li>
-        <li>Patch, internet-facing systems first. The fixed versions are in the panel above.</li>
-        <li>If you cannot patch at once, or you run PHP 8.1 or earlier, take the system offline until you can.</li>
-        <li>A web application firewall may give some protection meanwhile. It does not replace the patch.</li>
-        <li>Read the PHP project's security advisory for how to patch.</li>
-        <li>Watch for PHP worker processes that start a shell or download tools.</li>
-      </ul>
-    </Claim>
-    <Claim id="php-not-wordpress-update">Updating WordPress or its plugins does not update PHP. The host, or whoever runs the server, does that.</Claim>
-  </section>
-
   <section class="wrap" id="how-checked">
     <h2>How this page was checked</h2>
     <p>
@@ -672,10 +619,9 @@ const controls = [
   h3 { margin: 1.6rem 0 0.6rem; font-size: 1.1rem; }
   /* Elements the Claim component renders carry the component's scope, not this page's, so a rule that must
      reach them is wrapped in :global(). */
-  section p, section :global(p.claim), .steps, .proof, .reports { max-width: 46rem; line-height: 1.7; hyphens: manual; }
+  section p, section :global(p.claim), .steps, .proof { max-width: 46rem; line-height: 1.7; hyphens: manual; }
   .lead { font-size: 1.15rem; color: var(--muted); }
   .note, .legend { color: var(--muted); }
-  .eyebrow { margin: 0 0 0.4rem; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
   .answer { font-size: 1.5rem; font-weight: 700; line-height: 1.25; margin: 0.2rem 0 1rem; }
   .steps { padding-left: 1.3rem; }
   .steps > :global(li) { margin-bottom: 0.6rem; }
@@ -686,17 +632,7 @@ const controls = [
 
   /* A fact and its source (the source line itself is styled in components/Claim.astro). */
   .proof { padding-left: 1.2rem; }
-  .proof > :global(li), .reports > :global(li) { margin-bottom: 0.8rem; }
-
-  /* The dated panel is set apart, so that it is plain which part of the page will age. */
-  .panel { background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); }
-  .panel > .facts { max-width: 60rem; }
-  .facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.9rem 1.5rem; margin: 1.2rem 0; }
-  /* Columns are named, so that two <dd> in a row (the two flaws) cannot push one into the label column. */
-  .facts dt { font-weight: 700; grid-column: 1; }
-  .facts :global(dd) { margin: 0; min-width: 0; grid-column: 2; }
-  .facts .plain { margin: 0 0 0.5rem; }
-  .reports { padding-left: 1.2rem; margin: 0; }
+  .proof > :global(li) { margin-bottom: 0.8rem; }
 
   .paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem; margin: 1.2rem 0; }
   .path { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem; min-width: 0; }
@@ -719,11 +655,5 @@ const controls = [
   .priorities > li, .checks > li { counter-increment: p; }
   .priorities > li h3::before, .checks > li h3::before { content: counter(p) ". "; color: var(--accent); }
   .priorities .card p, .checks .card p { margin: 0 0 0.6rem; max-width: 46rem; line-height: 1.6; }
-  .checks code, .priorities code, .proof code, .steps code, .points code, .facts code { overflow-wrap: anywhere; }
-
-  @media (max-width: 40rem) {
-    .facts { grid-template-columns: 1fr; gap: 0.2rem; }
-    .facts dt, .facts :global(dd) { grid-column: 1; }
-    .facts :global(dd) { margin-bottom: 0.9rem; }
-  }
+  .checks code, .priorities code, .proof code, .steps code, .points code { overflow-wrap: anywhere; }
 </style>

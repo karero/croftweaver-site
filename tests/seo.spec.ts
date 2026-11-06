@@ -238,6 +238,32 @@ test('seo — every page describes the same operator and points at the same soft
   }
 });
 
+// /security says who published it and when, in the structured data as well as in the byline. The Article's
+// author is the Person node of the home page, written out in full (nothing shows that a reader of one page
+// resolves an id published on another), and the two copies must not differ. The WebPage still has no
+// mainEntity: the test above keeps that, and mainEntityOfPage links the two.
+test('seo — /security has an Article whose author is the maintainer of the home page', async ({ page }) => {
+  await page.goto('/');
+  const { '@context': _context, ...homePerson } = one(await jsonLd(page), 'Person');
+  await page.goto('/security');
+  const nodes = await jsonLd(page);
+  const article = one(nodes, 'Article');
+  const webPage = one(nodes, 'WebPage');
+  const canonical = `${SITE.url}/security`;
+  expect(article['@context'], 'a top-level node carries its own @context').toBe('https://schema.org');
+  expect(article['@id']).toBe(`${canonical}#article`);
+  expect(article.author, "the author is the home page's Person, field for field, without its @context").toEqual(homePerson);
+  expect(article.publisher, 'the publisher is a reference to the Organization that every page carries').toEqual({ '@id': `${SITE.url}/#organization` });
+  expect(article.mainEntityOfPage, "the Article points at the page's WebPage node").toEqual({ '@id': webPage['@id'] });
+  expect(webPage['@id']).toBe(`${canonical}#webpage`);
+  expect(webPage.mainEntity, 'the WebPage is not mainly about anything: the Article is linked through mainEntityOfPage').toBeUndefined();
+  const h1 = ((await page.locator('h1').textContent()) ?? '').replace(/\s+/g, ' ').trim();
+  expect(article.headline, "the headline is the page's <h1>").toBe(h1);
+  expect(article.image, 'the image is the share card the page names in og:image').toBe(await page.locator('meta[property="og:image"]').getAttribute('content'));
+  expect(article.datePublished, 'the day the page went live (UTC)').toBe('2026-10-23');
+  expect(article.inLanguage).toBe(SITE.locale);
+});
+
 // This site's own test: the footer of every page names the release that the software node
 // names, so a visitor and a crawler read the same version. Both read RELEASE; this checks
 // that the footer still shows it.

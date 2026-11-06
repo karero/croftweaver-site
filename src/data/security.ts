@@ -11,13 +11,6 @@
 //   the check's UTC date. Each batch of sources has its own date below, so that re-reading one batch re-dates only it;
 // - the check loads this file with the TypeScript compiler and compares each claim with the built page. The
 //   file is transpiled on its own, so it may use constants and functions but must not import anything.
-// To cut the dated PHP alert: delete the section #php-alert and the section #php-steps from the page (each has a
-// PHP-DATED comment above it) and the claims of the "PHP alert" group below. The alert is also named, in words that
-// stand alone, by the labelled judgment in #safer and the claim ai-exploit-tools (the claim ai-exploit-none-yet refers back to
-// it); those stay.
-// The description, the share card, the "how this page was checked" section and public/llms.txt carry no mention of
-// it, and the page, this file and tests/check_security_page.sh pass without the panel (tried on 2026-10-23); the
-// constants CISA, PHPNET, THN and NATIONAL are then unused (four editor hints, no error), so delete them too.
 // A reading says what a source says, not that it still says it: Cloudflare, W3Techs and the news pages change.
 // Re-read a source before changing its date.
 
@@ -54,7 +47,7 @@ export function fileHref(source: string, lines?: string): string {
 }
 
 // One date per batch of sources.
-const READ_NEWS = '2026-10-22'; // the PHP alert: CISA, php.net, the advisories, the news pages, W3Techs, the 2025 npm alert
+const READ_NEWS = '2026-10-22'; // W3Techs and the news pages behind php-share and php-systems-news, and CISA's 2025 npm alert (npm-attacks)
 const READ_CLOUDFLARE = '2026-10-22'; // Cloudflare's documentation
 const READ_WORDPRESS = '2026-10-22'; // WordPress.org's pages
 const READ_REPO = '2026-10-22'; // files and commands in croftweaver-site, the template and the toolkit
@@ -65,14 +58,10 @@ const READ_RISKS = '2026-10-23'; // the section #risks: Google, Spamhaus, CISA, 
 const READ_AI = '2026-10-23'; // the evergreen judgment in #safer: the PHP Foundation, Wiz, The Record, php.net's news of 23 October
 const READ_CF_LIMITS = '2026-10-23'; // Cloudflare's Pages pricing and routing pages, for the daily allowance in #limits
 
-const CISA = 'https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching';
-const PHPNET = 'https://www.php.net/archive/2026.php#2026-10-21-5';
 const PHPF = 'https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/';
 const KREBS = 'https://krebsonsecurity.com/2026/10/widespread-php-flaw-may-cause-many-site-outages-today/';
 const RECORD = 'https://therecord.media/php-script-vulnerabilities-warnings';
-const THN = 'https://thehackernews.com/2026/10/php-issues-emergency-patches-for-two.html';
 const MALWAREBYTES = 'https://www.malwarebytes.com/blog/bugs/2026/10/php2shell-why-websites-are-going-offline-for-emergency-security-updates';
-const NATIONAL = 'https://www.thenationalnews.com/future/technology/2026/10/21/php-security-issues-exploit/';
 const WP_HARDENING = 'https://developer.wordpress.org/advanced-administration/security/hardening/';
 // The table in #short on /security sums up who provides each setting. When a re-read changes who provides one, change that row too.
 const TOOLKIT_AT = 'https://github.com/karero/croftweaver/blob/3b8a6c5f';
@@ -103,30 +92,11 @@ export const PHP_SYSTEMS: string[] = PHP_SYSTEM_REPOS.map((s) => s.name);
 const SYSTEMS = PHP_SYSTEM_REPOS.map((s) => s.repo).join(' ');
 
 export const CLAIMS: Claim[] = [
-  // ---- PHP alert: the dated panel (section #php-alert) and the PHP steps (section #php-steps) ----
-  { id: 'cisa-patch', kind: 'url', source: CISA, label: 'CISA alert', read: READ_NEWS },
-  { id: 'cisa-names-no-product', kind: 'url', source: CISA, label: 'CISA alert', read: READ_NEWS },
-  { id: 'cisa-no-exploitation', kind: 'url', source: CISA, label: 'CISA alert', read: READ_NEWS },
-  { id: 'cisa-steps', kind: 'url', source: CISA, label: 'CISA alert', read: READ_NEWS },
-  { id: 'php-advisory', kind: 'url', source: PHPNET, label: 'php.net advisory', read: READ_NEWS },
-  { id: 'php-old-versions', kind: 'url', source: PHPNET, label: 'php.net advisory', read: READ_NEWS },
-  { id: 'ghsa-109618', kind: 'url', source: 'https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w', label: 'GitHub advisory GHSA-w8hw-w9fx-j79w', read: READ_NEWS },
-  { id: 'ghsa-109619', kind: 'url', source: 'https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp', label: 'GitHub advisory GHSA-6wmf-4rv5-p3rp', read: READ_NEWS },
-  { id: 'reported-by', kind: 'url', source: PHPF, label: 'PHP Foundation', read: READ_NEWS },
-  { id: 'wiz-demo', kind: 'url', source: 'https://www.wiz.io/blog/php2shell-php-rce', label: 'Wiz Research', read: READ_NEWS },
-  { id: 'calif-demo', kind: 'url', source: 'https://calif.io/php2shell/', label: 'Calif', read: READ_NEWS },
-  { id: 'cloudflare-attacks', kind: 'url', source: THN, label: 'The Hacker News', also: [{ label: 'Krebs on Security', url: KREBS }, { label: 'The Record', url: RECORD }], read: READ_NEWS },
-  { id: 'watchtowr-attempts', kind: 'url', source: THN, label: 'The Hacker News', also: [{ label: 'The Record', url: RECORD }], read: READ_NEWS },
-  { id: 'krebs-in-the-wild', kind: 'url', source: KREBS, label: 'Krebs on Security', read: READ_NEWS },
-  { id: 'no-confirmed-breakin', kind: 'url', source: THN, label: 'The Hacker News', read: READ_NEWS },
-  { id: 'offline-precaution', kind: 'url', source: RECORD, label: 'The Record', also: [{ label: 'The Hacker News', url: THN }, { label: 'The National', url: NATIONAL }, { label: 'Malwarebytes', url: MALWAREBYTES }], read: READ_NEWS },
-  { id: 'php-not-wordpress-update', kind: 'url', source: MALWAREBYTES, label: 'Malwarebytes', also: [{ label: 'The Hacker News', url: THN }], read: READ_NEWS },
-
-  // ---- PHP as a fact about systems, not news: stays when the dated alert is cut (section #safer) ----
+  // ---- PHP as a fact about systems, not news (section #safer) ----
   { id: 'php-share', kind: 'url', source: 'https://w3techs.com/technologies/details/pl-php', label: 'W3Techs', read: READ_NEWS },
   { id: 'php-systems-news', kind: 'url', source: KREBS, label: 'Krebs on Security', also: [{ label: 'Malwarebytes', url: MALWAREBYTES }], read: READ_NEWS },
   { id: 'php-systems-repos', kind: 'command', source: `for r in ${SYSTEMS}; do echo "$r $(curl -s https://api.github.com/repos/$r | grep '"language"')"; done`, read: READ_GITHUB_API },
-  // ---- AI-assisted finding of flaws, exploitation attempts and the latest PHP advisory: what the labelled judgment in the evergreen section #safer rests on (stays when the dated alert is cut) ----
+  // ---- AI-assisted finding of flaws, exploitation attempts and the latest PHP advisory: what the labelled judgment in the evergreen section #safer rests on ----
   { id: 'ai-php-scan', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
   { id: 'ai-php-reports', kind: 'url', source: PHPF, label: 'PHP Foundation, 21 October 2026', read: READ_AI },
   { id: 'ai-wiz-found', kind: 'url', source: 'https://www.wiz.io/blog/php2shell-php-rce', label: 'Wiz Research', read: READ_AI },
@@ -253,3 +223,7 @@ export const READ_LAST = reads[reads.length - 1] as string;
 export function readPhrase(): string {
   return READ_FIRST === READ_LAST ? `Read on ${longDate(READ_FIRST)}` : `Read from ${longDate(READ_FIRST)} to ${longDate(READ_LAST)}`;
 }
+
+// The day the page's content last changed, set by hand (as on /privacy and /terms). Move it with every change to the
+// text or the claims; the check refuses a day before READ_LAST or more than one day ahead of today (UTC).
+export const UPDATED = { iso: '2026-11-06', label: '6 November 2026' } as const;
