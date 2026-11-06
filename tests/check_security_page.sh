@@ -238,7 +238,7 @@ const ULONG = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso); return
 const article = (o = {}) => o.noArticle ? "" : "<script type=\"application/ld+json\">" + (o.badJson ? "{not json" : JSON.stringify({ "@type": "Article", dateModified: o.modified || U.iso })) + "</script>";
 const byline = (o = {}) => {
   const link = o.noLink ? "Daniel Melter" : "<a href=\"" + (o.href || "/about#maintainer") + "\">" + (o.linkText || "Daniel Melter") + "</a>" + (o.extraLink ? " <a href=\"/x\">x</a>" : "");
-  const time = "<time datetime=\"" + (o.datetime || U.iso) + "\">" + (o.timeText || U.label) + "</time>";
+  const time = o.noTime ? U.label : "<time datetime=\"" + (o.datetime || U.iso) + "\">" + (o.timeText || U.label) + "</time>" + (o.twoTimes ? " <time datetime=\"" + U.iso + "\">" + U.label + "</time>" : "");
   return "<p id=\"byline\">\n  " + (o.ai === false ? "" : "Researched and written with an AI assistant. ") + (o.verb || "Published") + " by " + link + ", maintainer.\n  Last updated " + time + ".</p>";
 };
 const udoc = (o = {}) => "<main>" + (o.noByline ? "" : byline(o)) + (o.twoBylines ? byline(o) : "") + "</main>" + article(o) + (o.twoArticles ? article(o) : "");
@@ -254,6 +254,8 @@ const ucases = [
   ["a changed link text", { html: udoc({ linkText: "D. Melter" }) }, ["the byline link text"]],
   ["a second link", { html: udoc({ extraLink: true }) }, ["has 2 links"]],
   ["a time that is not UPDATED", { html: udoc({ datetime: "2026-11-05" }) }, ["datetime is 2026-11-05"]],
+  ["no <time> in the byline", { html: udoc({ noTime: true }) }, ["has 0 <time> elements"]],
+  ["two <time> elements in the byline", { html: udoc({ twoTimes: true }) }, ["has 2 <time> elements"]],
   ["a time text that is not the label", { html: udoc({ timeText: "6 Nov 2026" }) }, ["<time> text is"]],
   ["no Article", { html: udoc({ noArticle: true }) }, ["0 Article nodes"]],
   ["two Articles", { html: udoc({ twoArticles: true }) }, ["2 Article nodes"]],

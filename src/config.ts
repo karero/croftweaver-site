@@ -157,7 +157,7 @@ export const COMPANY = {
 export const schemaId = (origin: string, thing: 'organization' | 'software' | 'daniel-melter') => `${origin}/#${thing}`;
 
 // The maintainer's Person node, without @context: the home page gives it as a top-level node, /security
-// nests it as an Article's author. One function builds both, so the two copies cannot differ.
+// nests it as an Article's author. One function builds both; tests/seo.spec.ts compares the built pages field for field.
 // The section #maintainer on /about says the same in words. LinkedIn and the GitHub account
 // are also linked on /about (since 2026-10-18; until then LinkedIn was in the structured data
 // only, owner, 2026-10-13). LinkedIn redirects the address with a trailing slash to the one
