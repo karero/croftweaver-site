@@ -1086,3 +1086,22 @@ test('help — #help says the work goes through M-Squad, links to its page and k
   await expect(email, '#help keeps exactly one email link').toHaveCount(1);
   await expect(email, 'the email link in #help').toHaveAttribute('href', 'mailto:hello@croftweaver.com?subject=Help%20for%20our%20team%20with%20Croftweaver');
 });
+
+// Site-specific (not in the shipped suite): /support lists the paid route after the free ones. "Help for hire" must
+// come after "Security problems", and its one link must go to M-Squad's page with ?ref=croftweaver-support, so its
+// analytics can tell this door from /established-sites#help (?ref=croftweaver).
+test('support — "Help for hire" comes last, after the security section, and links to M-Squad with its own ref', async ({ page }) => {
+  await page.goto('/support');
+  const headings = await page.locator('main h2').allTextContents();
+  const security = headings.indexOf('Security problems');
+  const hire = headings.indexOf('Help for hire');
+  expect(security, 'the page has a "Security problems" section').toBeGreaterThanOrEqual(0);
+  expect(hire, 'the page has a "Help for hire" section').toBeGreaterThanOrEqual(0);
+  expect(hire, '"Help for hire" comes after "Security problems"').toBeGreaterThan(security);
+  expect(hire, '"Help for hire" is the last section').toBe(headings.length - 1);
+  const section = page.locator('main section.wrap > h2', { hasText: 'Help for hire' }).locator('xpath=following-sibling::p');
+  const link = section.getByRole('link', { name: 'What this help covers', exact: true });
+  await expect(link, 'the link to M-Squad\'s page').toHaveAttribute('href', 'https://m-squad.com/croftweaver-help?ref=croftweaver-support');
+  await expect(page.locator('main a[href*="m-squad.com"]'), 'the only M-Squad link on /support').toHaveCount(1);
+  await expect(section, 'the approved wording').toHaveText('Croftweaver is free, and you do not need paid help to use it. If your team would rather work on a live site with the person who builds it, Daniel Melter offers that through M-Squad, the studio he leads in Munich. What this help covers');
+});
