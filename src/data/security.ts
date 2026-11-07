@@ -140,10 +140,10 @@ export const CLAIMS: Claim[] = [
   { id: 'site-analytics', kind: 'command', source: "curl -s https://croftweaver.com/ | grep -o -E '<script[^>]*src=\"[^\"]*\"'; curl -s https://croftweaver.com/ | grep -c -i -E 'cloudflareinsights|beacon.min.js'; curl -s \"$(curl -s https://croftweaver.com/ | grep -o -E 'https://analytics[^\"]*[.]js')\" | grep -o 'window.plausible.init' | sort -u", read: READ_LIVE },
   { id: 'toolkit-cloudflare-setup', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/scripts/cloudflare-setup.mjs#L45-L76`, label: 'the toolkit script cloudflare-setup.mjs at 3b8a6c5f', read: READ_REPO },
   { id: 'launch-dependabot', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/SKILL.md#L758`, label: 'the toolkit launch checklist at 3b8a6c5f', read: READ_REPO },
-  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L139-L145', read: READ_REPO },
-  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L201', read: READ_REPO },
-  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L216-L222', read: READ_REPO },
-  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L216-L222', read: READ_REPO },
+  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L148-L154', read: READ_REPO },
+  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L210', read: READ_REPO },
+  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
+  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
   { id: 'site-canonical-url', kind: 'file', source: 'README.md', lines: 'L11-L14', read: READ_REPO },
   { id: 'no-dnssec-caa-securitytxt-in-template', kind: 'url', source: TEMPLATE_AT, label: 'the template at 3b8a6c5f', read: READ_REPO },
 
@@ -226,4 +226,4 @@ export function readPhrase(): string {
 
 // The day the page's content last changed, set by hand (as on /privacy and /terms). Move it with every change to the
 // text or the claims; the check refuses a day before READ_LAST or more than one day ahead of today (UTC).
-export const UPDATED = { iso: '2026-11-06', label: '6 November 2026' } as const;
+export const UPDATED = { iso: '2026-11-07', label: '7 November 2026' } as const;
