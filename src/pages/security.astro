@@ -1,8 +1,8 @@
 ---
-// /security: what a static website changes for security, for a site owner choosing Croftweaver and the IT
-// person they hand it to. Positioning term (tests/positioning.spec.ts): "static website", in the title, the
-// description and the H1. Plan, research and sources: the private hub's security-page/ (PLAN.md,
-// SOURCES-LOG.md), 2026-10-22.
+// /security: how to build a secure website, and what a static website changes for security, for a site owner
+// choosing Croftweaver and the IT person they hand it to. Positioning (tests/positioning.spec.ts): "secure
+// website" in the title, the description and the H1; "static website" in the description and the intro.
+// Plan, research and sources: the private hub's security-page/ (PLAN.md, SOURCES-LOG.md), 2026-10-22.
 // Honesty limits for this page:
 // - every statement is about the Croftweaver template, about croftweaver.com, or about someone else's
 //   product, and says which. Every fact is a claim in src/data/security.ts with a source and the day it was
@@ -22,7 +22,7 @@ import Claim from '../components/Claim.astro';
 import { SITE, schemaId, maintainerSchema } from '../config';
 import { claim, longDate, readPhrase, PHP_SYSTEMS, UPDATED } from '../data/security';
 
-const heading = 'What does a static website change about security?';
+const heading = 'How do I build a secure website?';
 const image = '/images/og/security.jpg';
 const description =
   'How to build a secure website: what a static website changes, what Cloudflare handles, what stays with you, and four checks you can run.';
@@ -71,7 +71,7 @@ const controls = [
 ];
 ---
 <Base
-  title="What a static website changes for security"
+  title="How to build a secure website"
   description={description}
   image={image}
   schemas={[articleSchema]}
@@ -95,9 +95,9 @@ const controls = [
   </section>
 
   <section class="wrap" id="secure-website">
-    <h2>How do I build a secure website?</h2>
+    <h2>The answer, in five steps</h2>
     <p>
-      Our answer: build a website with less to secure, then lock what is left. No website is safe from every
+      Build a website with less to secure, then lock what is left. No website is safe from every
       attack. A static website removes one whole layer: the software that builds each page on a server when
       someone opens it. That is less to secure on <a href="#safer">one point</a>, not nothing to secure. What
       is left needs looking after; the first two steps matter most:

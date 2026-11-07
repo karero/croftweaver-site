@@ -264,12 +264,13 @@ test('seo — /security has an Article whose author is the maintainer of the hom
   expect(article.inLanguage).toBe(SITE.locale);
 });
 
-// /security answers the question people search with near the top, in their words. Moving the
-// answer below "In short", or rewording its heading, should fail here.
-test('seo — /security answers "How do I build a secure website?" before "In short"', async ({ page }) => {
+// /security asks the question people search with as its H1, in their words, and answers it
+// before "In short". Rewording the H1, or moving the answer below "In short", should fail here.
+test('seo — /security asks "How do I build a secure website?" and answers it before "In short"', async ({ page }) => {
   await page.goto('/security');
+  await expect(page.locator('h1')).toHaveText('How do I build a secure website?');
   const h2s = (await page.locator('h2').allTextContents()).map((s) => s.replace(/\s+/g, ' ').trim());
-  const answer = h2s.indexOf('How do I build a secure website?');
+  const answer = h2s.indexOf('The answer, in five steps');
   const short = h2s.indexOf('In short');
   expect(answer, 'the answer H2 is on the page').toBeGreaterThanOrEqual(0);
   expect(short, 'the "In short" H2 is on the page').toBeGreaterThanOrEqual(0);

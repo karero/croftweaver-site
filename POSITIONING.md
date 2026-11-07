@@ -246,7 +246,7 @@ is built.
 | Positioning | `/positioning` | positioning | — | live |
 | Partner assets | `/partner-assets` | partner assets | — | live |
 | About | `/about` | maintainer | — | live |
-| Security | `/security` | static website | — | live |
+| Security | `/security` | secure website (and "static website" in the description and intro; owner, 2026-11-07) | — | live |
 | Privacy | `/privacy` | exempt (legal) | — | live |
 | Imprint | `/imprint` | exempt (legal) | — | live |
 
