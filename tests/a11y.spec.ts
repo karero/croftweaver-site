@@ -492,7 +492,9 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
     await expect(aboutGemini.getByRole('link', { name: /20 May 2025/ }), "the claim that AI Mode uses Gemini has no link to Google's statement")
       .toHaveAttribute('href', 'https://blog.google/products-and-platforms/products/search/google-search-ai-mode-update/');
     // Gemini's cell sends the reader below the table for the answers asked by hand, so they must be there.
-    await expect(aboutGemini, 'the paragraph about Gemini no longer gives the answers asked by hand').toContainText('the maintainer of the site asked it by hand');
+    for (const answer of ['On 10 October 2026, signed in on a phone', 'then named GenAI Wednesday first among the communities', 'a second asking on 12 October 2026 also named GenAI Wednesday']) {
+      await expect(aboutGemini, `the paragraph about Gemini no longer gives the answers asked by hand: "${answer}"`).toContainText(answer);
+    }
     const below = await page.locator('#ai table').evaluate((t, p) => !!(t.compareDocumentPosition(p!) & Node.DOCUMENT_POSITION_FOLLOWING), await aboutGemini.elementHandle());
     expect(below, "Gemini's cell says the answers asked by hand are below the table, but they are not").toBe(true);
   }
