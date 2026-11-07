@@ -347,7 +347,7 @@ if (!(blocks[0]!.fromIso <= LAUNCHED && LAUNCHED <= blocks[0]!.toIso)) {
   throw new Error(`The first 28-day block (${blocks[0]!.fromIso} to ${blocks[0]!.toIso}) no longer contains the site's launch on ${LAUNCHED}. Change the first day of the search export, or reword /proof and /why.`);
 }
 
-const POSITIONS_PERIOD = { from: '24 September 2026', to: '21 October 2026' };
+const POSITIONS_PERIOD = { from: '8 October 2026', to: '4 November 2026' };
 if (POSITIONS_PERIOD.from !== blocks.at(-1)!.from || POSITIONS_PERIOD.to !== blocks.at(-1)!.to) {
   throw new Error('The search positions on /proof were pulled for another period than the latest 28-day block. Pull them again for the new block and update POSITIONS_PERIOD and the positions.');
 }
@@ -377,10 +377,10 @@ export const SITE_PROOF = {
     fileFrom: { iso: days[0]!.date, label: label(days[0]!.date) },
     firstImpression: { iso: firstSeen.date, label: label(firstSeen.date) },
     // Average positions from Search Console's query report for exactly this period
-    // (whole site, all countries; pulled 2026-11-06). Checked against `latest` below.
+    // (whole site, all countries; pulled 2026-11-07). Checked against `latest` below.
     positionsPeriod: POSITIONS_PERIOD,
     positions: [
-      { query: 'ai events munich', position: '8.4' },
+      { query: 'ai events munich', position: '9.0' },
       { query: 'ai events münchen', position: '8.2' },
     ],
   },
