@@ -261,9 +261,9 @@ const lastAnswered = (engine: string, mode: Mode) => {
 // not explain it away as a property of the assistant.
 const SEARCH_ONLY = ['google-ai-mode', 'google-overview'];
 const NOT_ASKED_WITH_SEARCH = ['gemini'];
-// Gemini's cell with web search points to the Google AI Mode row. That row stays separate: it is a
-// search product, not the Gemini app. tests/a11y.spec.ts fails if the row goes.
-const GEMINI_POINTER = ' Google AI Mode, built on Gemini, has its own row.';
+// Gemini's cell with web search points to the Google AI Mode row (a search product, not the Gemini
+// app) and to the answers asked by hand below the table. tests/a11y.spec.ts fails if either goes.
+const GEMINI_POINTER = ' Google AI Mode, built on Gemini, has its own row. Answers from the Gemini app, asked by hand, are below the table.';
 // /proof also says in a sentence that the check does not ask Gemini with web search. A file
 // that has such rows would make the table contradict that sentence, so it stops the build.
 const askedAfterAll = checks.find((c) => c.mode === 'with_search' && NOT_ASKED_WITH_SEARCH.includes(c.engine));
