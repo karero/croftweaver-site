@@ -264,6 +264,18 @@ test('seo — /security has an Article whose author is the maintainer of the hom
   expect(article.inLanguage).toBe(SITE.locale);
 });
 
+// /security answers the question people search with near the top, in their words. Moving the
+// answer below "In short", or rewording its heading, should fail here.
+test('seo — /security answers "How do I build a secure website?" before "In short"', async ({ page }) => {
+  await page.goto('/security');
+  const h2s = (await page.locator('h2').allTextContents()).map((s) => s.replace(/\s+/g, ' ').trim());
+  const answer = h2s.indexOf('How do I build a secure website?');
+  const short = h2s.indexOf('In short');
+  expect(answer, 'the answer H2 is on the page').toBeGreaterThanOrEqual(0);
+  expect(short, 'the "In short" H2 is on the page').toBeGreaterThanOrEqual(0);
+  expect(answer, 'the answer comes before "In short"').toBeLessThan(short);
+});
+
 // This site's own test: the footer of every page names the release that the software node
 // names, so a visitor and a crawler read the same version. Both read RELEASE; this checks
 // that the footer still shows it.
