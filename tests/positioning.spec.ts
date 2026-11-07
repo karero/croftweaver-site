@@ -51,7 +51,9 @@ export const POSITIONING: Record<string, TermRule | SurfaceRule> = {
   '/what-it-runs-on': { term: 'what it runs on', body: ['tech stack'] },
   '/partner-assets': { term: 'partner assets' },
   '/about': { term: 'maintainer' },
-  '/security': { term: 'static website' },
+  // The H1 asks the question people search with (owner, 2026-11-07); "static website" stays in the
+  // description and the intro, which is how the page fits the rest of the site.
+  '/security': { title: ['secure website'], desc: ['secure website', 'static website'], h1: ['secure website', 'static website'] },
 };
 
 // Pages that legitimately own NO positioning term (legal / utility — privacy, imprint,
