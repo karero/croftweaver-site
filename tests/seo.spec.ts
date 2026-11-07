@@ -276,6 +276,18 @@ test('seo — /security answers "How do I build a secure website?" before "In sh
   expect(answer, 'the answer comes before "In short"').toBeLessThan(short);
 });
 
+// Home sends a reader asking "is this secure?" to /security, and its link text carries the words
+// people search with, so search engines and AI assistants credit /security with the answer.
+// Dropping the section, its link or those words should fail here.
+test('seo — home links to /security with the words "build a secure website"', async ({ page }) => {
+  await page.goto('/');
+  const section = page.locator('section', { has: page.locator('h2', { hasText: 'A website with less to secure' }) });
+  await expect(section, 'the "A website with less to secure" section is on home').toHaveCount(1);
+  const link = section.locator('a[href="/security"]');
+  await expect(link, 'the section links to /security').toHaveCount(1);
+  await expect(link).toContainText('build a secure website');
+});
+
 // This site's own test: the footer of every page names the release that the software node
 // names, so a visitor and a crawler read the same version. Both read RELEASE; this checks
 // that the footer still shows it.
