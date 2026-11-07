@@ -197,7 +197,7 @@ const aiDesc =
           {p.ai.rows.map((row) => (
             <tr role="row">
               <th scope="row" role="rowheader">{row.assistant}</th>
-              <td role="cell" data-label={aiCols[1]}>{row.withSearch}{row.byHand && <>{' '}<a href="#gemini-app">Answers from the Gemini app, asked by hand</a>, are further down.</>}</td>
+              <td role="cell" data-label={aiCols[1]}>{row.withSearch}{row.handLink && <>{' '}<a href="#gemini-app">Answers from the Gemini app, asked by hand</a>, are further down.</>}</td>
               <td role="cell" data-label={aiCols[2]}>{row.withoutSearch}</td>
             </tr>
           ))}

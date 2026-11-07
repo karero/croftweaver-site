@@ -397,7 +397,7 @@ export const SITE_PROOF = {
       withSearch: cell(engine, 'with_search'),
       withoutSearch: cell(engine, 'without_search'),
       // Gemini is never asked with web search (the build stops otherwise), so its cell links to the answers asked by hand.
-      byHand: engine === 'gemini',
+      handLink: engine === 'gemini',
     })),
     chart: ENGINES.map(([engine, assistant]) => ({
       engine,
