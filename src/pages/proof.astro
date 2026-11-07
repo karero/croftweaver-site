@@ -197,7 +197,7 @@ const aiDesc =
           {p.ai.rows.map((row) => (
             <tr role="row">
               <th scope="row" role="rowheader">{row.assistant}</th>
-              <td role="cell" data-label={aiCols[1]}>{row.withSearch}</td>
+              <td role="cell" data-label={aiCols[1]}>{row.withSearch}{row.byHand && <>{' '}<a href="#gemini-app">Answers from the Gemini app, asked by hand</a>, are further down.</>}</td>
               <td role="cell" data-label={aiCols[2]}>{row.withoutSearch}</td>
             </tr>
           ))}
@@ -228,13 +228,18 @@ const aiDesc =
       says why). Google AI Mode is the nearest the table comes:
       <a href="https://blog.google/products-and-platforms/products/search/google-search-ai-mode-update/">Google said on
       <time datetime="2025-05-20">20 May 2025</time></a> that AI Mode uses a custom version of Gemini 2.5.
-      It is Google's search answer and not the Gemini app, so it has its own row. To see the
-      app itself, the maintainer of the site asked it by hand. On
+      It is Google's search answer and not the Gemini app, so it has its own row.
+    </p>
+    <p id="gemini-app">
+      To see the app itself, the maintainer of the site asked it by hand. On
       <time datetime={p.ai.byHand.first.iso}>{p.ai.byHand.first.label}</time>, signed in on a
       phone, the question was <q lang="de">{p.ai.byHand.question}</q>. The app (model shown:
       {p.ai.byHand.model}) listed four events, then named GenAI Wednesday first among the
       communities. That much is from an unpublished screenshot, and the date from the
-      maintainer. By the maintainer's report, a second asking on
+      maintainer.
+    </p>
+    <p>
+      By the maintainer's report, a second asking on
       <time datetime={p.ai.byHand.again.iso}>{p.ai.byHand.again.label}</time> also named GenAI
       Wednesday; nothing else of it was recorded. Also by the maintainer's report, an attempt
       without a sign-in on
