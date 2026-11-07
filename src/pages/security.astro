@@ -25,7 +25,7 @@ import { claim, longDate, readPhrase, PHP_SYSTEMS, UPDATED } from '../data/secur
 const heading = 'What does a static website change about security?';
 const image = '/images/og/security.jpg';
 const description =
-  'What a static website changes for security: what runs on a visit, what Cloudflare handles, what stays with the owner, and four checks you can run yourself.';
+  'How to build a secure website: what a static website changes, what Cloudflare handles, what stays with you, and four checks you can run.';
 
 const own = ['own-headers', 'own-dnssec', 'own-caa', 'own-security-txt'].map((id) => claim(id));
 const ownLabel: Record<string, string> = {
@@ -91,6 +91,58 @@ const controls = [
     <p class="note" id="byline">
       Researched and written with an AI assistant. Published by <a href="/about#maintainer">Daniel Melter</a>,
       maintainer. Last updated <time datetime={UPDATED.iso}>{UPDATED.label}</time>.
+    </p>
+  </section>
+
+  <section class="wrap" id="secure-website">
+    <h2>How do I build a secure website?</h2>
+    <p>
+      Our answer: build a website with less to secure, then lock what is left. No website is safe from every
+      attack. A static website removes one whole layer: the software that builds each page on a server when
+      someone opens it. That is less to secure on <a href="#safer">one point</a>, not nothing to secure. What
+      is left needs looking after; the first two steps matter most:
+    </p>
+    <ol class="steps">
+      <li><strong>Lock the accounts that can publish.</strong> Two-step sign-in on GitHub, Cloudflare and the domain registrar, and a short list of who can publish.</li>
+      <li><strong>Turn on security updates, and merge them,</strong> for everything your site runs.</li>
+      <li><strong>Watch the domain:</strong> its DNS records and its renewal date.</li>
+      <li><strong>Keep the optional parts few.</strong> Each add-on brings its own code or login.</li>
+      <li><strong>Check the live headers after a change,</strong> and keep private files out of the public folder.</li>
+    </ol>
+    <figure class="ways-in">
+      <div class="paths">
+        <article class="path" aria-labelledby="wp-in-h">
+          <h3 id="wp-in-h">A WordPress site</h3>
+          <ul class="steps-list">
+            <li class="step is-code"><span class="tag">On a visit</span><span>PHP, WordPress and its plugins, for a request that no page cache answers.</span></li>
+            <li class="step is-code"><span class="tag">On a visit</span><span>The database, for the same request.</span></li>
+            <li class="step is-code"><span class="tag">On a visit</span><span>The login screen at <code>/wp-admin/</code>.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>The accounts behind the site: hosting, the domain registrar and DNS.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>The administrator accounts.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>Scripts from other domains.</span></li>
+          </ul>
+        </article>
+        <article class="path" aria-labelledby="cw-in-h">
+          <h3 id="cw-in-h">A Croftweaver site</h3>
+          <ul class="steps-list">
+            <li class="step is-code"><span class="tag">On a visit</span><span>The site's functions: one on croftweaver.com.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>The accounts behind the site: GitHub, Cloudflare, the domain registrar and DNS.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>The build, its tokens and the packages it is built with.</span></li>
+            <li class="step"><span class="tag">Another way</span><span>Scripts from other domains.</span></li>
+          </ul>
+        </article>
+      </div>
+      <figcaption class="legend">
+        Where an attacker can try to get in. “On a visit” means a visitor's request reaches it; “another way”
+        means through an account, the build or a script. A summary of the sections below, not a measured
+        ranking of risk: we give no overall ranking (see <a href="#safer">Is Croftweaver safer than
+        WordPress?</a>). Both kinds of site depend on the accounts behind them.
+      </figcaption>
+    </figure>
+    <p>
+      The <a href="#checklist">checklist</a> says how to do each of the five steps. A static website does not make a site
+      safe by itself: <a href="#risks">what can still go wrong</a> covers the attacks that remain, and
+      <a href="#limits">where this advice runs out</a> covers the rest.
     </p>
   </section>
 
@@ -642,6 +694,8 @@ const controls = [
   .step > span:last-child { flex: 1 1 12rem; min-width: 0; }
   .step.is-code { border-left-color: var(--warn); }
   .step.is-file { border-left-color: var(--pass); }
+  .ways-in { margin: 1.2rem 0; }
+  .ways-in figcaption { max-width: 46rem; font-size: 0.9rem; line-height: 1.5; }
   .tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); min-width: 5.5em; }
 
   tr.own td:first-of-type { border-left: 4px solid var(--line); padding-left: 0.8rem; }
