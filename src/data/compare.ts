@@ -92,6 +92,31 @@ export const GUIDE = [
   { building: 'A site you edit on the site itself, extended with plugins', choose: 'a content management system', href: '#cms', why: 'such as WordPress, Joomla or Drupal.' },
 ] as const;
 
+// The section "AI website builder or AI coding assistant?" on /compare, after the guide. It sums up
+// the groups and the Claude Code section it links, restating their lines.
+export const BUILDER_OR_ASSISTANT = {
+  what: 'Both start from what you write in plain language. On this page, the AI website builders are the AI app builders: you describe the site in a chat, and the service builds it and runs it. Claude Code, an AI coding assistant, works in your project: it reads your codebase, edits files and runs commands.',
+  builder: {
+    text: 'You want the site built and run for you from a chat, or you need an application: accounts, stored data, a checkout.',
+    links: [{ label: 'AI app builders', href: '#apps' }],
+  },
+  assistant: {
+    text: 'You want to work on the site\'s own files, through an assistant you talk to in plain language instead of a visual editor. Claude Code works on its own, or with skills that give it repeatable workflows, such as Croftweaver\'s for websites. With Croftweaver, the site is files in your own repository, on hosting you control.',
+    links: [
+      { label: 'skills for AI coding assistants', href: '#skills' },
+      { label: 'Claude Code with or without Croftweaver', href: '#claude-code' },
+    ],
+  },
+  drag: {
+    text: 'If you would rather design by pointing and dragging, a hosted website builder runs the site for you, with a visual editor:',
+    link: { label: 'hosted website builders', href: '#hosted' },
+  },
+  limit: {
+    text: 'Croftweaver is one way to build with an assistant, and not the right one for every site:',
+    link: { label: 'when Croftweaver is the wrong choice', href: '#wrong-choice' },
+  },
+} as const;
+
 export const GROUPS = [
   {
     // Added 2026-10-25 (owner's request): WordPress, Joomla and Drupal are free and open source
