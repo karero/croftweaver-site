@@ -455,7 +455,7 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
   const notAsked = listIn('const NOT_ASKED_WITH_SEARCH = \\[([^\\]]*)\\]');
   // The words are typed here, not read from the page's source, so the page cannot change them unseen. Gemini's
   // cell points to the row of Google AI Mode (built on Gemini), the nearest the table comes to Gemini with web search.
-  const notAskedCell = (engine: string) => 'Not asked with web search.' + (engine === 'gemini' ? ' Google AI Mode, built on Gemini, has its own row. Answers from the Gemini app, asked by hand, are below the table.' : '');
+  const notAskedCell = (engine: string) => 'Not asked with web search.' + (engine === 'gemini' ? ' Google AI Mode, built on Gemini, has its own row. Answers from the Gemini app, asked by hand, are further down.' : '');
   const declared = listIn(`['"]${latest}['"]: \\[([^\\]]*)\\]`);
   expect([...declared].sort(), 'NOT_RUN in src/data/proof.ts differs from the assistants with no rows on the latest day').toEqual([...notRunEngines].sort());
   let notRunSaid = '';
@@ -491,12 +491,19 @@ test('a11y — the AI check chart on /proof draws the published CSV', async ({ p
       .toContainText("Google AI Mode is the nearest the table comes: Google said on 20 May 2025 that AI Mode uses a custom version of Gemini 2.5. It is Google's search answer and not the Gemini app, so it has its own row.");
     await expect(aboutGemini.getByRole('link', { name: /20 May 2025/ }), "the claim that AI Mode uses Gemini has no link to Google's statement")
       .toHaveAttribute('href', 'https://blog.google/products-and-platforms/products/search/google-search-ai-mode-update/');
-    // Gemini's cell sends the reader below the table for the answers asked by hand, so they must be there.
-    for (const answer of ['On 10 October 2026, signed in on a phone', 'then named GenAI Wednesday first among the communities', 'a second asking on 12 October 2026 also named GenAI Wednesday']) {
-      await expect(aboutGemini, `the paragraph about Gemini no longer gives the answers asked by hand: "${answer}"`).toContainText(answer);
+    // Gemini's cell links further down to the answers asked by hand, so they must be there, in the paragraph it links to.
+    await expect(tableCellOf('gemini', 'with_search').getByRole('link', { name: 'Answers from the Gemini app, asked by hand' }), "Gemini's cell has no link to the answers asked by hand")
+      .toHaveAttribute('href', '#gemini-app');
+    // The link lands on the first answer; the second is in the paragraph after it.
+    const byHand = page.locator('#gemini-app');
+    await expect(byHand, "the link in Gemini's cell does not lead to the answers asked by hand").toContainText('the maintainer of the site asked it by hand');
+    for (const answer of ['On 10 October 2026, signed in on a phone', 'then named GenAI Wednesday first among the communities']) {
+      await expect(byHand, `the paragraph the link leads to no longer gives the first answer asked by hand: "${answer}"`).toContainText(answer);
     }
-    const below = await page.locator('#ai table').evaluate((t, p) => !!(t.compareDocumentPosition(p!) & Node.DOCUMENT_POSITION_FOLLOWING), await aboutGemini.elementHandle());
-    expect(below, "Gemini's cell says the answers asked by hand are below the table, but they are not").toBe(true);
+    await expect(page.locator('#gemini-app + p'), 'the paragraph after the first answer no longer gives the second')
+      .toContainText('a second asking on 12 October 2026 also named GenAI Wednesday');
+    const below = await page.locator('#ai table').evaluate((t, p) => !!(t.compareDocumentPosition(p!) & Node.DOCUMENT_POSITION_FOLLOWING), await byHand.elementHandle());
+    expect(below, "Gemini's cell says the answers asked by hand are further down, but they are above the table").toBe(true);
   }
 
   // Nobody named the site from memory: the page says why, next to the number, and only while that is
