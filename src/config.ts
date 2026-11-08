@@ -20,6 +20,7 @@ export const SITE = {
     'Croftweaver is a suite of open-source website skills for AI coding assistants. ' +
     'Weave websites that rank, then keep improving them week by week.',
   repo: 'https://github.com/karero/croftweaver',   // the toolkit; goes live with the repo rename
+  guide: 'https://guide.croftweaver.com/',          // the free guide, on its own site: a header item and a footer link
 } as const;
 
 // Header navigation, in order. Labels live here so a second language can swap them.
@@ -70,7 +71,7 @@ export const NAV: NavItem[] = [
 export const NAV_LINKS: NavLink[] = NAV.flatMap((item) => (isNavGroup(item) ? item.items : [item]));
 
 // Footer navigation, in labelled columns, in order. Every page appears once, apart from the home
-// page, and GitHub is the one link that leaves the site. A page's pull request adds its own entry
+// page, and GitHub and the guide are the two links that leave the site. A page's pull request adds its own entry
 // here; header places are not part of that (the header is a curated subset). Like NAV, link only
 // to pages that exist: tests/navigation.spec.ts rejects a dead target, and its footer test
 // rejects an indexable page other than the home page (one in tests/_helpers.ts PAGES) that is
@@ -82,6 +83,7 @@ export const FOOTER: { heading: string; links: { label: string; href: string }[]
       { label: 'Skills', href: '/skills' },
       { label: 'Checks', href: '/checks' },
       { label: 'SEO checklist', href: '/ai-website-seo-checklist' },
+      { label: 'Guide', href: SITE.guide },
       { label: 'Quickstart', href: '/start' },
       { label: 'Roadmap', href: '/roadmap' },
       { label: 'GitHub', href: SITE.repo },

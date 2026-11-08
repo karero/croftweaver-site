@@ -52,6 +52,8 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
           <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
         </li>
       ))}
+      {/* The guide and GitHub are outside NAV: the header tests open every NAV link on this site. */}
+      <li><a href={SITE.guide}>Guide</a></li>
       <li><a class="repo" href={SITE.repo}>Get it on GitHub</a></li>
     </ul>
   </nav>
@@ -167,16 +169,17 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
   }
   .chevron { font-size: 0.8em; }
 
-  /* The fold: up to 53.99rem (863px) the navigation folds behind the Menu button (the phone block at the
-     end); above it, it stands in the header. 54rem is where the items fit one row with at least 40px to spare in
-     a wide system font (Verdana, close to DejaVu Sans on a Linux machine: the items need about 809px of
-     window on the home page and about 824px on a page whose current link is bold, so 864px leaves 40 to 55px;
-     it was 52rem before the Technology group's longer label). The wide block
+  /* The fold: up to 58.99rem (943px) the navigation folds behind the Menu button (the phone block at the
+     end); above it, it stands in the header. 59rem is where the items fit one row with at least 40px to spare in
+     a wide system font (Verdana, close to DejaVu Sans on a Linux machine: the item row is 838px wide
+     on the home page and 853px on the widest page, one whose current link is bold; with the header's 40px of padding
+     the window needs 878 and 893px, so 944px leaves 51 to 66px;
+     it was 54rem before the Guide item, and 52rem before the Technology group's longer label). The wide block
      below is the exact complement of that query, so no width, a fractional one from browser zoom included,
      falls between the two; tests/navigation.spec.ts keeps the two numbers equal. */
 
   /* Wide, with JavaScript: a group is a button that opens its list as a panel under it. */
-  @media not all and (max-width: 53.99rem) {
+  @media not all and (max-width: 58.99rem) {
     :global(html.js) .group { display: block; position: relative; }
     :global(html.js) .group-button { display: inline-flex; }
     :global(html.js) .group-label { display: none; }
@@ -190,7 +193,7 @@ const isCurrent = (href: string) => !href.includes('#') && href === path;
     :global(html.js) .group-button[aria-expanded='true'] ~ .group-list { display: flex; }
   }
   /* Phones: the list folds behind the button and opens as one column under the logo. */
-  @media (max-width: 53.99rem) {
+  @media (max-width: 58.99rem) {
     /* The logo is a little smaller here, so logo and button share the first row down to 320px. */
     .site-header { column-gap: 0.75rem; }
     .brand :global(svg) { height: 1.5rem; }
