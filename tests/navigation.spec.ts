@@ -1133,13 +1133,17 @@ test('guide — llms.txt lists the guide', () => {
   expect(txt).toContain('- [Guide](https://guide.croftweaver.com/):');
 });
 
-// The default test font is narrower than the wide fonts the fold is measured for (see Header.astro), so the one-row test
-// above passes with a fold set too low. This one forces Verdana (DejaVu Sans where it is missing; a narrower font fits more).
+// The default test font is narrower than the wide fonts the fold is measured for (see Header.astro), so the test "at the
+// narrowest width where the items are not folded they stand in one row" passes with a fold set too low. This one forces
+// Verdana (DejaVu Sans where it is missing) and fails loudly if the font did not come out wide: the item row is 838 px or
+// more in Verdana on every page, and a narrower font would let a fold set too low pass.
 for (const path of PAGES) {
   test(`guide — on ${path}, in a wide font, the items stand in one row at the narrowest width where they are not folded`, async ({ page }) => {
     await page.goto(path);
     await page.addStyleTag({ content: '* { font-family: Verdana, "DejaVu Sans", sans-serif !important; }' });
     const width = await narrowestUnfolded(page);
+    const rowWidth = await page.locator('.site-header nav > ul').evaluate((ul) => ul.lastElementChild!.getBoundingClientRect().right - ul.firstElementChild!.getBoundingClientRect().left);
+    expect(rowWidth, `${path}: the forced font did not come out wide (the item row is ${rowWidth} px at ${width} px), so this test would not catch a fold set too low`).toBeGreaterThanOrEqual(800);
     const rows = await itemRows(page);
     expect(rows, `${path}: the header items wrap onto ${rows} rows at ${width} px, the narrowest width where they are not folded`).toBe(1);
   });

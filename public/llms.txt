@@ -29,7 +29,7 @@
 - [Imprint](https://croftweaver.com/imprint): legal disclosure (German § 5 DDG).
 - [Terms of Use](https://croftweaver.com/terms): the terms for using Croftweaver: free software under the MIT licence, given as it is; the imprint and privacy pages it drafts for your site are starting points, not legal advice; the services you sign up for have their own terms.
 - [Support](https://croftweaver.com/support): how to get help: GitHub issues for questions and bugs, email, and private reporting for security problems.
-- [Guide](https://guide.croftweaver.com/): a free guide, on its own site, for people who run a website and want to be found on Google and in AI answers, without jargon: how AI answers work, SEO, GEO, E-E-A-T, AI crawlers, llms.txt, structured data, a way to check your own site, and an AI SEO checklist; every claim names its source.
+- [Guide](https://guide.croftweaver.com/): a free guide, on its own site, for people who run a website and want to be found on Google and in AI answers, without jargon: how AI answers work, SEO, GEO, E-E-A-T, AI crawlers, llms.txt, structured data, a way to check your own site, and an AI SEO checklist; every claim about Google or AI names its source.
 
 ## Facts
 - Open source: https://github.com/karero/croftweaver (MIT licence)

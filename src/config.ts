@@ -71,7 +71,7 @@ export const NAV: NavItem[] = [
 export const NAV_LINKS: NavLink[] = NAV.flatMap((item) => (isNavGroup(item) ? item.items : [item]));
 
 // Footer navigation, in labelled columns, in order. Every page appears once, apart from the home
-// page, and GitHub and the guide are the two links that leave the site. A page's pull request adds its own entry
+// page, and in this list GitHub and the guide are the two links that leave the site. A page's pull request adds its own entry
 // here; header places are not part of that (the header is a curated subset). Like NAV, link only
 // to pages that exist: tests/navigation.spec.ts rejects a dead target, and its footer test
 // rejects an indexable page other than the home page (one in tests/_helpers.ts PAGES) that is
