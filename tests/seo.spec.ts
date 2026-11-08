@@ -4,7 +4,7 @@ import { SITE, COMPANY, ogLocaleFor } from '../src/config';
 import * as config from '../src/config';
 import { plain } from '../src/data/established-faq';
 import { RELEASE } from '../src/data/skills';
-import { GROUPS, CHECKED, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED, MAINT_MEASURED, MAINT_PAGESPEED, MAINT_RUNS, MAINT_ROWS } from '../src/data/compare';
+import { GROUPS, CHECKED, BUILDER_OR_ASSISTANT, CLAUDE_CODE, CLAUDE_CODE_CHECKED, RUNS, RUN_ROWS, RUNS_MEASURED, RUNS_PAGESPEED, MAINT_MEASURED, MAINT_PAGESPEED, MAINT_RUNS, MAINT_ROWS } from '../src/data/compare';
 import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -1032,6 +1032,35 @@ test('seo — /compare links each row, each sources-note link and the Claude Cod
   for (const [k, d] of maintDates.entries()) {
     await expect(maintNote.locator('time').nth(k), `the maintenance note: date ${k + 1}`).toHaveAttribute('datetime', d.iso);
     await expect(maintNote.locator('time').nth(k), `the maintenance note: date ${k + 1}`).toHaveText(d.label);
+  }
+});
+
+// ── /compare: the section "AI website builder or AI coding assistant?" sends the reader to the groups ──
+// Site-specific (not in the shipped suite): the section restates lines that the groups and the Claude
+// Code section source, and its job is to link them. This holds its five links (hrefs written out here,
+// not read from src/data/compare.ts, so a link dropped from the data fails too; texts from the data)
+// and its five texts. It does not check that the wording still matches the lines it restates, which
+// card a link sits in, the cards' headings or the section's place on the page.
+test('seo — /compare: the AI website builder or AI coding assistant section links its five targets and holds its five texts', async ({ page }) => {
+  await page.goto('/compare');
+  const section = page.locator('section#builder-or-assistant');
+  await expect(section, 'the section').toHaveCount(1);
+  const B = BUILDER_OR_ASSISTANT;
+  const links = section.locator('a');
+  const expected = [
+    ['#apps', B.builder.links[0].label],
+    ['#skills', B.assistant.links[0].label],
+    ['#claude-code', B.assistant.links[1].label],
+    ['#hosted', B.drag.link.label],
+    ['#wrong-choice', B.limit.link.label],
+  ] as const;
+  await expect(links, 'the links of the section').toHaveCount(expected.length);
+  for (const [i, [href, label]] of expected.entries()) {
+    await expect(links.nth(i), `link ${i + 1} of the section`).toHaveAttribute('href', href);
+    await expect(links.nth(i), `link ${i + 1} of the section`).toHaveText(label);
+  }
+  for (const [name, text] of Object.entries({ what: B.what, builder: B.builder.text, assistant: B.assistant.text, drag: B.drag.text, limit: B.limit.text })) {
+    await expect(section, `the section does not hold the ${name} text`).toContainText(text);
   }
 });
 
