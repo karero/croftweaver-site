@@ -93,7 +93,7 @@ export const GUIDE = [
 ] as const;
 
 // The section "AI website builder or AI coding assistant?" on /compare, after the guide. It sums up
-// the groups and the Claude Code section it links, restating their lines.
+// the groups and the sections it links, restating their lines.
 export const BUILDER_OR_ASSISTANT = {
   what: 'Both start from what you write in plain language. On this page, the AI website builders are the AI app builders: you describe the site in a chat, and the service builds it and runs it. Claude Code, an AI coding assistant, works in your project: it reads your codebase, edits files and runs commands.',
   builder: {
