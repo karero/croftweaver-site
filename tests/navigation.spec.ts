@@ -394,6 +394,7 @@ test('header — on a phone the menu is folded, opens on its button and closes o
   }
   await expect(nav.locator('.group-button:visible'), 'a group button shows on a phone').toHaveCount(0);
   await expect(nav.getByRole('link', { name: 'Get it on GitHub', exact: true })).toHaveAttribute('href', SITE.repo);
+  await expect(nav.getByRole('link', { name: 'Guide', exact: true })).toHaveAttribute('href', 'https://guide.croftweaver.com/');
   for (const target of [button, ...(await headerLinks(page).all())]) {
     const box = await target.boundingBox();
     expect(box!.height, `"${await target.innerText()}" is shorter than the 44px tap target (BRAND.md)`).toBeGreaterThanOrEqual(44);
@@ -1105,3 +1106,45 @@ test('support — "Help for hire" comes last, after the security section, and li
   await expect(page.locator('main a[href*="m-squad.com"]'), 'the only M-Squad link on /support').toHaveCount(1);
   await expect(section, 'the approved wording').toHaveText('Croftweaver is free, and you do not need paid help to use it. If your team would rather work on a live site with the person who builds it, Daniel Melter offers that through M-Squad, the studio he leads in Munich. What this help covers');
 });
+
+// Site-specific (not in the shipped suite): the links to the guide (https://guide.croftweaver.com/), written out here so a
+// typo in config.ts cannot agree with itself. "Guide" is a header item beside "Get it on GitHub", outside NAV: the header
+// tests open every NAV link on this site, and the guide is another site.
+test('guide — on a wide screen "Guide" stands beside "Get it on GitHub" in the header and goes to the guide', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto('/');
+  const guide = page.locator('.site-header nav > ul > li > a[href="https://guide.croftweaver.com/"]');
+  await expect(guide).toHaveText('Guide');
+  await expect(guide).toBeVisible();
+  await expect(guide.locator('xpath=ancestor::li[1]/following-sibling::li[1]/a'), 'the item after Guide is not GitHub').toHaveText('Get it on GitHub');
+});
+
+test('guide — every page links the guide once in the footer, and the SEO checklist links the guide\'s checklist', async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    await expect(page.locator('.site-footer .footer-nav a[href="https://guide.croftweaver.com/"]'), `${path}: the footer link to the guide`).toHaveText(['Guide']);
+  }
+  await page.goto('/ai-website-seo-checklist');
+  await expect(page.locator('main a[href="https://guide.croftweaver.com/ai-seo-checklist"]')).toHaveCount(1);
+});
+
+test('guide — llms.txt lists the guide', () => {
+  const txt = readFileSync(new URL('../public/llms.txt', import.meta.url), 'utf8');
+  expect(txt).toContain('- [Guide](https://guide.croftweaver.com/):');
+});
+
+// The default test font is narrower than the wide fonts the fold is measured for (see Header.astro), so the test "at the
+// narrowest width where the items are not folded they stand in one row" passes with a fold set too low. This one forces
+// Verdana (DejaVu Sans where it is missing) and fails loudly if the font did not come out wide: the item row is 838 px or
+// more in Verdana on every page, and a narrower font would let a fold set too low pass.
+for (const path of PAGES) {
+  test(`guide — on ${path}, in a wide font, the items stand in one row at the narrowest width where they are not folded`, async ({ page }) => {
+    await page.goto(path);
+    await page.addStyleTag({ content: '* { font-family: Verdana, "DejaVu Sans", sans-serif !important; }' });
+    const width = await narrowestUnfolded(page);
+    const rowWidth = await page.locator('.site-header nav > ul').evaluate((ul) => ul.lastElementChild!.getBoundingClientRect().right - ul.firstElementChild!.getBoundingClientRect().left);
+    expect(rowWidth, `${path}: the forced font did not come out wide (the item row is ${rowWidth} px at ${width} px), so this test would not catch a fold set too low`).toBeGreaterThanOrEqual(800);
+    const rows = await itemRows(page);
+    expect(rows, `${path}: the header items wrap onto ${rows} rows at ${width} px, the narrowest width where they are not folded`).toBe(1);
+  });
+}
