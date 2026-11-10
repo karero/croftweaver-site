@@ -10,7 +10,7 @@ import aiCsv from '../../public/data/croftweaver-com-ai-check.csv?raw';
 import searchCsv from '../../public/data/croftweaver-com-search-console.csv?raw';
 import { LOG, PR_REPOS, PRIVATE_REPOS, newestTestCount, type Entry } from './case-study-log';
 
-export const UPDATED = { iso: '2026-11-02', label: '2 November 2026' } as const;
+export const UPDATED = { iso: '2026-11-10', label: '10 November 2026' } as const;
 export const LAUNCH = { iso: '2026-10-12', label: '12 October 2026' } as const;
 
 const realDay = (s: string) => {
