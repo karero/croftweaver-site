@@ -1128,6 +1128,11 @@ test('guide — every page links the guide once in the footer, and the SEO check
   await expect(page.locator('main a[href="https://guide.croftweaver.com/ai-seo-checklist"]')).toHaveCount(1);
 });
 
+test('guide — the home page links the guide once in its text', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('main a[href="https://guide.croftweaver.com/"]')).toHaveText(['The free Croftweaver Guide']);
+});
+
 test('guide — llms.txt lists the guide', () => {
   const txt = readFileSync(new URL('../public/llms.txt', import.meta.url), 'utf8');
   expect(txt).toContain('- [Guide](https://guide.croftweaver.com/):');
