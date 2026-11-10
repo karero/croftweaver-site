@@ -32,5 +32,5 @@ the counts are what each pull request reports.
 ## Verdict
 
 DIFF gate clean on the head of this branch: no open BUG; one RISK refuted with evidence. 2 rounds,
-6 findings (2 BUG, 1 RISK, 2 NIT, plus one out-of-scope pair). Cost: 123,255 reviewer tokens logged
+5 findings (2 BUG, 1 RISK, 2 NIT), and 2 out-of-scope NITs left as follow-ups. Cost: 123,255 reviewer tokens logged
 (2 runs gave no figure).
