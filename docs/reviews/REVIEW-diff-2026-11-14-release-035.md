@@ -1,5 +1,5 @@
 # DIFF review: croftweaver.com for Croftweaver 0.35
-Base `d07e531` · depth: Normal · verdict: CLEAN at round 5 (no BUG or RISK from either seat) · 5 rounds, 27 findings before deduplication
+Base `d07e531` · depth: Normal · verdict: CLEAN at round 5 (no BUG or RISK from either seat) · 5 rounds, 28 findings before deduplication
 
 Task: the site update for release 0.35 (tag `8825573b`, 40 skills, new `website-new-page`), per the toolkit's release runbook, Step 7. Seats: Codex gpt-6.1-sol (read-only, medium) and GLM 5.3 on melious, every round. Claims sweep before round 1 narrowed three sentences (commit `446c991`).
 
