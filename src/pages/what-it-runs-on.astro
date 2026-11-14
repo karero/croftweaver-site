@@ -5,7 +5,7 @@
 // address and adds Astro, the assistant, the checks and where a shop fits. Plan, review trail and the
 // source of every claim: the private hub's what-it-runs-on/ (PAGE-PLAN.md, REVIEW-plan-2026-10-22.md);
 // the vendor readings and the DIFF-gate trail are in this repository, under docs/reviews/.
-// Every vendor figure is dated READ (22 October) or READ_2 (23 October) and linked; read them again before
+// Every vendor figure is dated READ (22 October), READ_2 (23 October) or READ_3 (14 November) and linked; read them again before
 // changing the page.
 // The page claims no ranking, no price a vendor does not state, no endorsement by a vendor, and
 // never "free" without its limits.
@@ -22,8 +22,11 @@ const RUNS = `${SITE.repo}/blob/main/docs/WHAT-THE-SKILLS-RUN.md`;
 const START = `${SITE.repo}/blob/main/docs/GETTING-STARTED.md`;
 const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
 const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
-const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
-const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/astro/functions/_middleware.ts`; // navigationSkip()
+const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script only" paragraph
+const SERVER_FUNCTION = `${SITE.repo}/blob/v0.34/skills/new-website/templates/astro/functions/_middleware.ts`; // navigationSkip(); the last release with server mode
+const READ_3 = '14 November 2026'; // Cloudflare's static assets billing page, read for release 0.35
+const SERVER_GUIDE = `${SITE.repo}/blob/v0.34/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
+const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
 ---
 <Base
   title="What it runs on: Astro, Cloudflare, GitHub"
@@ -78,9 +81,9 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
         <h3><a href="#cloudflare">Cloudflare</a></h3>
         <p>Builds the site from GitHub and serves it. It can also hold your domain's records.</p>
         <ul class="made" role="list" aria-label="Made of">
-          <li>Pages: build and host</li>
+          <li>Workers: build and host</li>
           <li>CDN and DNS</li>
-          <li>A small function</li>
+          <li>Preview links</li>
         </ul>
       </div>
       <div class="link down" aria-hidden="true">
@@ -211,18 +214,23 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
       works</a>, read {READ_2}). That also ties a site's availability to Cloudflare's.
     </p>
     <p>
-      Cloudflare builds the site from GitHub and serves it. Every pull request from a branch in your
+      Since release 0.35 a new site runs as a Worker: Cloudflare builds it from GitHub, or you publish it
+      from your computer, and Cloudflare serves the built files. A site made before 0.35 runs on Cloudflare
+      Pages and keeps working there. On Pages, every pull request from a branch in your
       repository gets its own preview address; a pull request from a fork gets none
       (<a href="https://developers.cloudflare.com/pages/configuration/preview-deployments/">Cloudflare's preview deployments, read {READ}</a>).
     </p>
     <h3>What the free plan covers</h3>
     <p>
-      The free plan covers a small static site. For Pages it allows 500 builds a month, one build at a
+      The free plan covers a small static site. Cloudflare says that requests to a Worker's static assets are
+      free and unlimited
+      (<a href="https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/">Cloudflare's static assets billing, read {READ_3}</a>).
+      A new site's Worker has no code of its own, so it serves nothing else. For Pages the free plan allows 500 builds a month, one build at a
       time, 20,000 files per site, 25 MiB per file and 100 custom domains per project
       (<a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare's limits, read {READ}</a>).
     </p>
     <p>
-      One small function runs on every request to a Croftweaver site. It keeps preview copies out of
+      On a site made before release 0.35, one small function runs on every request. It keeps preview copies out of
       search engines and sends the <code>pages.dev</code> address to your own domain, and in the optional
       server mode for Plausible it also counts visits. Cloudflare says that
       once a Pages project has a function,
@@ -253,9 +261,11 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
       available on every plan, and it needs your DNS at Cloudflare. It is not a mailbox of its own.
     </p>
     <p>
-      Cloudflare now recommends Workers for new projects. The toolkit deploys to Pages, which
-      Cloudflare still offers on every plan
-      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ}</a>).
+      Cloudflare now recommends Workers for new projects, and since release 0.35 the toolkit deploys new
+      sites to Workers. Pages, which Cloudflare still offers on every plan
+      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ}</a>), keeps
+      serving older sites. You do not have to move; for advanced users, a script moves a site from Pages to
+      Workers, and <a href={MOVE}>the toolkit's guide</a> says what you decide, do and see along the way.
     </p>
   </section>
 
@@ -303,13 +313,14 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
       yourself (<a href="https://plausible.io/docs/self-hosting">Plausible's self-hosting guide</a>, read {READ_2}).
     </p>
     <p>
-      There are two ways to count. By default a small script in the visitor's browser sends the visit to
-      Plausible. In the optional server mode no script runs on the visitor's device: the site's Cloudflare
+      A small script in the visitor's browser sends the visit to Plausible. Sites made before release 0.35
+      could also choose server mode, which the toolkit no longer offers, because a Worker with no code of its
+      own cannot run it. In server mode no script runs on the visitor's device: the site's Cloudflare
       function sends each page view instead. Server mode also counts visitors who block scripts, and it skips
       requests that do not look like a browser opening a page, which keeps out many crawlers and scripts
       (<a href={SERVER_FUNCTION}>the function's code</a>). In return it loses scroll depth and engaged time, it
       passes the visitor's IP address on to Plausible, and it uses the function's daily request allowance
-      (<a href={SCRIPT_OR_SERVER}>the toolkit's guide</a>).
+      (<a href={SERVER_GUIDE}>the toolkit's guide at release 0.34</a>).
     </p>
     <p>
       There is also a third way: leave Plausible off and add nothing. Cloudflare's own counts, described above,
@@ -320,9 +331,7 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
     </p>
     <p>
       Plausible says it uses no cookies and no persistent identifiers
-      (<a href="https://plausible.io/data-policy">its data policy</a>, read {READ_2}). The toolkit's guide calls
-      server mode, which reads nothing from the visitor's device, a stronger position, and not a way out of a
-      review. Analytics is optional: it stays off until you switch it on.
+      (<a href="https://plausible.io/data-policy">its data policy</a>, read {READ_2}). Analytics is optional: it stays off until you switch it on.
     </p>
     <p class="verdict"><strong>No cookie banner*</strong></p>
     <p class="footnote">
@@ -410,8 +419,8 @@ const SERVER_FUNCTION = `${SITE.repo}/blob/main/skills/new-website/templates/ast
     <h2>What you can swap</h2>
     <p>
       The pages are static files, and any web host can serve them. The setup around them is written for
-      Cloudflare Pages: the publish script, the previews, the headers file, the small function and, if you
-      add it, Keystatic's GitHub mode. Another host means replacing those parts or doing without them.
+      Cloudflare: the publish script, the previews, the headers file and, if you add it, Keystatic's GitHub
+      mode, and on a site made before release 0.35 the small function. Another host means replacing those parts or doing without them.
     </p>
     <h3 id="shop">Where a shop fits</h3>
     <p>

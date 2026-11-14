@@ -7,11 +7,11 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 // Edit both by hand, and only after re-reading this page against that release.
-const REVIEWED = { version: '0.34', iso: '2026-10-28', label: '28 October 2026' } as const;
+const REVIEWED = { version: '0.35', iso: '2026-11-14', label: '14 November 2026' } as const;
 
 const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
-  { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
+  { title: 'Checks that cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. The starter has had a test for leftover template slots and filler text since release 0.30.' },
   { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Next are listings in Anthropic's and OpenAI's own plugin directories." },
   { title: 'Import of an existing site', text: "Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests. Four parts are still to build: taking the content out, including what a count from outside cannot see; bringing it in as pages, with its images; rebuilding the old page layouts and the brand; and settling how the old site's forms and regularly updated records, such as events, work after the move. They will be built during the first real moves, and what a second move repeats goes into Croftweaver." },
 ];
@@ -55,7 +55,7 @@ const out = [
     <ul class="steps">
       <li><strong>Proof from more than one site.</strong> <a href="/proof">The proof page</a> shows one.</li>
       <li><strong>A lock on publishing.</strong> The tests run by default, but a person can still publish a build that failed. <a href="/checks">The test gate</a> says where.</li>
-      <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. For WordPress, a helper counts what a site holds before a move, writes the forwarding from your decisions, and after the move checks each old address it found; moving the content itself is still done by hand, with your assistant. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
+      <li><strong>Import.</strong> Croftweaver cannot yet bring the content and structure of an existing site into its starter. For WordPress, a helper counts what a site holds before a move, writes the forwarding from your decisions, and after the move checks each old address it found; moving the content itself is still done by hand, with your assistant. For one page at a time, the new-page helper first saves the old page's headings, downloads, forms and embeds, and four weeks after go-live compares the page's clicks before and after. Checking and improving a site where it already lives works today: <a href="/established-sites">Croftweaver for established sites</a>.</li>
       <li><strong>Codex and Antigravity on more than one site.</strong> Each has been tested from start to finish on one site; Claude Code is the assistant Croftweaver is developed and used with.</li>
     </ul>
   </section>
@@ -68,14 +68,15 @@ const out = [
   </section>
 
   <section class="wrap" id="done">
-    <h2>Done in release 0.34</h2>
+    <h2>Done in release 0.35</h2>
     <ul class="steps">
-      <li><strong>A check before launch.</strong> A new helper runs the site's tests, then checks what they cannot, such as the legal pages and what only the live site shows, and writes a dated report with a verdict. For a site that replaces an older one, it lists where every old address should point.</li>
-      <li><strong>Pages that stay light on phones, and a safer start.</strong> New sites get a test that catches pictures far bigger than a phone shows, and your assistant runs the speed test itself. Setting up a site no longer waits for a key press, never picks a hidden folder, and keeps your keys out of git from the first step.</li>
+      <li><strong>Every new page judged before it is built.</strong> Your assistant writes a new page, an article or a rewrite out as one document. A fresh reviewer reads it as your visitor would, and for search and AI answers. You approve the exact sentences, and after the build a check makes sure the page kept them.</li>
+      <li><strong>New sites on Cloudflare Workers.</strong> New sites start on Workers, and you can publish one straight from your computer, with no GitHub connection. For advanced users, a script moves a live site from Pages to Workers, and <a href={`${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`}>a guide</a> says what you decide, do and see along the way. A site on Pages keeps working there.</li>
+      <li><strong>A launch check that reads your Cloudflare settings.</strong> At the live re-check, your assistant walks you through five places in the Cloudflare dashboard and writes down what they show.</li>
     </ul>
     <p>
       The rest of what the release brought is in
-      <a href={`${SITE.repo}/releases/tag/v0.34`}>its release notes</a>.
+      <a href={`${SITE.repo}/releases/tag/v0.35`}>its release notes</a>.
     </p>
   </section>
 

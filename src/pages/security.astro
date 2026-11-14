@@ -313,7 +313,8 @@ const controls = [
   <section class="wrap" id="cloudflare">
     <h2>What Cloudflare handles</h2>
     <p>
-      A Croftweaver site is served by Cloudflare Pages. These are statements from Cloudflare's own
+      croftweaver.com, like every Croftweaver site made before release 0.35, is served by Cloudflare Pages;
+      since 0.35, new sites start on Cloudflare Workers. These are statements from Cloudflare's own
       documentation, each with its page and the date the page was last updated. What Cloudflare does is
       Cloudflare's to promise. This page repeats what it says, and says nothing where the documentation is
       silent.
@@ -493,8 +494,8 @@ const controls = [
   <section class="wrap" id="risks">
     <h2>What can still go wrong with a static website</h2>
     <p>
-      A Croftweaver page is built in advance and served as a file. The only server-side code that runs for a visit is one
-      short function on Cloudflare's platform (see <a href="#runs">what runs</a>). Scripts that run in the
+      A Croftweaver page is built in advance and served as a file. On a site made before release 0.35, the only server-side code that runs for a visit is one
+      short function on Cloudflare's platform (see <a href="#runs">what runs</a>); a new site starts with none of its own. Scripts that run in the
       visitor's browser are another way in, covered under <a href="#risk-scripts">A script from someone
       else</a> below. So the ways into a static
       site are mostly about access: the accounts that can publish it, the DNS records that point to it, the
