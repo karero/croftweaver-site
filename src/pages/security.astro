@@ -125,7 +125,7 @@ const controls = [
         <article class="path" aria-labelledby="cw-in-h">
           <h3 id="cw-in-h">A Croftweaver site</h3>
           <ul class="steps-list">
-            <li class="step is-code"><span class="tag">On a visit</span><span>The site's functions: one on croftweaver.com.</span></li>
+            <li class="step is-code"><span class="tag">On a visit</span><span>The site's functions: one on croftweaver.com, none on a new site.</span></li>
             <li class="step"><span class="tag">Another way</span><span>The accounts behind the site: GitHub, Cloudflare, the domain registrar and DNS.</span></li>
             <li class="step"><span class="tag">Another way</span><span>The build, its tokens and the packages it is built with.</span></li>
             <li class="step"><span class="tag">Another way</span><span>Scripts from other domains.</span></li>
@@ -152,7 +152,7 @@ const controls = [
       <strong>What a static website removes:</strong> the software that builds a page on a server for each
       visit. A Croftweaver page is a file built in advance, and the Croftweaver template holds no PHP files.
       Cloudflare's documentation says that by default a site's functions still run on each request.
-      croftweaver.com has one, and the template two (see <a href="#runs">what runs</a>).
+      croftweaver.com has one. The template had two up to release 0.34; since 0.35 it has none (see <a href="#runs">what runs</a>).
     </p>
     <p><strong>What stays:</strong></p>
     <ul class="steps">
@@ -160,7 +160,7 @@ const controls = [
       <li>The npm packages the site is built with, which need security updates.</li>
       <li>The build, which can run other people's code with your secrets within reach.</li>
       <li>Scripts that the pages load from other domains.</li>
-      <li>The site's functions on Cloudflare.</li>
+      <li>The site's functions on Cloudflare, where it has any.</li>
     </ul>
     <p>Fewer moving parts, not none. Owner means you: the person or company that runs the site. Who looks after what:</p>
     <div class="table-wrap stack long-head" role="region" aria-label="Who provides each security setting: the hosting, the template, the toolkit's launch steps or the owner" tabindex="0">
@@ -247,7 +247,7 @@ const controls = [
         <h3 id="cw-h">A Croftweaver site</h3>
         <ol class="steps-list">
           <li class="step"><span class="tag">Visitor</span><span>The browser asks for the page.</span></li>
-          <li class="step is-code"><span class="tag">Runs code</span><span>According to Cloudflare's documentation, one short function of the site runs on each request. On croftweaver.com it passes the request on unchanged.</span></li>
+          <li class="step is-code"><span class="tag">Runs code</span><span>According to Cloudflare's documentation, one short function runs on each request; on croftweaver.com it passes it on unchanged. New sites have none.</span></li>
           <li class="step is-file"><span class="tag">No code</span><span>Cloudflare hands back a file that was built in advance.</span></li>
           <li class="step"><span class="tag">Visitor</span><span>The page arrives.</span></li>
         </ol>
@@ -260,7 +260,8 @@ const controls = [
     </p>
     <ul class="proof">
       <Claim as="li" id="site-one-function">croftweaver.com has one function, <code>functions/_middleware.ts</code>. On its own domain it passes each request on unchanged. On its <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim>
-      <Claim as="li" id="template-two-functions">The Croftweaver template has two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
+      <Claim as="li" id="template-two-functions">Up to release 0.34, the Croftweaver template had two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
+      <li>Since release 0.35 a new site is a Worker that serves its built files and has no code of its own (<a href="https://github.com/karero/croftweaver/blob/v0.35/skills/new-website/templates/astro/wrangler.jsonc">the template's Worker settings at release 0.35</a>).</li>
       <Claim as="li" id="functions-all-requests">Cloudflare's documentation says that once a Pages project has a function, every request calls it by default, unless a routes file leaves some out.</Claim>
       <Claim as="li" id="function-runs-on-static">On the preview address of croftweaver.com a static file carries <code>x-robots-tag: noindex, nofollow</code>, the header that the function adds, so the function does run for static files there. The live domain's response is unchanged by the function, so the function could not be observed in production.</Claim>
     </ul>
@@ -279,7 +280,7 @@ const controls = [
           <tr role="row">
             <th scope="row" role="rowheader">Code that runs for a visit</th>
             <td role="cell" data-label="A WordPress site">PHP, WordPress and its plugins, except for a response that a page cache serves before PHP runs.</td>
-            <td role="cell" data-label="A Croftweaver site">croftweaver.com: one function. The template: two.</td>
+            <td role="cell" data-label="A Croftweaver site">croftweaver.com: one function. The template: two up to release 0.34, none since 0.35.</td>
           </tr>
           <tr role="row">
             <th scope="row" role="rowheader">Where the content is kept</th>

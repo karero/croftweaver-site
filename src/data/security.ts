@@ -226,4 +226,4 @@ export function readPhrase(): string {
 
 // The day the page's content last changed, set by hand (as on /privacy and /terms). Move it with every change to the
 // text or the claims; the check refuses a day before READ_LAST or more than one day ahead of today (UTC).
-export const UPDATED = { iso: '2026-11-07', label: '7 November 2026' } as const;
+export const UPDATED = { iso: '2026-11-14', label: '14 November 2026' } as const;
