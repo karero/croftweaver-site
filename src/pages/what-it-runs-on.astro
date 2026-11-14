@@ -24,7 +24,7 @@ const AGENTS = `${SITE.repo}/blob/main/skills/new-website/templates/AGENTS.md`;
 const DEPLOY = `${SITE.repo}/blob/main/skills/new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`;
 const SCRIPT_OR_SERVER = `${SITE.repo}/blob/main/skills/new-website/SKILL.md`; // its "Script only" paragraph
 const SERVER_FUNCTION = `${SITE.repo}/blob/v0.34/skills/new-website/templates/astro/functions/_middleware.ts`; // navigationSkip(); the last release with server mode
-const READ_3 = '14 November 2026'; // Cloudflare's static assets billing page, read for release 0.35
+const READ_3 = '14 November 2026'; // read for release 0.35: Cloudflare's static assets billing, Workers Builds limits and Pages pages
 const SERVER_GUIDE = `${SITE.repo}/blob/v0.34/skills/new-website/SKILL.md`; // its "Script or server mode" paragraph
 const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
 ---
@@ -225,7 +225,10 @@ const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
       The free plan covers a small static site. Cloudflare says that requests to a Worker's static assets are
       free and unlimited
       (<a href="https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/">Cloudflare's static assets billing, read {READ_3}</a>).
-      A new site's Worker has no code of its own, so it serves nothing else. For Pages the free plan allows 500 builds a month, one build at a
+      A new site's Worker has no code of its own, so it serves nothing else. Built by Cloudflare from GitHub, a
+      Worker gets 3,000 build minutes a month on the free plan, one build at a time and 20 minutes per build
+      (<a href="https://developers.cloudflare.com/workers/ci-cd/builds/limits-and-pricing/">Cloudflare's Workers Builds limits, read {READ_3}</a>).
+      For Pages the free plan allows 500 builds a month, one build at a
       time, 20,000 files per site, 25 MiB per file and 100 custom domains per project
       (<a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare's limits, read {READ}</a>).
     </p>
@@ -263,7 +266,7 @@ const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
     <p>
       Cloudflare now recommends Workers for new projects, and since release 0.35 the toolkit deploys new
       sites to Workers. Pages, which Cloudflare still offers on every plan
-      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ}</a>), keeps
+      (<a href="https://developers.cloudflare.com/pages/">Cloudflare's Pages page, read {READ_3}</a>), keeps
       serving older sites. You do not have to move; for advanced users, a script moves a site from Pages to
       Workers, and <a href={MOVE}>the toolkit's guide</a> says what you decide, do and see along the way.
     </p>
