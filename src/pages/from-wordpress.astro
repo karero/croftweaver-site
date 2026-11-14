@@ -63,7 +63,7 @@ const reasons = [
 const changesCols = ['Area', 'With Croftweaver', 'The limit'];
 
 const changes = [
-  { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare. No database, no admin login, no plugins running on a server.', limit: 'On a site made before release 0.35, a small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day; a new site has none. The site also depends on packages from npm, which still need security updates.' },
+  { item: 'What runs on the server', text: 'Plain pages, built ahead of time and served by Cloudflare. No database, no admin login, no plugins running on a server.', limit: 'On a site still on Cloudflare Pages, a small function of the site’s own runs on each request and counts against the free plan’s 100,000 requests a day; a new site has none. The site also depends on packages from npm, which still need security updates.' },
   { item: 'Updates', text: 'A new site names three packages directly, about 350 with everything they bring along. The launch checklist switches on GitHub’s security alerts for them.', limit: 'Fewer moving parts, not none. Version updates are not automatic.' },
   { item: 'Speed', text: `Static pages, with image sizes and formats checked by a test. ${speedFigure}`, limit: 'One PageSpeed run per site, shown on the more proof page. No speed test runs on each change; PageSpeed is a check you run.' },
   { item: 'Design', text: 'No page builder. The pages are plain files your assistant edits, with one set of colours, type and spacing.', limit: 'Pages laid out in a builder are rebuilt, not converted.' },

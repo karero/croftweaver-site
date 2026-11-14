@@ -56,6 +56,7 @@ const READ_LIVE = '2026-10-22'; // commands run against the live site, and the r
 const READ_RFC = '2026-10-22'; // RFC 9116
 const READ_RISKS = '2026-10-23'; // the section #risks: Google, Spamhaus, CISA, GitHub, Cloudflare, Astro, Patchstack, Sansec, the news report on SubdoMailing, the GitHub Advisory Database
 const READ_AI = '2026-10-23'; // the evergreen judgment in #safer: the PHP Foundation, Wiz, The Record, php.net's news of 23 October
+const READ_TEMPLATE_035 = '2026-11-14'; // the template at release 0.35, for template-worker-none
 const READ_CF_LIMITS = '2026-10-23'; // Cloudflare's Pages pricing and routing pages, for the daily allowance in #limits
 
 const PHPF = 'https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/';
@@ -108,6 +109,7 @@ export const CLAIMS: Claim[] = [
   { id: 'template-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver && cd croftweaver && git checkout 3b8a6c5f && find skills/new-website/templates/astro -name '*.php' | wc -l", read: READ_REPO },
   { id: 'site-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && git ls-files | grep -c '\\.php$'", read: READ_REPO },
   { id: 'site-one-function', kind: 'file', source: 'functions/_middleware.ts', lines: 'L60-L74', read: READ_REPO },
+  { id: 'template-worker-none', kind: 'url', source: 'https://github.com/karero/croftweaver/blob/v0.35/skills/new-website/templates/astro/wrangler.jsonc', label: 'the template at release 0.35', read: READ_TEMPLATE_035 },
   { id: 'template-two-functions', kind: 'url', source: `${TEMPLATE_AT}/functions`, label: 'the template at 3b8a6c5f', read: READ_REPO },
   { id: 'functions-all-requests', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/routing/', label: 'Cloudflare docs, Pages Functions routing', read: READ_CLOUDFLARE },
   { id: 'function-runs-on-static', kind: 'command', source: 'curl -sI https://main.croftweaver-site.pages.dev/favicon.svg | grep -i x-robots-tag', read: READ_LIVE },

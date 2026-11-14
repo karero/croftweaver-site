@@ -230,9 +230,9 @@ const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
       (<a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare's limits, read {READ}</a>).
     </p>
     <p>
-      On a site made before release 0.35, one small function runs on every request. It keeps preview copies out of
-      search engines and sends the <code>pages.dev</code> address to your own domain, and in the optional
-      server mode for Plausible it also counts visits. Cloudflare says that
+      On a site still on Cloudflare Pages, one small function runs on every request. It keeps preview copies out of
+      search engines and sends the <code>pages.dev</code> address to your own domain, and where the site
+      already runs server mode for Plausible it also counts visits. Cloudflare says that
       once a Pages project has a function,
       <a href="https://developers.cloudflare.com/pages/functions/routing/">all requests invoke it by default</a>.
       So the free plan's limit of 100,000 requests a day
@@ -419,8 +419,8 @@ const MOVE = `${SITE.repo}/blob/v0.35/docs/MOVE-TO-WORKERS.md`;
     <h2>What you can swap</h2>
     <p>
       The pages are static files, and any web host can serve them. The setup around them is written for
-      Cloudflare: the publish script, the previews, the headers file, the small function on a site made
-      before release 0.35 and, if you add it, Keystatic's GitHub mode. Another host means replacing those parts or doing without them.
+      Cloudflare: the publish script, the previews, the headers file, the small function on a site still on
+      Pages and, if you add it, Keystatic's GitHub mode. Another host means replacing those parts or doing without them.
     </p>
     <h3 id="shop">Where a shop fits</h3>
     <p>

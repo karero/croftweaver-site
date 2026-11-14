@@ -261,7 +261,7 @@ const controls = [
     <ul class="proof">
       <Claim as="li" id="site-one-function">croftweaver.com has one function, <code>functions/_middleware.ts</code>. On its own domain it passes each request on unchanged. On its <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim>
       <Claim as="li" id="template-two-functions">Up to release 0.34, the Croftweaver template had two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
-      <li>Since release 0.35 a new site is a Worker that serves its built files and has no code of its own (<a href="https://github.com/karero/croftweaver/blob/v0.35/skills/new-website/templates/astro/wrangler.jsonc">the template's Worker settings at release 0.35</a>).</li>
+      <Claim as="li" id="template-worker-none">Since release 0.35 a new site is a Worker that serves its built files and has no code of its own.</Claim>
       <Claim as="li" id="functions-all-requests">Cloudflare's documentation says that once a Pages project has a function, every request calls it by default, unless a routes file leaves some out.</Claim>
       <Claim as="li" id="function-runs-on-static">On the preview address of croftweaver.com a static file carries <code>x-robots-tag: noindex, nofollow</code>, the header that the function adds, so the function does run for static files there. The live domain's response is unchanged by the function, so the function could not be observed in production.</Claim>
     </ul>
@@ -495,7 +495,7 @@ const controls = [
   <section class="wrap" id="risks">
     <h2>What can still go wrong with a static website</h2>
     <p>
-      A Croftweaver page is built in advance and served as a file. On a site made before release 0.35, the only server-side code that runs for a visit is one
+      A Croftweaver page is built in advance and served as a file. On a site still on Pages, the only server-side code that runs for a visit is one
       short function on Cloudflare's platform (see <a href="#runs">what runs</a>); a new site starts with none of its own. Scripts that run in the
       visitor's browser are another way in, covered under <a href="#risk-scripts">A script from someone
       else</a> below. So the ways into a static
