@@ -36,7 +36,7 @@
 - Current release: 0.35, 14 November 2026. Release notes: https://github.com/karero/croftweaver/releases/tag/v0.35
 - Maintainer: Daniel Melter, Munich, Germany
 - Origin: GenAI Wednesday Munich (https://genai-wednesday.de/croftweaver)
-- Stack it builds: Astro, Markdown, GitHub, Cloudflare Workers (static-first; sites made before release 0.35 run on Cloudflare Pages)
+- Stack it builds: Astro, Markdown, GitHub, Cloudflare Workers (static-first; sites made before release 0.35 started on Cloudflare Pages)
 - A "croft" is a small Scottish farm worked and owned by its occupier; Croftweaver = your own plot of the web
 
 ## Authoritative on
