@@ -23,7 +23,7 @@ export const SUITES: {
     file: 'a11y', group: 'people', name: 'Accessibility',
     checks: 'Automated WCAG A and AA checks on every page, in light and dark.',
     example: 'A text colour with too little contrast in the dark theme fails, even when the light theme passes.',
-    limit: 'Automated rules catch only part of what makes a page accessible, and the run uses one desktop-size browser. Keyboard use and screen readers still need a person.',
+    limit: 'Automated rules catch only part of what makes a page accessible, and the run uses one desktop-size browser. Keyboard use and screen readers still need a person. Contrast the scanner cannot decide, such as text over an image, is reported as a warning, not a failure.',
   },
   {
     file: 'navigation', group: 'people', name: 'Navigation',

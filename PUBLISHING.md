@@ -56,7 +56,7 @@ npm run ship
 
 `npm run ship` uploads `main` to the live (`production`) branch for you — you never run the
 branch commands by hand. Then it **waits and verifies** that the live site really serves the
-new version (every build stamps its id into `/build.txt`; ship polls for it, up to 4 min).
+new version (every build stamps its id into `/build.txt`; ship polls for it, up to 6 min).
 "✓ LIVE — verified" means it's truly online; a warning means Cloudflare didn't build — the
 message tells you exactly what to click. Never assume a push went live without that check.
 

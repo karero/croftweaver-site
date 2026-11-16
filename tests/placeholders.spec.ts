@@ -133,7 +133,8 @@ async function noteIsVisible(page: Page): Promise<boolean> {
   return false;
 }
 // Also listed in skills/new-website/scripts/cloudflare-setup.mjs (its launch stop); change both.
-const LEGAL_LAST_SEGMENTS = ['privacy', 'datenschutz', 'impressum', 'legal-notice'];
+// 'imprint' is this site's own addition: its Legal Notice page is /imprint.
+const LEGAL_LAST_SEGMENTS = ['privacy', 'datenschutz', 'impressum', 'legal-notice', 'imprint'];
 const isLegalPage = (path: string) => LEGAL_LAST_SEGMENTS.includes(path.split('/').filter(Boolean).pop() ?? '');
 const hasLegalRecord = (readme: string) => LEGAL_RECORDS.some((re) => re.test(readme));
 
@@ -599,7 +600,7 @@ for (const path of PAGES) {
 
 // The legal pages' draft notice, pinned by example (AGENTS.md §5).
 test('placeholders — the draft notice rules pick the legal pages and read the answer', () => {
-  for (const p of ['/privacy', '/legal-notice', '/impressum', '/datenschutz', '/de/privacy', '/fr/privacy', '/de/impressum']) {
+  for (const p of ['/privacy', '/legal-notice', '/imprint', '/impressum', '/datenschutz', '/de/privacy', '/fr/privacy', '/de/impressum']) {
     expect(isLegalPage(p), `${p} is a legal page`).toBe(true);
   }
   for (const p of ['/', '/about', '/legal', '/privacy-policy', '/privacy/team', '/blog/privacy-tips']) {
