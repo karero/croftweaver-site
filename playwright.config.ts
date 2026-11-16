@@ -1,4 +1,5 @@
 import { chromium, defineConfig, devices } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 import { existsSync, readdirSync, realpathSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,6 +37,12 @@ function cloudChromium(): string | undefined {
 const cloudExecutable = cloudChromium();
 const launchOptions = cloudExecutable ? { executablePath: cloudExecutable } : {};
 
+// One random id per test run, made here in the main process before the build. The web server
+// (whose build writes it into dist/test-build-id.txt) and every worker inherit it; workers load
+// this file again, so they keep the inherited value. tests/served-build.spec.ts checks the server
+// sends this id, which catches another checkout's server and another build in this folder.
+if (!process.env.TEST_WORKER_INDEX) process.env.SITE_TEST_BUILD = randomUUID();
+
 // Tests run against a PRODUCTION build served by `astro preview` — the same static
 // output Cloudflare serves. Never test a dev mock of the thing you ship.
 export default defineConfig({
@@ -69,8 +76,7 @@ export default defineConfig({
     // short-circuits the check — use '1', not 'false': the string 'false' is
     // truthy too and "works", but reads as an off-switch and invites a future
     // edit that silently reintroduces this bug.
-    // SITE_TEST_BUILD makes scripts/build-marker.mjs write dist/test-build-id.txt, which
-    // tests/served-build.spec.ts compares with what the server answers.
-    env: { ASTRO_PREVIEW_BACKGROUND: '1', SITE_TEST_BUILD: '1' },
+    // SITE_TEST_BUILD, set above, reaches the build through the inherited environment.
+    env: { ASTRO_PREVIEW_BACKGROUND: '1' },
   },
 });

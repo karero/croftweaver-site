@@ -1,3 +1,4 @@
-suite_commit: 99b72e10d765ad0925b4598a7430d604b1d2c244
-copied: 2026-10-29
-left_out: analytics-server.spec.ts — needs functions/go/email, which this site does not have
+suite_commit: 8825573b75feddeaaba306f19b2abeb1752b09f4
+copied: 2026-11-15
+left_out: workers-config.spec.ts — it reads wrangler.jsonc, and this site is still on Cloudflare Pages, where it only skips
+kept: middleware.spec.ts — the 0.34 copy; 0.35 dropped it with Pages Functions, and this site still runs functions/_middleware.ts on Pages

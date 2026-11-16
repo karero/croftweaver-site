@@ -50,6 +50,12 @@ export const SUITES: {
     limit: 'It measures one phone size, in one browser, Chromium. SVG files are not judged, nor images used only as borders, cursors or shapes, and the saving is an estimate. It does not judge how sharp an image looks or which file format it uses.',
   },
   {
+    file: 'icons', group: 'people', name: 'Icons',
+    checks: 'Six icon files for browser tabs and phone home screens, and the logo the structured data names, are linked and served, each a real image at the size it must have.',
+    example: 'An icon the page links to but the site does not serve fails, and so does a PNG that decodes to the wrong size.',
+    limit: 'It checks files, not pictures: an icon in the wrong colour, or badly drawn, passes.',
+  },
+  {
     file: 'tables', group: 'people', name: 'Tables',
     checks: 'Every table on every page uses the shared table style. On a phone a table of sentences stacks into labelled rows and a table of numbers fits the screen; on a wider screen it is a table again, with no word broken across lines. A test table of each kind also runs on the home page, in light and dark.',
     example: 'A table of sentences that makes a phone scroll sideways at 320 px fails.',
