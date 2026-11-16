@@ -23,7 +23,7 @@ export const SUITES: {
     file: 'a11y', group: 'people', name: 'Accessibility',
     checks: 'Automated WCAG A and AA checks on every page, in light and dark.',
     example: 'A text colour with too little contrast in the dark theme fails, even when the light theme passes.',
-    limit: 'Automated rules catch only part of what makes a page accessible, and the run uses one desktop-size browser. Keyboard use and screen readers still need a person.',
+    limit: 'Automated rules catch only part of what makes a page accessible, and the run uses one desktop-size browser. Keyboard use and screen readers still need a person. Contrast the scanner cannot decide, such as text over an image, is reported as a warning, not a failure.',
   },
   {
     file: 'navigation', group: 'people', name: 'Navigation',
@@ -48,6 +48,12 @@ export const SUITES: {
     checks: 'Each page loads as a phone screen and scrolls to the end. A photo or other raster image the page downloads fails when it is more than 3.3 times as wide as it shows (three times, with a 10% allowance) and a copy that wide would save an estimated 4 KiB or more, or when it is downloaded but never shown and is 4 KiB or more.',
     example: 'A 63 KiB photo 1600 pixels wide, shown 372 pixels wide on a phone, fails: the test allows it 1228 pixels, and a copy that wide saves an estimated 26 KiB.',
     limit: 'It measures one phone size, in one browser, Chromium. SVG files are not judged, nor images used only as borders, cursors or shapes, and the saving is an estimate. It does not judge how sharp an image looks or which file format it uses.',
+  },
+  {
+    file: 'icons', group: 'people', name: 'Icons',
+    checks: 'Six icon files for browser tabs and phone home screens, and the logo the structured data names, are linked and served, each a real image at the size it must have.',
+    example: 'An icon the page links to but the site does not serve fails, and so does a PNG that decodes to the wrong size.',
+    limit: 'It checks files, not pictures: an icon in the wrong colour, or badly drawn, passes.',
   },
   {
     file: 'tables', group: 'people', name: 'Tables',

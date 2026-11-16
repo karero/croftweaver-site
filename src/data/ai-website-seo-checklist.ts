@@ -2,8 +2,8 @@
 // suite that covers each, what happened when we broke it, and what a pass does not prove.
 // The breaks, the commands and what failed: docs/ai-website-seo-checklist-breaks.md.
 //
-// Every "what happened" cell is something we saw, on 25 October 2026 (and the same on 22 October), in a copy of the starter at
-// toolkit version 0.33: we made one edit, ran the suite that covers it, and wrote down what failed.
+// Every "what happened" cell is something we saw, on 15 November 2026 (and the same on 25 and 22 October), in a copy of the
+// starter at toolkit version 0.35: we made one edit, ran the suite that covers it, and wrote down what failed.
 // The page prints no failure message word for word: several carry a long dash or a contraction,
 // which tests/tone.spec.ts rejects in body text.
 //
@@ -20,15 +20,13 @@
 import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 
 export const RED_RUNS = {
-  toolkit: '0.33',
+  toolkit: '0.35',
   node: '26',
-  nodeStarterAsks: '24',
-  iso: '2026-10-25',
-  label: '25 October 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: v0.34 (99b72e10). The breaks ran on v0.33
-  // (2026-10-25); at v0.34 the tests they use are unchanged (seo.spec.ts only gained the generator-tag
-  // test), and the baseline, T, C2 and break 15 were rerun there on 2026-10-29 (the breaks notes).
-  suiteCommit: '99b72e10d765ad0925b4598a7430d604b1d2c244',
+  nodeStarterAsks: '26',
+  iso: '2026-11-15',
+  label: '15 November 2026',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.35 (8825573b), where all the breaks ran.
+  suiteCommit: '8825573b75feddeaaba306f19b2abeb1752b09f4',
 } as const;
 
 const COVERED = ['seo', 'images', 'navigation', 'anchors'] as const;

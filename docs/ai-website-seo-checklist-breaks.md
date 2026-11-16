@@ -24,7 +24,7 @@ again when the toolkit changes. A row of the table is only as good as its break.
   `tests/seo.spec.ts` differs by 224 lines, `tests/images.spec.ts` by 62 and `tests/navigation.spec.ts`
   by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `a0fbfb18`,
   which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
-  specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it names `a1f30899`, which is `v0.33`,
+  specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it named `a1f30899`, which is `v0.33`; since 2026-11-16 it names `8825573b`, which is `v0.35`,
   the version of the last run. So the table
   describes the starter, and these breaks were not run against this site's copies.
 - 29 October 2026, at `v0.34` (`99b72e10`), Node v26.13.0, Playwright 1.64.1, the starter copied out the
@@ -33,7 +33,16 @@ again when the toolkit changes. A row of the table is only as good as its break.
   the generator tag. So the breaks were not all run again. Rerun: the baseline (115 passed and 1 skipped;
   most of the new ones are `phone-images.spec.ts`), the tie T and control C2 (10 passed each, one more
   than at `v0.33`: the generator-tag test), and break 15, which failed with the same message. The table
-  below gives the `v0.33` counts.
+  below gave the `v0.33` counts until the next run.
+- 15 November 2026, at `v0.35` (`8825573b`), Node v26.13.1 (the starter's `.nvmrc` now says 26), npm 11.20.0,
+  Playwright 1.65.0 from the starter's lockfile, every run with `--workers=1` at a load average of 80 to 310.
+  All eighteen lines were run again, because the template's `seo.spec.ts`, `_helpers.ts`, `public/robots.txt`,
+  `playwright.config.ts` and `package.json` changed. One step comes before the baseline now: the starter as
+  copied has no icon files, and `node scripts/make-icons.mjs --setup` refuses while `SITE.name` is the
+  starter's "Example", so `SITE.name` was set to "Probe" and the icons made. Baseline: 97 passed and 1 skipped
+  (fewer than at `v0.34` because the template dropped `analytics-server.spec.ts` and `middleware.spec.ts`).
+  Every break failed in the same test with the same message as before, and run 4 timed out again. The seo
+  spec has eleven tests now, so the tie and C2 pass 11. The table below gives these counts.
 
 ## The breaks
 
@@ -47,7 +56,7 @@ Some messages start with a heading line first (the images tests print `image iss
 | 1 | Title and description length | home title set so `<title>` is 63 characters | seo | head contract on `/` | `<title> "..." is 63 chars > 60` |
 | 2 | same | home description of 170 characters | seo | head contract on `/` | `meta description 170 chars > 160` |
 | 3 | same | home description of 100 characters | seo | head contract on `/` | `meta description 100 chars < 120 (wastes SERP space ...)` |
-| 4 | Canonical address | `<link rel="canonical">` deleted from `Base.astro` | seo | head contract on every page | a 30 second timeout, not a message: `locator.getAttribute: Test timeout of 30000ms exceeded`, call log `waiting for locator('link[rel="canonical"]')` (`seo.spec.ts:69`) |
+| 4 | Canonical address | `<link rel="canonical">` deleted from `Base.astro` | seo | head contract on every page | a 30 second timeout, not a message: `locator.getAttribute: Test timeout of 30000ms exceeded`, call log `waiting for locator('link[rel="canonical"]')` (`seo.spec.ts:71`) |
 | 5 | same | `canonical` built from `https://example.org` in `Base.astro` | seo | head contract on every page | `canonical must be the absolute production URL for this path` |
 | 6 | One main heading | a second `<h1>` on the home page | seo | head contract on `/` | `each page must have exactly one <h1>` |
 | C1 | control | one good image: alt, width and height, WebP, `loading="lazy"` | images | none | 3 passed |
@@ -59,8 +68,8 @@ Some messages start with a heading line first (the images tests print `image iss
 | 12 | Links to sections | `<a href="/#nope">` | anchors | every internal anchor points at an id | `dead internal anchor(s): [/] /#nope -> no element with id="nope" on "/"` |
 | 13 | The sitemap matches the pages | a new page `src/pages/extra.astro` not added to `PAGES` | seo | sitemap matches PAGES | `sitemap pages != PAGES ...` |
 | 14 | robots.txt does not close the site | `Allow: /` replaced by `Disallow: /` | seo | robots.txt stays open | `robots.txt blocks the whole site (Disallow: /) for these search crawlers ...` |
-| T | the tie (not a break) | `Disallow: /` added beside `Allow: /` | seo | none | 9 passed: the suite stays green |
-| C2 | control | a valid hreflang set on `/`: `en` and `x-default` | seo | none | 9 passed |
+| T | the tie (not a break) | `Disallow: /` added beside `Allow: /` | seo | none | 11 passed: the suite stays green |
+| C2 | control | a valid hreflang set on `/`: `en` and `x-default` | seo | none | 11 passed |
 | 15 | Hreflang | the set with `en` twice | seo | twin-page hreflang alternates | `/: duplicate hreflang codes in the cluster (en, en, x-default)` |
 
 Edits 7 to 10 add `<img src="/images/t.webp" alt="A test image" width="40" height="40" loading="lazy" />`

@@ -130,11 +130,11 @@ p { margin: 0 0 14px; }
 .groups .card { padding: 16px 24px; }
 .groups h3 { font-size: 20px; }
 .groups .list { padding-left: 20px; }
-.groups .card .list li { line-height: 1.25; margin-bottom: 2px; }
+.groups .card .list li { font-size: 18px; line-height: 1.25; margin-bottom: 2px; }
 .card.good { border-color: var(--brand); border-width: 2px; }
 .card .list { padding-left: 22px; }
 .card .list li { font-size: 20px; margin-bottom: 8px; }
-.stat { display: flex; align-items: baseline; gap: 20px; margin: 0 0 26px; }
+.stat { display: flex; align-items: baseline; gap: 20px; margin: 0 0 18px; }
 .stat strong { font-size: 84px; line-height: 1; color: var(--brand); }
 .stat span { font-size: 28px; line-height: 1.3; max-width: 900px; }
 a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
