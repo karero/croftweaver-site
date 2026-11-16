@@ -16,7 +16,7 @@
 #     date" and does not say they are the only ones, so this is stricter than the RFC on purpose: every leap
 #     second so far fell on one of them. The date
 #     maths uses Date.UTC on those parts and not Date.parse, so no Node version can read a date
-#     differently (CI uses Node 24, this was written on Node 26; Node 24 was not available to run it);
+#     differently (written on Node 26 while CI still ran Node 24, which was not available to run it);
 #   - Canonical (2.5.2): one of the lines is exactly SITE.url from src/config.ts plus
 #     /.well-known/security.txt (the RFC says a file fetched from an address not listed there SHOULD
 #     NOT be trusted); more than one Canonical line is allowed, as in the RFC's own example;
