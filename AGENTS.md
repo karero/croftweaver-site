@@ -245,8 +245,10 @@ For everyone, the owner included:
     **Publish the drafts as they are**.
   - The kit ships the English Legal Notice. In the same message, ask whether the
     business is based in Germany. If it is, offer the German Impressum as well
-    (`src/pages/_impressum.astro`, whose header has the steps); offer it to no one
-    else.
+    (the kit's `_impressum.astro`, whose header has the steps); offer it to no one
+    else. This site does not have that file: its Legal Notice is `/imprint`
+    (`src/pages/imprint.astro`), and a German Impressum would be a new page, so ask the
+    owner before adding one.
   - Record the answer first, as a line of its own in the `README.md` in the folder
     that holds `package.json`: one of the forms below, written bare (no list marker, no
     backticks) and nothing else on that line, the date as YYYY-MM-DD. Then delete the
