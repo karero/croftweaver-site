@@ -2,7 +2,7 @@ name: CI
 # Runs astro check (strict TS) + the full quality harness (a11y / seo / navigation /
 # images / tone / positioning / email / links) against a production build. A red check blocks the
 # merge — the point. Needs a committed package-lock.json (npm ci).
-# node-version 24: keep in sync with .nvmrc. The Node floor is in package.json's engines.
+# node-version 26: keep in sync with .nvmrc. The Node floor is in package.json's engines.
 on:
   push:
     branches: [main, production]
@@ -68,8 +68,8 @@ jobs:
         run: bash tests/check_export_own_site.sh
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
-          check-latest: true  # the newest 24.x, not a cached one older than the engines floor
+          node-version: 26
+          check-latest: true  # the newest 26.x, not a cached one older than the engines floor
           cache: npm
       # Loads src/data/case-study-log.ts with Node's type stripping, so it follows setup-node. Needs no
       # network: a fake gh answers from tests/fixtures.

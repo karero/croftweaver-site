@@ -18,7 +18,7 @@ site's folder is often on another branch. A session that updates the page on its
 Exit 0: all clear. 1: something is due. 2: a check could not run (it is never reported as clear).
 2 wins over 1, and 1 over 0. --history and --google-data are passed on to the exporter.
 Needs git, gh (signed in) and a Node that strips TypeScript types (it loads LOG, a TypeScript file;
-CI runs Node 24). Any other error ends as exit 2 with a message, never as a traceback.
+CI runs Node 26). Any other error ends as exit 2 with a message, never as a traceback.
 """
 import argparse
 import datetime
