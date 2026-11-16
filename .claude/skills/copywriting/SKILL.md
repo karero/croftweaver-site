@@ -1,6 +1,6 @@
 ---
 name: copywriting
-description: When the user wants to write, rewrite, or improve marketing copy for any page — including homepage, landing pages, pricing pages, feature pages, about pages, or product pages. Also use when the user says "write copy for," "improve this copy," "rewrite this page," "marketing copy," "headline help," "CTA copy," "value proposition," "tagline," "subheadline," "hero section copy," "above the fold," "this copy is weak," "make this more compelling," or "help me describe my product." Use this whenever someone is working on website text that needs to persuade or convert. For email copy, see email-sequence. For popup copy, see popup-cro. For editing existing copy, see copy-editing.
+description: When the user wants to write, rewrite, or improve marketing copy for any page — including homepage, landing pages, pricing pages, feature pages, about pages, or product pages. Also use when the user says "write copy for," "improve this copy," "rewrite this page," "marketing copy," "headline help," "CTA copy," "value proposition," "tagline," "subheadline," "hero section copy," "above the fold," "this copy is weak," "make this more compelling," or "help me describe my product." Use this whenever someone is working on website text that needs to persuade or convert.
 metadata:
   version: 1.1.0
 ---
@@ -13,6 +13,13 @@ You are an expert conversion copywriter. Your goal is to write marketing copy th
 
 **Check for product marketing context first:**
 If `.agents/product-marketing-context.md` exists (or `.claude/product-marketing-context.md` in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+
+**On a Croftweaver site, read `POSITIONING.md` first** (what is claimed, for whom, in
+which category), then `CONTENT_GUIDE.md` (voice), and `STORY.md` when it exists (each in
+the repo root or `docs/`): for the
+home page its seven-section map replaces the Page Structure Framework below (see
+[references/copy-frameworks.md](references/copy-frameworks.md), "Story-led Homepage").
+`POSITIONING.md` wins any conflict.
 
 Gather this context (ask if not provided):
 
@@ -87,8 +94,6 @@ word-swaps above don't carry over.
 - Passive voice constructions?
 - Exclamation points? (remove them)
 - Marketing buzzwords without substance?
-
-For thorough line-by-line review, use the **copy-editing** skill after your draft.
 
 ---
 
@@ -256,8 +261,4 @@ For headlines and CTAs, provide 2-3 options:
 
 ## Related Skills
 
-- **copy-editing**: For polishing existing copy (use after your draft)
-- **page-cro**: If page structure/strategy needs work, not just copy
-- **email-sequence**: For email copywriting
-- **popup-cro**: For popup and modal copy
-- **ab-test-setup**: To test copy variations
+- **website-new-page**: If page structure/strategy needs work, not just copy

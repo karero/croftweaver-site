@@ -73,8 +73,8 @@ references/schema-examples.md shows the full shape (incl. `vatID`,
 | Article | Blog posts, news | headline, image, datePublished, author |
 | Product | Product pages | name, image, offers |
 | SoftwareApplication | SaaS/app pages | name, offers |
-| FAQPage | FAQ content | mainEntity (Q&A array) |
-| HowTo | Tutorials | name, step |
+| FAQPage | FAQ content (no Google rich result since 7 May 2026, see below) | mainEntity (Q&A array) |
+| HowTo | Tutorials (no Google rich result since September 2023, see below) | name, step |
 | BreadcrumbList | Any page with breadcrumbs | itemListElement |
 | LocalBusiness | Local business pages | name, address |
 | Event | Events, webinars | name, startDate, location |
@@ -99,6 +99,11 @@ Recommended: sku, brand, aggregateRating, review
 
 ### FAQPage
 Required: mainEntity (array of Question/Answer pairs)
+Note: Google stopped showing FAQ rich results on 7 May 2026 and removed their documentation on 15 June 2026 ([Google](https://developers.google.com/search/updates#faq-deprecation), [removal](https://developers.google.com/search/updates#removing-faq-rich-result)). `FAQPage` is still valid schema.org vocabulary: the markup still describes the Q&A to machines and does no harm, but it gives no rich result in Google for any site. Don't promise one.
+
+### HowTo
+Required: name, step
+Note: since September 2023 Google shows no HowTo rich results at all ([Google](https://developers.google.com/search/blog/2023/08/howto-faq-changes)). The markup still describes the steps to machines; don't promise a rich result.
 
 ### BreadcrumbList
 Required: itemListElement (array with position, name, item)
@@ -190,6 +195,5 @@ You can combine multiple schema types on one page using `@graph`:
 ## Related Skills
 
 - **seo-audit**: For overall SEO including schema review
-- **ai-seo**: For AI search optimization (schema helps AI understand content)
-- **programmatic-seo**: For templated schema at scale
+- **ai-seo**: For AI search optimization (Google says no special schema is needed for its AI features; Microsoft says schema helps AI systems understand content, [Microsoft Advertising](https://about.ads.microsoft.com/en/blog/post/october-2025/optimizing-your-content-for-inclusion-in-ai-search-answers), 8 October 2025)
 - **site-architecture**: For breadcrumb structure and navigation schema planning

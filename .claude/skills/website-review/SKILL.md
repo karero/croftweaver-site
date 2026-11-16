@@ -67,6 +67,10 @@ website content/structure work:
 # independent-review vendored in:
 skills/independent-review/scripts/independent_review.sh <file> --plan --first-success   # or --diff
 ```
+A `--diff` run first checks the diff against git, from the repository it came from: a diff
+`git diff` made from the merge base with the default branch passes as it is; a diff of only some
+commits names its start with `--base <commit>`, and one not made by `git diff` there passes
+`--base none` (independent-review's script header, BASE CHECK).
 `--first-success` stops at the first reviewer that answers (Codex CLI,
 falling back to ollama-cloud) instead of running both — independent-review
 honors this override for plans, it doesn't force the pair. Setup: if
@@ -76,8 +80,10 @@ has a guided onboarding wizard for getting Codex or ollama-cloud running
 In a scaffolded site the skill isn't shipped at all: check that the
 `independent-review` folder actually exists before offering this escalation
 as ready-to-run. If it doesn't, either vendor it first (copy
-`skills/independent-review/` from the website-builder suite — the same kit
-this skill was copied from — into the site's `.claude/skills/`) or frame the
+`skills/independent-review/` from the Croftweaver suite — the same kit
+this skill was copied from — into the site's `.claude/skills/`; a plugin
+installed from Anthropic's directory leaves that folder out, so then take it
+from https://github.com/karero/croftweaver) or frame the
 offer honestly as "available after a one-time setup step".
 
 **Explain the choice, then ask — don't decide silently.** Before reaching for
@@ -94,12 +100,16 @@ recommendation, never to pick unasked.
 - Run **`/code-review`** on the branch/diff (correctness bugs + reuse/simplification).
   `/code-review` is Claude Code-only — under another host, review the diff by
   hand against this pass's checklist, or vendor the generic `double-knuth`
-  skill from the website-builder suite.
+  skill from the Croftweaver suite.
 - `npm run build` is clean — no errors **or warnings**; TS strict passes.
-- `npm test` green (a11y/seo/navigation/anchors/orphans/images/tone/positioning/email/links/llms-coverage/middleware) — nothing skipped or loosened. (A site scaffolded before a spec existed: copy it in from the starter rather than reviewing without it.)
+- `npm test` green (the starter's whole suite, `tests/*.spec.ts`) — nothing skipped or loosened. (A site scaffolded before a spec existed: copy it in from the starter rather than reviewing without it. `placeholders.spec.ts` goes in with its `UNFILLED_UNTIL_LAUNCH` as shipped, on a launched site too: the first run names each entry to delete, and its check for lower-case slots, which runs on listed pages only, finds the one older starters carried on the privacy page. `placeholders.spec.ts` also fails on a legal page with no recorded answer in the `README.md`, unless that page is still listed and shows its draft notice: ask the owner as `AGENTS.md` §5 says.)
 - `astro preview` the new/edited pages — **no console errors**; interactions work.
 - Nothing half-done: no TODO/placeholder/lorem and no leftover `[BRACKET]` slots in shipped
-  pages OR `public/` assets (the manifest's fields are brackets too — no spec reads them).
+  pages OR `public/` assets. `placeholders.spec.ts` enforces this on the rendered pages and
+  the manifest; read for what it cannot see: pages outside `PAGES` (the 404 page, noindex
+  pages), other `public/` files (`llms.txt` and its own slots included), PDFs, text inside
+  images, the starter's example values, and an entry still sitting in its
+  `UNFILLED_UNTIL_LAUNCH` at launch (it only warns there).
 - **Freshness date matches the edit:** if the page's visible content changed and it carries a
   last-modified signal (a `dateModified`/"Updated" byline, an Article/BlogPosting JSON-LD date),
   that date is bumped to today. It silently drifts otherwise — stale in the visible byline, the
@@ -130,20 +140,25 @@ recommendation, never to pick unasked.
 - **Images (`website-design-system`):** WebP/AVIF, explicit `width`/`height`, `alt`; the LCP
   image eager (`fetchpriority="high"`), below-fold lazy; no oversized files.
 - **Email:** every address rendered via `<EmailLink>`; `email.spec.ts` green.
-- **Headers/redirects:** `_headers` CSP present; legacy URLs 301 in `_redirects`; the
-  `*.pages.dev` middleware in place (previews noindexed); on a launched site,
-  `https://<project>.pages.dev/` answers 301 to the live domain — if it answers 200, see
+- **Headers/redirects:** `_headers` CSP present; legacy URLs 301 in `_redirects`. A Worker
+  site: `wrangler.jsonc` has `workers_dev: false` and no `main` (`workers-config.spec.ts`
+  checks it). A site still on Pages: the `*.pages.dev` middleware in place (previews
+  noindexed), and on a launched site the project's own `pages.dev` address (as Cloudflare
+  shows it; not always the project's name) answers 301 to the live domain — if it answers
+  200, see
   the causes listed in `new-website/references/CLOUDFLARE_FIRST_DEPLOY.md`, "After
   go-live", step 3 (variable not under Production or rejected, no redeploy since, or a
   middleware that predates the redirect).
 - **Secrets:** no `.env`/token committed; `.gitignore` covers them.
 - **Docs match code:** README test list + "how to add a page / run tests / deploy" current;
-  `CONTENT_GUIDE.md` + `BRAND.md` filled; decision-interview answers recorded; the handoff
+  `CONTENT_GUIDE.md` + `BRAND.md` filled (+ `STORY.md`, consistent with `POSITIONING.md`,
+  if the site opted into `website-story`); decision-interview answers recorded; the handoff
   skill set present in `.claude/skills/`.
 - **Language/i18n (non-English or multi-locale sites):** every page's CONTENT language
   matches its `<html lang>` (the tone gate's density check covers German; eyeball other
   languages); `og:locale` present and matching on every page; chrome (skip link, footer)
-  in the site's language; German-market sites carry the filled Impressum and the German
+  in the site's language; German-market sites carry the filled imprint (`/legal-notice`; `/impressum`
+  on a German-language site, `/de/impressum` multilingual) and the German
   privacy page at the right URL (`/datenschutz` single-locale, `/de/privacy` multilingual);
   multi-locale sites: hreflang sets complete + reciprocal (`tests/i18n.spec.ts` green, or
   the twin-page seo.spec test for the light path), every `/locale` route in PAGES, the
