@@ -33,8 +33,8 @@
 #      build links to /go/email: the browser counts the tap. The Workers branch variable is
 #      the one src/config.ts names, checked against a real Workers Builds capture.
 #   4. Server mode (ANALYTICS.mode = 'server' in src/config.ts) is Pages-only and left the
-#      starter in 0.35: after reading config.ts and the pins, the gate says so, skips the
-#      builds, and exits 0. A site in
+#      starter in 0.35: after reading config.ts and the pins, the gate says so, skips
+#      every later check, and exits 0. A site in
 #      server mode keeps its 0.34 copy of this file.
 # With USE_ANALYTICS = false in src/config.ts (as the starter ships), steps 2 and 3
 # turn around: public/_headers must NOT list the host (with or without a path) in
@@ -783,6 +783,7 @@ if [ "$use" = false ]; then
   expect_go live "CF_PAGES_BRANCH=$prod (the live build, analytics off)" none
   build workers-live unset "" "$prod"
   expect_off workers-live "$wvar=$prod (a Workers Builds live build, analytics off)"
+  expect_go workers-live "$wvar=$prod (a Workers Builds live build, analytics off)" none
 else
 report_problems "$(csp_host_problems public/_headers)" "public/_headers lists $host as a token in script-src and connect-src"
 
@@ -811,8 +812,10 @@ fail=$((fail | before))
 expect_go workers-live "$wvar=$prod (a Workers Builds live build)" none
 build workers-preview unset "" "$preview"
 expect_off workers-preview "$wvar=$preview (a Workers Builds preview)"
+expect_go workers-preview "$wvar=$preview (a Workers Builds preview)" none
 build workers-pages-empty set "" "$prod"
 expect_off workers-pages-empty "CF_PAGES_BRANCH= with $wvar=$prod (CF_PAGES_BRANCH wins)"
+expect_go workers-pages-empty "CF_PAGES_BRANCH= with $wvar=$prod (CF_PAGES_BRANCH wins)" none
 fi
 
 build unset unset

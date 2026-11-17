@@ -241,8 +241,8 @@ test('partner assets: each HTML snippet shows its badge under the security rules
 // `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
 // documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
 // a splat matching any run of characters; a header set by several rules joined with a comma. What it cannot model it
-// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host, an unindented
-// header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
+// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host (except the workers.dev
+// Preview rule, which never matches this site's own host), an unindented header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
 // measured yet; the README's launch check is where it is). The files keep their names when they change, and the
 // Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
 // while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
@@ -1200,16 +1200,21 @@ test('headers — every plain-text file has its own charset rule, and no splat r
     expect(rule, `${p} needs a rule in public/_headers`).toBeDefined();
     expect(rule!.filter((h) => /^content-type\s*:/i.test(h)), `${p} needs exactly one Content-Type, ${TEXT}`).toEqual([TEXT]);
   }
-  // A rule with a splat can match a path another rule names, so no header it sets may be set by any other rule.
+  // Two rules that can match one path must not set the same header. A host rule's path counts, since
+  // path rules apply on every host; a rule's prefix is its path up to the splat.
   const name = (h: string) => h.split(':')[0]!.trim().toLowerCase();
+  const prefix = (rule: string) => rule.replace(/^https:\/\/[^/]*/, '').split('*')[0]!;
   expect(blocks.get('/*')?.length, 'public/_headers has no /* block').toBeGreaterThan(0);
   expect(blocks.get('https://:version.:sub.workers.dev/*'), 'the workers.dev rule holds only the NEL header').toEqual(['NEL: {"max_age":0}']);
-  for (const [splat, set] of blocks) {
-    if (!splat.includes('*')) continue;
-    const names = new Set(set.map(name));
-    for (const [path, headers] of blocks) {
-      if (path === splat) continue;
-      for (const h of headers) expect(names.has(name(h)), `${path} sets ${name(h)}, which ${splat} also sets`).toBe(false);
+  const rules = [...blocks];
+  for (const [i, [a, aSet]] of rules.entries()) {
+    for (const [b, bSet] of rules.slice(i + 1)) {
+      if (!a.includes('*') && !b.includes('*')) continue;
+      const [pa, pb] = [prefix(a), prefix(b)];
+      const meet = (a.includes('*') && pb.startsWith(pa)) || (b.includes('*') && pa.startsWith(pb));
+      if (!meet) continue;
+      const names = new Set(aSet.map(name));
+      for (const h of bSet) expect(names.has(name(h)), `${b} sets ${name(h)}, which ${a} also sets, and both can match one path`).toBe(false);
     }
   }
 });
