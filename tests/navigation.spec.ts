@@ -241,9 +241,10 @@ test('partner assets: each HTML snippet shows its badge under the security rules
 // `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
 // documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
 // a splat matching any run of characters; a header set by several rules joined with a comma. What it cannot model it
-// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host (except the workers.dev
-// Preview rule, which never matches this site's own host), an unindented header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
-// measured yet; the README's launch check is where it is). The files keep their names when they change, and the
+// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host (except the
+// workers.dev rule for Preview and version links, never this site's own host), an unindented header, and a "! Name"
+// that takes away a header the test reads (how Pages orders it against other rules is not measured yet; the README's
+// launch check is where it is). The files keep their names when they change, and the
 // Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
 // while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
 // the server before it reuses a file. Directive names follow RFC 9111 (max-age, s-maxage, private, no-store,
@@ -1163,7 +1164,7 @@ for (const path of PAGES) {
 // so the rules keep the answer the same on both; Cloudflare joins a header that two matching rules set with a comma.
 // The files are every .txt under public/ and under the built dist/ (npm test builds it first); dist/test-build-id.txt,
 // written for test builds only, is left out.
-test('headers — every plain-text file has its own charset rule, and no splat rule shares a header', () => {
+test('headers — every plain-text file has its own charset rule, and no two rules set one header for one file', () => {
   const TEXT = 'Content-Type: text/plain; charset=utf-8';
   const blocks = new Map<string, string[]>();
   let current: string[] | undefined;
@@ -1178,19 +1179,20 @@ test('headers — every plain-text file has its own charset rule, and no splat r
       blocks.set(line.trim(), current);
     }
   }
-  const txtFiles = (rootUrl: URL): string[] => {
+  const allFiles = (rootUrl: URL): string[] => {
     const root = fileURLToPath(rootUrl);
     const found: string[] = [];
     const walk = (dir: string) => {
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const full = join(dir, entry.name);
         if (entry.isDirectory()) walk(full);
-        else if (entry.name.endsWith('.txt')) found.push('/' + relative(root, full).split(sep).join('/'));
+        else found.push('/' + relative(root, full).split(sep).join('/'));
       }
     };
     walk(root);
-    return found.filter((p) => p !== '/test-build-id.txt').sort();
+    return found.sort();
   };
+  const txtFiles = (rootUrl: URL) => allFiles(rootUrl).filter((p) => p.endsWith('.txt') && p !== '/test-build-id.txt');
   const inPublic = txtFiles(new URL('../public/', import.meta.url));
   const inDist = txtFiles(new URL('../dist/', import.meta.url));
   expect(inPublic.length, 'the file walk found no .txt under public/: it is broken').toBeGreaterThan(0);
@@ -1200,21 +1202,30 @@ test('headers — every plain-text file has its own charset rule, and no splat r
     expect(rule, `${p} needs a rule in public/_headers`).toBeDefined();
     expect(rule!.filter((h) => /^content-type\s*:/i.test(h)), `${p} needs exactly one Content-Type, ${TEXT}`).toEqual([TEXT]);
   }
-  // Two rules that can match one path must not set the same header. A host rule's path counts, since
-  // path rules apply on every host; a rule's prefix is its path up to the splat.
+  // Two rules that match one served path must not set the same header: the values would be joined.
+  // Each built file counts at every URL it answers on; a host rule applies alongside the path rules.
   const name = (h: string) => h.split(':')[0]!.trim().toLowerCase();
-  const prefix = (rule: string) => rule.replace(/^https:\/\/[^/]*/, '').split('*')[0]!;
+  const pathOf = (rule: string) => rule.replace(/^https:\/\/[^/]*/, '');
+  const matches = (rule: string, path: string) => {
+    const [before, after] = pathOf(rule).split('*');
+    return after === undefined ? path === before : path.length >= before!.length + after.length && path.startsWith(before!) && path.endsWith(after);
+  };
   expect(blocks.get('/*')?.length, 'public/_headers has no /* block').toBeGreaterThan(0);
   expect(blocks.get('https://:version.:sub.workers.dev/*'), 'the workers.dev rule holds only the NEL header').toEqual(['NEL: {"max_age":0}']);
-  const rules = [...blocks];
-  for (const [i, [a, aSet]] of rules.entries()) {
-    for (const [b, bSet] of rules.slice(i + 1)) {
-      if (!a.includes('*') && !b.includes('*')) continue;
-      const [pa, pb] = [prefix(a), prefix(b)];
-      const meet = (a.includes('*') && pb.startsWith(pa)) || (b.includes('*') && pa.startsWith(pb));
-      if (!meet) continue;
-      const names = new Set(aSet.map(name));
-      for (const h of bSet) expect(names.has(name(h)), `${b} sets ${name(h)}, which ${a} also sets, and both can match one path`).toBe(false);
+  for (const rule of blocks.keys()) {
+    expect(pathOf(rule).split('*').length <= 2 && !/:\w/.test(pathOf(rule)), `public/_headers: "${rule}" has a second splat or a placeholder, which this test does not model; extend it`).toBe(true);
+  }
+  const served = allFiles(new URL('../dist/', import.meta.url)).flatMap((p) =>
+    p.endsWith('/index.html') ? [p, p.slice(0, -10), p.slice(0, -11) || '/'] : p.endsWith('.html') ? [p, p.slice(0, -5)] : [p]);
+  expect(served, 'dist/ lacks /index.html: the walk of dist/ is broken').toContain('/');
+  for (const path of served) {
+    const setBy = new Map<string, string>();
+    for (const [rule, headers] of blocks) {
+      if (!matches(rule, path)) continue;
+      for (const n of headers.map(name)) {
+        expect(setBy.get(n) ?? rule, `${path}: ${rule} sets ${n}, which ${setBy.get(n)} also sets`).toBe(rule);
+        setBy.set(n, rule);
+      }
     }
   }
 });
