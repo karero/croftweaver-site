@@ -1,4 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, NAV, NAV_LINKS, FOOTER, isNavGroup, type NavLink } from '../src/config';
@@ -1153,3 +1155,54 @@ for (const path of PAGES) {
     expect(rows, `${path}: the header items wrap onto ${rows} rows at ${width} px, the narrowest width where they are not folded`).toBe(1);
   });
 }
+
+// Site-specific (not in the shipped suite): a charset on every plain-text file, one rule per file in public/_headers,
+// never in the /* block. Pages sends "text/plain; charset=utf-8" for these and a Worker's static assets send no charset,
+// so the rules keep the answer the same on both; Cloudflare joins a header that two matching rules set with a comma.
+// The files are every .txt under public/ and under the built dist/ (npm test builds it first); dist/test-build-id.txt,
+// written for test builds only, is left out.
+test('headers — every plain-text file has its own charset rule, outside /*', () => {
+  const TEXT = 'Content-Type: text/plain; charset=utf-8';
+  const blocks = new Map<string, string[]>();
+  let current: string[] | undefined;
+  for (const line of readFileSync(new URL('../public/_headers', import.meta.url), 'utf8').split('\n')) {
+    if (line.trim() === '' || line.trim().startsWith('#')) continue;
+    if (/^\s/.test(line)) {
+      expect(current, `public/_headers: a header line before any path: ${line}`).toBeDefined();
+      current!.push(line.trim());
+    } else {
+      expect(blocks.has(line.trim()), `public/_headers: ${line.trim()} has two blocks`).toBe(false);
+      current = [];
+      blocks.set(line.trim(), current);
+    }
+  }
+  const txtFiles = (rootUrl: URL): string[] => {
+    const root = fileURLToPath(rootUrl);
+    const found: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name.endsWith('.txt')) found.push('/' + relative(root, full).split(sep).join('/'));
+      }
+    };
+    walk(root);
+    return found.filter((p) => p !== '/test-build-id.txt').sort();
+  };
+  const inPublic = txtFiles(new URL('../public/', import.meta.url));
+  const inDist = txtFiles(new URL('../dist/', import.meta.url));
+  expect(inPublic.length, 'the file walk found no .txt under public/: it is broken').toBeGreaterThan(0);
+  expect(inDist, 'dist/ lacks /build.txt: the walk of dist/ is broken').toContain('/build.txt');
+  for (const p of new Set([...inPublic, ...inDist])) {
+    const rule = blocks.get(p);
+    expect(rule, `${p} needs a rule in public/_headers`).toBeDefined();
+    expect(rule!.filter((h) => /^content-type\s*:/i.test(h)), `${p} needs exactly one Content-Type, ${TEXT}`).toEqual([TEXT]);
+  }
+  const name = (h: string) => h.split(':')[0]!.trim().toLowerCase();
+  const all = new Set((blocks.get('/*') ?? []).map(name));
+  expect(all.size, 'public/_headers has no /* block').toBeGreaterThan(0);
+  for (const [path, headers] of blocks) {
+    if (path === '/*') continue;
+    for (const h of headers) expect(all.has(name(h)), `${path} sets ${name(h)}, which /* also sets`).toBe(false);
+  }
+});
