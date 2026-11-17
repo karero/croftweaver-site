@@ -3,11 +3,10 @@
 #   ANALYTICS.enabled = USE_ANALYTICS && (CF_PAGES_BRANCH ?? WORKERS_CI_BRANCH) === PROD_BRANCH
 #
 # Base.astro emits the Plausible <script> only when that is true, and the build decides it:
-# Cloudflare Pages sets CF_PAGES_BRANCH when it builds (Workers Builds sets WORKERS_CI_BRANCH
-# instead; `npm run deploy:live` sets it for a Worker deployed by command, scripts/deploy.sh),
-# and a Pages owner deploying by command sets CF_PAGES_BRANCH by hand
-# (`CF_PAGES_BRANCH=<production-branch> npm run build` for the live site, PUBLISHING.md;
-# `CF_PAGES_BRANCH= npm run build` for a preview, new-website's CLOUDFLARE_FIRST_DEPLOY.md).
+# Cloudflare Pages sets CF_PAGES_BRANCH when it builds, and Workers Builds sets
+# WORKERS_CI_BRANCH instead. A deploy by command sets CF_PAGES_BRANCH by hand
+# (`CF_PAGES_BRANCH=production npm run build` for the live site, `CF_PAGES_BRANCH= npm run
+# build` for a preview; the toolkit's docs describe both, they are not vendored here).
 # Both ways it fails silently: off on the live site, it counts no visitors and nothing says
 # so; on for a preview, every look at the preview is counted as a real visitor. The
 # Playwright suite cannot see either, since it builds once with whatever the shell had. So
@@ -34,7 +33,8 @@
 #      build links to /go/email: the browser counts the tap. The Workers branch variable is
 #      the one src/config.ts names, checked against a real Workers Builds capture.
 #   4. Server mode (ANALYTICS.mode = 'server' in src/config.ts) is Pages-only and left the
-#      starter in 0.35: the gate says so, skips, and exits 0 before any check. A site in
+#      starter in 0.35: after reading config.ts and the pins, the gate says so, skips the
+#      builds, and exits 0. A site in
 #      server mode keeps its 0.34 copy of this file.
 # With USE_ANALYTICS = false in src/config.ts (as the starter ships), steps 2 and 3
 # turn around: public/_headers must NOT list the host (with or without a path) in
@@ -46,8 +46,9 @@
 #   - With analytics off, a link to the host that is not a script tag (a preconnect or
 #     dns-prefetch added by hand) is not looked for, and no CSP stops one. Base.astro writes
 #     none; a site that adds one must take it out with the switch.
-#   - It compares the build with src/config.ts, so a wrong scriptId typed INTO config.ts
-#     passes. Only the installer's "Verify" step catches that.
+#   - The build and src/config.ts are also compared with the pins below, so a typo in
+#     config.ts alone fails. A pin and config.ts that carry the same wrong id pass: only the
+#     installer's "Verify" step confirms the instance serves the pinned address.
 #   - It does not evaluate a CSP the way a browser does. A policy that leans on default-src, a
 #     nonce or 'strict-dynamic' for these directives fails here, on purpose, and needs this
 #     check extended first. A hash covers the init stub ONLY: the theme script and any other
@@ -687,7 +688,7 @@ for my $file (@ARGV) {
       $attr{$name} = defined $2 ? $2 : defined $3 ? $3 : defined $4 ? $4 : '' unless exists $attr{$name};
     }
     my $is_email = defined $attr{class} && $attr{class} =~ /(?:^|\s)email-link(?:\s|$)/;
-    my $is_go = defined $attr{href} && $attr{href} =~ /^\/go\/email\?/;
+    my $is_go = defined $attr{href} && $attr{href} =~ /^\/go\/email(?:[?#\/]|$)/;
     $email++ if $is_email;
     $emailgo++ if $is_email && $is_go;
     $go++ if $is_go;
@@ -722,8 +723,12 @@ go_selftest() {
   gofix dataclass '<a data-class="email-link" href="/go/email?e=x">a</a>'
   gofix inquote  "<a title=\"href='/go/email?e=x' class='email-link'\" class=\"email-link\" href=\"#\">a</a>"
   gofix unquoted '<a class=email-link href=/go/email?e=x>a</a>'
+  gofix bare     '<a class="email-link" href="/go/email">a</a>'
+  gofix hash     '<a href="/go/email#x">a</a>'
+  gofix longer   '<a href="/go/emailing">a</a>'
   for expect in plain:'1 0 0' go:'1 1 1' extra:'1 1 1' lookalike:'0 0 0' handmade:'0 0 1' comment:'0 0 0' \
-                quoted:'1 1 1' apart:'1 0 1' datahref:'1 0 0' dataclass:'0 0 1' inquote:'1 0 0' unquoted:'1 1 1'; do
+                quoted:'1 1 1' apart:'1 0 1' datahref:'1 0 0' dataclass:'0 0 1' inquote:'1 0 0' unquoted:'1 1 1' \
+                bare:'1 1 1' hash:'0 0 1' longer:'0 0 0'; do
     name="${expect%%:*}"; want="${expect#*:}"; k=$((k + 1))
     got="$(perl -e "$(go_program)" "$dir/$name.html" | awk '{print $1, $2, $3}')"
     if [ "$got" != "$want" ]; then

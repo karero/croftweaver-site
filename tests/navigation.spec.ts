@@ -257,6 +257,8 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
       const line = raw.trim();
       if (!line || line.startsWith('#')) continue;
       if (!/^\s/.test(raw)) {   // a path line starts a rule
+        // The workers.dev rule matches only Preview and version links, never a path on this site's own host.
+        if (line === 'https://:version.:sub.workers.dev/*') { applies = false; continue; }
         expect(line.startsWith('/') && line.split('*').length <= 2 && !/:\w/.test(line),
           `public/_headers: "${line}" is not a path or header this test models (a second splat, a placeholder, a host or an unindented header); extend the test`).toBe(true);
         const [before, after] = line.split('*');
@@ -1161,7 +1163,7 @@ for (const path of PAGES) {
 // so the rules keep the answer the same on both; Cloudflare joins a header that two matching rules set with a comma.
 // The files are every .txt under public/ and under the built dist/ (npm test builds it first); dist/test-build-id.txt,
 // written for test builds only, is left out.
-test('headers — every plain-text file has its own charset rule, outside /*', () => {
+test('headers — every plain-text file has its own charset rule, and no splat rule shares a header', () => {
   const TEXT = 'Content-Type: text/plain; charset=utf-8';
   const blocks = new Map<string, string[]>();
   let current: string[] | undefined;
@@ -1198,11 +1200,16 @@ test('headers — every plain-text file has its own charset rule, outside /*', (
     expect(rule, `${p} needs a rule in public/_headers`).toBeDefined();
     expect(rule!.filter((h) => /^content-type\s*:/i.test(h)), `${p} needs exactly one Content-Type, ${TEXT}`).toEqual([TEXT]);
   }
+  // A rule with a splat can match a path another rule names, so no header it sets may be set by any other rule.
   const name = (h: string) => h.split(':')[0]!.trim().toLowerCase();
-  const all = new Set((blocks.get('/*') ?? []).map(name));
-  expect(all.size, 'public/_headers has no /* block').toBeGreaterThan(0);
-  for (const [path, headers] of blocks) {
-    if (path === '/*') continue;
-    for (const h of headers) expect(all.has(name(h)), `${path} sets ${name(h)}, which /* also sets`).toBe(false);
+  expect(blocks.get('/*')?.length, 'public/_headers has no /* block').toBeGreaterThan(0);
+  expect(blocks.get('https://:version.:sub.workers.dev/*'), 'the workers.dev rule holds only the NEL header').toEqual(['NEL: {"max_age":0}']);
+  for (const [splat, set] of blocks) {
+    if (!splat.includes('*')) continue;
+    const names = new Set(set.map(name));
+    for (const [path, headers] of blocks) {
+      if (path === splat) continue;
+      for (const h of headers) expect(names.has(name(h)), `${path} sets ${name(h)}, which ${splat} also sets`).toBe(false);
+    }
   }
 });
