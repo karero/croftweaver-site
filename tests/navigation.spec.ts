@@ -1,4 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
 import { PAGES } from './_helpers';
 import { SITE, NAV, NAV_LINKS, FOOTER, isNavGroup, type NavLink } from '../src/config';
@@ -239,9 +241,10 @@ test('partner assets: each HTML snippet shows its badge under the security rules
 // `astro preview` does not apply public/_headers, so the test works out what Pages sends from the file, as Pages
 // documents it (developers.cloudflare.com/pages/configuration/headers): every rule whose path matches, in file order;
 // a splat matching any run of characters; a header set by several rules joined with a comma. What it cannot model it
-// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host, an unindented
-// header, and a "! Name" that takes away a header the test reads (how Pages orders it against other rules is not
-// measured yet; the README's launch check is where it is). The files keep their names when they change, and the
+// refuses, so a rule it cannot read never passes by being ignored: a second splat, a placeholder, a host (except the
+// workers.dev rule for Preview and version links, never this site's own host), an unindented header, and a "! Name"
+// that takes away a header the test reads (how Pages orders it against other rules is not measured yet; the README's
+// launch check is where it is). The files keep their names when they change, and the
 // Markdown snippets on /partner-assets hotlink the badges from other people's READMEs, so they may be cached for a
 // while but are never immutable. Pages' own default is "public, max-age=0, must-revalidate", which makes a cache ask
 // the server before it reuses a file. Directive names follow RFC 9111 (max-age, s-maxage, private, no-store,
@@ -255,6 +258,8 @@ test('headers — the partner kit under /brand/ is cacheable for between an hour
       const line = raw.trim();
       if (!line || line.startsWith('#')) continue;
       if (!/^\s/.test(raw)) {   // a path line starts a rule
+        // The workers.dev rule matches only Preview and version links, never a path on this site's own host.
+        if (line === 'https://:version.:sub.workers.dev/*') { applies = false; continue; }
         expect(line.startsWith('/') && line.split('*').length <= 2 && !/:\w/.test(line),
           `public/_headers: "${line}" is not a path or header this test models (a second splat, a placeholder, a host or an unindented header); extend the test`).toBe(true);
         const [before, after] = line.split('*');
@@ -1153,3 +1158,56 @@ for (const path of PAGES) {
     expect(rows, `${path}: the header items wrap onto ${rows} rows at ${width} px, the narrowest width where they are not folded`).toBe(1);
   });
 }
+
+// Site-specific (not in the shipped suite): a charset on every plain-text file, one rule per file in public/_headers,
+// never in the /* block. Pages sends "text/plain; charset=utf-8" for these and a Worker's static assets send no charset,
+// so the rules keep the answer the same on both; Cloudflare joins a header that two matching rules set with a comma.
+// The files are every .txt under public/ and under the built dist/ (npm test builds it first); dist/test-build-id.txt,
+// written for test builds only, is left out.
+test('headers — every plain-text file has its own charset rule, and no rule sets a header /* sets', () => {
+  const TEXT = 'Content-Type: text/plain; charset=utf-8';
+  const blocks = new Map<string, string[]>();
+  let current: string[] | undefined;
+  for (const line of readFileSync(new URL('../public/_headers', import.meta.url), 'utf8').split('\n')) {
+    if (line.trim() === '' || line.trim().startsWith('#')) continue;
+    if (/^\s/.test(line)) {
+      expect(current, `public/_headers: a header line before any path: ${line}`).toBeDefined();
+      current!.push(line.trim());
+    } else {
+      expect(blocks.has(line.trim()), `public/_headers: ${line.trim()} has two blocks`).toBe(false);
+      current = [];
+      blocks.set(line.trim(), current);
+    }
+  }
+  const txtFiles = (rootUrl: URL): string[] => {
+    const root = fileURLToPath(rootUrl);
+    const found: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name.endsWith('.txt')) found.push('/' + relative(root, full).split(sep).join('/'));
+      }
+    };
+    walk(root);
+    return found.filter((p) => p !== '/test-build-id.txt').sort();
+  };
+  const inPublic = txtFiles(new URL('../public/', import.meta.url));
+  const inDist = txtFiles(new URL('../dist/', import.meta.url));
+  expect(inPublic.length, 'the file walk found no .txt under public/: it is broken').toBeGreaterThan(0);
+  expect(inDist, 'dist/ lacks /build.txt: the walk of dist/ is broken').toContain('/build.txt');
+  for (const p of new Set([...inPublic, ...inDist])) {
+    const rule = blocks.get(p);
+    expect(rule, `${p} needs a rule in public/_headers`).toBeDefined();
+    expect(rule!.filter((h) => /^content-type\s*:/i.test(h)), `${p} needs exactly one Content-Type, ${TEXT}`).toEqual([TEXT]);
+  }
+  // /* matches every path on every host, so a header another rule also sets would be joined to its value.
+  const name = (h: string) => h.split(':')[0]!.trim().toLowerCase();
+  const all = new Set((blocks.get('/*') ?? []).map(name));
+  expect(all.size, 'public/_headers has no /* block').toBeGreaterThan(0);
+  expect(blocks.get('https://:version.:sub.workers.dev/*'), 'the workers.dev rule holds only the NEL header').toEqual(['NEL: {"max_age":0}']);
+  for (const [path, headers] of blocks) {
+    if (path === '/*') continue;
+    for (const h of headers) expect(all.has(name(h)), `${path} sets ${name(h)}, which /* also sets`).toBe(false);
+  }
+});

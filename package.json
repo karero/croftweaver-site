@@ -30,12 +30,14 @@
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "4.162.0"
   },
   "allowScripts": {
-    "esbuild@0.28.1": true,
     "sharp@0.34.5": true,
     "fsevents@2.3.2": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "esbuild": false,
+    "workerd": false
   }
 }

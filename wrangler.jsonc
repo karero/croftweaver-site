@@ -1,0 +1,18 @@
+// Cloudflare Worker that serves the built site from dist/ as static assets, with no code of its
+// own. Once Workers Builds is connected, it builds on a push to `production` and runs
+// `npx wrangler deploy`. No domain yet: the move to Workers adds the croftweaver.com route.
+// Keep this file plain JSON with comments: scripts/ship.sh reads it with Node, and a trailing
+// comma stops it. account_id pins the account the croftweaver.com zone is in.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "croftweaver-site",
+  "account_id": "652be643afd90a5c64527e09e27eebdc",
+  "compatibility_date": "2026-10-30",
+  "workers_dev": false,
+  "preview_urls": true,
+  "previews": {},
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

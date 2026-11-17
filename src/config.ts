@@ -202,12 +202,16 @@ export const KNOWS_ABOUT: string[] = [
 
 // Plausible (cookieless; scriptHost is your own self-hosted instance, or
 // https://plausible.io for the paid cloud version). Fire only on the production
-// deploy: Cloudflare Pages sets CF_PAGES_BRANCH to the branch being built.
+// deploy: Cloudflare Pages sets CF_PAGES_BRANCH to the branch being built, and Workers
+// Builds sets WORKERS_CI_BRANCH; CF_PAGES_BRANCH wins when set, even empty.
 //
-// IMPORTANT: PROD_BRANCH must equal the branch Cloudflare Pages calls "Production"
-// for THIS project (house convention: 'production'; Cloudflare's default is 'main').
+// IMPORTANT: PROD_BRANCH must equal the branch Cloudflare builds as "Production" for THIS
+// project, on Pages or Workers (house convention: 'production'; Cloudflare's default is 'main').
 // A mismatch means analytics silently never loads — no error, no data.
 export const PROD_BRANCH = 'production';
+
+// Keep the value on one line: tests/check_analytics_gate.sh reads it.
+export const USE_ANALYTICS = true;
 
 // The instance is M-Squad's own. scriptId is the per-site script its installer hands out
 // (Settings > General > Tracking, next to "Site installation"): the domain and the optional
@@ -219,7 +223,7 @@ export const PROD_BRANCH = 'production';
 // writes two tags: the script, and the short stub that calls plausible.init(); without
 // the stub the script never starts.
 export const ANALYTICS = {
-  enabled: process.env.CF_PAGES_BRANCH === PROD_BRANCH,
+  enabled: USE_ANALYTICS && (process.env.CF_PAGES_BRANCH ?? process.env.WORKERS_CI_BRANCH) === PROD_BRANCH,
   scriptHost: 'https://analytics.m-squad.com',
   scriptId: 'pa--pMhz1-dKjwaTf3D6ArFS',
 } as const;
