@@ -889,9 +889,9 @@ for (const theme of THEMES) {
     expect(axe.violations.map((v) => v.id), `colour contrast of the gauges' text (${theme})`).toEqual([]);
     // Undecided text must be exactly the four numbers over a ring: anything else axe cannot decide fails here.
     // If a later axe decides those too, this fails: edit the count, do not loosen it.
-    const undecided = axe.incomplete.flatMap((rule) => rule.nodes.map((node) => `${rule.id}: ${node.html}`));
+    const undecided = axe.incomplete.flatMap((rule) => rule.nodes.map((node) => `${rule.id}/${[...node.any, ...node.all, ...node.none].map((c) => c.data?.messageKey).join(',')}: ${node.html}`));
     expect(undecided.length, `axe left something undecided besides the numbers over the rings (${theme}): ${undecided.join(' | ')}`).toBe(4);
-    for (const found of undecided) expect(found, 'axe left something undecided besides a number').toMatch(/^color-contrast: <span class="num"/);
+    for (const found of undecided) expect(found, 'axe left something undecided besides a number').toMatch(/^color-contrast\/imgNode: <span class="num"/);
 
     const painted = await page.evaluate((tokens) => {
       const transparent = (c: string) => c === 'transparent' || /^rgba\(.*,\s*0\)$/.test(c);
@@ -924,10 +924,14 @@ for (const theme of THEMES) {
         const gauge = arc.closest('.gauge')!;
         const band = (['good', 'mid', 'bad'] as const).find((b) => gauge.classList.contains(b))!;
         const { behind, images } = paintedOn(arc.closest('svg'));
-        const track = getComputedStyle(gauge.querySelector('.track')!);
+        // Every shape of the ring: nothing painted may sit under the number.
+        const fills = [...gauge.querySelectorAll('svg circle, svg path')].map((shape) => {
+          const shapeStyle = getComputedStyle(shape);
+          return shapeStyle.fill === 'none' || Number(shapeStyle.fillOpacity) === 0 ? 'none' : shapeStyle.fill;
+        });
         return {
           band, shown: arc.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }) && arc.closest('svg')!.getBoundingClientRect().width > 0,
-          opacity: Number(cs.strokeOpacity) * faded(arc), fills: [cs.fill, track.fill],
+          opacity: Number(cs.strokeOpacity) * faded(arc), fills,
           stroke: cs.stroke, expected: band ? colourOf(tokens[band]) : '', behind, images,
         };
       });
@@ -944,7 +948,8 @@ for (const theme of THEMES) {
     expect(painted.rings).toHaveLength(4);
     for (const arc of painted.rings) {
       expect(arc.shown && arc.opacity === 1, 'a ring is hidden or see-through').toBe(true);
-      expect(arc.fills, 'a ring is filled: the number inside it would sit on its colour').toEqual(['none', 'none']);
+      expect(arc.fills.length, 'a ring has no shapes to check').toBeGreaterThan(1);
+      expect(arc.fills.every((fill) => fill === 'none'), `a ring has a painted fill (${arc.fills.join(', ')}): the number inside it would sit on it`).toBe(true);
       expect(arc.stroke, 'a ring has no colour of its own').toMatch(/^rgb\(/);
       expect(arc.stroke, `a ring is not the colour of the ${arc.band} band`).toBe(arc.expected);
       expect(arc.behind, 'the ring sits on no opaque background colour').toMatch(/^rgb\(/);
