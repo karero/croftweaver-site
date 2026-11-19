@@ -122,6 +122,12 @@ export const SUITES: {
     limit: 'It calls the function directly, so it does not prove that the hosting account runs it. A noindex header also does not stop every AI crawler from citing a preview address.',
   },
   {
+    file: 'workers-config', group: 'publish', name: 'Workers config',
+    checks: 'The site folder holds one Workers config, and it serves the built files with no script of its own, keeps the live workers.dev address off and turns preview links on.',
+    example: 'A config that adds a script of its own fails. So does a site folder with no Workers config.',
+    limit: 'It reads the file in the repository, not the Worker Cloudflare runs, so a deploy made by hand from another copy is not checked. It does not check the domain the config attaches.',
+  },
+  {
     file: 'served-build', group: 'publish', name: 'Own build',
     checks: 'The server the tests run against serves this copy of the site, from its own build.',
     example: 'When another copy of the site on the same computer takes the test port during the build, the run fails instead of testing that copy.',

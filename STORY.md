@@ -75,7 +75,7 @@
    (`/positioning`: positioning comes first; `/start`: the interview).
 2. **Build and check** → pages with the search and AI work done by default, and the test
    suites check every change by default (§2, §3).
-3. **Publish and keep improving** → hosting you control (§3: Cloudflare Pages free tier;
+3. **Publish and keep improving** → hosting you control (§3: Cloudflare's free plan;
    `/start`), and once Search Console is connected your own data points to the next edit,
    week by week (§2).
 
