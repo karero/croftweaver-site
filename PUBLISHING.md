@@ -108,8 +108,9 @@ git push
 
 - **Mistake already live?** Don't panic — in the **Cloudflare dashboard → Workers & Pages →
   the Worker `croftweaver-site` → Deployments**, every past version is listed; roll back to
-  an older one there, or run `npx wrangler deployments list` and then `npx wrangler rollback <version-id>`. (A rollback of the old Pages project
-  changes only its `pages.dev` addresses, not croftweaver.com.)
+  an older one there, or run `npx wrangler deployments list` and then
+  `npx wrangler rollback <version-id>`. (A rollback of the old Pages project changes
+  only its `pages.dev` addresses, not croftweaver.com.)
 - **Made a typo in the last save (not pushed yet)?** Re-edit, then
   `git add -A && git commit -m "fix typo"` again.
 - **`git push` says "rejected"?** (on `main`) Someone/something updated the cloud copy — run

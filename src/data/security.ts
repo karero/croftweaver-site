@@ -110,7 +110,7 @@ export const CLAIMS: Claim[] = [
   // ---- What runs: the Croftweaver template, croftweaver.com, and WordPress as its own documentation describes it ----
   { id: 'template-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver && cd croftweaver && git checkout 3b8a6c5f && find skills/new-website/templates/astro -name '*.php' | wc -l", read: READ_REPO },
   { id: 'site-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && git ls-files | grep -c '\\.php$'", read: READ_REPO },
-  { id: 'site-moved-to-workers', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && grep -n 'Worker with no code of its own' README.md", read: READ_WORKERS },
+  { id: 'site-moved-to-workers', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && grep -n -B1 'Worker with no code of its own' README.md", read: READ_WORKERS },
   { id: 'site-worker-no-code', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && grep -E '\"main\"|custom_domain' wrangler.jsonc", read: READ_WORKERS },
   { id: 'site-one-function', kind: 'file', source: 'functions/_middleware.ts', lines: 'L60-L74', read: READ_REPO },
   { id: 'template-worker-none', kind: 'url', source: 'https://github.com/karero/croftweaver/blob/v0.35/skills/new-website/templates/astro/wrangler.jsonc', label: 'the template at release 0.35', read: READ_TEMPLATE_035 },
@@ -147,10 +147,10 @@ export const CLAIMS: Claim[] = [
   { id: 'site-analytics', kind: 'command', source: "curl -s https://croftweaver.com/ | grep -o -E '<script[^>]*src=\"[^\"]*\"'; curl -s https://croftweaver.com/ | grep -c -i -E 'cloudflareinsights|beacon.min.js'; curl -s \"$(curl -s https://croftweaver.com/ | grep -o -E 'https://analytics[^\"]*[.]js')\" | grep -o 'window.plausible.init' | sort -u", read: READ_LIVE },
   { id: 'toolkit-cloudflare-setup', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/scripts/cloudflare-setup.mjs#L45-L76`, label: 'the toolkit script cloudflare-setup.mjs at 3b8a6c5f', read: READ_REPO },
   { id: 'launch-dependabot', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/SKILL.md#L758`, label: 'the toolkit launch checklist at 3b8a6c5f', read: READ_REPO },
-  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L148-L154', read: READ_REPO },
-  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L210', read: READ_REPO },
-  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
-  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
+  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L139-L145', read: READ_REPO },
+  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L201', read: READ_REPO },
+  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L216-L223', read: READ_REPO },
+  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L216-L223', read: READ_REPO },
   { id: 'site-canonical-url', kind: 'file', source: 'README.md', lines: 'L11-L14', read: READ_REPO },
   { id: 'no-dnssec-caa-securitytxt-in-template', kind: 'url', source: TEMPLATE_AT, label: 'the template at 3b8a6c5f', read: READ_REPO },
 
