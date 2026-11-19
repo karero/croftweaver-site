@@ -813,11 +813,9 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
 }
 
 // Site-specific (not in the shipped suite): the PageSpeed gauges on /proof (src/components/ScoreGauges.astro)
-// and the pages that quote the same runs. The values below are written by hand on purpose, NOT imported from
-// src/data/proof.ts: after a new run, whoever edits PROOF, PROOF_MEASURED and AGENTIC edits these too, and until
-// they do these tests fail. That failure is the guard working, since a page whose argument is "these numbers are
-// honest" must not change a number without a person looking at it. A test that read proof.ts would pass for any value.
-// The run: three home pages, mobile, 19 November 2026 at 8:35 PM GMT+1 (docs/evidence/2026-11-19-psi-three-sites-mobile.md).
+// and the pages that quote the same runs. The values are written by hand, not imported from src/data/proof.ts:
+// a new run must change them too, so no number on these pages changes without a person looking at it.
+// The run: docs/evidence/2026-11-19-psi-three-sites-mobile.md.
 const GAUGES = [
   { value: '100', label: 'Performance' },
   { value: '100', label: 'Accessibility' },
@@ -874,10 +872,8 @@ test('a11y — each gauge on /proof is read as its value and then its label, and
   }
 });
 
-// Axe only warns about contrast it cannot decide (the loop at the top of this file), so this decides it for the gauges.
-// The text is checked by axe, except the four numbers painted over a ring: axe cannot read a background that holds an
-// inline SVG and returns them as undecided, so those are measured here from the painted colours (4.5:1, WCAG 1.4.3).
-// The rings themselves are checked against the page behind them (3:1, WCAG 1.4.11).
+// Axe cannot read a background that holds an inline SVG, so it leaves the four numbers over the rings undecided:
+// those are measured here from the painted colours (4.5:1). The rings are checked against the page (3:1, WCAG 1.4.11).
 const BAND_TOKEN = { good: '--pass', mid: '--warn', bad: '--fail' } as const;
 for (const theme of THEMES) {
   test(`a11y — the gauges on /proof are readable [${theme}]`, async ({ page }) => {
