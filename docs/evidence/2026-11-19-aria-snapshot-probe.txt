@@ -1,0 +1,39 @@
+Probe run 2026-11-19 with Playwright 1.64.1 (chromium), plain node script calling locator('figure.g').ariaSnapshot() on six hand-written gauges. The script loads @playwright/test from the repository. Script: below the output.
+
+--- good
+- figure: 99 Performance
+--- exposedRing
+- figure:
+  - img
+  - text: 99 Performance
+--- exposedRingImg
+- figure:
+  - img "ring"
+  - text: 99 Performance
+--- hiddenValue
+- figure: Performance
+--- titleOverride
+- figure:
+  - img "Performance 98": 99 Performance
+--- ariaLabelOnFigure
+- figure "Performance 98": 99 Performance
+
+--- script
+const { chromium } = require('@playwright/test');
+const ring = (extra) => `<svg ${extra} width="80" height="80"><circle cx="40" cy="40" r="36" stroke="green" stroke-width="6" fill="none"/></svg>`;
+const cases = {
+  good: `<figure class="g">${ring('aria-hidden="true"')}<span>99</span> <span>Performance</span></figure>`,
+  exposedRing: `<figure class="g">${ring('')}<span>99</span> <span>Performance</span></figure>`,
+  exposedRingImg: `<figure class="g">${ring('role="img" aria-label="ring"')}<span>99</span> <span>Performance</span></figure>`,
+  hiddenValue: `<figure class="g">${ring('aria-hidden="true"')}<span aria-hidden="true">99</span> <span>Performance</span></figure>`,
+  titleOverride: `<figure class="g">${ring('aria-hidden="true"')}<div role="img" title="Performance 98"><span>99</span> <span>Performance</span></div></figure>`,
+  ariaLabelOnFigure: `<figure class="g" aria-label="Performance 98">${ring('aria-hidden="true"')}<span>99</span> <span>Performance</span></figure>`,
+};
+(async () => {
+  const b = await chromium.launch(); const p = await b.newPage();
+  for (const [k, html] of Object.entries(cases)) {
+    await p.setContent(`<main>${html}</main>`);
+    console.log('--- ' + k + '\n' + await p.locator('figure.g').ariaSnapshot());
+  }
+  await b.close();
+})();

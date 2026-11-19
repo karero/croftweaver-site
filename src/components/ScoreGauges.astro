@@ -1,0 +1,61 @@
+---
+// The Lighthouse result as gauges: four rings and one pill, like PageSpeed Insights draws it.
+// Each gauge is a figure holding the value and then the label as real text, so the accessibility
+// tree has exactly the value and the label and nothing for the ring (aria-hidden);
+// tests/a11y.spec.ts checks that tree. Colours come from the theme tokens, so both themes work.
+interface Props {
+  scores: { label: string; value: number }[];
+  agentic: { label: string; passed: number; total: number };
+}
+const { scores, agentic } = Astro.props;
+
+const R = 26;
+const C = 2 * Math.PI * R;
+// Lighthouse's bands: 90+ good, 50-89 middle, below 50 bad.
+const band = (v: number) => (v >= 90 ? 'good' : v >= 50 ? 'mid' : 'bad');
+const gauges = scores.map((s) => ({
+  ...s,
+  band: band(s.value),
+  dash: `${((C * s.value) / 100).toFixed(2)} ${C.toFixed(2)}`,
+}));
+// The pill takes the same colours as the rings: all checks passed is good, none is bad.
+const agenticBand = agentic.passed === agentic.total ? 'good' : agentic.passed === 0 ? 'bad' : 'mid';
+---
+
+<div class="gauges">
+  {gauges.map((g) => (
+    <figure class={`gauge ${g.band}`}>
+      <div class="ring">
+        <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
+          <circle class="track" cx="32" cy="32" r={R} />
+          <circle class="arc" cx="32" cy="32" r={R} stroke-dasharray={g.dash} transform="rotate(-90 32 32)" />
+        </svg>
+        <span class="num">{g.value}</span>
+      </div>
+      <span class="label">{g.label}</span>
+    </figure>
+  ))}
+  <figure class={`gauge ${agenticBand}`}>
+    <div class="ring">
+      <span class="pill"><span class="dot" aria-hidden="true"></span><span class="num">{agentic.passed}/{agentic.total}</span></span>
+    </div>
+    <span class="label">{agentic.label}</span>
+  </figure>
+</div>
+
+<style>
+  .gauges { display: flex; flex-wrap: wrap; gap: 20px; margin: 12px 0 18px; }
+  .gauge { flex: 0 1 104px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; margin: 0; }
+  .gauge.good { --tone: var(--pass); }
+  .gauge.mid { --tone: var(--warn); }
+  .gauge.bad { --tone: var(--fail); }
+  .ring { position: relative; min-width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; }
+  .ring svg { position: absolute; inset: 0; }
+  .track { fill: none; stroke: var(--line); stroke-width: 5; }
+  .arc { fill: none; stroke: var(--tone); stroke-width: 5; }
+  .num { position: relative; font-size: 1.15rem; font-weight: 600; color: var(--tone); font-variant-numeric: tabular-nums; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: var(--bg-soft); }
+  .pill .num { font-size: 0.95rem; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tone); }
+  .label { color: var(--muted); font-size: 0.9rem; line-height: 1.3; }
+</style>

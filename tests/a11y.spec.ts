@@ -812,6 +812,198 @@ for (const [width, floor] of [[360, 11], [320, 9.5]] as const) {
   });
 }
 
+// Site-specific (not in the shipped suite): the PageSpeed gauges on /proof (src/components/ScoreGauges.astro)
+// and the pages that quote the same runs. The values are written by hand, not imported from src/data/proof.ts:
+// a new run must change them too, so no number on these pages changes without a person looking at it.
+// The run: docs/evidence/2026-11-19-psi-three-sites-mobile.md.
+const GAUGES = [
+  { value: '100', label: 'Performance' },
+  { value: '100', label: 'Accessibility' },
+  { value: '100', label: 'Best practices' },
+  { value: '100', label: 'SEO' },
+  { value: '3/3', label: 'Agentic Browsing' },
+];
+
+test('proof — the gauges show the run, and the paragraph under them says which run it was', async ({ page }) => {
+  await page.goto('/proof');
+  await expect(page.locator('#speed h2')).toHaveText('Speed and search basics');
+  const gauges = page.locator('#speed .gauge');
+  await expect(gauges).toHaveCount(GAUGES.length);
+  const shown = await gauges.evaluateAll((els) =>
+    els.map((el) => ({ value: el.querySelector('.num')?.textContent?.trim() ?? '', label: el.querySelector('.label')?.textContent?.trim() ?? '' })),
+  );
+  expect(shown).toEqual(GAUGES);
+  const paragraph = page.locator('#speed p');
+  await expect(paragraph).toHaveCount(1);
+  await expect(paragraph).toBeVisible();
+  await expect(paragraph).toHaveText(
+    "Google's PageSpeed Insights, on a simulated phone, for the home page: one run on 19 November 2026, with Lighthouse 13.6.0. " +
+    'Scores run from 0 to 100 and vary a little from run to run. Agentic Browsing is an experimental Lighthouse category: ' +
+    'it checks how well a page is built for AI agents to use, and shows how many of its checks pass instead of a score out of 100. Re-run the test.',
+    { useInnerText: true },
+  );
+  await expect(paragraph.locator('time')).toHaveAttribute('datetime', '2026-11-19');
+  await expect(paragraph.locator('a')).toHaveAttribute('href', 'https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fgenai-wednesday.de%2F&form_factor=mobile');
+});
+
+test('a11y — each ring on /proof draws its value as a share of the circle, with a visible stroke', async ({ page }) => {
+  await page.goto('/proof');
+  const arcs = await page.locator('#speed .gauge .arc').evaluateAll((els) =>
+    els.map((el) => ({ r: Number(el.getAttribute('r')), raw: getComputedStyle(el).strokeDasharray, dash: getComputedStyle(el).strokeDasharray.split(/[ ,]+/).map(parseFloat), width: parseFloat(getComputedStyle(el).strokeWidth) })),
+  );
+  expect(arcs).toHaveLength(4);
+  arcs.forEach((arc, i) => {
+    const whole = 2 * Math.PI * arc.r;
+    // Pixels only: a percentage would pass the number checks below and mean something else.
+    expect(arc.raw, `${GAUGES[i]!.label}: the dash array is two lengths in px`).toMatch(/^[\d.]+px, [\d.]+px$/);
+    const [drawn, total] = arc.dash;
+    expect(total!.toFixed(1), `${GAUGES[i]!.label}: the second number is the whole circle`).toBe(whole.toFixed(1));
+    // Values 100 today, so the ring is full; the share is worked out from the hand-written value, not read from the page.
+    expect(drawn!.toFixed(1), `${GAUGES[i]!.label}: the first number is the value's share`).toBe(((whole * Number(GAUGES[i]!.value)) / 100).toFixed(1));
+    expect(arc.width, `${GAUGES[i]!.label}: stroke width`).toBeGreaterThan(0);
+  });
+});
+
+test('a11y — each gauge on /proof is read as its value and then its label, and the ring is not announced', async ({ page }) => {
+  await page.goto('/proof');
+  const gauges = page.locator('#speed .gauge');
+  for (let i = 0; i < GAUGES.length; i++) {
+    // The whole snapshot: an exposed ring, a hidden value, or a name that overrides the text each change it
+    // (probe, five cases: docs/evidence/2026-11-19-aria-snapshot-probe.txt). Not a screen-reader test.
+    expect(await gauges.nth(i).ariaSnapshot()).toBe(`- figure: ${GAUGES[i]!.value} ${GAUGES[i]!.label}`);
+  }
+});
+
+// Axe cannot read a background that holds an inline SVG, so it leaves the four numbers over the rings undecided:
+// those are measured here from the painted colours (4.5:1). The rings are checked against the page (3:1, WCAG 1.4.11).
+const BAND_TOKEN = { good: '--pass', mid: '--warn', bad: '--fail' } as const;
+for (const theme of THEMES) {
+  test(`a11y — the gauges on /proof are readable [${theme}]`, async ({ page }) => {
+    await page.addInitScript((t) => {
+      try { localStorage.setItem('theme', t); } catch (e) { /* ignore */ }
+    }, theme);
+    await page.goto('/proof');
+    expect(await page.evaluate(() => document.documentElement.dataset.theme), 'the requested theme was not applied').toBe(theme);
+
+    const axe = await new AxeBuilder({ page }).include('#speed .gauges').withRules(['color-contrast']).analyze();
+    expect(axe.violations.map((v) => v.id), `colour contrast of the gauges' text (${theme})`).toEqual([]);
+    // Undecided text must be exactly the four numbers over a ring: anything else axe cannot decide fails here.
+    // If a later axe decides those too, this fails: edit the count, do not loosen it.
+    const undecided = axe.incomplete.flatMap((rule) => rule.nodes.map((node) => `${rule.id}/${[...node.any, ...node.all, ...node.none].map((c) => c.data?.messageKey).join(',')}: ${node.html}`));
+    expect(undecided.length, `axe left something undecided besides the numbers over the rings (${theme}): ${undecided.join(' | ')}`).toBe(4);
+    for (const found of undecided) expect(found, 'axe left something undecided besides a number').toMatch(/^color-contrast\/imgNode: <span class="num"/);
+
+    const painted = await page.evaluate((tokens) => {
+      const transparent = (c: string) => c === 'transparent' || /^rgba\(.*,\s*0\)$/.test(c);
+      // Opacity does not inherit, so multiply it up the whole chain.
+      const faded = (el: Element | null) => { let product = 1; for (; el; el = el.parentElement) product *= Number(getComputedStyle(el).opacity); return product; };
+      const colourOf = (token: string) => {
+        const probe = document.createElement('span');
+        probe.style.color = `var(${token})`;
+        document.body.append(probe);
+        const colour = getComputedStyle(probe).color;
+        probe.remove();
+        return colour;
+      };
+      // The first element, from `from` up, with a background colour: what the ink is painted on. Any image or gradient
+      // on the way would make that colour not the painted one.
+      const paintedOn = (from: Element | null) => {
+        let images = 0;
+        for (let el = from; el; el = el.parentElement) {
+          const style = getComputedStyle(el);
+          if (style.backgroundImage !== 'none') images++;
+          if (!transparent(style.backgroundColor)) return { behind: style.backgroundColor, images };
+        }
+        return { behind: '', images };
+      };
+      const numbers = [...document.querySelectorAll('#speed .gauge .ring > .num')].map((num) => ({
+        ink: getComputedStyle(num).color, opacity: faded(num), ...paintedOn(num),
+      }));
+      const rings = [...document.querySelectorAll('#speed .gauge .arc')].map((arc) => {
+        const cs = getComputedStyle(arc);
+        const gauge = arc.closest('.gauge')!;
+        const band = (['good', 'mid', 'bad'] as const).find((b) => gauge.classList.contains(b))!;
+        const { behind, images } = paintedOn(arc.closest('svg'));
+        // Every shape of the ring: nothing painted may sit under the number.
+        const fills = [...gauge.querySelectorAll('svg circle, svg path')].map((shape) => {
+          const shapeStyle = getComputedStyle(shape);
+          return shapeStyle.fill === 'none' || Number(shapeStyle.fillOpacity) === 0 ? 'none' : shapeStyle.fill;
+        });
+        return {
+          band, shown: arc.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }) && arc.closest('svg')!.getBoundingClientRect().width > 0,
+          opacity: Number(cs.strokeOpacity) * faded(arc), fills,
+          stroke: cs.stroke, expected: band ? colourOf(tokens[band]) : '', behind, images,
+        };
+      });
+      return { rings, numbers };
+    }, BAND_TOKEN);
+    expect(painted.numbers).toHaveLength(4);
+    for (const num of painted.numbers) {
+      expect(num.ink, 'a number over a ring has a see-through colour').toMatch(/^rgb\(/);
+      expect(num.opacity, 'a number over a ring is faded').toBe(1);
+      expect(num.behind, 'a number over a ring sits on no opaque background colour').toMatch(/^rgb\(/);
+      expect(num.images, 'an image or gradient sits behind a number').toBe(0);
+      expect(contrast(num.ink, num.behind), `a number over a ring against the page (${theme})`).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(painted.rings).toHaveLength(4);
+    for (const arc of painted.rings) {
+      expect(arc.shown && arc.opacity === 1, 'a ring is hidden or see-through').toBe(true);
+      expect(arc.fills.length, 'a ring has no shapes to check').toBeGreaterThan(1);
+      expect(arc.fills.every((fill) => fill === 'none'), `a ring has a painted fill (${arc.fills.join(', ')}): the number inside it would sit on it`).toBe(true);
+      expect(arc.stroke, 'a ring has no colour of its own').toMatch(/^rgb\(/);
+      expect(arc.stroke, `a ring is not the colour of the ${arc.band} band`).toBe(arc.expected);
+      expect(arc.behind, 'the ring sits on no opaque background colour').toMatch(/^rgb\(/);
+      expect(arc.images, 'an image or gradient sits behind a ring').toBe(0);
+      expect(contrast(arc.stroke, arc.behind), `a ring against the page (${theme})`).toBeGreaterThanOrEqual(3);
+    }
+  });
+}
+
+test('a11y — the gauges on /proof wrap on a 375 px phone and the page does not scroll sideways', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/proof');
+  const gauges = page.locator('#speed .gauge');
+  await gauges.first().scrollIntoViewIfNeeded();
+  const tops = new Set<number>();
+  for (let i = 0; i < GAUGES.length; i++) {
+    const box = (await gauges.nth(i).boundingBox())!;
+    tops.add(Math.round(box.y));
+    expect(box.x, `${GAUGES[i]!.label}: left edge`).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width, `${GAUGES[i]!.label}: right edge`).toBeLessThanOrEqual(375);
+  }
+  expect(tops.size, 'rows of gauges').toBeGreaterThan(1);
+  const { scrollWidth, clientWidth } = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth }));
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+});
+
+// The pages that read PROOF type no figure, so a new run moves them all. The figures and the date are written by hand here, as above.
+test('proof — /more-proof shows the three sites of the 19 November run, each with four 100s', async ({ page }) => {
+  await page.goto('/more-proof');
+  const heading = page.locator('#speed h2');
+  await expect(heading).toHaveText('Speed and technical SEO, measured on 19 November 2026', { useInnerText: true });
+  await expect(heading.locator('time')).toHaveAttribute('datetime', '2026-11-19');
+  const cards = page.locator('#speed .proof-grid > li');
+  await expect(cards).toHaveCount(3);
+  await expect(cards.locator('h3')).toHaveText(['genai-wednesday.de', 'm-squad.com', 'apreet.com']);
+  for (let i = 0; i < 3; i++) await expect(cards.nth(i).locator('dd')).toHaveText(['100', '100', '100', '100']);
+});
+
+test('proof — /why, /about, the home page and /from-wordpress quote the 19 November run', async ({ page }) => {
+  // Each sentence is found by its text, asserted visible, and read as rendered (innerText), since the sources break lines inside them.
+  const quoted = async (path: string, text: string, dated = false) => {
+    await page.goto(path);
+    const found = page.getByText(text);
+    await expect(found, `${path} no longer says "${text}"`).toHaveCount(1);
+    await expect(found).toBeVisible();
+    await expect(found).toContainText(text, { useInnerText: true });
+    if (dated) await expect(found.locator('time').first()).toHaveAttribute('datetime', '2026-11-19');
+  };
+  await quoted('/why', 'Speed and search basics. PageSpeed Insights on a simulated phone, 19 November 2026: 100, 100, 100 and 100 out of 100 for performance, accessibility, best practices and SEO.');
+  await quoted('/about', 'Each scored 100 out of 100 in all four categories', true);
+  await quoted('/', "100 out of 100 across the four categories of Google's PageSpeed Insights, for three sites on 19 November 2026", true);
+  await quoted('/from-wordpress', 'The three sites measured on 19 November 2026 scored 100 for performance on mobile');
+});
+
 // Site-specific (not in the shipped suite): the picture on /what-it-runs-on is HTML and CSS, not a drawing, so there is no text scaling to
 // measure. What can break is the layout: the three places must sit side by side on a desktop and
 // one under the other on a phone, and no box may push the page sideways at 360 or 320 px.

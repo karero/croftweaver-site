@@ -7,11 +7,18 @@
 import Base from '../layouts/Base.astro';
 import ClicksChart from '../components/ClicksChart.astro';
 import AiCheckChart from '../components/AiCheckChart.astro';
+import ScoreGauges from '../components/ScoreGauges.astro';
 import { SITE } from '../config';
-import { PROOF, PROOF_MEASURED, SITE_PROOF, nameList } from '../data/proof';
+import { AGENTIC, PROOF, PROOF_MEASURED, SITE_PROOF, nameList } from '../data/proof';
 
 const p = SITE_PROOF;
 const speed = PROOF.find((entry) => entry.site === p.site)!;
+const gaugeScores = [
+  { label: 'Performance', value: speed.performance },
+  { label: 'Accessibility', value: speed.accessibility },
+  { label: 'Best practices', value: speed.bestPractices },
+  { label: 'SEO', value: speed.seo },
+];
 const rerun = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(p.url)}&form_factor=mobile`;
 const { latest, peak, blocks, positionsPeriod, rolling, rollingFrom, fileFrom, firstImpression } = p.search;
 const { allFailed, notRun } = p.ai;
@@ -68,16 +75,14 @@ const aiDesc =
 
   <section class="wrap" id="speed">
     <h2>Speed and search basics</h2>
-    <dl class="scores">
-      <div><dt>Performance</dt><dd>{speed.performance}</dd></div>
-      <div><dt>Accessibility</dt><dd>{speed.accessibility}</dd></div>
-      <div><dt>Best practices</dt><dd>{speed.bestPractices}</dd></div>
-      <div><dt>SEO</dt><dd>{speed.seo}</dd></div>
-    </dl>
+    <ScoreGauges scores={gaugeScores} agentic={AGENTIC} />
     <p>
       Google's PageSpeed Insights, on a simulated phone, for the home page: one run
-      on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>. Scores
-      run from 0 to 100 and vary a little from run to run.
+      on <time datetime={PROOF_MEASURED.iso}>{PROOF_MEASURED.label}</time>, with
+      Lighthouse {PROOF_MEASURED.lighthouse}. Scores run from 0 to 100 and vary a little
+      from run to run. Agentic Browsing is an experimental Lighthouse category: it checks
+      how well a page is built for AI agents to use, and shows how many of its checks pass
+      instead of a score out of 100.
       <a href={rerun}>Re-run the test</a>.
     </p>
   </section>
@@ -297,11 +302,6 @@ const aiDesc =
   figure.chart { margin: 1.2rem 0; max-width: 34rem; padding: 1rem 1.1rem 0.9rem; }
   figure.chart figcaption { margin-top: 0.7rem; font-size: 0.9rem; line-height: 1.5; color: var(--muted); }
   @media (max-width: 30rem) { figure.chart { padding: 0.6rem 0.5rem 0.7rem; } }
-
-  .scores { display: flex; flex-wrap: wrap; gap: 0.8rem 2.5rem; margin: 0 0 1rem; }
-  .scores div { display: flex; flex-direction: column-reverse; }
-  .scores dt { font-size: 0.85rem; color: var(--muted); }
-  .scores dd { margin: 0; font-size: 2.2rem; font-weight: 700; line-height: 1.1; color: var(--pass); }
 
   #search tbody tr:last-child th, #search tbody tr:last-child td { font-weight: 700; }
 </style>
