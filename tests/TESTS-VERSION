@@ -1,4 +1,14 @@
-suite_commit: 8825573b75feddeaaba306f19b2abeb1752b09f4
-copied: 2026-11-15
-changed: workers-config.spec.ts — copied 2026-11-18, with its skip replaced by a test that needs exactly one Workers config, wrangler.jsonc (the site is served by a Worker since 2026-11-18), and two wording fixes, one in a comment and one in a test's message
+suite_commit: 39118dc7ef94c2b651adc19d7fd891f6fd5ee50a
+copied: 2026-11-19
+# changed: workers-config.spec.ts — the 0.36 copy of 2026-11-19, with its skip replaced by a test that needs exactly one Workers config, wrangler.jsonc (the site is served by a Worker since 2026-11-18), and three wording changes: the header's label for the decision, one sentence of the header comment, and the failure message for a Worker that sets "main"
+# changed: email.spec.ts — the 0.36 copy, plus the site's two phone-number tests
+# changed: placeholders.spec.ts — the 0.36 copy, except that UNFILLED_UNTIL_LAUNCH is empty (the site has launched) and `imprint` is in LEGAL_LAST_SEGMENTS and the pinned examples (the site's Legal Notice is /imprint)
+# changed: check_analytics_gate.sh — the 0.36 copy, except for the production branch name and the script address (marked SITE-MODIFIED in the file)
+# changed: check_ship_push.sh — the 0.36 copy (marker 0.34), plus the site's check of its pre-push hook at the end
+# changed: icons.spec.ts — the 0.36 copy of 2026-11-19, except that the logo check reads COMPANY.logo from src/config.ts, as at 0.35, because the site's structured data names no Croftweaver logo (owner decision, 2026-10-13)
 kept: middleware.spec.ts — the 0.34 copy; 0.35 dropped it with Pages Functions, and the site's Pages project still runs functions/_middleware.ts on its pages.dev addresses until it is retired
+left_out: AGENTS.md — the site's own copy; 0.36 changed only its offer of a German Impressum, and the site's wording in section 5 already says this site has no such file and asks the owner before adding one
+left_out: PUBLISHING.md — the site's own copy, the Pages-era text with 0.35's ship wait and 0.36's "Ship again?" paragraph, reworded for this site (answer n: the ruleset on main refuses the upload). Bringing the rest to Workers is a rewrite, its own change
+left_out: scripts/deploy.sh — the site is published by npm run ship and built by Workers Builds from production; nothing deploys from this computer, and package.json has no deploy:preview or deploy:live script
+left_out: scripts/verify.mjs — it runs the deploy:preview and deploy:live scripts, which the site does not have
+left_out: tests/check_deploy.sh — it tests scripts/deploy.sh, which the site does not have
