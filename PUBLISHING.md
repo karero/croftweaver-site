@@ -60,6 +60,16 @@ new version (every build stamps its id into `/build.txt`; ship polls for it, abo
 "✓ LIVE — verified" means it's truly online; a warning means Cloudflare didn't build — the
 message tells you exactly what to click. Never assume a push went live without that check.
 
+If about 3 minutes after the upload the live site still serves the old build, and `npm run ship`
+runs in a terminal window, it asks once, "Ship again?". It would make one small commit on `main`
+that changes one line of `SHIP-AGAIN.txt` (the file is not part of the site) and upload it to
+`main` and `production`. **On this site, answer n.** The GitHub ruleset "protect main" takes
+changes to `main` only through a pull request, so GitHub refuses that upload; ship shows git's
+error and the live site stays as it was. Look at the build in Cloudflare instead (the
+`Workers Builds: croftweaver-site` check, described below). If you set build watch paths in
+Cloudflare, include `SHIP-AGAIN.txt` in them, or Cloudflare skips that commit
+(https://developers.cloudflare.com/workers/ci-cd/builds/build-watch-paths/).
+
 > **Each upload may run a quick self-check** (it builds the site and runs the tests before
 > uploading — so does `npm run ship`, which uploads too). It can take a minute, and **if
 > something is broken it stops the upload and tells you** rather than publishing a broken

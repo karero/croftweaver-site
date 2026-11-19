@@ -14,7 +14,7 @@ const ICONS: Icon[] = [
   { path: '/icon-192.png', linkedBy: 'manifest', kind: 'png', size: 192 },
   { path: '/icon-512.png', linkedBy: 'manifest', kind: 'png', size: 512 },
   { path: '/icon-maskable-512.png', linkedBy: 'manifest', kind: 'png', size: 512 },
-  { path: '/images/logo.png', linkedBy: 'logo', kind: 'png', size: 512 },  // COMPANY.logo (the template: the logo the page's structured data names)
+  { path: '/images/logo.png', linkedBy: 'logo', kind: 'png', size: 512 },  // COMPANY.logo (the template reads the logo the page's structured data names; this site reads src/config.ts)
 ];
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
