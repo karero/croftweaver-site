@@ -849,11 +849,13 @@ test('proof — the gauges show the run, and the paragraph under them says which
 test('a11y — each ring on /proof draws its value as a share of the circle, with a visible stroke', async ({ page }) => {
   await page.goto('/proof');
   const arcs = await page.locator('#speed .gauge .arc').evaluateAll((els) =>
-    els.map((el) => ({ r: Number(el.getAttribute('r')), dash: getComputedStyle(el).strokeDasharray.split(/[ ,]+/).map(parseFloat), width: parseFloat(getComputedStyle(el).strokeWidth) })),
+    els.map((el) => ({ r: Number(el.getAttribute('r')), raw: getComputedStyle(el).strokeDasharray, dash: getComputedStyle(el).strokeDasharray.split(/[ ,]+/).map(parseFloat), width: parseFloat(getComputedStyle(el).strokeWidth) })),
   );
   expect(arcs).toHaveLength(4);
   arcs.forEach((arc, i) => {
     const whole = 2 * Math.PI * arc.r;
+    // Pixels only: a percentage would pass the number checks below and mean something else.
+    expect(arc.raw, `${GAUGES[i]!.label}: the dash array is two lengths in px`).toMatch(/^[\d.]+px, [\d.]+px$/);
     const [drawn, total] = arc.dash;
     expect(total!.toFixed(1), `${GAUGES[i]!.label}: the second number is the whole circle`).toBe(whole.toFixed(1));
     // Values 100 today, so the ring is full; the share is worked out from the hand-written value, not read from the page.
