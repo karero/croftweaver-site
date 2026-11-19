@@ -24,8 +24,9 @@ again when the toolkit changes. A row of the table is only as good as its break.
   `tests/seo.spec.ts` differs by 224 lines, `tests/images.spec.ts` by 62 and `tests/navigation.spec.ts`
   by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `a0fbfb18`,
   which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
-  specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it named `a1f30899`, which is `v0.33`; since 2026-11-16 it names `8825573b`, which is `v0.35`,
-  the version of the last run. So the table
+  specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it named `a1f30899`, which is `v0.33`; since 2026-11-16 it named `8825573b`, which is `v0.35`,
+  the version of the last run; since 2026-11-19 it names `39118dc7`, which is `v0.36`; the template files the
+  breaks use are byte-identical to `v0.35`'s, so the breaks were not run again. So the table
   describes the starter, and these breaks were not run against this site's copies.
 - 29 October 2026, at `v0.34` (`99b72e10`), Node v26.13.0, Playwright 1.64.1, the starter copied out the
   same way. In the four specs, the tests these breaks use are unchanged from `v0.33`: `images`,

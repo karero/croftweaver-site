@@ -25,8 +25,11 @@ export const RED_RUNS = {
   nodeStarterAsks: '26',
   iso: '2026-11-15',
   label: '15 November 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: v0.35 (8825573b), where all the breaks ran.
-  suiteCommit: '8825573b75feddeaaba306f19b2abeb1752b09f4',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.36 (39118dc7). The breaks ran at v0.35
+  // (8825573b); between the two, the template's seo, images, navigation and anchors specs,
+  // _helpers.ts, public/ and astro.config.mjs are byte-identical, and playwright.config.ts and
+  // package.json differ in the cloud browser fallback, the Node floor and package versions only.
+  suiteCommit: '39118dc7ef94c2b651adc19d7fd891f6fd5ee50a',
 } as const;
 
 const COVERED = ['seo', 'images', 'navigation', 'anchors'] as const;

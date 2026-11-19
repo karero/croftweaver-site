@@ -724,11 +724,12 @@ go_selftest() {
   gofix inquote  "<a title=\"href='/go/email?e=x' class='email-link'\" class=\"email-link\" href=\"#\">a</a>"
   gofix unquoted '<a class=email-link href=/go/email?e=x>a</a>'
   gofix bare     '<a class="email-link" href="/go/email">a</a>'
-  gofix hash     '<a href="/go/email#x">a</a>'
-  gofix longer   '<a href="/go/emailing">a</a>'
+  gofix hash     '<a class="email-link" href="/go/email#x">a</a>'
+  gofix slash    '<a class="email-link" href="/go/email/">a</a>'
+  gofix longer   '<a class="email-link" href="/go/emails">a</a>'
   for expect in plain:'1 0 0' go:'1 1 1' extra:'1 1 1' lookalike:'0 0 0' handmade:'0 0 1' comment:'0 0 0' \
                 quoted:'1 1 1' apart:'1 0 1' datahref:'1 0 0' dataclass:'0 0 1' inquote:'1 0 0' unquoted:'1 1 1' \
-                bare:'1 1 1' hash:'0 0 1' longer:'0 0 0'; do
+                bare:'1 1 1' hash:'1 1 1' slash:'1 1 1' longer:'1 0 0'; do
     name="${expect%%:*}"; want="${expect#*:}"; k=$((k + 1))
     got="$(perl -e "$(go_program)" "$dir/$name.html" | awk '{print $1, $2, $3}')"
     if [ "$got" != "$want" ]; then

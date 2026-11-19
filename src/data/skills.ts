@@ -7,11 +7,11 @@
 // (tests/llms-coverage.spec.ts fails until it matches), and open the footer's release-notes link once:
 // the tests build it from RELEASE and SITE.repo, so they cannot see a wrong tag name. The site cannot check the toolkit at
 // build time, but the build stops when the list, the release's skill count and ADDED_SINCE do not add up.
-export const RELEASE = { version: '0.35', iso: '2026-11-14', label: '14 November 2026', skills: 40 } as const;
+export const RELEASE = { version: '0.36', iso: '2026-11-19', label: '19 November 2026', skills: 40 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
 // the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
 export const ADDED_SINCE: readonly string[] = [];
-export const AS_OF = { iso: '2026-11-14', label: '14 November 2026' } as const;
+export const AS_OF = { iso: '2026-11-19', label: '19 November 2026' } as const;
 
 export const STAGES = [
   { id: 'build', title: 'Build', intro: 'From a brief to a finished site.' },
@@ -81,7 +81,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
+  { version: '0.36', label: '19 November 2026', text: 'Your first launch on Cloudflare goes the right way round: your assistant has you choose your live branch where Cloudflare keeps it, and connects your domain after that. When a check fails, its message says what to fix. The build stops while your tab icon is still the Astro logo, and the icon maker leaves icons you made yourself alone. If the live site still shows the old version about three minutes after you publish, publishing offers once to try again.' },
   { version: '0.35', label: '14 November 2026', text: 'Every new page is written out and judged before it is built; for a page moved from an old site, the review checks that nothing that brought visitors is lost. The launch check reads your Cloudflare settings with you. New sites start on Cloudflare Workers, and for advanced users a script and a guide move a site there from Pages. Legal pages show a draft notice until you say how they were checked, and new sites get a tab icon from day one.' },
   { version: '0.34', label: '28 October 2026', text: 'A new check says when your site is ready to launch and writes a report you can open in your browser. New sites keep their pictures light on phones, keep your keys out of git from the start, and your assistant runs the speed test itself. Contact forms can ask for more, and the email they open starts with your greeting.' },
-  { version: '0.33', label: '24 October 2026', text: 'An optional helper shows a few photos at the top of a page that take turns. Tables get one shared style that fits a phone. For a move off WordPress, the helper now writes the forwarding rules from a sheet of your decisions. New sites build on Astro 7.4.2, which needs Node with the security fixes of 21 October, and get one update suggestion a month from GitHub.' },
 ] as const;
