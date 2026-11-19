@@ -1,0 +1,32 @@
+# DIFF review: the PageSpeed gauges on /proof, and PROOF moved to the 19 November 2026 runs
+Base `2c13f02` · depth: Normal · verdict: CLEAN at round 3 (no BUG or RISK open) · 3 rounds, 10 findings (11 raised, one by both seats)
+
+Task: `ScoreGauges.astro` on `/proof` (four rings and the Agentic Browsing pill), `PROOF`, `PROOF_MEASURED` and the new `AGENTIC` record in `src/data/proof.ts` moved to the three runs of 19 November 2026, the build-time check that ties them together, the new tests in `tests/a11y.spec.ts`, one string in `tests/seo.spec.ts`, `POSITIONING.md` and `STORY.md`, the evidence under `docs/evidence/`, and the two remade PDF decks.
+
+Seats: Codex gpt-6.1-sol (read-only) alone every round, and a fresh-eyes Sonnet subagent in round 1. The plan named Codex and GLM 5.3 on melious for this gate; the owner's rule for seats (Codex alone unless the diff touches a risky topic; nothing here does) was applied instead, and GLM was not run. Round 2 and 3 were deltas.
+
+| Round | Head | Seconds, tokens |
+|---|---|---|
+| 1 | `81688d1` | Codex 230 s / 74,062; fresh-eyes 186 s / 171,046 |
+| 2 | `1a42ae9` | Codex 128 s / 73,901 |
+| 3 | `da4c860` | Codex 70 s / 55,414 |
+
+| Sev | Round | Finding | Status | Evidence |
+|---|---|---|---|---|
+| RISK | 1 | The contrast measure of the four numbers over a ring ignored their alpha and opacity (Codex and fresh-eyes) | fixed | The test now needs an opaque `rgb()` ink and an opacity product of 1; mutations `opacity: .4` and an `rgb(… / .4)` ink both fail the readable test |
+| RISK | 1 | A filled ring would put the number on its own colour unseen | fixed | The computed fill of `.arc` and `.track` must be `none`; mutation `.track { fill: … }` fails |
+| RISK | 1 | "Ring is shown" read only the arc's own `display`, so a hidden parent passed | fixed | `checkVisibility` with opacity and CSS visibility, plus the svg's width above 0; mutation `display: none` on the svg fails |
+| RISK | 1 | The ring test read the `stroke-dasharray` attribute, which a stylesheet rule overrides | fixed | It reads the computed style; mutation `stroke-dasharray: 0 999` fails the ring test |
+| NIT | 1 | The axe count of 4 could be loosened by someone | fixed | A comment says to edit the count, not loosen it |
+| NIT | 1 | The evidence note's sentence about an earlier run at 4:12 PM had no record in the repository | fixed | Cut |
+| NIT | 1 | Checks were last run on `ed682f7`, not on the head | fixed | All re-run on the head after round 3 (see below) |
+| NIT | 1 | `docs/evidence/…-psi-apreet-com-mobile.jpg` shows a stock portrait from apreet.com's own public page | not changed | Unedited screenshot of a public page; named in the PR for the owner to decide |
+| RISK | 2 | The computed dash array was parsed without its units, so a percentage override passed | fixed | The string must match two lengths in px; mutation `stroke-dasharray: 100% 100%` fails the ring test |
+
+Round 3: No BUG/RISK/NIT findings. Its UNVERIFIABLE entries ask for a raw runner record of the mutation results; the loop's output is quoted in the PR, and each row above was run on the commit that carries its fix.
+
+Deviation from the plan, reported to the manager before review: the plan's T4 asks that axe's `incomplete` list for `#speed .gauges` be empty. On the built page axe cannot decide the four numbers painted over a ring (the inline SVG counts as an image node), light and dark. T4 instead requires `incomplete` to be exactly those four `.num` nodes and measures them by hand at 4.5:1 from the painted colours. Codex confirmed the reason in axe's source and raised only the findings above about the replacement.
+
+Known limit, as in the plan: every value is 100, so the track is decoration; for a score below 100 the track colour `var(--line)` is far below 3:1 and nothing tests it.
+
+Mutation loop: the `mutation-check` helper's load gate cannot pass on this machine, so a script applied each edit to the working tree, ran the new tests, and restored. 17 mutations on `da4c860`, all fail their test (the two build-stop mutations print the check's own message).
