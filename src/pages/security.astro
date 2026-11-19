@@ -261,7 +261,8 @@ const controls = [
       PHP. Each step carries a label as well as a colour.
     </p>
     <ul class="proof">
-      <Claim as="li" id="site-worker-no-code">croftweaver.com is served by a Worker that serves the built files and has no code of its own: its config, <code>wrangler.jsonc</code>, attaches the domain and names no script (<code>main</code>). The command prints only the line that attaches the domain.</Claim>
+      <Claim as="li" id="site-moved-to-workers">The README records that croftweaver.com has been served by a Worker with no code of its own since 18 November 2026.</Claim>
+      <Claim as="li" id="site-worker-no-code">The Worker's config, <code>wrangler.jsonc</code>, attaches the domain and names no script (<code>main</code>). The command prints only the line that attaches the domain.</Claim>
       <li><Claim as="span" id="site-one-function">The repository of croftweaver.com still holds one function, <code>functions/_middleware.ts</code>, for its old Pages project. On the project's <code>pages.dev</code> addresses it adds a noindex header to previews and, once the owner sets <code>CANONICAL_URL</code>, redirects the main <code>pages.dev</code> address to the live domain. It imports no package.</Claim> The project keeps answering at those addresses until it is retired; the live domain does not run the function.</li>
       <Claim as="li" id="template-two-functions">Up to release 0.34, the Croftweaver template had two functions: that one, with page-view counting added for owners who turn on server-side analytics, and <code>functions/go/email.ts</code>, which answers the email link.</Claim>
       <Claim as="li" id="template-worker-none">Since release 0.35 a new site is a Worker that serves its built files and has no code of its own.</Claim>
@@ -619,8 +620,9 @@ const controls = [
     </ul>
     <p>
       Shared ownership does not show that a site is safer, and we do not say so. It adds three separate points
-      of failure under one roof. First, Daniel Melter says that for croftweaver.com the registrar, the DNS zone and the
-      Worker that serves the site are in one Cloudflare account, so one stolen login would reach all three. Second, an outage
+      of failure under one roof. First, Daniel Melter says that for croftweaver.com the registrar and the DNS zone are in
+      one Cloudflare account. The site's Worker is deployed to that account (<code>account_id</code> in
+      <code>wrangler.jsonc</code>), so one stolen login would reach all three. Second, an outage
       or a policy change at Cloudflare could expose host, registrar and DNS to the same incident (see
       <a href="#limits">Cloudflare is a dependency</a>). Third, Astro's full-time team now works for
       Cloudflare, so a compromise of Astro's release path could reach any site that builds with the compromised release, on any host, not one account.
@@ -653,8 +655,10 @@ const controls = [
     <h2>How this page was checked</h2>
     <p>
       Each dated fact above carries its source and the day we read it. An AI assistant read each source
-      directly on the day it carries (22 and 23 October 2026, and later days for the sources added since), without a summary tool, and kept a log of what each one says. On
-      23 October it used a search tool only to find sources, never to read them. A test,
+      directly on 22 and 23 October 2026, without a summary tool, and kept a log of what each one says. On
+      23 October it used a search tool only to find sources, never to read them. The sources added or
+      read again since carry the day they were read: an AI assistant fetched those pages directly and checked
+      each claim against their text. A test,
       <code>tests/check_security_page.sh</code>, checks that every registered claim has a source and a date
       and that the page shows what the data lists. It cannot check that a source says what the sentence
       says. Editorial review covers that, and everything on this page that is not a registered claim.

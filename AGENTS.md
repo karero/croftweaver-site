@@ -4,7 +4,8 @@ Website of Croftweaver. Astro, static, GitHub → Cloudflare.
 Live: https://croftweaver.com (since 2026-10-12), served since 2026-11-18 by the Worker
 `croftweaver-site`, which Workers Builds builds from `production` (`wrangler.jsonc`) ·
 Preview: https://main.croftweaver-site.pages.dev (Cloudflare Pages project `croftweaver`,
-connected to this repository, until it is retired).
+connected to this repository, until it is retired; the ruleset on `main` requires its
+`Cloudflare Pages` check, so change the ruleset first).
 
 The project's name and its addresses differ. On the evening of 2026-10-12 Wrangler
 listed one project for this site, named `croftweaver`, with the domains

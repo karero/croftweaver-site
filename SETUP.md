@@ -10,7 +10,7 @@ file into a handed-off repo so the receiving party can get running too.
 1. **GitHub — a PRIVATE account/repo.** https://github.com/signup → enable **2FA**. Client
    work stays in **private** repos. Run `gh auth login` (see tools) so pushes need no password.
 2. **Cloudflare account.** https://dash.cloudflare.com/sign-up → enable **2FA**. Hosts the site
-   (Pages) and, if you move the domain's DNS there, the DNS. Free tier (unmetered bandwidth)
+   (Workers; Pages for the previews) and, if you move the domain's DNS there, the DNS. Free tier (unmetered bandwidth)
    covers a small static site; upgrade to Workers Paid ($5/mo) only when a feature needs it.
 
 ---

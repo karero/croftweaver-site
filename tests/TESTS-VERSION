@@ -1,4 +1,4 @@
 suite_commit: 8825573b75feddeaaba306f19b2abeb1752b09f4
 copied: 2026-11-15
-changed: workers-config.spec.ts — copied 2026-11-18, with no skip: the site is served by a Worker since 2026-11-18, so it needs exactly one Workers config, wrangler.jsonc
+changed: workers-config.spec.ts — copied 2026-11-18, with its skip replaced by a test that needs exactly one Workers config, wrangler.jsonc (the site is served by a Worker since 2026-11-18), and two wording fixes in the file's comments
 kept: middleware.spec.ts — the 0.34 copy; 0.35 dropped it with Pages Functions, and the site's Pages project still runs functions/_middleware.ts on its pages.dev addresses until it is retired

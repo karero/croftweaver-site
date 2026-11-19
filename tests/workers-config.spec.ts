@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 // The Worker's config (wrangler.jsonc) has the four settings the site relies on: no script of its
-// own (`main`), no live workers.dev address (workers_dev: false, D4: only Previews answer before
+// own (`main`), no live workers.dev address (workers_dev: false, so only Previews answer before
 // the domain is attached), Preview links on (preview_urls: true) and the built files from ./dist.
 // This site's copy does not skip: croftweaver.com is served by this Worker, so a missing config fails.
 //
@@ -62,7 +62,7 @@ test.describe('Workers config', () => {
 
   for (const { file, conf } of configs) {
     test(`${file}: a Worker with static assets, no script, no live workers.dev address`, () => {
-      expect(conf.main, `${file} sets "main": a script would run before the static files`).toBeUndefined();
+      expect(conf.main, `${file} sets "main": a script of its own is not part of this site's setup`).toBeUndefined();
       expect(conf.workers_dev, `${file} needs "workers_dev": false, or the live workers.dev address is public before launch`).toBe(false);
       expect(conf.preview_urls, `${file} needs "preview_urls": true: Previews are how a site is looked at before launch`).toBe(true);
       const assets = conf.assets as { directory?: string } | undefined;
