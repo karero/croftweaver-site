@@ -19,5 +19,3 @@ Chromium versions are read from the report pages' text, which the screenshots do
 Agentic Browsing reports checks passed, not a score out of 100:
 `2026-11-19-lighthouse-agentic-scoring.txt`. The scores in `src/data/proof.ts` (`PROOF`,
 `PROOF_MEASURED`, `AGENTIC`) are these runs; /proof draws genai-wednesday.de's.
-
-An earlier run of genai-wednesday.de the same day, at 4:12 PM GMT+1, gave the same five results.

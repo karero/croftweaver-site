@@ -849,7 +849,7 @@ test('proof — the gauges show the run, and the paragraph under them says which
 test('a11y — each ring on /proof draws its value as a share of the circle, with a visible stroke', async ({ page }) => {
   await page.goto('/proof');
   const arcs = await page.locator('#speed .gauge .arc').evaluateAll((els) =>
-    els.map((el) => ({ r: Number(el.getAttribute('r')), dash: (el.getAttribute('stroke-dasharray') ?? '').split(' ').map(Number), width: parseFloat(getComputedStyle(el).strokeWidth) })),
+    els.map((el) => ({ r: Number(el.getAttribute('r')), dash: getComputedStyle(el).strokeDasharray.split(/[ ,]+/).map(parseFloat), width: parseFloat(getComputedStyle(el).strokeWidth) })),
   );
   expect(arcs).toHaveLength(4);
   arcs.forEach((arc, i) => {
@@ -886,6 +886,7 @@ for (const theme of THEMES) {
     const axe = await new AxeBuilder({ page }).include('#speed .gauges').withRules(['color-contrast']).analyze();
     expect(axe.violations.map((v) => v.id), `colour contrast of the gauges' text (${theme})`).toEqual([]);
     // Undecided text must be exactly the four numbers over a ring: anything else axe cannot decide fails here.
+    // If a later axe decides those too, this fails: edit the count, do not loosen it.
     const undecided = axe.incomplete.flatMap((rule) => rule.nodes.map((node) => `${rule.id}: ${node.html}`));
     expect(undecided.length, `axe left something undecided besides the numbers over the rings (${theme}): ${undecided.join(' | ')}`).toBe(4);
     for (const found of undecided) expect(found, 'axe left something undecided besides a number').toMatch(/^color-contrast: <span class="num"/);
@@ -914,15 +915,17 @@ for (const theme of THEMES) {
         return { behind: '', images };
       };
       const numbers = [...document.querySelectorAll('#speed .gauge .ring > .num')].map((num) => ({
-        ink: getComputedStyle(num).color, ...paintedOn(num),
+        ink: getComputedStyle(num).color, opacity: faded(num), ...paintedOn(num),
       }));
       const rings = [...document.querySelectorAll('#speed .gauge .arc')].map((arc) => {
         const cs = getComputedStyle(arc);
         const gauge = arc.closest('.gauge')!;
         const band = (['good', 'mid', 'bad'] as const).find((b) => gauge.classList.contains(b))!;
         const { behind, images } = paintedOn(arc.closest('svg'));
+        const track = getComputedStyle(gauge.querySelector('.track')!);
         return {
-          band, shown: cs.display !== 'none' && cs.visibility === 'visible', opacity: Number(cs.strokeOpacity) * faded(arc),
+          band, shown: arc.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }) && arc.closest('svg')!.getBoundingClientRect().width > 0,
+          opacity: Number(cs.strokeOpacity) * faded(arc), fills: [cs.fill, track.fill],
           stroke: cs.stroke, expected: band ? colourOf(tokens[band]) : '', behind, images,
         };
       });
@@ -930,6 +933,8 @@ for (const theme of THEMES) {
     }, BAND_TOKEN);
     expect(painted.numbers).toHaveLength(4);
     for (const num of painted.numbers) {
+      expect(num.ink, 'a number over a ring has a see-through colour').toMatch(/^rgb\(/);
+      expect(num.opacity, 'a number over a ring is faded').toBe(1);
       expect(num.behind, 'a number over a ring sits on no opaque background colour').toMatch(/^rgb\(/);
       expect(num.images, 'an image or gradient sits behind a number').toBe(0);
       expect(contrast(num.ink, num.behind), `a number over a ring against the page (${theme})`).toBeGreaterThanOrEqual(4.5);
@@ -937,6 +942,7 @@ for (const theme of THEMES) {
     expect(painted.rings).toHaveLength(4);
     for (const arc of painted.rings) {
       expect(arc.shown && arc.opacity === 1, 'a ring is hidden or see-through').toBe(true);
+      expect(arc.fills, 'a ring is filled: the number inside it would sit on its colour').toEqual(['none', 'none']);
       expect(arc.stroke, 'a ring has no colour of its own').toMatch(/^rgb\(/);
       expect(arc.stroke, `a ring is not the colour of the ${arc.band} band`).toBe(arc.expected);
       expect(arc.behind, 'the ring sits on no opaque background colour').toMatch(/^rgb\(/);
