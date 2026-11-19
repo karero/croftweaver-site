@@ -14,7 +14,7 @@ export default defineConfig({
   compressHTML: true,
   trailingSlash: 'never',           // CONVENTION: clean URLs with NO trailing slash (/about, not /about/)
   build: {
-    format: 'file',                 // emit /about.html → Cloudflare Pages serves it at /about (no slash)
+    format: 'file',                 // emit /about.html → Cloudflare serves it at /about (no slash)
     inlineStylesheets: 'always',    // drop the render-blocking CSS request (LCP)
   },
   integrations: [

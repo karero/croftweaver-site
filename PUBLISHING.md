@@ -106,9 +106,11 @@ git push
 
 ## If something goes wrong
 
-- **Mistake already live?** Don't panic — in the **Cloudflare dashboard → your Pages
-  project → Deployments**, every past version is listed; click an older one →
-  **Rollback** to restore it instantly.
+- **Mistake already live?** Don't panic — in the **Cloudflare dashboard → Workers & Pages →
+  the Worker `croftweaver-site` → Deployments**, every past version is listed; roll back to
+  an older one there, or run `npx wrangler deployments list` and then
+  `npx wrangler rollback <version-id>`. (A rollback of the old Pages project changes
+  only its `pages.dev` addresses, not croftweaver.com.)
 - **Made a typo in the last save (not pushed yet)?** Re-edit, then
   `git add -A && git commit -m "fix typo"` again.
 - **`git push` says "rejected"?** (on `main`) Someone/something updated the cloud copy — run
@@ -184,8 +186,10 @@ serving an older build), the hash URL pins the exact fresh deployment and confir
 build is up. For a **brand-new page**, though, the next section wins: until the production
 build is Active, the page exists only on the hash URL. Whichever URL you quote, **open it
 and confirm it loads** rather than reporting it blind — and note it for the project.
-(A `pages.dev` URL is also the signal you deployed to **Pages**, not a Worker — if a deploy
-ever prints a `*.workers.dev` URL, stop: you published the wrong project type.)
+(The live site is a Worker since 2026-11-18, built by Workers Builds from `production`; the
+`pages.dev` addresses come from the old Pages project, which keeps building until it is
+retired. `wrangler.jsonc` keeps the Worker's live `workers.dev` address off (`workers_dev:
+false`) and Preview links on (`preview_urls: true`).)
 
 ### Never request a page on the live domain before its build is Active
 
@@ -197,10 +201,14 @@ minutes past a 30-minute `max-age`, immune to plain re-requests. Only a **manual
 purge** clears it (Cloudflare dashboard → the zone → Caching → Purge Cache → custom purge by
 URL; wrangler's OAuth token has `zone (read)` only and cannot purge programmatically). So:
 
-- Until the production deployment shows **Active**, verify new pages ONLY on the hash
-  deployment URL (`<hash>.croftweaver-site.pages.dev`) — pre-Active the live domain still serves
+- Until the production build has finished, verify new pages ONLY on the hash
+  deployment URL (`<hash>.croftweaver-site.pages.dev`; it shows the Pages copy, not the Worker)
+  — pre-Active the live domain still serves
   the *previous* deployment, so a brand-new path 404s there no matter how you request it.
-  Check Active status without touching the live domain: `wrangler pages deployment list`,
+  Check the build without touching the live domain: the `Workers Builds: croftweaver-site`
+  check on the commit in GitHub is the Worker's build, and `npx wrangler deployments list`
+  shows when the Worker was last deployed; `wrangler pages deployment list` is for the Pages
+  copy;
   the `croftweaver-site.pages.dev` alias (Cloudflare's own domain, outside the zone cache — but
   only before go-live; once `CANONICAL_URL` is set it redirects to the live domain, so
   don't follow it), or ask the owner — NEVER poll the live custom domain to see whether the build is done.

@@ -10,7 +10,7 @@ file into a handed-off repo so the receiving party can get running too.
 1. **GitHub — a PRIVATE account/repo.** https://github.com/signup → enable **2FA**. Client
    work stays in **private** repos. Run `gh auth login` (see tools) so pushes need no password.
 2. **Cloudflare account.** https://dash.cloudflare.com/sign-up → enable **2FA**. Hosts the site
-   (Pages) and, if you move the domain's DNS there, the DNS. Free tier (unmetered bandwidth)
+   (Workers; Pages for the previews) and, if you move the domain's DNS there, the DNS. Free tier (unmetered bandwidth)
    covers a small static site; upgrade to Workers Paid ($5/mo) only when a feature needs it.
 
 ---
@@ -63,7 +63,7 @@ npx playwright install chromium        # per machine, once
 > WSL2 shell, not the PowerShell ones.
 
 > **Node 22.23.4+, 24.22.1+ or 26.12.1+ required** (package.json's engines: Node's security fixes of 2026-10-21; Astro 7.4.2 needs 22.23.4) — the repo's
-> `.nvmrc` pins 26 for local + Cloudflare Pages. On **npm ≥11.16**, `npm install` warns
+> `.nvmrc` pins 26 for local builds and Cloudflare's (Workers Builds for the live site, Pages for the previews). On **npm ≥11.16**, `npm install` warns
 > "packages have install scripts not yet covered" for scripts it hasn't been told to trust
 > — per npm's own docs this is currently advisory only (the scripts still run; a future
 > npm release will start blocking them). There is nothing to approve here: `package.json`'s
@@ -79,7 +79,7 @@ npx playwright install chromium        # per machine, once
 | node / npm | Runs Astro, builds the site, runs the test suite. |
 | git | Version control; the deploy is "push to GitHub". |
 | gh | Create the GitHub repo + push without a browser. |
-| wrangler | Cloudflare CLI — `wrangler pages dev` local Functions, manual deploys. |
+| wrangler | Cloudflare CLI — `wrangler deployments list` shows what the live Worker serves; `wrangler pages dev` runs the previews' middleware locally. |
 | @playwright/test | Drives a real browser for the tests (per-project dev dep). |
 | @axe-core/playwright | WCAG accessibility scanner inside Playwright (per-project dev dep). |
 | cwebp / avifenc | Convert raster images to WebP / AVIF. |

@@ -53,10 +53,12 @@ const READ_WORDPRESS = '2026-10-22'; // WordPress.org's pages
 const READ_REPO = '2026-10-22'; // files and commands in croftweaver-site, the template and the toolkit
 const READ_GITHUB_API = '2026-10-22'; // the GitHub API, for the main language of the 17 PHP systems' repositories
 const READ_LIVE = '2026-10-22'; // commands run against the live site, and the results in #own
+const READ_LIVE_WORKERS = '2026-11-19'; // four of them run again after the move to Workers, with the same results
 const READ_RFC = '2026-10-22'; // RFC 9116
 const READ_RISKS = '2026-10-23'; // the section #risks: Google, Spamhaus, CISA, GitHub, Cloudflare, Astro, Patchstack, Sansec, the news report on SubdoMailing, the GitHub Advisory Database
 const READ_AI = '2026-10-23'; // the evergreen judgment in #safer: the PHP Foundation, Wiz, The Record, php.net's news of 23 October
 const READ_TEMPLATE_035 = '2026-11-14'; // the template at release 0.35, for template-worker-none
+const READ_WORKERS = '2026-11-19'; // after the move to Workers: Cloudflare's Workers pages, and the site's wrangler.jsonc
 const READ_CF_LIMITS = '2026-10-23'; // Cloudflare's Pages pricing and routing pages, for the daily allowance in #limits
 
 const PHPF = 'https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/';
@@ -108,6 +110,8 @@ export const CLAIMS: Claim[] = [
   // ---- What runs: the Croftweaver template, croftweaver.com, and WordPress as its own documentation describes it ----
   { id: 'template-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver && cd croftweaver && git checkout 3b8a6c5f && find skills/new-website/templates/astro -name '*.php' | wc -l", read: READ_REPO },
   { id: 'site-no-php', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && git ls-files | grep -c '\\.php$'", read: READ_REPO },
+  { id: 'site-moved-to-workers', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && grep -n -B1 'Worker with no code of its own' README.md", read: READ_WORKERS },
+  { id: 'site-worker-no-code', kind: 'command', source: "git clone https://github.com/karero/croftweaver-site && cd croftweaver-site && grep -E '\"main\"|custom_domain' wrangler.jsonc", read: READ_WORKERS },
   { id: 'site-one-function', kind: 'file', source: 'functions/_middleware.ts', lines: 'L60-L74', read: READ_REPO },
   { id: 'template-worker-none', kind: 'url', source: 'https://github.com/karero/croftweaver/blob/v0.35/skills/new-website/templates/astro/wrangler.jsonc', label: 'the template at release 0.35', read: READ_TEMPLATE_035 },
   { id: 'template-two-functions', kind: 'url', source: `${TEMPLATE_AT}/functions`, label: 'the template at 3b8a6c5f', read: READ_REPO },
@@ -123,17 +127,18 @@ export const CLAIMS: Claim[] = [
   // ---- What Cloudflare handles (each claim is one page of Cloudflare's documentation) ----
   { id: 'cf-certs', kind: 'url', source: 'https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/', label: 'Cloudflare docs, Universal SSL (updated 14 August 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-ddos', kind: 'url', source: 'https://developers.cloudflare.com/ddos-protection/', label: 'Cloudflare docs, DDoS protection (updated 14 August 2026)', read: READ_CLOUDFLARE },
-  { id: 'cf-network', kind: 'url', source: 'https://developers.cloudflare.com/pages/', label: 'Cloudflare docs, Pages (updated 25 August 2026)', read: READ_CLOUDFLARE },
+  { id: 'cf-network', kind: 'url', source: 'https://developers.cloudflare.com/workers/static-assets/', label: 'Cloudflare docs, Workers static assets (updated 12 November 2026)', read: READ_WORKERS },
   { id: 'cf-pages-workers', kind: 'url', source: 'https://developers.cloudflare.com/pages/', label: 'Cloudflare docs, Pages (updated 25 August 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-functions', kind: 'url', source: 'https://developers.cloudflare.com/workers/reference/security-model/', label: 'Cloudflare docs, Workers security model (updated 18 October 2026)', also: [{ label: 'How Workers works (updated 18 September 2026)', url: 'https://developers.cloudflare.com/workers/reference/how-workers-works/' }, { label: 'Pages Functions (updated 21 April 2026)', url: 'https://developers.cloudflare.com/pages/functions/' }], read: READ_CLOUDFLARE },
   { id: 'cf-preview', kind: 'url', source: 'https://developers.cloudflare.com/pages/configuration/preview-deployments/', label: 'Cloudflare docs, preview deployments (updated 12 October 2026)', read: READ_CLOUDFLARE },
-  { id: 'cf-rollback', kind: 'url', source: 'https://developers.cloudflare.com/pages/', label: 'Cloudflare docs, Pages (updated 25 August 2026)', read: READ_CLOUDFLARE },
+  { id: 'cf-rollback', kind: 'url', source: 'https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/', label: 'Cloudflare docs, Workers rollbacks (updated 18 November 2026)', read: READ_WORKERS },
   { id: 'cf-2fa', kind: 'url', source: 'https://developers.cloudflare.com/fundamentals/user-profiles/2fa/', label: 'Cloudflare docs, two-factor authentication (updated 20 April 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-dnssec', kind: 'url', source: 'https://developers.cloudflare.com/dns/dnssec/', label: 'Cloudflare docs, DNSSEC (updated 24 June 2026)', read: READ_CLOUDFLARE },
   { id: 'cf-caa', kind: 'url', source: 'https://developers.cloudflare.com/ssl/edge-certificates/caa-records/', label: 'Cloudflare docs, CAA records (updated 21 April 2026)', also: [{ label: 'Pages custom domains, known issues (updated 21 April 2026)', url: 'https://developers.cloudflare.com/pages/configuration/custom-domains/' }], read: READ_CLOUDFLARE },
-  // ---- Cloudflare's daily allowance for Pages Functions (an item in #limits) ----
+  // ---- Cloudflare's daily allowance for Pages Functions, and what a Worker's static assets cost (an item in #limits) ----
   { id: 'cf-static-free', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/pricing/', label: 'Cloudflare docs, Pages Functions pricing (updated 8 September 2026)', read: READ_CF_LIMITS },
   { id: 'cf-functions-quota', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/pricing/', label: 'Cloudflare docs, Pages Functions pricing (updated 8 September 2026)', read: READ_CF_LIMITS },
+  { id: 'cf-worker-assets-free', kind: 'url', source: 'https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/', label: 'Cloudflare docs, static assets billing (updated 12 November 2026)', read: READ_WORKERS },
   { id: 'cf-fail-open', kind: 'url', source: 'https://developers.cloudflare.com/pages/functions/routing/', label: 'Cloudflare docs, Pages Functions routing', read: READ_CF_LIMITS },
 
   // ---- What the template and the toolkit set up, and what the owner switches on ----
@@ -142,10 +147,10 @@ export const CLAIMS: Claim[] = [
   { id: 'site-analytics', kind: 'command', source: "curl -s https://croftweaver.com/ | grep -o -E '<script[^>]*src=\"[^\"]*\"'; curl -s https://croftweaver.com/ | grep -c -i -E 'cloudflareinsights|beacon.min.js'; curl -s \"$(curl -s https://croftweaver.com/ | grep -o -E 'https://analytics[^\"]*[.]js')\" | grep -o 'window.plausible.init' | sort -u", read: READ_LIVE },
   { id: 'toolkit-cloudflare-setup', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/scripts/cloudflare-setup.mjs#L45-L76`, label: 'the toolkit script cloudflare-setup.mjs at 3b8a6c5f', read: READ_REPO },
   { id: 'launch-dependabot', kind: 'url', source: `${TOOLKIT_AT}/skills/new-website/SKILL.md#L758`, label: 'the toolkit launch checklist at 3b8a6c5f', read: READ_REPO },
-  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L148-L154', read: READ_REPO },
-  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L210', read: READ_REPO },
-  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
-  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L236-L243', read: READ_REPO },
+  { id: 'site-publish', kind: 'file', source: 'AGENTS.md', lines: 'L139-L145', read: READ_REPO },
+  { id: 'site-publish-owner', kind: 'file', source: 'AGENTS.md', lines: 'L201', read: READ_REPO },
+  { id: 'site-hsts', kind: 'file', source: 'README.md', lines: 'L216-L223', read: READ_REPO },
+  { id: 'site-dashboard-switches', kind: 'file', source: 'README.md', lines: 'L216-L223', read: READ_REPO },
   { id: 'site-canonical-url', kind: 'file', source: 'README.md', lines: 'L11-L14', read: READ_REPO },
   { id: 'no-dnssec-caa-securitytxt-in-template', kind: 'url', source: TEMPLATE_AT, label: 'the template at 3b8a6c5f', read: READ_REPO },
 
@@ -158,7 +163,7 @@ export const CLAIMS: Claim[] = [
   { id: 'site-dependabot-file', kind: 'url', source: 'https://github.com/karero/croftweaver-site/blob/9b38eda/.github/dependabot.yml#L7-L29', label: 'the Dependabot file of croftweaver-site at 9b38eda', read: READ_REPO },
   { id: 'site-renewal', kind: 'command', source: "whois croftweaver.com | grep -i 'registry expiry'", read: READ_LIVE },
   { id: 'npm-attacks', kind: 'url', source: 'https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem', label: 'CISA alert, 23 September 2025', read: READ_NEWS },
-  { id: 'site-csp-inline', kind: 'command', source: 'curl -sI https://croftweaver.com/ | grep -i content-security-policy', read: READ_LIVE },
+  { id: 'site-csp-inline', kind: 'command', source: 'curl -sI https://croftweaver.com/ | grep -i content-security-policy', read: READ_LIVE_WORKERS },
   { id: 'rfc-9116', kind: 'url', source: 'https://www.rfc-editor.org/rfc/rfc9116', label: 'RFC 9116', read: READ_RFC },
 
   // ---- What can still go wrong (section #risks): cut with the section, see the note at the top of src/pages/security.astro ----
@@ -196,10 +201,10 @@ export const CLAIMS: Claim[] = [
   // ---- croftweaver.com's own results (#own on the page): update `result`, `status` and `read` from LIVE reads when a check changes ----
   // tests/check_security_page.sh fails while own-security-txt says "not yet" and public/.well-known/security.txt exists.
   // own-dnssec and own-security-txt were filled from live reads on 2026-10-22, after the DS record appeared and the file shipped.
-  { id: 'own-headers', kind: 'command', source: 'curl -sI https://croftweaver.com/', read: READ_LIVE, status: 'pass', result: 'Pass. All five headers from the template are sent, and so is HSTS, which is a Cloudflare setting.' },
-  { id: 'own-dnssec', kind: 'command', source: 'dig +short DS croftweaver.com', read: READ_LIVE, status: 'pass', result: 'Pass. The answer holds a key tag and algorithm 13, so DNSSEC is on for croftweaver.com.' },
+  { id: 'own-headers', kind: 'command', source: 'curl -sI https://croftweaver.com/', read: READ_LIVE_WORKERS, status: 'pass', result: 'Pass. All five headers from the template are sent, and so is HSTS, which is a Cloudflare setting.' },
+  { id: 'own-dnssec', kind: 'command', source: 'dig +short DS croftweaver.com', read: READ_LIVE_WORKERS, status: 'pass', result: 'Pass. The answer holds a key tag and algorithm 13, so DNSSEC is on for croftweaver.com.' },
   { id: 'own-caa', kind: 'command', source: 'dig +short CAA croftweaver.com', read: READ_LIVE, status: 'optional', result: 'Not set. CAA is optional, and a wrong record can stop a certificate from being issued.' },
-  { id: 'own-security-txt', kind: 'command', source: 'curl -s https://croftweaver.com/.well-known/security.txt', read: READ_LIVE, status: 'pass', result: 'Pass. The file is served, and it holds a Contact and an Expires date.' },
+  { id: 'own-security-txt', kind: 'command', source: 'curl -s https://croftweaver.com/.well-known/security.txt', read: READ_LIVE_WORKERS, status: 'pass', result: 'Pass. The file is served, and it holds a Contact and an Expires date.' },
 ];
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -228,4 +233,4 @@ export function readPhrase(): string {
 
 // The day the page's content last changed, set by hand (as on /privacy and /terms). Move it with every change to the
 // text or the claims; the check refuses a day before READ_LAST or more than one day ahead of today (UTC).
-export const UPDATED = { iso: '2026-11-14', label: '14 November 2026' } as const;
+export const UPDATED = { iso: '2026-11-19', label: '19 November 2026' } as const;

@@ -59,9 +59,10 @@ const description =
           <time datetime={a.copied}>{dateText(a.copied)}</time>, ahead of a template release.
         </>
       ))}
-      {' '}One suite is this site's own: Preview handling, kept from release 0.34 while the site
-      runs on Cloudflare Pages. New sites start on Cloudflare Workers and check their Workers
-      settings instead.
+      {' '}One suite is this site's own: Preview handling, kept from release 0.34 for the site's
+      old Cloudflare Pages project, which still serves its <code>pages.dev</code> addresses until it is retired.
+      The Workers config suite is the template's from the commit above, with its skip replaced by a test that needs a Workers config. It was copied
+      on 18 November 2026, the day the live site moved to Cloudflare Workers.
     </p>
   </section>
 
