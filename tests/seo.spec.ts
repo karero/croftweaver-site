@@ -864,7 +864,7 @@ test('seo — a changed sentence on each page the company deck reads changes the
   const base = companyFrom().html;
   expect(companyFrom().html, 'the deck is not deterministic').toBe(base);
   const changes: [keyof Pages, string, string, string][] = [
-    ['why', 'why.html', '99, 100, 100 and 100 out of 100', '98, 100, 100 and 100 out of 100'],
+    ['why', 'why.html', '100, 100, 100 and 100 out of 100', '98, 100, 100 and 100 out of 100'],
     ['wordpress', 'from-wordpress.html', 'Nobody can promise that you keep them.', 'Nobody can promise that.'],
     ['security', 'security.html', 'The plugins run.', 'The plugins all run.'],
   ];

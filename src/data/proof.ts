@@ -2,18 +2,23 @@
 // shown on /more-proof; PANEL is the AI panel shown on /more-proof (not on the home page since 2026-10-27);
 // SITE_PROOF is the one-site evidence on /proof. Every figure is per named site and
 // dated (CONTENT_GUIDE.md, honesty rules). PageSpeed is one run each, lab data:
-// re-measure all three before changing the date.
+// re-measure all three before changing the date. The current runs are the three of
+// 19 November 2026, 8:35 PM GMT+1 (docs/evidence/2026-11-19-psi-three-sites-mobile.md).
 import searchCsv from '../../public/data/genai-wednesday-de-search-console.csv?raw';
 import aiCsv from '../../public/data/genai-wednesday-de-ai-check.csv?raw';
 import { answers as answersWord, sentence } from './ai-words';
 
-export const PROOF_MEASURED = { iso: '2026-10-04', label: '4 October 2026' } as const;
+export const PROOF_MEASURED = { iso: '2026-11-19', label: '19 November 2026', lighthouse: '13.6.0' } as const;
 
 export const PROOF = [
-  { site: 'genai-wednesday.de', url: 'https://genai-wednesday.de/', performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
-  { site: 'm-squad.com', url: 'https://m-squad.com/', performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
+  { site: 'genai-wednesday.de', url: 'https://genai-wednesday.de/', performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+  { site: 'm-squad.com', url: 'https://m-squad.com/', performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
   { site: 'apreet.com', url: 'https://apreet.com/', performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
 ] as const;
+
+// Lighthouse's Agentic Browsing category reports checks passed, not a score out of 100, so PROOF
+// does not hold it. This is genai-wednesday.de's row of the same run as PROOF (shown on /proof).
+export const AGENTIC = { site: 'genai-wednesday.de', measured: '2026-11-19', label: 'Agentic Browsing', passed: 3, total: 3 } as const;
 
 // ── The AI panel, on /more-proof ────────────────────────────────────────────────
 // Four AI assistants were given the same prompt about genai-wednesday.de by the Builder
@@ -435,3 +440,21 @@ export const SITE_PROOF = {
     },
   },
 } as const;
+
+// The 3/3 must come from the same run as the scores beside it, and from the one site /proof shows.
+// Both sides are widened to string: two different `as const` literals compared would fail astro check
+// before this message could.
+{
+  const measured: string = AGENTIC.measured;
+  const site: string = AGENTIC.site;
+  const sites: string[] = PROOF.map((row): string => row.site);
+  if (!Number.isInteger(AGENTIC.total) || AGENTIC.total <= 0 || !Number.isInteger(AGENTIC.passed) || AGENTIC.passed < 0 || AGENTIC.passed > AGENTIC.total) {
+    throw new Error(`AGENTIC (${AGENTIC.passed}/${AGENTIC.total}) must be a whole number from 0 to a total above 0. Fix it in src/data/proof.ts.`);
+  }
+  if (measured !== PROOF_MEASURED.iso) {
+    throw new Error(`AGENTIC was measured on ${measured}, but PROOF_MEASURED is ${PROOF_MEASURED.iso}. Record the Agentic Browsing result of the same run, then change AGENTIC in src/data/proof.ts.`);
+  }
+  if (site !== SITE_PROOF.site || !sites.includes(site)) {
+    throw new Error(`AGENTIC is for ${site}, but /proof shows ${SITE_PROOF.site}, which needs a row in PROOF. Fix AGENTIC in src/data/proof.ts.`);
+  }
+}

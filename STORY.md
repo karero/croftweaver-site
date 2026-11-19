@@ -59,7 +59,7 @@
   clicks from Google stay on `/proof`, because the figure is small and has fallen (the
   assistant's proposal, which the owner accepted with the sentence on 2026-10-13).
   `/more-proof` has Google's PageSpeed Insights for three sites built with
-  Croftweaver (99 to 100, measured 4 October 2026) and the panel's SEO, GEO and E-E-A-T scores. `/proof` shows
+  Croftweaver (100, measured 19 November 2026) and the panel's SEO, GEO and E-E-A-T scores. `/proof` shows
   one site, genai-wednesday.de, launched on 27 March 2026: clicks from Google per 28
   days went from 3 around the launch to a best 99 (16 June to 13 July 2026) and stood
   at 50 in the 28 days to 29 September, with the limits that page states about itself.
