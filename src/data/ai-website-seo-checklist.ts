@@ -2,8 +2,8 @@
 // suite that covers each, what happened when we broke it, and what a pass does not prove.
 // The breaks, the commands and what failed: docs/ai-website-seo-checklist-breaks.md.
 //
-// Every "what happened" cell is something we saw, on 15 November 2026 (and the same on 25 and 22 October), in a copy of the
-// starter at toolkit version 0.35: we made one edit, ran the suite that covers it, and wrote down what failed.
+// Every "what happened" cell is something we saw, on 20 November 2026 (and the same on 15 November, 25 and 22 October), in a copy of the
+// starter at toolkit version 0.38: we made one edit, ran the suite that covers it, and wrote down what failed.
 // The page prints no failure message word for word: several carry a long dash or a contraction,
 // which tests/tone.spec.ts rejects in body text.
 //
@@ -20,16 +20,13 @@
 import { SUITES, SUITE_FILES, SUITES_VERSION } from './suites';
 
 export const RED_RUNS = {
-  toolkit: '0.35',
+  toolkit: '0.38',
   node: '26',
   nodeStarterAsks: '26',
-  iso: '2026-11-15',
-  label: '15 November 2026',
-  // The toolkit commit named in tests/TESTS-VERSION: v0.36 (39118dc7). The breaks ran at v0.35
-  // (8825573b); between the two, the template's seo, images, navigation and anchors specs,
-  // _helpers.ts, public/ and astro.config.mjs are byte-identical, and playwright.config.ts and
-  // package.json differ in the cloud browser fallback, the Node floor and package versions only.
-  suiteCommit: '39118dc7ef94c2b651adc19d7fd891f6fd5ee50a',
+  iso: '2026-11-20',
+  label: '20 November 2026',
+  // The toolkit commit named in tests/TESTS-VERSION: v0.38 (8e3c002e), the one the breaks ran at.
+  suiteCommit: '8e3c002e8b307be9871008ed20eb751c385c4a8f',
 } as const;
 
 const COVERED = ['seo', 'images', 'navigation', 'anchors'] as const;

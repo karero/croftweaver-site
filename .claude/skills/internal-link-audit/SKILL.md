@@ -8,8 +8,8 @@ description: >
   clicks from home), then suggests WHERE to add the missing links using
   `site-architecture`'s internal-linking strategy. The judgment-side
   complement to the offline `tests/orphans.spec.ts` gate. Run before a
-  release, after adding pages, or when GSC reports orphaned/low-coverage
-  pages. Trigger phrases: "internal link audit", "orphaned pages", "are any
+  release, after adding pages, to check one new page, or when GSC reports
+  orphaned/low-coverage pages. Trigger phrases: "internal link audit", "orphaned pages", "are any
   pages orphaned", "internal linking", "which pages link to nothing", "fix
   orphan pages", "improve internal links", "cross-link the comparison pages".
 ---
@@ -126,7 +126,7 @@ where it's *topically* earned, so the link helps a real reader:
 
 > Judgment, not just counts: a deliberately-unlinked page (a paid-campaign landing
 > page reached only from an ad, a print-QR page) is *correctly* orphaned — it should
-> go in `ORPHAN_EXEMPT` in `tests/orphans.spec.ts` with a reason, not get a forced
+> go in `orphan-exempt.txt` with a reason, not get a forced
 > link. Use the model to tell a real orphan from an intentional one.
 
 ### 3. Report
@@ -142,10 +142,48 @@ For each finding, after the user confirms:
 1. Add the link in the source page (`src/pages/*.astro`, a content-collection entry,
    or a nav/footer group in `src/config.ts`). Use keyword-bearing anchor text and the
    clean URL (no `.html`, no trailing slash).
-2. For a deliberately-unlinked page, add it to `ORPHAN_EXEMPT` in
-   `tests/orphans.spec.ts` with the reason instead.
+2. For a deliberately-unlinked page, add its address to `orphan-exempt.txt`, on its own
+   line, with the reason after a `#` instead.
 3. Re-run `npm run build && npm test` to confirm green (`orphans.spec.ts` must pass),
    then commit.
+
+## A new page
+
+`website-new-page` step 8 hands a freshly built page to this skill. A new page must meet three
+points, which `scripts/check_page_links.py` counts from `dist/` for that one page, from the
+site's pages as built (it needs nothing else from the site):
+
+- **L1** At least 2 other pages link to it, and at least 1 of them from its **body**: inside that
+  page's `<main>`, and not inside a `<header>`, `<nav>`, `<footer>` or `<aside>`.
+- **L2** If the page has a hub: the hub links to it from the hub's body, and the page links back
+  to the hub with an `<a>` inside its own `<main>` (a breadcrumb `<nav>` inside `<main>` counts;
+  JSON-LD does not). A breadcrumb outside `<main>` is a miss the owner may accept.
+- **L3** It is at most 3 clicks from the home page.
+
+Run it after a fresh `npm run build`, with the page's path, the site's address from
+`astro.config.mjs`, and `--hub` with the hub's path, or `--no-hub` where the owner's brief says
+the page has none:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/check_page_links.py" dist /<page-path> \
+  --site https://<host> (--hub /<hub-path> | --no-hub)
+```
+
+Exit 0: met. Exit 1: each miss is listed, with the pages that link here: fix the links, or put the
+miss in the PR with the owner's reason to accept it. Exit 2: it cannot judge (no `dist/`, no file
+for the page or hub, neither flag, `--hub` for a page with no `<main>`, a page with a
+`<base>` element, two files for one address, or a folder it cannot read); say so in the PR.
+It cannot see CSS, so whether a counted link is visible and reads naturally is yours to judge,
+and to write in the PR. Also judge, never counted: sibling pages link each other where it helps
+a reader; anchor text names the target's topic; high-traffic pages (home, FAQ) link to it where
+it fits; about 5 to 10 internal links per 1,000 words.
+
+Where the site has `scripts/check_internal_links.sh`, run it too, after the same fresh build (it
+reuses an existing `dist/`), for the orphans the new page caused elsewhere: it exits 0 whatever it
+finds, so exit 1 means it could not run. Put its message in the PR as printed and count the
+report as not run. Where the site has no such script, say so in one line in the PR, and that this
+skill can bring the site's link checks up to the kit's version in a PR of its own: the page PR
+does not add them.
 
 ## Scope notes
 
