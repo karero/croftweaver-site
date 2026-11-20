@@ -7,12 +7,12 @@ import Base from '../layouts/Base.astro';
 import { SITE } from '../config';
 
 // Edit both by hand, and only after re-reading this page against that release.
-const REVIEWED = { version: '0.36', iso: '2026-11-19', label: '19 November 2026' } as const;
+const REVIEWED = { version: '0.38', iso: '2026-11-20', label: '20 November 2026' } as const;
 
 const next = [
   { title: 'Moving your domain to Cloudflare, with your assistant', text: 'Many people who start a site already have a domain. Its DNS records, which point it at a website and at mailboxes, sit with another provider. Today a checklist in the toolkit walks you through moving those records to Cloudflare by hand, comparing each one twice. Next, your assistant is to lead that move with you. The plan is written; none of it is built yet.' },
   { title: 'Checks that go deeper and cannot be skipped', text: 'Required checks on the publishing branch, so a failing build cannot go live. Deeper checks on the message of a page. The starter has had a test for leftover template slots and filler text since release 0.30.' },
-  { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Next are listings in Anthropic's and OpenAI's own plugin directories." },
+  { title: 'Listings where people look for plugins', text: "Croftweaver has been a plugin for Claude Code and for Codex since release 0.32, and it is listed on skills.sh. Since release 0.37, what it offers Anthropic's plugin directory is one text-only page that says what Croftweaver is and gives the install commands to type yourself. Next is a listing in OpenAI's own plugin directory." },
   { title: 'Import of an existing site', text: "Bring the content and structure of a site you already have into the Croftweaver starter, under the same tests. Four parts are still to build: taking the content out, including what a count from outside cannot see; bringing it in as pages, with its images; rebuilding the old page layouts and the brand; and settling how the old site's forms and regularly updated records, such as events, work after the move. They will be built during the first real moves, and what a second move repeats goes into Croftweaver." },
 ];
 const later = [
@@ -68,16 +68,19 @@ const out = [
   </section>
 
   <section class="wrap" id="done">
-    <h2>Done in release 0.36</h2>
+    <h2>Done in releases 0.37 and 0.38</h2>
     <ul class="steps">
-      <li><strong>A first launch in the right order.</strong> Your assistant walks you through Cloudflare's import, has you choose your live branch where Cloudflare keeps it, and connects your domain only after that. Prefer Cloudflare Pages? Say so, and your assistant sets up a Pages project instead.</li>
-      <li><strong>Checks that say what to fix.</strong> When a check fails, its message names the line or the answer it needs: the tab icon's size, the three answers the legal pages ask for, the settings the analytics check finds missing.</li>
-      <li><strong>No Astro logo in your browser tab.</strong> The build stops while your tab icon is still Astro's default, and says how to replace it. The icon maker leaves icons you made yourself alone, and the launch check also looks at the icons on your live site.</li>
-      <li><strong>Publishing that offers to try again.</strong> If the live site still shows the old version about three minutes after you publish, <code>npm run ship</code> asks once, in the terminal, whether to ship again, and sends one small extra commit only on your yes. This is new: no one has yet seen it start a build on a live site.</li>
+      <li><strong>New pages that arrive linked and ready for AI answers.</strong> After your assistant builds a new page, it checks that an AI answer can find and quote it, and that at least two pages link to it, one of them inside the text of a page. It also checks that the page links back to its section's main page and is at most three clicks from your home page, and fixes what it finds in the same change. The page brief has a new Links field, so you approve which pages will link to the new page, and the sentence each gets.</li>
+      <li><strong>A check of your approved words that reads whole sentences.</strong> A link with a small icon, or a hidden "(opens in a new tab)" note, no longer cuts a sentence into false changes.</li>
+      <li><strong>Tests that say what is wrong.</strong> If your site is not built yet, or its address is missing, <code>npm test</code> says so in one line.</li>
+      <li><strong>A link check that stays on your side.</strong> It no longer lists your 404 page as a lost page, and it stops with a clear message when the build failed. Pages you leave unlinked on purpose, such as an ad's landing page, go in a plain list, <code>orphan-exempt.txt</code>.</li>
+      <li><strong>Publishing that reads your settings right.</strong> <code>npm run ship</code> checks the address your site really uses, says which settings file it read, and says what happens if GitHub refuses the push. The build also spots Astro's tab icon after an optimizer has rewritten it.</li>
+      <li><strong>A signpost for Anthropic's plugin directory.</strong> What Croftweaver offers the directory is one short page with no code. Your kit, and how you install it, stay as they are.</li>
     </ul>
     <p>
-      The rest of what the release brought is in
-      <a href={`${SITE.repo}/releases/tag/v0.36`}>its release notes</a>.
+      The rest of what the releases brought is in the release notes for
+      <a href={`${SITE.repo}/releases/tag/v0.38`}>0.38</a> and
+      <a href={`${SITE.repo}/releases/tag/v0.37`}>0.37</a>.
     </p>
   </section>
 
