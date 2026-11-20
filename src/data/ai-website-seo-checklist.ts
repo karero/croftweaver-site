@@ -73,7 +73,7 @@ export const CHECKS: CheckRow[] = [
     broke:
       'A link to a page that does not exist turned the navigation suite red, and the message reported the 404. A link to a section that does not exist turned the anchors suite red.',
     limit:
-      'The navigation suite follows links to pages written in full or relative to the current page, and does not check links to other sites. The anchors suite does follow relative section links, but skips section links into other sites and into files such as PDFs. A section link can exist and still point at the wrong section.',
+      'The navigation suite follows links to pages written from the site root, in full or relative to the current page, and does not check links to other sites. The anchors suite does follow relative section links, but skips section links into other sites and into files such as PDFs. A section link can exist and still point at the wrong section.',
   },
   {
     check: 'The sitemap matches the pages',
