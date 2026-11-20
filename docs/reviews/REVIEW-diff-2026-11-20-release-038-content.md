@@ -1,5 +1,5 @@
 # DIFF review: croftweaver.com content for Croftweaver releases 0.37 and 0.38
-Base `2cc7876` · depth: Normal · verdict: in progress (round 2 owed) · made by session `local_a90c4420-ddc5-4561-adbb-e5f68e5b718f`
+Base `2cc7876` · depth: Normal · verdict: CLEAN at round 1 (the one BUG was a missing document and is fixed; no code or text of the pages changed after the round) · made by session `local_a90c4420-ddc5-4561-adbb-e5f68e5b718f`
 
 Task: the site's content for releases 0.37 and 0.38 (`website-builder-release` Step 7, "croftweaver.com content"): `src/data/skills.ts`, `public/llms.txt`, `src/pages/roadmap.astro` and README row 5k. The claim ceiling is the customer part of the release notes of `v0.37` and `v0.38`.
 
@@ -9,7 +9,9 @@ Evidence sent: release notes of 0.37 and 0.38 (whole), the skill folders of the 
 
 | Round | Head | Seconds, tokens |
 |---|---|---|
-| 1 | `c73d691` plus the README PR number | Codex 156 s / 65,390 |
+| 1 | `6a5e6cb` | Codex 156 s / 65,390 |
+
+No round 2: the only BUG was this trail, a file the gate leaves out of its diff, so a second round would have had nothing to read; its existence is checked with `ls` (READ 6). Round 1 changed no text on the pages.
 
 | Sev | Round | Finding | Status | Evidence |
 |---|---|---|---|---|
