@@ -27,9 +27,9 @@ export const SUITES: {
   },
   {
     file: 'navigation', group: 'people', name: 'Navigation',
-    checks: 'Every page loads, and internal links written from the site root resolve.',
+    checks: 'Every page loads, and internal links resolve, whether written from the site root, in full or relative to the current page.',
     example: 'A link to a page that was renamed fails. So does a link that only works through a redirect.',
-    limit: 'Links written relative to the current page are not followed, and links to other sites are not checked.',
+    limit: 'Links to other sites are not checked.',
   },
   {
     file: 'anchors', group: 'people', name: 'Anchors',
