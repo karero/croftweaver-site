@@ -7,11 +7,11 @@
 // (tests/llms-coverage.spec.ts fails until it matches), and open the footer's release-notes link once:
 // the tests build it from RELEASE and SITE.repo, so they cannot see a wrong tag name. The site cannot check the toolkit at
 // build time, but the build stops when the list, the release's skill count and ADDED_SINCE do not add up.
-export const RELEASE = { version: '0.36', iso: '2026-11-19', label: '19 November 2026', skills: 40 } as const;
+export const RELEASE = { version: '0.38', iso: '2026-11-20', label: '20 November 2026', skills: 40 } as const;
 // The skills on the toolkit's main branch that the release above does not have, and the day
 // the list was last checked against the toolkit. The page says both (tests/a11y.spec.ts).
 export const ADDED_SINCE: readonly string[] = [];
-export const AS_OF = { iso: '2026-11-19', label: '19 November 2026' } as const;
+export const AS_OF = { iso: '2026-11-20', label: '20 November 2026' } as const;
 
 export const STAGES = [
   { id: 'build', title: 'Build', intro: 'From a brief to a finished site.' },
@@ -30,7 +30,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'website-content-guide', stage: 'build', does: 'Sets the tone of voice and the trust signals that every page follows.' },
   { name: 'website-tagline', stage: 'build', optional: true, does: 'Finds the short line under your logo with you, starting from what your business does for its customers.' },
   { name: 'website-story', stage: 'build', optional: true, does: 'Tells the home page as the story of your visitor, in seven sections.' },
-  { name: 'website-new-page', stage: 'build', does: 'Writes a new page, an article or a rewrite as one document first, has a fresh reviewer read it for your visitor and for search and AI answers, builds it from the sentences you approved, then checks the build kept them.' },
+  { name: 'website-new-page', stage: 'build', does: 'Writes a new page, an article or a rewrite as one document first, has a fresh reviewer read it for your visitor and for search and AI answers, builds it from the sentences you approved, checks the build kept them, then checks that an AI answer can quote the page and that other pages link to it.' },
   { name: 'copywriting', stage: 'build', does: 'Writes and rewrites page copy: headlines, calls to action, whole pages.' },
   { name: 'site-architecture', stage: 'build', does: 'Plans pages, navigation, addresses and internal links.' },
   { name: 'website-design-system', stage: 'build', does: 'Sets the visual standards: responsive images, dark mode, contrast in both themes.' },
@@ -54,7 +54,7 @@ export const SKILLS: { name: string; stage: StageId; does: string; optional?: tr
   { name: 'independent-review', stage: 'verify', does: 'Sends a plan or a change to independent AI models for a second opinion.' },
   { name: 'website-positioning-check', stage: 'verify', optional: true, does: 'A quick look from outside: can a visitor tell what is on offer, for whom, and why to believe it?' },
   { name: 'seo-audit', stage: 'verify', does: 'Audits a site for technical and on-page SEO problems.' },
-  { name: 'internal-link-audit', stage: 'verify', does: 'Finds pages that are orphaned, thinly linked or buried, and suggests where to link.' },
+  { name: 'internal-link-audit', stage: 'verify', does: 'Finds pages that are orphaned, thinly linked or buried, and suggests where to link. For one new page it checks that two pages link to it, one of them inside the text of a page, that it links back to its section, and that it is at most three clicks from the home page.' },
   { name: 'outgoing-link-audit', stage: 'verify', does: 'Checks every link to another site: alive, redirected, rebranded or dead.' },
   { name: 'facts-check', stage: 'verify', does: 'Compares the figures on every page of a live site with the facts you approved, and lists the pages that have lost the term their audience gives them.' },
   { name: 'website-scorecard', stage: 'verify', optional: true, does: 'Publishes what the site\'s own tests checked as a dated section on one page. A run with a failing test writes nothing.' },
@@ -81,7 +81,7 @@ export const SKILL_COUNT = SKILLS.length;
 
 // What the three most recent releases added (from the toolkit's release notes).
 export const RECENT = [
+  { version: '0.38', label: '20 November 2026', text: 'New pages arrive linked and ready for AI answers: your assistant checks that an AI answer can find and quote the page, that at least two pages link to it, one of them inside the text of a page, that it links back to its section, and that it is at most three clicks from your home page. The page brief has a new Links field, so you approve which pages will link to the new one. The check of your approved words reads whole sentences. Tests say what is wrong when your site is not built yet or its address is missing, and the link check no longer lists your 404 page as a lost page. Publishing reads the address your site really uses.' },
+  { version: '0.37', label: '19 November 2026', text: 'What Croftweaver offers Anthropic\'s plugin directory is one short page with no code: it says what Croftweaver is and gives you the install commands to type yourself. Your kit, and how you install it, stay as they are.' },
   { version: '0.36', label: '19 November 2026', text: 'Your first launch on Cloudflare goes the right way round: your assistant has you choose your live branch where Cloudflare keeps it, and connects your domain after that. When a check fails, its message says what to fix. The build stops while your tab icon is still the Astro logo, and the icon maker leaves icons you made yourself alone. If the live site still shows the old version about three minutes after you publish, publishing offers once to try again.' },
-  { version: '0.35', label: '14 November 2026', text: 'Every new page is written out and judged before it is built; for a page moved from an old site, the review checks that nothing that brought visitors is lost. The launch check reads your Cloudflare settings with you. New sites start on Cloudflare Workers, and for advanced users a script and a guide move a site there from Pages. Legal pages show a draft notice until you say how they were checked, and new sites get a tab icon from day one.' },
-  { version: '0.34', label: '28 October 2026', text: 'A new check says when your site is ready to launch and writes a report you can open in your browser. New sites keep their pictures light on phones, keep your keys out of git from the start, and your assistant runs the speed test itself. Contact forms can ask for more, and the email they open starts with your greeting.' },
 ] as const;
