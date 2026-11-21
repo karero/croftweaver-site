@@ -3,7 +3,8 @@
 # which pages are ORPHANED (no internal link points at them — invisible to crawlers and
 # browsing humans) or THIN (a single inbound link, usually just the nav/footer, no
 # contextual in-body link). It never fails on link FINDINGS (orphan/thin pages → exit 0);
-# only a broken auto-build (it can't audit a missing/partial dist/) or a failed mktemp exits non-zero.
+# only a broken auto-build (it can't audit a missing/partial dist/), a failed mktemp, a missing
+# scripts/orphan-exempt.mjs or node, or a bad line in orphan-exempt.txt exits non-zero.
 # It's the judgment-side sweep, the script form of the `internal-link-audit` skill.
 #
 # The HARD gate is tests/orphans.spec.ts (offline, in CI): it fails if any page is
@@ -13,6 +14,17 @@
 # Usage: bash scripts/check_internal_links.sh   (builds if dist/ is missing)
 # Portable to macOS bash 3.2 (no mapfile / no set -u).
 cd "$(git rev-parse --show-toplevel)" || exit 0
+
+# orphan-exempt.txt is read by node, through the module the spec uses too. Check both first, before
+# any build: an existing dist/ is never rebuilt, so nothing else would show that node is missing.
+if [ ! -f scripts/orphan-exempt.mjs ]; then
+  echo "✗ scripts/orphan-exempt.mjs is missing. Take scripts/check_internal_links.sh, scripts/orphan-exempt.mjs and tests/orphans.spec.ts together." >&2
+  exit 1
+fi
+if ! command -v node >/dev/null; then
+  echo "✗ node is not on PATH. check_internal_links.sh now needs node to read orphan-exempt.txt." >&2
+  exit 1
+fi
 
 # Audit the SHIPPED build. If dist/ is missing, build it and fail LOUDLY on a broken
 # build — never print an authoritative graph from a missing/partial dist/. If dist/
@@ -29,7 +41,8 @@ fi
 
 # Own production host, derived from `site:` in astro.config.mjs so this stays
 # domain-agnostic. An absolute link to this host counts as internal, same as the tests.
-SITE_HOST=$(grep -oE "site:[[:space:]]*['\"]https?://[^'\"]+" astro.config.mjs 2>/dev/null \
+# The key must start its name (`website:` is another key), read as bytes, as in scripts/ship.sh.
+SITE_HOST=$(export LC_ALL=C; hi=$'\200-\377'; ws=$'\302\240|\357\273\277|\341\232\200|\342\200[\200-\212\250\251\257]|\342\201\237|\343\200\200'; grep -oE "(^|[^[:alnum:]_\$.$hi-]|$ws)site:[[:space:]]*['\"]https?://[^'\"]+" astro.config.mjs 2>/dev/null \
   | sed -E "s#.*://(www\.)?##; s#/.*##" | tr 'A-Z' 'a-z' | head -1)
 [ -n "$SITE_HOST" ] || SITE_HOST="__no_site_configured__"
 
@@ -91,19 +104,41 @@ NLINKS=$(grep -c . "$LINKS")
 INBOUND=$(awk -F'\t' '$1!=$2 && !seen[$1 SUBSEP $2]++ { cnt[$1]++ }
                       END { for (t in cnt) print cnt[t] "\t" t }' "$LINKS")
 
+# Pages never reported as orphans: the 404 page (reached by a wrong address, not a link) and the
+# ones orphan-exempt.txt lists, the site's own list of pages left unlinked on purpose. A bad file
+# stops the run; the module's message names the file and line.
+if ! listed="$(node scripts/orphan-exempt.mjs "$PWD")"; then
+  exit 1
+fi
+EXEMPT="/404
+$listed"
+# A spec still in the old form keeps its own list, which nothing reads now: say so, go on.
+if [ -f tests/orphans.spec.ts ] && grep -q ORPHAN_EXEMPT tests/orphans.spec.ts; then
+  echo "⚠ tests/orphans.spec.ts still holds ORPHAN_EXEMPT: the list now lives in orphan-exempt.txt, and entries still in the spec are not read." >&2
+fi
+
 # Orphans = pages that received zero inbound edges (and aren't the home root).
-orphans=""; thin=""
+orphans=""; thin=""; nok=0
 while IFS= read -r p; do
   [ -n "$p" ] || continue
   [ "$p" = "/" ] && continue
   c=$(echo "$INBOUND" | awk -F'\t' -v t="$p" '$2==t{print $1}')
   if [ -z "$c" ]; then
-    orphans="$orphans$p
-"
+    case "
+$EXEMPT
+" in
+      *"
+$p
+"*) ;;
+      *) orphans="$orphans$p
+" ;;
+    esac
   elif [ "$c" = "1" ]; then
     one=$(awk -F'\t' -v t="$p" '$1==t && $1!=$2 {print $2; exit}' "$LINKS")
     thin="$thin$p  <-  $one
 "
+  else
+    nok=$((nok+1))
   fi
 done < <(sort -u "$PAGESF")
 
@@ -158,7 +193,7 @@ else
   printf '(none)\n'
 fi
 
-printf '\n## OK: %d page(s) with ≥2 inbound links (home + orphan/thin excluded)\n' "$((NPAGES - norphan - nthin - 1))"
+printf '\n## OK: %d page(s) with ≥2 inbound links (home, orphan and thin pages excluded)\n' "$nok"
 
 # Click-depth is an ORTHOGONAL axis (a page can be both thin AND deep), so it's
 # reported separately rather than folded into the inbound-count partition above.

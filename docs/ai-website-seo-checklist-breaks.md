@@ -25,8 +25,8 @@ again when the toolkit changes. A row of the table is only as good as its break.
   by 445; `tests/anchors.spec.ts` is identical. `tests/TESTS-VERSION` names toolkit commit `a0fbfb18`,
   which is `v0.32` itself (it named `0597a28` until PR 115, 2026-10-22; at that commit the template's four
   specs were byte-identical to the `v0.32` ones). Since 2026-10-25 it named `a1f30899`, which is `v0.33`; since 2026-11-16 it named `8825573b`, which is `v0.35`,
-  the version of the last run; since 2026-11-19 it names `39118dc7`, which is `v0.36`; the template files the
-  breaks use are byte-identical to `v0.35`'s, so the breaks were not run again. So the table
+  the version of an earlier run; since 2026-11-19 it named `39118dc7`, which is `v0.36`; since the sync of
+  2026-11-20 it names `8e3c002e`, which is `v0.38`, the version of the last run. So the table
   describes the starter, and these breaks were not run against this site's copies.
 - 29 October 2026, at `v0.34` (`99b72e10`), Node v26.13.0, Playwright 1.64.1, the starter copied out the
   same way. In the four specs, the tests these breaks use are unchanged from `v0.33`: `images`,
@@ -43,7 +43,15 @@ again when the toolkit changes. A row of the table is only as good as its break.
   starter's "Example", so `SITE.name` was set to "Probe" and the icons made. Baseline: 97 passed and 1 skipped
   (fewer than at `v0.34` because the template dropped `analytics-server.spec.ts` and `middleware.spec.ts`).
   Every break failed in the same test with the same message as before, and run 4 timed out again. The seo
-  spec has eleven tests now, so the tie and C2 pass 11. The table below gives these counts.
+  spec has eleven tests now, so the tie and C2 pass 11. The table below gave these counts until the next run.
+- 20 November 2026, at `v0.38` (`8e3c002e`), Node v26.13.1, npm 11.20.0, Playwright 1.65.1 from the
+  starter's lockfile, every run with `--workers=1` at a load average of 180 to 480. All eighteen lines were
+  run again, because the template's `anchors.spec.ts`, `navigation.spec.ts`, `playwright.config.ts` and
+  the link scripts changed since `v0.35`. The starter was prepared as on 15 November (`SITE.name` set to
+  "Probe", icons made). Baseline: 104 passed and 1 skipped. Every break failed in the same test with the
+  same message as before, and run 4 timed out again, as it does by design. Run 1 was first made with a
+  71-character title, which also failed; it was repeated with a 63-character one. The seo spec has eleven
+  tests, so the tie and C2 pass 11. The table below gives these counts.
 
 ## The breaks
 
